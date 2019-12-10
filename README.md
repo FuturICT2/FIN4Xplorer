@@ -1,5 +1,9 @@
 # FIN4Xplorer
 
+The smart contracts are located at [FIN4Contracts](https://github.com/FuturICT2/FIN4Contracts).
+
+<hr>
+
 **FIN4Xplorer** is a decentralised design for a bottom-up and multidimensional finance system with the aim of making communities healthier, more social, and sustainable. It is part of the FLAG-ERA-funded project [FuturICT 2.0](https://futurict2.eu/).
 
 <table border="0"><tr>
