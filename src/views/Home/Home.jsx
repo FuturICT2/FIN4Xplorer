@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Container from '../../components/Container';
 import Box from '../../components/Box';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import UsersIcon from '@material-ui/icons/Group';
 import CollectionsIcon from '@material-ui/icons/CollectionsBookmark';
@@ -18,7 +17,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
-import { buildIconLabelLink, TCRactive, buildIconLabelCallback } from '../../components/utils';
+import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
 
 let config = null;
 try {
