@@ -19,11 +19,11 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
 
-let config = null;
+let faucetConfig = null;
 try {
-	config = require('../../config/deployment-config.json');
+	faucetConfig = require('../../config/faucet-url.json');
 } catch (err) {
-	console.log('deployment-config.json not found');
+	console.log('faucet-url.json not found');
 }
 
 const axios = require('axios');
@@ -40,7 +40,7 @@ function Home(props) {
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
 		let networkID = window.ethereum.networkVersion;
-		let encodedURL = config.FAUCET_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
+		let encodedURL = faucetConfig.FAUCET_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
 		console.log('Calling faucet server: ' + encodedURL);
 		axios
 			.get(encodedURL)
@@ -102,7 +102,7 @@ function Home(props) {
 						<small>Are you connected to the correct network?</small>
 					</div>
 				)}
-				{config && config.FAUCET_URL && (
+				{faucetConfig && faucetConfig.FAUCET_URL && (
 					<>
 						<br />
 						{buildIconLabelCallback(() => {}, <SaveAltIcon />, t('request-ether'), false)}

@@ -46,29 +46,16 @@ npm install # requires apparently more than 1GB of memory to run
 
 Install the [MetaMask](https://metamask.io/) browser extension.
 
-## Deploying the smart contracts
+## Faucet
 
-To deploy the smart contracts to a local Ganache instance, run:
-```sh
-truffle migrate
-```
+If you have a running faucet server (`scripts/faucet-server`), you can add the URL to it in `src/config/faucet-url.json`:
 
-To deploy to the Rinkeby testnet, use:
-
-```sh
-truffle migrate --network rinkeby
-```
-
-This requires the file `src/config/deployment-config.json` to be added and filled. For deploying, only the first two fields are required. The *faucet-server* located under `scripts/faucet-server` uses the third field as well. If the fourth field is present, a *Request Ether* link is shown in the *About you* box on the landing page.
 ```json
 {
-    "MNEMONIC": "",
-    "INFURA_API_KEY": "",
-    "PRIVATE_KEY_OF_FAUCET_ACCOUNT": "",
     "FAUCET_URL": ""
 }
 ```
-The account encoded by the mnemonic is paying the deployment costs. Therefore it has to have sufficient funds on the respective network. The Infura API key can be obtained by creating a project on infura.io: it is the "Project ID" under "View Project".
+If this file is present, the box *On the blockchain* on *Home* will show the option *Request Ether*.
 
 ## Serving the GUI
 
