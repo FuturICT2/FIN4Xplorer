@@ -53,15 +53,15 @@ If you have a running faucet server (`scripts/faucet-server`), you can add the U
 ```
 If this file is present, the box *On the blockchain* on *Home* will show the option *Request Ether*.
 
+## Required files
+
+To run the app, the compiled smart contracts that will be interacted with as well as the address of the deployed Fin4Main smart contract must be known.
+
+The JSON-files of the smart contracts are expected to be located in `src/build/contracts`. They can get there either automatically be setting the `config.json` in the [FIN4Contracts](https://github.com/FuturICT2/FIN4Contracts) repository accordingly and running `truffle compile`, or have to be manually placed there.
+
+The address of the Fin4Main contract is expected to reside in `src/config/Fin4MainAddress.js`. As with the compiled contracts, this can happen automatically upon `truffle migrate` in the FIN4Contracts repository, or has to be manually inserted.
+
 ## Serving the GUI
-
-Serving the GUI can happen right after deploying the smart contracts on the same computer - but does not have to.
-
-If they are not the same computers it is necessary:
-
-- to copy `src/config/Fin4MainAddress.js` onto the computer serving the GUI - this file was automatically created during `truffle migrate`
-
-- to run `truffle compile` on a computer serving the GUI that hasn't run `truffle migrate` beforehand - this creates JSON-files for each contract that are necessary for calling the contracts on the blockchain
 
 ### Development mode
 
