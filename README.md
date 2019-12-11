@@ -24,7 +24,7 @@ The smart contracts are located at [FIN4Contracts](https://github.com/FuturICT2/
 ## Dependencies
 
 ```sh
-# the basics
+# basics
 sudo apt-get install git build-essential python
 
 # node v10
@@ -36,12 +36,8 @@ nvm use 10.0.0
 # on macOS, to prevent gyp related errors
 npm explore npm -g -- npm install node-gyp@latest
 
-# truffle
-npm install -g truffle
-npm install -g ganache-cli # or the GUI app from trufflesuite.com/ganache
-
 # project
-npm install # requires apparently more than 1GB of memory to run
+npm install # might require more than 1GB of memory to run
 ```
 
 Install the [MetaMask](https://metamask.io/) browser extension.
