@@ -141,7 +141,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			1: Fin4ClaimingAddress,
 			2: Fin4CollectionsAddress,
 			3: Fin4MessagingAddress,
-			4: Fin4ProofingAddress,
+			4: Fin4ProvingAddress,
 			5: Fin4GroupsAddress,
 			6: Fin4SystemParametersAddress
 		}) => {
@@ -155,7 +155,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 				'UpdatedTotalSupply'
 			]);
 			addContract(props, drizzle, 'Fin4Collections', Fin4CollectionsAddress, []);
-			addContract(props, drizzle, 'Fin4Proofing', Fin4ProofingAddress, ['SubmissionAdded']);
+			addContract(props, drizzle, 'Fin4Proving', Fin4ProvingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
 		}
@@ -279,12 +279,12 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchAndAddAllProofTypes = (props, Fin4ProofingContract, drizzle) => {
+const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProofingContract, defaultAccount, 'getProofTypes')
+	getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypes')
 		.then(proofTypeAddresses => {
 			return proofTypeAddresses.map(proofTypeAddress => {
-				return getContractData(Fin4ProofingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
+				return getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
 					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded }) => {
 						// add Contract objects to drizzle
 						addContract(props, drizzle, name, proofTypeAddress, []);
@@ -412,15 +412,15 @@ const fetchCollectionsInfo = (props, Fin4CollectionsContract) => {
 		});
 };
 
-const fetchAllSubmissions = (props, Fin4ProofingContract) => {
+const fetchAllSubmissions = (props, Fin4ProvingContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProofingContract, defaultAccount, 'getSubmissionsCount')
+	getContractData(Fin4ProvingContract, defaultAccount, 'getSubmissionsCount')
 		.then(submissionsCount => {
 			return Array(new BN(submissionsCount).toNumber())
 				.fill()
 				.map((x, i) => i)
 				.map(submissionId => {
-					return getContractData(Fin4ProofingContract, defaultAccount, 'submissions', submissionId).then(
+					return getContractData(Fin4ProvingContract, defaultAccount, 'submissions', submissionId).then(
 						({ 0: submissionId, 1: proofType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
 							return {
 								submissionId: submissionId,

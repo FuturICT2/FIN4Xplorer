@@ -28,7 +28,7 @@ function LoadInitialData(props, context) {
 		Fin4Messaging: false,
 		Fin4Claiming: false,
 		Fin4Collections: false,
-		Fin4Proofing: false,
+		Fin4Proving: false,
 		Registry: false,
 		Parameterizer: false,
 		Fin4SystemParameters: false,
@@ -119,10 +119,10 @@ function LoadInitialData(props, context) {
 			fetchCurrentUsersClaims(props, context.drizzle.contracts.Fin4Claiming);
 		}
 
-		if (!isInit.current.Fin4Proofing && props.contracts.Fin4Proofing && props.contracts.Fin4Proofing.initialized) {
-			isInit.current.Fin4Proofing = true;
-			fetchAndAddAllProofTypes(props, context.drizzle.contracts.Fin4Proofing, context.drizzle);
-			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Proofing);
+		if (!isInit.current.Fin4Proving && props.contracts.Fin4Proving && props.contracts.Fin4Proving.initialized) {
+			isInit.current.Fin4Proving = true;
+			fetchAndAddAllProofTypes(props, context.drizzle.contracts.Fin4Proving, context.drizzle);
+			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Proving);
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {
