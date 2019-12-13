@@ -142,7 +142,7 @@ function TokenCreationProcess(props, context) {
 			})
 			.then(result => {
 				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
-				let newTokenAddress = result.events.Fin4TokenCreated.returnValues.addr;
+				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
 
 				setTokenCreationStage(
 					'Waiting for the parameterization of ' +
