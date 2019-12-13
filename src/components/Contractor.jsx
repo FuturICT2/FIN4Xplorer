@@ -137,14 +137,18 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4MainContract, defaultAccount, 'getSatelliteAddresses').then(
 		({
-			0: Fin4TokenManagementAddress,
-			1: Fin4ClaimingAddress,
-			2: Fin4CollectionsAddress,
-			3: Fin4MessagingAddress,
-			4: Fin4ProvingAddress,
-			5: Fin4GroupsAddress,
-			6: Fin4SystemParametersAddress
+			0: Fin4UncappedTokenCreatorAddress,
+			1: Fin4CappedTokenCreatorAddress,
+			2: Fin4TokenManagementAddress,
+			3: Fin4ClaimingAddress,
+			4: Fin4CollectionsAddress,
+			5: Fin4MessagingAddress,
+			6: Fin4ProvingAddress,
+			7: Fin4GroupsAddress,
+			8: Fin4SystemParametersAddress
 		}) => {
+			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
+			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4TokenManagement', Fin4TokenManagementAddress, ['Fin4TokenCreated']);
 			addContract(props, drizzle, 'Fin4Messaging', Fin4MessagingAddress, ['NewMessage', 'MessageMarkedAsRead']);
 			addContract(props, drizzle, 'Fin4Claiming', Fin4ClaimingAddress, [

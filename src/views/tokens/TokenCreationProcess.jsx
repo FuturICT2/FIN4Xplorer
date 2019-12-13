@@ -138,6 +138,9 @@ function TokenCreationProcess(props, context) {
 		setTokenCreationStage('Waiting for the token creation to complete');
 		let proofsWithParamCount = countProofsWithParams();
 
+		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
+		// TODO
+
 		context.drizzle.contracts.Fin4TokenManagement.methods
 			.createNewToken(...tokenCreationArgs)
 			.send({
