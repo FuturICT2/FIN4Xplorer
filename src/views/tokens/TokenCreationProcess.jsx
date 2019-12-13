@@ -118,20 +118,15 @@ function TokenCreationProcess(props, context) {
 			draft.basics.name,
 			draft.basics.symbol,
 			draft.basics.description,
+			draft.actions.text,
+			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
 			[
-				draft.properties.isTransferable,
-				draft.properties.isMintable,
-				draft.properties.isBurnable,
-				draft.properties.isCapped
-			],
-			[
-				draft.properties.cap,
 				draft.properties.decimals,
 				draft.properties.initialSupply,
 				draft.value.fixedQuantity,
-				draft.value.userDefinedQuantityFactor
+				draft.value.userDefinedQuantityFactor,
+				draft.properties.cap
 			],
-			draft.actions.text,
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name))
 		];
 
@@ -139,15 +134,14 @@ function TokenCreationProcess(props, context) {
 		let proofsWithParamCount = countProofsWithParams();
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
-		// TODO
 
-		context.drizzle.contracts.Fin4TokenManagement.methods
+		context.drizzle.contracts[tokenCreatorContract].methods
 			.createNewToken(...tokenCreationArgs)
 			.send({
 				from: props.defaultAccount
 			})
 			.then(result => {
-				console.log('Results of submitting Fin4TokenManagement.createNewToken: ', result);
+				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
 				let newTokenAddress = result.events.Fin4TokenCreated.returnValues.addr;
 
 				setTokenCreationStage(
