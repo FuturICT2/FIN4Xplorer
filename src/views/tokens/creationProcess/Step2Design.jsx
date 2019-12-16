@@ -102,17 +102,11 @@ function StepDesign(props) {
 						{buildCheckboxWithLabel('is transferable', 'isTransferable')}
 						{buildCheckboxWithLabel('is mintable', 'isMintable')}
 						{buildCheckboxWithLabel('is burnable', 'isBurnable')}
-						{buildCheckboxWithLabel(
-							'is capped',
-							'isCapped',
-							() => {
-								if (checkboxes['isCapped']) {
-									properties.current.cap = null;
-								}
-							},
-							false,
-							'Not supported yet'
-						)}
+						{buildCheckboxWithLabel('is capped', 'isCapped', () => {
+							if (checkboxes['isCapped']) {
+								properties.current.cap = null;
+							}
+						})}
 						<TextField
 							disabled={!checkboxes['isCapped']}
 							type="number"
