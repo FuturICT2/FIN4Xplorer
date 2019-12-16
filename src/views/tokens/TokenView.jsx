@@ -180,7 +180,7 @@ function TokenView(props, context) {
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Cap', details.cap)}
+								{details.isCapped && buildInfoLine('Cap', details.cap)}
 								{buildInfoLine('Decimals', details.decimals)}
 								{buildInfoLine('Initial supply', details.initialSupply)}
 
