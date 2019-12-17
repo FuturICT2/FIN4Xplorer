@@ -7,7 +7,8 @@ import { FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/cor
 
 const PROPERTY_DEFAULT = {
 	fixedQuantity: 1,
-	userDefinedQuantityFactor: 0
+	userDefinedQuantityFactor: 0,
+	unit: 'quantity'
 };
 
 function StepMinting(props) {
@@ -30,7 +31,8 @@ function StepMinting(props) {
 		let userDef = getValue(draft, 'userDefinedQuantityFactor'); // TODO rename to tokenCreatorDefined...?
 		value.current = {
 			fixedQuantity: fixed,
-			userDefinedQuantityFactor: userDef
+			userDefinedQuantityFactor: userDef,
+			unit: getValue(draft, 'unit')
 		};
 
 		if (!(fixed === 0 || userDef === 0)) {
@@ -89,25 +91,14 @@ function StepMinting(props) {
 					<table>
 						<tbody>
 							<tr>
-								<td>
-									<RadioGroup
-										style={{ paddingTop: '25px' }}
-										row={true}
-										onChange={e => setChoice(e.target.value)}
-										value={choice}>
-										<FormControlLabel
-											disabled={choice === 'isMintableFalse'}
-											value="fixedQuantity"
-											control={<Radio />}
-											label="Fixed amount"
-										/>
-										<FormControlLabel
-											disabled={choice === 'isMintableFalse'}
-											value="userDefinedQuantityFactor"
-											control={<Radio />}
-											label="Fixed factor"
-										/>
-									</RadioGroup>
+								<td style={{ width: '50%' }}>
+									<FormControlLabel
+										disabled={choice === 'isMintableFalse'}
+										checked={choice === 'fixedQuantity'}
+										control={<Radio />}
+										label="Fixed amount"
+										onChange={e => setChoice('fixedQuantity')}
+									/>
 								</td>
 								<td>
 									<TextField
@@ -117,12 +108,37 @@ function StepMinting(props) {
 										defaultValue={value.current.fixedQuantity}
 										onChange={e => (value.current.fixedQuantity = e.target.value)}
 									/>
+								</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>
+									<FormControlLabel
+										disabled={choice === 'isMintableFalse'}
+										checked={choice === 'userDefinedQuantityFactor'}
+										control={<Radio />}
+										label="Fixed factor"
+										onChange={e => setChoice('userDefinedQuantityFactor')}
+									/>
+								</td>
+								<td>
 									<TextField
 										disabled={choice !== 'userDefinedQuantityFactor'}
 										type="number"
 										label="multiplication factor"
 										defaultValue={value.current.userDefinedQuantityFactor}
 										onChange={e => (value.current.userDefinedQuantityFactor = e.target.value)}
+										style={{ paddingBottom: '10px' }}
+									/>
+									<TextField
+										disabled={choice !== 'userDefinedQuantityFactor'}
+										type="text"
+										label="unit"
+										defaultValue={value.current.unit}
+										onChange={e => (value.current.unit = e.target.value)}
 									/>
 								</td>
 							</tr>
