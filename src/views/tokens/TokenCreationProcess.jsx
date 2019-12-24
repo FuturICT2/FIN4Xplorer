@@ -117,22 +117,21 @@ function TokenCreationProcess(props, context) {
 		let tokenCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
-			draft.basics.description,
-			draft.actions.text,
 			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
-			[
-				draft.properties.decimals,
-				draft.properties.initialSupply,
-				draft.value.fixedQuantity,
-				draft.value.userDefinedQuantityFactor,
-				draft.properties.cap
-			],
+			[draft.properties.decimals, draft.properties.initialSupply, draft.properties.cap],
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name))
 		];
 
-		setTokenCreationStage('Waiting for the token creation to complete');
-		let proofsWithParamCount = countProofsWithParams();
+		let postCreationStepsArgs = [
+			null, // tokenAddress
+			draft.basics.description,
+			draft.actions.text,
+			draft.value.fixedQuantity,
+			draft.value.userDefinedQuantityFactor,
+			draft.value.unit
+		];
 
+		setTokenCreationStage('Waiting for the token creation to complete');
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
 		context.drizzle.contracts[tokenCreatorContract].methods
@@ -143,14 +142,7 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
 				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
-
-				setTokenCreationStage(
-					'Waiting for the parameterization of ' +
-						(proofsWithParamCount > 1 ? proofsWithParamCount : 'one') +
-						' proof contract' +
-						(proofsWithParamCount > 1 ? 's' : '') +
-						' to complete'
-				);
+				postCreationStepsArgs[0] = newTokenAddress;
 
 				for (var name in draft.proofs) {
 					if (draft.proofs.hasOwnProperty(name)) {
@@ -159,21 +151,42 @@ function TokenCreationProcess(props, context) {
 						if (parameterNames.length === 0) {
 							continue;
 						}
-						let values = parameterNames.map(parampName => proof.parameters[parampName]);
+						furtherTransactionsCount.current++;
+						let values = parameterNames.map(pName => proof.parameters[pName]);
 						// TODO is the correct order of values guaranteed?
 						setParamsOnProofContract(name, newTokenAddress, values);
 					}
 				}
 
-				if (proofsWithParamCount === 0) {
-					setTokenCreationStage('completed');
-				}
+				setTokenCreationStage('Further transactions confirmed: 0 / ' + furtherTransactionsCount.current);
+
+				context.drizzle.contracts[tokenCreatorContract].methods
+					.postCreationSteps(...postCreationStepsArgs)
+					.send({
+						from: props.defaultAccount
+					})
+					.then(result => {
+						console.log('Results of submitting ' + tokenCreatorContract + '.postCreationSteps: ', result);
+						transactionCounter.current++;
+						incrementTransactionCounter();
+					});
 			});
+	};
+
+	const incrementTransactionCounter = () => {
+		if (transactionCounter.current == furtherTransactionsCount.current) {
+			setTokenCreationStage('completed');
+		} else {
+			setTokenCreationStage(
+				'Further transactions confirmed: ' + transactionCounter.current + ' / ' + furtherTransactionsCount.current
+			);
+		}
 	};
 
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
+	const furtherTransactionsCount = useRef(1);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
 	const setParamsOnProofContract = (contractName, tokenAddr, values) => {
@@ -185,15 +198,8 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + contractName + '.setParameters: ', result);
 				transactionCounter.current++;
-				if (transactionCounter.current == countProofsWithParams()) {
-					setTokenCreationStage('completed');
-				}
+				incrementTransactionCounter();
 			});
-	};
-
-	const countProofsWithParams = () => {
-		let draft = props.tokenCreationDrafts[draftId];
-		return Object.keys(draft.proofs).filter(name => Object.keys(draft.proofs[name].parameters).length > 0).length;
 	};
 
 	return (
@@ -232,7 +238,7 @@ function TokenCreationProcess(props, context) {
 							{activeStep === steps.length && tokenCreationStage === null && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>
-									{countProofsWithParams() > 0 && (
+									{/*countProofsWithParams() > 0 && (
 										<small style={{ color: 'gray', fontFamily: 'arial' }}>
 											You added {countProofsWithParams()} proofs with parameters. Each requires a separate transaction.
 											Plus one for the creation of the token. You will have to confirm all consecutive transactions to
@@ -240,7 +246,7 @@ function TokenCreationProcess(props, context) {
 											following ones can be confirmed without waiting for their completion. Your token will be in a
 											disabled state until all parameterization transactions are completed.
 										</small>
-									)}
+									)*/}
 									<div style={{ paddingTop: '20px' }}>
 										<Button onClick={handleReset} className={classes.backButton}>
 											Restart
@@ -257,7 +263,7 @@ function TokenCreationProcess(props, context) {
 									<br />
 									<br />
 									<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
-										{tokenCreationStage ? tokenCreationStage : ''}...
+										{tokenCreationStage ? tokenCreationStage : ''}
 									</span>
 								</center>
 							)}
