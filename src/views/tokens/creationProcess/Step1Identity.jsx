@@ -10,7 +10,11 @@ function StepIdentity(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [basics, setBasics] = useState({});
+	const [basics, setBasics] = useState({
+		name: '',
+		symbol: '',
+		description: ''
+	});
 
 	const getValue = (draft, prop) => {
 		return draft.basics.hasOwnProperty(prop) ? draft.basics[prop] : '';
