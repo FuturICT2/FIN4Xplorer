@@ -20,7 +20,7 @@ const Fin4Modal = props => {
 	return (
 		<Modal open={props.isOpen} onClose={props.handleClose}>
 			<ModalContainer>
-				<Box title={props.title} isModal={true} width={props.width || '80%'}>
+				<Box title={props.title} width={props.width || '80%'}>
 					<CloseButton onClick={props.handleClose}>
 						<CloseIcon fontSize="small" />
 					</CloseButton>

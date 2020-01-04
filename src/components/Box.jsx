@@ -1,39 +1,35 @@
 import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
-import styled from 'styled-components';
 import colors from '../config/colors-config';
 
 const Fin4Box = props => {
-	const PaperStyle = styled(Paper)`
-		width: ${props.width || '400px'};
-		box-sizing: border-box;
-		position: relative;
-		padding: 1em;
-		margin: 20px;
-		${props.isModal
-			? `box-sizing: border-box;
-			max-height: calc(100% - 50px);
-			overflow-y: auto;
-			box-shadow: 0 0 100px 1px rgba(0,0,0,.7) !important`
-			: `opacity: 0.9;`};
-		h3 {
-			text-align: center;
-			background: ${colors.main};
-			color: ${colors.light};
-			margin: -16px -16px 20px;
-			padding: 10px;
-			border-radius: 4px 4px 0 0;
-		}
-	`;
-
+	// removed the styled-components approach as it caused issues of TextField contents being emptied upon re-render
+	// got the hint from https://github.com/mui-org/material-ui/issues/783#issuecomment-359547611
 	return (
 		<>
-			<PaperStyle>
-				<Typography variant="h5" component="h3">
+			<Paper
+				style={{
+					width: props.width || '400px',
+					boxSizing: 'border-box',
+					position: 'relative',
+					padding: '1em',
+					margin: '20px'
+				}}>
+				<Typography
+					variant="h5"
+					component="h3"
+					style={{
+						textAlign: 'center',
+						background: colors.main,
+						color: colors.light,
+						margin: '-16px -16px 20px',
+						padding: '10px',
+						borderRadius: '4px 4px 0 0'
+					}}>
 					{props.title}
 				</Typography>
 				{props.children}
-			</PaperStyle>
+			</Paper>
 			<div id="collapsing-margin-obstacle" style={{ padding: '1px' }}></div>
 		</>
 	);
