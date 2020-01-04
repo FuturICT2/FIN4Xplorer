@@ -42,35 +42,31 @@ function StepIdentity(props) {
 
 	return (
 		<>
-			{draftId && (
-				<>
-					<TextField
-						key="name-field"
-						type="text"
-						label="Name"
-						defaultValue={basics.current.name}
-						onChange={e => (basics.current.name = e.target.value)}
-						style={inputFieldStyle}
-					/>
-					<TextField
-						key="symbol-field"
-						type="text"
-						label="Symbol"
-						defaultValue={basics.current.symbol}
-						onChange={e => (basics.current.symbol = e.target.value)}
-						style={inputFieldStyle}
-					/>
-					<TextField
-						key="description-field"
-						type="text"
-						label="Description"
-						defaultValue={basics.current.description}
-						onChange={e => (basics.current.description = e.target.value)}
-						style={inputFieldStyle}
-					/>
-					<StepsBottomNav nav={props.nav} handleNext={submit} />
-				</>
-			)}
+			<TextField
+				key="name-field"
+				type="text"
+				label="Name"
+				defaultValue={basics.current.name}
+				onChange={e => (basics.current.name = e.target.value)}
+				style={inputFieldStyle}
+			/>
+			<TextField
+				key="symbol-field"
+				type="text"
+				label="Symbol"
+				defaultValue={basics.current.symbol}
+				onChange={e => (basics.current.symbol = e.target.value)}
+				style={inputFieldStyle}
+			/>
+			<TextField
+				key="description-field"
+				type="text"
+				label="Description"
+				defaultValue={basics.current.description}
+				onChange={e => (basics.current.description = e.target.value)}
+				style={inputFieldStyle}
+			/>
+			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
