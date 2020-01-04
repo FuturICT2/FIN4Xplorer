@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { TextField } from '@material-ui/core';
 import StepsBottomNav from './StepsBottomNav';
-import update from 'react-addons-update';
 
 function StepIdentity(props) {
 	const { t } = useTranslation();
@@ -46,7 +45,10 @@ function StepIdentity(props) {
 	};
 
 	const updateVal = (key, val) => {
-		setBasics(update(basics, { [key]: { $set: val } }));
+		setBasics({
+			...basics,
+			[key]: val
+		});
 	};
 
 	return (
