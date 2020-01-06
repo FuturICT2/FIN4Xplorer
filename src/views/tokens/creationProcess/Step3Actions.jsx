@@ -9,16 +9,18 @@ function StepActions(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const actions = useRef({});
+	const [actions, setActions] = useState({
+		text: ''
+	});
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
-		actions.current = {
+		setActions({
 			text: draft.actions.hasOwnProperty('text') ? draft.actions.text : ''
-		};
+		});
 		setDraftId(draft.id);
 	});
 
@@ -28,27 +30,30 @@ function StepActions(props) {
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'actions',
-			node: actions.current
+			node: actions
 		});
 		props.handleNext();
 	};
 
+	const updateVal = (key, val) => {
+		setActions({
+			...actions,
+			[key]: val
+		});
+	};
+
 	return (
 		<>
-			{draftId && (
-				<>
-					<TextField
-						multiline
-						rows="4"
-						fullWidth
-						variant="outlined"
-						onChange={e => (actions.current.text = e.target.value)}
-						defaultValue={actions.current.text}
-					/>
-					<br />
-					<StepsBottomNav nav={props.nav} handleNext={submit} />
-				</>
-			)}
+			<TextField
+				multiline
+				rows="4"
+				fullWidth
+				variant="outlined"
+				value={actions.text}
+				onChange={e => updateVal('text', e.target.value)}
+			/>
+			<br />
+			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
