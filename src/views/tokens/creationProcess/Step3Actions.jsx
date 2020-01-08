@@ -58,8 +58,4 @@ function StepActions(props) {
 	);
 }
 
-const mapStateToProps = state => {
-	return {};
-};
-
-export default drizzleConnect(StepActions, mapStateToProps);
+export default drizzleConnect(StepActions);

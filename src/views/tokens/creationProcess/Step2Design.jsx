@@ -127,8 +127,4 @@ const styles = {
 	}
 };
 
-const mapStateToProps = state => {
-	return {};
-};
-
-export default drizzleConnect(StepDesign, mapStateToProps);
+export default drizzleConnect(StepDesign);

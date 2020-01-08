@@ -87,8 +87,4 @@ const inputFieldStyle = {
 	marginBottom: '15px'
 };
 
-const mapStateToProps = state => {
-	return {};
-};
-
-export default drizzleConnect(StepIdentity, mapStateToProps);
+export default drizzleConnect(StepIdentity);

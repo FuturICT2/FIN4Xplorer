@@ -152,8 +152,4 @@ function StepMinting(props) {
 	);
 }
 
-const mapStateToProps = state => {
-	return {};
-};
-
-export default drizzleConnect(StepMinting, mapStateToProps);
+export default drizzleConnect(StepMinting);
