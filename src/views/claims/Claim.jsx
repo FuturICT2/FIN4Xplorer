@@ -18,20 +18,19 @@ function Claim(props, context) {
 	const [tokenViaURL, setTokenViaURL] = useState(null);
 	const [unit, setUnit] = useState(t('quantity'));
 
-	const values = useRef({
+	const [values, setValues] = useState({
 		tokenAddress: null,
 		quantity: 1,
 		comment: ''
 	});
 
 	const submitClaim = () => {
-		let val = values.current;
-		if (val.tokenAddress === null) {
+		if (values.tokenAddress === null) {
 			alert('Token must be selected');
 			return;
 		}
 		context.drizzle.contracts.Fin4Claiming.methods
-			.submitClaim(val.tokenAddress, val.quantity, val.comment)
+			.submitClaim(values.tokenAddress, values.quantity, values.comment)
 			.send({
 				from: props.store.getState().fin4Store.defaultAccount
 			})
@@ -54,9 +53,16 @@ function Claim(props, context) {
 	});
 
 	const updateSelectedOption = tokenAddr => {
-		values.current.tokenAddress = tokenAddr;
-		let unit = props.fin4Tokens[values.current.tokenAddress].unit;
+		updateVal('tokenAddress', tokenAddr);
+		let unit = props.fin4Tokens[tokenAddr].unit;
 		setUnit(unit.length > 0 ? unit : t('quantity'));
+	};
+
+	const updateVal = (key, val) => {
+		setValues({
+			...values,
+			[key]: val
+		});
 	};
 
 	return (
@@ -83,8 +89,8 @@ function Claim(props, context) {
 							key="quantity-field"
 							type="number"
 							label={unit}
-							defaultValue={values.current.quantity}
-							onChange={e => (values.current.quantity = e.target.value)}
+							value={values.quantity}
+							onChange={e => updateVal('quantity', Number(e.target.value))}
 							style={inputFieldStyle}
 						/>
 					)}
@@ -92,7 +98,8 @@ function Claim(props, context) {
 						key="comment-field"
 						type="text"
 						label={t('comment')}
-						onChange={e => (values.current.comment = e.target.value)}
+						value={values.comment}
+						onChange={e => updateVal('comment', e.target.value)}
 						style={inputFieldStyle}
 					/>
 					<Button icon={AddIcon} onClick={submitClaim} center="true">
