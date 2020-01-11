@@ -17,7 +17,7 @@ function StepProving(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const proofs = useRef({});
+	const proofs = useRef({}); // TODO rework this to use state too as in other steps?
 
 	useEffect(() => {
 		if (!props.draft || draftId || Object.keys(props.proofTypes).length === 0) {
@@ -93,118 +93,114 @@ function StepProving(props) {
 
 	return (
 		<>
-			{draftId && (
-				<>
-					{proofsAdded.length > 0 && Object.keys(props.proofTypes).length > 0 && (
-						<div style={{ fontFamily: 'arial' }}>
-							{proofsAdded.map((proofAddress, index) => {
-								let proofType = props.proofTypes[proofAddress];
-								let name = proofType.label;
-								return (
-									<div key={'proof_' + index} style={{ paddingTop: '20px' }}>
-										<div
-											key={'proofLabel_' + index}
-											title={proofType.description}
-											style={{ display: 'flex', alignItems: 'center' }}>
-											<ArrowRightIcon />
-											{name}
-											<FontAwesomeIcon
-												icon={faMinusCircle}
-												style={styles.removeIcon}
-												onClick={() => removeProof(proofAddress)}
-											/>
-											{proofType.paramsEncoded.length > 0 && (
-												<FontAwesomeIcon
-													icon={faPlusSquare}
-													style={styles.plusIcon}
-													title="Since this proof has parameters to set, it will require an extra transaction when creating the token"
-												/>
-											)}
-										</div>
-										{name === 'Location' && (
-											<small style={{ color: 'orange', padding: '' }}>
-												<b>Note</b>: Submitting location proof is currently not
-												<br />
-												possible for users of MetaMask mobile on Android
-											</small>
-										)}
-										{proofType.paramsEncoded &&
-											proofType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
-												// e.g. uint:interval:days,uint:maxQuantity:quantity
-												let type = paramStr.split(':')[0];
-												let paramName = paramStr.split(':')[1];
-												let description = paramStr.split(':')[2];
-												let key = 'proof_' + index + '_param_' + paramIndex;
+			{proofsAdded.length > 0 && Object.keys(props.proofTypes).length > 0 && (
+				<div style={{ fontFamily: 'arial' }}>
+					{proofsAdded.map((proofAddress, index) => {
+						let proofType = props.proofTypes[proofAddress];
+						let name = proofType.label;
+						return (
+							<div key={'proof_' + index} style={{ paddingTop: '20px' }}>
+								<div
+									key={'proofLabel_' + index}
+									title={proofType.description}
+									style={{ display: 'flex', alignItems: 'center' }}>
+									<ArrowRightIcon />
+									{name}
+									<FontAwesomeIcon
+										icon={faMinusCircle}
+										style={styles.removeIcon}
+										onClick={() => removeProof(proofAddress)}
+									/>
+									{proofType.paramsEncoded.length > 0 && (
+										<FontAwesomeIcon
+											icon={faPlusSquare}
+											style={styles.plusIcon}
+											title="Since this proof has parameters to set, it will require an extra transaction when creating the token"
+										/>
+									)}
+								</div>
+								{name === 'Location' && (
+									<small style={{ color: 'orange', padding: '' }}>
+										<b>Note</b>: Submitting location proof is currently not
+										<br />
+										possible for users of MetaMask mobile on Android
+									</small>
+								)}
+								{proofType.paramsEncoded &&
+									proofType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
+										// e.g. uint:interval:days,uint:maxQuantity:quantity
+										let type = paramStr.split(':')[0];
+										let paramName = paramStr.split(':')[1];
+										let description = paramStr.split(':')[2];
+										let key = 'proof_' + index + '_param_' + paramIndex;
 
-												if (description === 'gps') {
-													// ONLY FOR LAT/LON FIELD OF LOCATION
-													// more solid indicator?
-													return (
-														<span key={key}>
-															<TextField
-																type="text"
-																label={
-																	<>
-																		<span>{paramName}</span>
-																		<small> ({description})</small>
-																	</>
-																}
-																value={locVal}
-																onChange={e => {
-																	proofs.current[name].parameters[paramName] = e.target.value;
-																	setLocVal(e.target.value);
-																}}
-																style={styles.shortenedField}
-																inputProps={{ style: { fontSize: 'small' } }}
-															/>
-															<IconButton
-																style={{ margin: '17px 0 0 6px', transform: 'scale(1.4)' }}
-																onClick={() => requestLocation(name, paramName)}>
-																<AddLocation />
-															</IconButton>
-														</span>
-													);
-												} else {
-													return (
-														<span key={key}>
-															<TextField
-																type={type === 'uint' ? 'number' : 'text'}
-																label={
-																	<>
-																		<span>{paramName}</span>
-																		{description && <small> ({description})</small>}{' '}
-																	</>
-																}
-																defaultValue={proofs.current[name].parameters[paramName]}
-																onChange={e => (proofs.current[name].parameters[paramName] = e.target.value)}
-																style={styles.normalField}
-															/>
-														</span>
-													);
-												}
-											})}
-									</div>
-								);
-							})}
-						</div>
-					)}
-					{proofsAdded.length > 0 && <Spacer />}
-					{showDropdown ? (
-						<Dropdown
-							onChange={e => addProof(e.value)}
-							options={Object.keys(props.proofTypes)
-								.filter(addr => !proofs.current[props.proofTypes[addr].label])
-								.map(addr => props.proofTypes[addr])}
-							label="Add proof type"
-						/>
-					) : (
-						<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-							Add
-						</Button>
-					)}
-					<StepsBottomNav nav={props.nav} handleNext={submit} />
-				</>
+										if (description === 'gps') {
+											// ONLY FOR LAT/LON FIELD OF LOCATION
+											// more solid indicator?
+											return (
+												<span key={key}>
+													<TextField
+														type="text"
+														label={
+															<>
+																<span>{paramName}</span>
+																<small> ({description})</small>
+															</>
+														}
+														value={locVal}
+														onChange={e => {
+															proofs.current[name].parameters[paramName] = e.target.value;
+															setLocVal(e.target.value);
+														}}
+														style={styles.shortenedField}
+														inputProps={{ style: { fontSize: 'small' } }}
+													/>
+													<IconButton
+														style={{ margin: '17px 0 0 6px', transform: 'scale(1.4)' }}
+														onClick={() => requestLocation(name, paramName)}>
+														<AddLocation />
+													</IconButton>
+												</span>
+											);
+										} else {
+											return (
+												<span key={key}>
+													<TextField
+														type={type === 'uint' ? 'number' : 'text'}
+														label={
+															<>
+																<span>{paramName}</span>
+																{description && <small> ({description})</small>}{' '}
+															</>
+														}
+														defaultValue={proofs.current[name].parameters[paramName]}
+														onChange={e => (proofs.current[name].parameters[paramName] = e.target.value)}
+														style={styles.normalField}
+													/>
+												</span>
+											);
+										}
+									})}
+							</div>
+						);
+					})}
+				</div>
 			)}
+			{proofsAdded.length > 0 && <Spacer />}
+			{showDropdown ? (
+				<Dropdown
+					onChange={e => addProof(e.value)}
+					options={Object.keys(props.proofTypes)
+						.filter(addr => !proofs.current[props.proofTypes[addr].label])
+						.map(addr => props.proofTypes[addr])}
+					label="Add proof type"
+				/>
+			) : (
+				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
+					Add
+				</Button>
+			)}
+			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
