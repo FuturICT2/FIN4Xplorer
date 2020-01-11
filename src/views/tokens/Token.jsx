@@ -113,6 +113,14 @@ function Token(props) {
 		togglePreviewDraftModalOpen();
 	};
 
+	const deleteAllDrafts = () => {
+		for (var draftId in props.tokenCreationDrafts) {
+			if (props.tokenCreationDrafts.hasOwnProperty(draftId)) {
+				deleteDraft(draftId);
+			}
+		}
+	};
+
 	const deleteDraft = draftId => {
 		props.dispatch({
 			type: 'DELETE_TOKEN_CREATION_DRAFT',
@@ -192,7 +200,14 @@ function Token(props) {
 					<>
 						<br />
 						<div style={{ fontFamily: 'arial' }}>
-							<b>Your token creation drafts:</b>
+							<b>Your token creation drafts</b>
+							{Object.keys(props.tokenCreationDrafts).length > 1 && (
+								<>
+									<small style={{ color: 'green', paddingLeft: '110px' }} onClick={() => deleteAllDrafts()}>
+										Delete all
+									</small>
+								</>
+							)}
 							<ul>
 								{Object.keys(props.tokenCreationDrafts).map(draftId => {
 									let draft = props.tokenCreationDrafts[draftId];
