@@ -4,7 +4,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import Home from '../views/Home/Home';
 import Claim from '../views/claims/Claim';
 import TokenView from '../views/tokens/TokenView';
-import TokenEdit from '../views/tokens/TokenEdit';
 import Token from '../views/tokens/Token';
 import ProofSubmission from '../views/claims/ProofSubmission';
 import Collections from '../views/collections/Collections';
@@ -53,11 +52,6 @@ const menu = [
 	{
 		component: TokenView,
 		path: '/token/view/:tokenSymbol',
-		showInNavBar: false
-	},
-	{
-		component: TokenEdit,
-		path: '/token/edit/:tokenSymbol',
 		showInNavBar: false
 	},
 	// ------------------ SUBMISSIONS ON TOKENS ------------------

@@ -8,6 +8,7 @@ import { findTokenBySymbol } from '../../components/Contractor';
 import Currency from '../../components/Currency';
 import { Link } from 'react-router-dom';
 
+/* NOT IN USE ANYMORE, keeping it for potential reactivation/reuse */
 function TokenEdit(props, context) {
 	const { t } = useTranslation();
 

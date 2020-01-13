@@ -202,12 +202,6 @@ function TokenView(props, context) {
 						{buildInfoLine('Your balance', details.usersBalance)}
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
 						<span style={{ color: 'gray' }}>Token actions: </span>
-						{(tokenViaURL.userIsCreator || tokenViaURL.userIsAdmin) && (
-							<>
-								<Link to={'/token/edit/' + tokenViaURL.symbol}>Edit</Link>
-								{', '}
-							</>
-						)}
 						<Link to={'/claim/' + tokenViaURL.symbol}>Claim</Link>
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>

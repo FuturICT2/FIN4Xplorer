@@ -192,12 +192,6 @@ function SortableTokenList(props, context) {
 									<small style={{ color: 'blue', textDecoration: 'underline' }}>
 										<Link to={'/token/view/' + token.symbol}>View</Link>
 										<br />
-										{(token.userIsCreator || token.userIsAdmin) && (
-											<>
-												<Link to={'/token/edit/' + token.symbol}>Edit</Link>
-												<br />
-											</>
-										)}
 										<Link to={'/claim/' + token.symbol}>Claim</Link>
 									</small>
 								)
