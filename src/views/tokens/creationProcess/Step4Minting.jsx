@@ -73,10 +73,13 @@ function StepMinting(props) {
 	return (
 		<>
 			{choice === 'isMintableFalse' && (
-				<center style={{ fontFamily: 'arial', color: 'orange' }}>
-					You set your token to not be mintable in the design step. Approving claims won't mint a balance to the
-					claimer.
-				</center>
+				<>
+					<center style={{ fontFamily: 'arial', color: 'orange' }}>
+						You set your token to not be mintable in the design step. Approving claims won't mint a balance to the
+						claimer.
+					</center>
+					<br />
+				</>
 			)}
 			<table>
 				<tbody>
