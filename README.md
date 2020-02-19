@@ -33,8 +33,11 @@ source ~/.bashrc
 nvm install 10.0.0
 nvm use 10.0.0
 
-# on macOS, to prevent gyp related errors
+# on macOS: to prevent gyp related errors
 npm explore npm -g -- npm install node-gyp@latest
+# on macOS: if you get "gyp: No Xcode or CLT version detected!", try un- and then reinstalling the XCode Command Line Tools
+sudo rm -r -f /Library/Developer/CommandLineTools
+xcode-select --install
 
 # project
 npm install # might require more than 1GB of memory to run
