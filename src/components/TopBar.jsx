@@ -51,10 +51,12 @@ const useStyles = makeStyles(theme => ({
 		padding: '0 4px 4px 0'
 	},
 	alert: {
-		width: '50%',
-		'& > * + *': {
-			marginTop: theme.spacing(2)
-		}
+		width: '50%'
+	},
+	message: {
+		// marginLeft: '40px',
+		margin: 'auto',
+		textAlign: 'center'
 	}
 }));
 
@@ -103,44 +105,6 @@ function TopBar(props) {
 						</tr>
 					</tbody>
 				</table>
-				{props.defaultAccount === null && (
-					<center className={classes.noWeb3Warning}>
-						<div className={classes.alert}>
-							<Alert severity="error">
-								<div className={classes.activeLng}>
-									Not connected to the Ethereum Rinkeby network. Is MetaMask installed and connected?
-								</div>
-								<div>
-									Get the{' '}
-									<a className={classes.noWeb3Warning} href="https://metamask.io/">
-										MetaMask extension
-									</a>{' '}
-									for your desktop browser or try
-									<br />{' '}
-									<a className={classes.noWeb3Warning} href="https://link.medium.com/zdWtIl7Pq0">
-										MetaMask Mobile
-									</a>{' '}
-									or{' '}
-									<a className={classes.noWeb3Warning} href="https://status.im/get/">
-										Status
-									</a>{' '}
-									on your mobile phone. Need help{' '}
-									<a
-										className={classes.noWeb3Warning}
-										href={
-											i18n.language === 'en'
-												? 'https://fin4xplorer.readthedocs.io/en/latest'
-												: 'https://fin4xplorer.readthedocs.io/de/latest/'
-										}
-										target="_blank">
-										getting started
-									</a>
-									?
-								</div>
-							</Alert>
-						</div>
-					</center>
-				)}
 			</AppBar>
 		</>
 	);

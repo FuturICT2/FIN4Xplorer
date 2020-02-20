@@ -14,6 +14,7 @@ import store from './middleware';
 import { ToastContainer } from 'react-toastify';
 import LoadInitialData from './LoadInitialData';
 import 'react-toastify/dist/ReactToastify.css';
+import Warning from '../src/components/Warning';
 
 class App extends Component {
 	render() {
@@ -24,6 +25,8 @@ class App extends Component {
 						<DrizzleProvider store={store} options={drizzleConfig}>
 							<>
 								<TopBar />
+								<Warning />
+
 								<LoadInitialData />
 								{menuItems.map((route, i) => (
 									<Route exact key={i} render={props => <route.component {...props} />} path={route.path} />
