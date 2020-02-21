@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import QRModal from './QRModal';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -34,10 +33,6 @@ const useStyles = makeStyles(theme => ({
 	//	'text-decoration': 'none',
 	//	color: 'white'
 	//},
-	noWeb3Warning: {
-		color: '#00a3ef',
-		'font-family': 'arial'
-	},
 	noNotification: {
 		color: 'white'
 	},
@@ -49,14 +44,6 @@ const useStyles = makeStyles(theme => ({
 		width: '20px',
 		height: '20px',
 		padding: '0 4px 4px 0'
-	},
-	alert: {
-		width: '50%'
-	},
-	message: {
-		// marginLeft: '40px',
-		margin: 'auto',
-		textAlign: 'center'
 	}
 }));
 
