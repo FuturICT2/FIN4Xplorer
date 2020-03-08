@@ -109,6 +109,7 @@ function StepProving(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
+										title="Remove proof"
 										onClick={() => removeProof(proofAddress)}
 									/>
 									{proofType.paramsEncoded.length > 0 && (
