@@ -4,12 +4,16 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import PictureUploadComponent from './PictureUploadComponent';
 
-function SelfieTogetherProof(props, context) {
+function PictureUploadProof(props, context) {
 	const { t } = useTranslation();
 
 	const onSubmit = (approverAddress, ipfsHash) => {
-		context.drizzle.contracts.SelfieTogether.methods
-			.submitProof_SelfieTogether(props.tokenAddr, props.claimId, approverAddress, ipfsHash)
+		context.drizzle.contracts[props.contractName].methods['submitProof_' + props.contractName](
+			props.tokenAddr,
+			props.claimId,
+			approverAddress,
+			ipfsHash
+		)
 			.send({ from: props.store.getState().fin4Store.defaultAccount })
 			.then(result => {
 				console.log('Results of submitting: ', result);
@@ -19,8 +23,8 @@ function SelfieTogetherProof(props, context) {
 	return <PictureUploadComponent onSubmit={onSubmit} />;
 }
 
-SelfieTogetherProof.contextTypes = {
+PictureUploadProof.contextTypes = {
 	drizzle: PropTypes.object
 };
 
-export default drizzleConnect(SelfieTogetherProof);
+export default drizzleConnect(PictureUploadProof);
