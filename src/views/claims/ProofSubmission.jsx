@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
 import SelfieTogetherProof from './proofs/SelfieTogetherProof';
 import PictureProof from './proofs/PictureProof';
-import NetworkingProof from './proofs/NetworkingProof';
-import HappyMomentProof from './proofs/HappyMomentProof';
 import { Link } from 'react-router-dom';
 
 function ProofSubmission(props) {
@@ -48,9 +46,10 @@ function ProofSubmission(props) {
 			case 'Picture':
 				return <PictureProof key={'pic_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
 			case 'Networking':
+			/*case 'Networking':
 				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
 			case 'HappyMoment':
-				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
+				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;*/
 			default:
 				return (
 					<ContractForm
