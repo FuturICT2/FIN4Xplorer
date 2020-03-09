@@ -44,7 +44,7 @@ function PictureUploadComponent(props, context) {
 
 	return (
 		<>
-			<AddressQRreader onChange={val => (addressValue.current = val)} label="Public address of selfie approver" />
+			<AddressQRreader onChange={val => (addressValue.current = val)} label="Public address of picture approver" />
 			<br />
 			<br />
 			<center style={{ fontFamily: 'arial' }}>
