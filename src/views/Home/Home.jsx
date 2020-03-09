@@ -18,6 +18,7 @@ import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
+import Button from '@material-ui/core/Button';
 
 let faucetConfig = null;
 try {
@@ -27,6 +28,7 @@ try {
 }
 
 const axios = require('axios');
+const showDevButton = false;
 
 function Home(props) {
 	const { t } = useTranslation();
@@ -53,6 +55,10 @@ function Home(props) {
 				alert('Failed to request Ether');
 			})
 			.finally(() => {});
+	};
+
+	const dev = () => {
+		// ...
 	};
 
 	return (
@@ -125,6 +131,15 @@ function Home(props) {
 				{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
 				{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
 			</Box>
+			{showDevButton && (
+				<Box width="250px">
+					<center>
+						<Button variant="contained" color="primary" onClick={dev}>
+							do the thing
+						</Button>
+					</center>
+				</Box>
+			)}
 		</Container>
 	);
 }
