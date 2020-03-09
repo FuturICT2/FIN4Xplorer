@@ -19,6 +19,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 
 let faucetConfig = null;
 try {
@@ -30,7 +31,7 @@ try {
 const axios = require('axios');
 const showDevButton = false;
 
-function Home(props) {
+function Home(props, context) {
 	const { t } = useTranslation();
 
 	const [iconIsHovered, setIconHovered] = useState(false);
@@ -58,7 +59,12 @@ function Home(props) {
 	};
 
 	const dev = () => {
-		// ...
+		context.drizzle.contracts.Fin4Main.methods
+			.dev(3)
+			.send({ from: props.store.getState().fin4Store.defaultAccount })
+			.then(result => {
+				console.log('Results of submitting: ', result);
+			});
 	};
 
 	return (
@@ -166,6 +172,10 @@ const mapStateToProps = state => {
 		defaultAccount: state.fin4Store.defaultAccount,
 		usersEthBalance: state.fin4Store.usersEthBalance
 	};
+};
+
+Home.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 export default drizzleConnect(Home, mapStateToProps);
