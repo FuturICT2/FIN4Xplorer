@@ -66,7 +66,7 @@ function ProofSubmission(props) {
 				return (
 					<ContractForm
 						contractName={proofTypeName}
-						method="submitProof"
+						method={'submitProof_' + proofTypeName}
 						staticArgs={{
 							tokenAddrToReceiveProof: tokenAddrToReceiveProof,
 							claimId: claimId + ''
