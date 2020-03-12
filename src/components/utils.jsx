@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 const nanoid = require('nanoid');
 
-const TCRactive = false; // the other necessary switch is in migrations/3_deploy_tcr.js
+const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
 
 const buildIconLabelLink = (link, icon, label, enabled = true, newLineAfterwards = true) => {
 	let style = { textDecoration: 'none' };
