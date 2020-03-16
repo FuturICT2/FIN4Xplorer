@@ -50,7 +50,16 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		callbackDryRunSucceeded();
 
-		// TODO add pending transactions in TopBar
+		// add pending transactions in TopBar
+		let id = props.store.getState().fin4Store.pendingTransactions.length;
+		console.log(id);
+		props.dispatch({
+			type: 'ADD_PENDING_TRANSACTION',
+			pt: {
+				id: id,
+				info: displayStr
+			}
+		});
 
 		contract.methods[methodName](...params)
 			.send({ from: props.store.getState().fin4Store.defaultAccount })

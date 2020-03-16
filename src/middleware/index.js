@@ -316,7 +316,8 @@ const initialState = {
 	parameterizerParams: {},
 	systemParameters: {},
 	tokenCreationDrafts: {},
-	submissions: {}
+	submissions: {},
+	pendingTransactions: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -587,6 +588,13 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				};
 			}
+			return state;
+		case 'ADD_PENDING_TRANSACTION':
+			return Object.assign({}, state, {
+				pendingTransactions: [...state.pendingTransactions, action.pt]
+			});
+		case 'REMOVE_PENDING_TRANSACTION':
+			// TODO
 			return state;
 		default:
 			return state;

@@ -90,7 +90,10 @@ function TopBar(props) {
 								</center>
 							</td>
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
-								<Badge anchorOrigin={{ vertical: 'top', horizontal: 'left' }} badgeContent={1} color="secondary">
+								<Badge
+									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+									badgeContent={props.pendingTransactions.length}
+									color="secondary">
 									<TimelapseIcon className={classes.timelapse} />
 								</Badge>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
@@ -148,7 +151,8 @@ function TopBar(props) {
 const mapStateToProps = state => {
 	return {
 		defaultAccount: state.fin4Store.defaultAccount,
-		messages: state.fin4Store.messages
+		messages: state.fin4Store.messages,
+		pendingTransactions: state.fin4Store.pendingTransactions
 	};
 };
 
