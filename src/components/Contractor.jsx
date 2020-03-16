@@ -15,9 +15,9 @@ const contractCall = (
 	methodName,
 	params,
 	props,
-	callbackTransactionCompleted,
-	callbackDryRunFailed,
-	callbackDryRunSucceeded
+	callbackTransactionCompleted = () => {},
+	callbackDryRunFailed = () => {},
+	callbackDryRunSucceeded = () => {}
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
