@@ -9,6 +9,10 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
 
+const contractCall = (context, contractName, methodName, params) => {
+	let contract = context.drizzle.contracts[contractName];
+};
+
 const getContractData = (contract, defaultAccount, method, ...methodArgs) => {
 	if (methodArgs.length === 0) {
 		return contract.methods[method]().call({
@@ -524,7 +528,8 @@ export {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchOPATs,
-	fetchSystemParameters
+	fetchSystemParameters,
+	contractCall
 };
 
 /*
