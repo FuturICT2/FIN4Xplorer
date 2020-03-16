@@ -9,7 +9,16 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
 
-const contractCall = (context, contractName, methodName, params, callbackDryRunFailed, callbackDryRunSucceeded) => {
+const contractCall = (
+	context,
+	contractName,
+	methodName,
+	params,
+	props,
+	callbackTransactionCompleted,
+	callbackDryRunFailed,
+	callbackDryRunSucceeded
+) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
@@ -36,6 +45,13 @@ const contractCall = (context, contractName, methodName, params, callbackDryRunF
 			return;
 		}
 		callbackDryRunSucceeded();
+
+		contract.methods[methodName](...params)
+			.send({ from: props.store.getState().fin4Store.defaultAccount })
+			.then(result => {
+				console.log('Transaction completed', result);
+				callbackTransactionCompleted();
+			});
 	});
 };
 
