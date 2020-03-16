@@ -11,6 +11,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import QRModal from './QRModal';
+import Badge from '@material-ui/core/Badge';
+import TimelapseIcon from '@material-ui/icons/Timelapse';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -48,6 +50,11 @@ const useStyles = makeStyles(theme => ({
 		width: '20px',
 		height: '20px',
 		padding: '0 4px 4px 0'
+	},
+	timelapse: {
+		width: '22px',
+		height: '22px',
+		padding: '0 6px 14px 0'
 	}
 }));
 
@@ -82,7 +89,10 @@ function TopBar(props) {
 									</Link>
 								</center>
 							</td>
-							<td style={{ width: '75px', whiteSpace: 'nowrap' }}>
+							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
+								<Badge anchorOrigin={{ vertical: 'top', horizontal: 'left' }} badgeContent={1} color="secondary">
+									<TimelapseIcon className={classes.timelapse} />
+								</Badge>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 								<RefreshIcon onClick={() => window.location.reload()} />
 								<Link to={'/messages'}>
