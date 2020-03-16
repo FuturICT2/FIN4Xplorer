@@ -44,13 +44,18 @@ const contractCall = (
 			callbackDryRunFailed(errObj.reason);
 			return;
 		}
+		console.log('Dry run succeeded, initiating transaction', res);
 		callbackDryRunSucceeded();
+
+		// TODO add pending transactions in TopBar
 
 		contract.methods[methodName](...params)
 			.send({ from: props.store.getState().fin4Store.defaultAccount })
 			.then(result => {
 				console.log('Transaction completed', result);
 				callbackTransactionCompleted();
+
+				// TODO remove pending transaction in TopBar
 			});
 	});
 };
