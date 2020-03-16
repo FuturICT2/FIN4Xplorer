@@ -25,6 +25,9 @@ const contractCall = (
 	let methodInputs = methodAbi.inputs.map(el => el.type);
 	let eth = context.drizzle.web3.eth;
 	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
+	if (!Array.isArray(params)) {
+		params = [params];
+	}
 	let param = eth.abi.encodeParameters(methodInputs, params);
 	let data = funcSig + param.slice(2);
 	let paramStr = params
