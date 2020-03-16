@@ -9,8 +9,34 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
 
-const contractCall = (context, contractName, methodName, params) => {
+const contractCall = (context, contractName, methodName, params, callbackDryRunFailed, callbackDryRunSucceeded) => {
 	let contract = context.drizzle.contracts[contractName];
+	let abiArr = contract.abi;
+	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
+	let methodInputs = methodAbi.inputs.map(el => el.type);
+	let eth = context.drizzle.web3.eth;
+	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
+	let param = eth.abi.encodeParameters(methodInputs, params);
+	let data = funcSig + param.slice(2);
+	let paramStr = params
+		.map(el => {
+			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
+		})
+		.join(',');
+	let displayStr = contractName + '.' + methodName + '(' + paramStr + ')';
+
+	console.log('Initiating dry run: ' + displayStr);
+
+	eth.call({ to: contract.address, data: data }, (err, res) => {
+		if (err) {
+			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
+			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
+			console.log('Dry run failed with error: ' + errObj.reason, err);
+			callbackDryRunFailed(errObj.reason);
+			return;
+		}
+		callbackDryRunSucceeded();
+	});
 };
 
 const getContractData = (contract, defaultAccount, method, ...methodArgs) => {
