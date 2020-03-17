@@ -82,7 +82,11 @@ function TopBar(props) {
 		<>
 			<Modal isOpen={isPendingTxOpen} handleClose={togglePendingTxModal} title="Pending transactions" width="300px">
 				<div style={{ fontFamily: 'arial' }}>
-					TODO
+					{getPendingTransactions().map((tx, index) => {
+						// TODO show seconds since broadcasted
+						// TODO CircularProgress animation
+						return <div key={'pTx_' + index}>{tx.displayStr}</div>;
+					})}
 					<br />
 					<Link to={'/transactions'} onClick={togglePendingTxModal}>
 						<center>
