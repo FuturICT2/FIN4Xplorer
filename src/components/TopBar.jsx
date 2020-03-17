@@ -12,7 +12,7 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import QRModal from './QRModal';
 import Badge from '@material-ui/core/Badge';
-import TimelapseIcon from '@material-ui/icons/Timelapse';
+import TimelapseIcon from '@material-ui/icons/Timelapse'; // alternatively: History
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -92,7 +92,7 @@ function TopBar(props) {
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
 								<Badge
 									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-									badgeContent={props.pendingTransactions.length}
+									badgeContent={props.pendingTransactions.filter(pt => pt.status === 'BROADCASTED').length}
 									color="secondary">
 									<TimelapseIcon className={classes.timelapse} />
 								</Badge>

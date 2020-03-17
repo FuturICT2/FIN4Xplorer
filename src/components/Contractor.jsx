@@ -41,6 +41,7 @@ const contractCall = (
 
 	console.log('Initiating dry run: ' + displayStr);
 
+	// TODO include dry runs in the pending transactions lifecycle too for a log page? #ConceptualDecision
 	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
 		if (err) {
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
