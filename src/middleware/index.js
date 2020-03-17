@@ -600,6 +600,7 @@ function fin4StoreReducer(state = initialState, action) {
 						errObj: null,
 						status: 'SENT',
 						methodStr: null,
+						displayStr: null,
 						receiptObj: null,
 						callbackTxCompleted: null,
 						callbackTxFailed: null
@@ -614,6 +615,7 @@ function fin4StoreReducer(state = initialState, action) {
 					[index_enrich]: {
 						status: { $set: 'ENRICHED' },
 						methodStr: { $set: action.methodStr },
+						displayStr: { $set: action.displayStr },
 						callbackTxCompleted: { $set: action.callbackTxCompleted },
 						callbackTxFailed: { $set: action.callbackTxFailed }
 					}

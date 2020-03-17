@@ -37,9 +37,9 @@ const contractCall = (
 			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
 		})
 		.join(',');
-	let displayStr = contractName + '.' + methodName + '(' + paramStr + ')';
+	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
 
-	console.log('Initiating dry run: ' + displayStr);
+	console.log('Initiating dry run: ' + methodStr);
 
 	// TODO include dry runs in the pending transactions lifecycle too for a log page? #ConceptualDecision
 	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
@@ -58,7 +58,8 @@ const contractCall = (
 		props.dispatch({
 			type: 'ENRICH_PENDING_TRANSACTION',
 			stackId: stackId,
-			methodStr: displayStr,
+			methodStr: methodStr,
+			displayStr: '', // TODO
 			callbackTxCompleted: callbackTxCompleted,
 			callbackTxFailed: callbackTxFailed
 		});
