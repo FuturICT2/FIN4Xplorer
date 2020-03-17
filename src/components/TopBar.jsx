@@ -12,7 +12,8 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import QRModal from './QRModal';
 import Badge from '@material-ui/core/Badge';
-import TimelapseIcon from '@material-ui/icons/Timelapse'; // alternatively: History
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'; // alternatively: History, Timelapse
+import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -51,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 		height: '20px',
 		padding: '0 4px 4px 0'
 	},
-	timelapse: {
+	transactionsIcon: {
 		width: '22px',
 		height: '22px',
 		padding: '0 6px 14px 0'
@@ -65,6 +66,10 @@ function TopBar(props) {
 	const [isQRModalOpen, setQRModalOpen] = useState(false);
 	const toggleQRModal = () => {
 		setQRModalOpen(!isQRModalOpen);
+	};
+
+	const getPendingTransactions = () => {
+		return props.pendingTransactions.filter(pt => pt.status === 'BROADCASTED');
 	};
 
 	return (
@@ -92,9 +97,13 @@ function TopBar(props) {
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
 								<Badge
 									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-									badgeContent={props.pendingTransactions.filter(pt => pt.status === 'BROADCASTED').length}
+									badgeContent={getPendingTransactions().length}
 									color="secondary">
-									<TimelapseIcon className={classes.timelapse} />
+									{getPendingTransactions().length === 0 ? (
+										<HourglassEmptyIcon className={classes.transactionsIcon} />
+									) : (
+										<HourglassFullIcon className={classes.transactionsIcon} />
+									)}
 								</Badge>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 								<RefreshIcon onClick={() => window.location.reload()} />
