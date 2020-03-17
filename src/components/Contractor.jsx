@@ -589,21 +589,3 @@ export {
 	fetchSystemParameters,
 	contractCall
 };
-
-/*
-// DEPRECATED
-const getAllActionTypes = () => {
-	return getContractData_deprecated(Fin4MainAddress, 'Fin4Main', 'getAllFin4Tokens')
-		.then(tokens => {
-			return tokens.map(address => {
-				return getContractData_deprecated(address, 'Fin4Token', 'getInfo').then(({ 0: name, 1: symbol, 2: description }) => {
-					return {
-						value: address,
-						label: `[${symbol}] ${name}`
-					};
-				});
-			});
-		})
-		.then(data => Promise.all(data));
-};
-*/
