@@ -598,7 +598,8 @@ function fin4StoreReducer(state = initialState, action) {
 					{
 						status: 'DRY_RUN_FAILED',
 						methodStr: action.methodStr,
-						displayStr: action.displayStr
+						displayStr: action.displayStr,
+						timestamp: Date.now()
 					}
 				]
 			});
@@ -616,7 +617,8 @@ function fin4StoreReducer(state = initialState, action) {
 						displayStr: null,
 						receiptObj: null,
 						callbackTxCompleted: null,
-						callbackTxFailed: null
+						callbackTxFailed: null,
+						timestamp: Date.now()
 					}
 				]
 			});
@@ -630,7 +632,8 @@ function fin4StoreReducer(state = initialState, action) {
 						methodStr: { $set: action.methodStr },
 						displayStr: { $set: action.displayStr },
 						callbackTxCompleted: { $set: action.callbackTxCompleted },
-						callbackTxFailed: { $set: action.callbackTxFailed }
+						callbackTxFailed: { $set: action.callbackTxFailed },
+						timestamp: { $set: Date.now() }
 					}
 				}
 			});
@@ -641,7 +644,8 @@ function fin4StoreReducer(state = initialState, action) {
 				transactions: {
 					[index_broadcasted]: {
 						txHash: { $set: action.txHash },
-						status: { $set: 'BROADCASTED' }
+						status: { $set: 'BROADCASTED' },
+						timestamp: { $set: Date.now() }
 					}
 				}
 			});
@@ -652,7 +656,8 @@ function fin4StoreReducer(state = initialState, action) {
 				transactions: {
 					[index_successful]: {
 						status: { $set: 'SUCCESSFUL' },
-						receiptObj: { $set: action.receipt }
+						receiptObj: { $set: action.receipt },
+						timestamp: { $set: Date.now() }
 					}
 				}
 			});
@@ -663,7 +668,8 @@ function fin4StoreReducer(state = initialState, action) {
 				transactions: {
 					[index_error]: {
 						status: { $set: 'ERROR' },
-						errObj: { $set: action.error }
+						errObj: { $set: action.error },
+						timestamp: { $set: Date.now() }
 					}
 				}
 			});
