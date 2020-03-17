@@ -317,7 +317,7 @@ const initialState = {
 	systemParameters: {},
 	tokenCreationDrafts: {},
 	submissions: {},
-	pendingTransactions: []
+	transactions: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -591,8 +591,8 @@ function fin4StoreReducer(state = initialState, action) {
 			return state;
 		case 'SEND_CONTRACT_TX':
 			return Object.assign({}, state, {
-				pendingTransactions: [
-					...state.pendingTransactions,
+				transactions: [
+					...state.transactions,
 					{
 						stackTempKey: action.stackTempKey,
 						stackId: action.stackId,
@@ -607,10 +607,10 @@ function fin4StoreReducer(state = initialState, action) {
 				]
 			});
 		case 'ENRICH_PENDING_TRANSACTION':
-			let pendingTx_enrich = state.pendingTransactions.filter(tx => tx.stackId === action.stackId)[0];
-			let index_enrich = state.pendingTransactions.indexOf(pendingTx_enrich);
+			let pendingTx_enrich = state.transactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_enrich = state.transactions.indexOf(pendingTx_enrich);
 			return update(state, {
-				pendingTransactions: {
+				transactions: {
 					[index_enrich]: {
 						status: { $set: 'ENRICHED' },
 						methodStr: { $set: action.methodStr },
@@ -620,10 +620,10 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			});
 		case 'TX_BROADCASTED':
-			let pendingTx_broadcasted = state.pendingTransactions.filter(tx => tx.stackId === action.stackId)[0];
-			let index_broadcasted = state.pendingTransactions.indexOf(pendingTx_broadcasted);
+			let pendingTx_broadcasted = state.transactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_broadcasted = state.transactions.indexOf(pendingTx_broadcasted);
 			return update(state, {
-				pendingTransactions: {
+				transactions: {
 					[index_broadcasted]: {
 						txHash: { $set: action.txHash },
 						status: { $set: 'BROADCASTED' }
@@ -631,10 +631,10 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			});
 		case 'TX_SUCCESSFUL':
-			let pendingTx_successful = state.pendingTransactions.filter(tx => tx.txHash === action.txHash)[0];
-			let index_successful = state.pendingTransactions.indexOf(pendingTx_successful);
+			let pendingTx_successful = state.transactions.filter(tx => tx.txHash === action.txHash)[0];
+			let index_successful = state.transactions.indexOf(pendingTx_successful);
 			return update(state, {
-				pendingTransactions: {
+				transactions: {
 					[index_successful]: {
 						status: { $set: 'SUCCESSFUL' },
 						receiptObj: { $set: action.receipt }
@@ -642,10 +642,10 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			});
 		case 'TX_ERROR':
-			let pendingTx_error = state.pendingTransactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
-			let index_error = state.pendingTransactions.indexOf(pendingTx_error);
+			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
+			let index_error = state.transactions.indexOf(pendingTx_error);
 			return update(state, {
-				pendingTransactions: {
+				transactions: {
 					[index_error]: {
 						status: { $set: 'ERROR' },
 						errObj: { $set: action.error }

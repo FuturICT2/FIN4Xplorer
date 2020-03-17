@@ -69,7 +69,7 @@ function TopBar(props) {
 	};
 
 	const getPendingTransactions = () => {
-		return props.pendingTransactions.filter(pt => pt.status === 'BROADCASTED');
+		return props.transactions.filter(pt => pt.status === 'BROADCASTED');
 	};
 
 	return (
@@ -161,7 +161,7 @@ const mapStateToProps = state => {
 	return {
 		defaultAccount: state.fin4Store.defaultAccount,
 		messages: state.fin4Store.messages,
-		pendingTransactions: state.fin4Store.pendingTransactions
+		transactions: state.fin4Store.transactions
 	};
 };
 
