@@ -20,6 +20,7 @@ const contractCall = (
 	callbackTxFailed = () => {},
 	callbackTxCompleted = () => {}
 ) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
@@ -40,8 +41,7 @@ const contractCall = (
 
 	console.log('Initiating dry run: ' + displayStr);
 
-	// TODO add "from" and test if it works with reverts
-	eth.call({ to: contract.address, data: data }, (err, res) => {
+	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
 		if (err) {
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
@@ -52,9 +52,7 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		callbackDryRunSucceeded();
 
-		const stackId = contract.methods[methodName].cacheSend(...params, {
-			from: props.store.getState().fin4Store.defaultAccount
-		});
+		const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
 
 		props.dispatch({
 			type: 'ENRICH_PENDING_TRANSACTION',
