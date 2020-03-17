@@ -24,11 +24,17 @@ function TransactionLog(props, context) {
 									</>
 								)}
 								<small>
-									<span style={{ color: 'green' }}>{tx.status}</span>
+									<span style={{ color: 'orange' }}>{tx.status}</span>
 									<span style={{ color: 'gray', marginLeft: '5px' }}>
 										{moment.unix(tx.timestamp / 1000).calendar()}
 									</span>
 								</small>
+								{tx.err && (
+									<>
+										<br />
+										<span style={{ color: 'red' }}>{tx.err}</span>
+									</>
+								)}
 								{tx.txHash && (
 									<>
 										<br />

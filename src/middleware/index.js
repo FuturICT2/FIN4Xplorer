@@ -599,6 +599,7 @@ function fin4StoreReducer(state = initialState, action) {
 						status: 'DRY_RUN_FAILED',
 						methodStr: action.methodStr,
 						displayStr: action.displayStr,
+						err: action.errorReason,
 						timestamp: Date.now()
 					}
 				]
@@ -611,7 +612,7 @@ function fin4StoreReducer(state = initialState, action) {
 						stackTempKey: action.stackTempKey,
 						stackId: action.stackId,
 						txHash: null,
-						errObj: null,
+						err: null,
 						status: 'SENT',
 						methodStr: null,
 						displayStr: null,
@@ -668,7 +669,7 @@ function fin4StoreReducer(state = initialState, action) {
 				transactions: {
 					[index_error]: {
 						status: { $set: 'ERROR' },
-						errObj: { $set: action.error },
+						err: { $set: action.error },
 						timestamp: { $set: Date.now() }
 					}
 				}

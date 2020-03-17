@@ -51,7 +51,8 @@ const contractCall = (
 			props.dispatch({
 				type: 'DRY_RUN_FAILED',
 				methodStr: methodStr,
-				displayStr: displayStr
+				displayStr: displayStr,
+				errorReason: errObj.reason
 			});
 			callbackDryRunFailed(errObj.reason);
 			return;
