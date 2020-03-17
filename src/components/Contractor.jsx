@@ -15,6 +15,7 @@ const contractCall = (
 	contractName,
 	methodName,
 	params,
+	displayStr = '',
 	callbackDryRunFailed = () => {},
 	callbackDryRunSucceeded = () => {},
 	callbackTxFailed = () => {},
@@ -50,7 +51,7 @@ const contractCall = (
 			props.dispatch({
 				type: 'DRY_RUN_FAILED',
 				methodStr: methodStr,
-				displayStr: '' // TODO
+				displayStr: displayStr
 			});
 			callbackDryRunFailed(errObj.reason);
 			return;
@@ -64,7 +65,7 @@ const contractCall = (
 			type: 'ENRICH_PENDING_TRANSACTION',
 			stackId: stackId,
 			methodStr: methodStr,
-			displayStr: '', // TODO
+			displayStr: displayStr,
 			callbackTxCompleted: callbackTxCompleted,
 			callbackTxFailed: callbackTxFailed
 		});

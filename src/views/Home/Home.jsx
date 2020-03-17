@@ -60,7 +60,7 @@ function Home(props, context) {
 	};
 
 	const dev = () => {
-		contractCall(context, props, 'Fin4Main', 'dev', 3);
+		contractCall(context, props, 'Fin4Main', 'dev', 3, 'dev method call');
 	};
 
 	return (
