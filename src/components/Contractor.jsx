@@ -15,9 +15,10 @@ const contractCall = (
 	methodName,
 	params,
 	props,
-	callbackTransactionCompleted = () => {},
 	callbackDryRunFailed = () => {},
-	callbackDryRunSucceeded = () => {}
+	callbackDryRunSucceeded = () => {},
+	callbackTxFailed = () => {},
+	callbackTxCompleted = () => {}
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -39,6 +40,7 @@ const contractCall = (
 
 	console.log('Initiating dry run: ' + displayStr);
 
+	// TODO add "from" and test if it works with reverts
 	eth.call({ to: contract.address, data: data }, (err, res) => {
 		if (err) {
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
