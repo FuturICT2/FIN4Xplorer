@@ -52,25 +52,17 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		callbackDryRunSucceeded();
 
-		// add pending transactions in TopBar
-		let id = props.store.getState().fin4Store.pendingTransactions.length;
-		console.log(id);
-		props.dispatch({
-			type: 'ADD_PENDING_TRANSACTION',
-			pt: {
-				id: id,
-				info: displayStr
-			}
+		const stackId = contract.methods[methodName].cacheSend(...params, {
+			from: props.store.getState().fin4Store.defaultAccount
 		});
 
-		contract.methods[methodName](...params)
-			.send({ from: props.store.getState().fin4Store.defaultAccount })
-			.then(result => {
-				console.log('Transaction completed', result);
-				callbackTransactionCompleted();
-
-				// TODO remove pending transaction in TopBar
-			});
+		props.dispatch({
+			type: 'ENRICH_PENDING_TRANSACTION',
+			stackId: stackId,
+			methodStr: displayStr,
+			callbackTxCompleted: callbackTxCompleted,
+			callbackTxFailed: callbackTxFailed
+		});
 	});
 };
 

@@ -589,13 +589,69 @@ function fin4StoreReducer(state = initialState, action) {
 				};
 			}
 			return state;
-		case 'ADD_PENDING_TRANSACTION':
+		case 'SEND_CONTRACT_TX':
 			return Object.assign({}, state, {
-				pendingTransactions: [...state.pendingTransactions, action.pt]
+				pendingTransactions: [
+					...state.pendingTransactions,
+					{
+						stackTempKey: action.stackTempKey,
+						stackId: action.stackId,
+						txHash: null,
+						errObj: null,
+						status: 'SENT',
+						methodStr: null,
+						receiptObj: null,
+						callbackTxCompleted: null,
+						callbackTxFailed: null
+					}
+				]
 			});
-		case 'REMOVE_PENDING_TRANSACTION':
-			// TODO
-			return state;
+		case 'ENRICH_PENDING_TRANSACTION':
+			let pendingTx_enrich = state.pendingTransactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_enrich = state.pendingTransactions.indexOf(pendingTx_enrich);
+			return update(state, {
+				pendingTransactions: {
+					[index_enrich]: {
+						status: { $set: 'ENRICHED' },
+						methodStr: { $set: action.methodStr },
+						callbackTxCompleted: { $set: action.callbackTxCompleted },
+						callbackTxFailed: { $set: action.callbackTxFailed }
+					}
+				}
+			});
+		case 'TX_BROADCASTED':
+			let pendingTx_broadcasted = state.pendingTransactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_broadcasted = state.pendingTransactions.indexOf(pendingTx_broadcasted);
+			return update(state, {
+				pendingTransactions: {
+					[index_broadcasted]: {
+						txHash: { $set: action.txHash },
+						status: { $set: 'BROADCASTED' }
+					}
+				}
+			});
+		case 'TX_SUCCESSFUL':
+			let pendingTx_successful = state.pendingTransactions.filter(tx => tx.txHash === action.txHash)[0];
+			let index_successful = state.pendingTransactions.indexOf(pendingTx_successful);
+			return update(state, {
+				pendingTransactions: {
+					[index_successful]: {
+						status: { $set: 'SUCCESSFUL' },
+						receiptObj: { $set: action.receipt }
+					}
+				}
+			});
+		case 'TX_ERROR':
+			let pendingTx_error = state.pendingTransactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
+			let index_error = state.pendingTransactions.indexOf(pendingTx_error);
+			return update(state, {
+				pendingTransactions: {
+					[index_error]: {
+						status: { $set: 'ERROR' },
+						errObj: { $set: action.error }
+					}
+				}
+			});
 		default:
 			return state;
 	}
