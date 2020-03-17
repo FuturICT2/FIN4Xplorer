@@ -22,6 +22,7 @@ import Messages from '../views/Messages';
 import TokenCreationProcess from '../views/tokens/TokenCreationProcess';
 import TokenTextSubmissions from '../views/tokens/TokenTextSubmissions';
 import TokenPictureSubmissions from '../views/tokens/TokenPictureSubmissions';
+import TransactionLog from '../views/TransactionLog';
 
 const menu = [
 	{
@@ -172,6 +173,12 @@ const menu = [
 	{
 		component: About,
 		path: '/about',
+		showInNavBar: false
+	},
+	// ------------------ TRANSACTION LOG ------------------
+	{
+		component: TransactionLog,
+		path: '/transactions',
 		showInNavBar: false
 	}
 ];

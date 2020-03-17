@@ -53,6 +53,7 @@ const useStyles = makeStyles(theme => ({
 		padding: '0 4px 4px 0'
 	},
 	transactionsIcon: {
+		color: 'white',
 		width: '22px',
 		height: '22px',
 		padding: '0 6px 14px 0'
@@ -95,16 +96,18 @@ function TopBar(props) {
 								</center>
 							</td>
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
-								<Badge
-									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-									badgeContent={getPendingTransactions().length}
-									color="secondary">
-									{getPendingTransactions().length === 0 ? (
-										<HourglassEmptyIcon className={classes.transactionsIcon} />
-									) : (
-										<HourglassFullIcon className={classes.transactionsIcon} />
-									)}
-								</Badge>
+								<Link to={'/transactions'}>
+									<Badge
+										anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+										badgeContent={getPendingTransactions().length}
+										color="secondary">
+										{getPendingTransactions().length === 0 ? (
+											<HourglassEmptyIcon className={classes.transactionsIcon} />
+										) : (
+											<HourglassFullIcon className={classes.transactionsIcon} />
+										)}
+									</Badge>
+								</Link>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 								<RefreshIcon onClick={() => window.location.reload()} />
 								<Link to={'/messages'}>
