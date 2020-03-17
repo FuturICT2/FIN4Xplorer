@@ -47,6 +47,11 @@ const contractCall = (
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
 			console.log('Dry run failed with error: ' + errObj.reason, err);
+			props.dispatch({
+				type: 'DRY_RUN_FAILED',
+				methodStr: methodStr,
+				displayStr: '' // TODO
+			});
 			callbackDryRunFailed(errObj.reason);
 			return;
 		}

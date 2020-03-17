@@ -589,6 +589,19 @@ function fin4StoreReducer(state = initialState, action) {
 				};
 			}
 			return state;
+		case 'DRY_RUN_FAILED':
+			// this entry is not connected to a "real" transaction lifecycle
+			// it only serves to provide details for the transaction log page
+			return Object.assign({}, state, {
+				transactions: [
+					...state.transactions,
+					{
+						status: 'DRY_RUN_FAILED',
+						methodStr: action.methodStr,
+						displayStr: action.displayStr
+					}
+				]
+			});
 		case 'SEND_CONTRACT_TX':
 			return Object.assign({}, state, {
 				transactions: [
