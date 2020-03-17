@@ -11,10 +11,10 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 const contractCall = (
 	context,
+	props,
 	contractName,
 	methodName,
 	params,
-	props,
 	callbackDryRunFailed = () => {},
 	callbackDryRunSucceeded = () => {},
 	callbackTxFailed = () => {},
