@@ -14,6 +14,7 @@ import QRModal from './QRModal';
 import Badge from '@material-ui/core/Badge';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'; // alternatively: History, Timelapse
 import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
+import Modal from './Modal';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -68,6 +69,10 @@ function TopBar(props) {
 	const toggleQRModal = () => {
 		setQRModalOpen(!isQRModalOpen);
 	};
+	const [isPendingTxOpen, setPendingTxOpen] = useState(false);
+	const togglePendingTxModal = () => {
+		setPendingTxOpen(!isPendingTxOpen);
+	};
 
 	const getPendingTransactions = () => {
 		return props.transactions.filter(pt => pt.status === 'BROADCASTED');
@@ -75,6 +80,17 @@ function TopBar(props) {
 
 	return (
 		<>
+			<Modal isOpen={isPendingTxOpen} handleClose={togglePendingTxModal} title="Pending transactions" width="300px">
+				<div style={{ fontFamily: 'arial' }}>
+					TODO
+					<br />
+					<Link to={'/transactions'} onClick={togglePendingTxModal}>
+						<center>
+							<small>See more</small>
+						</center>
+					</Link>
+				</div>
+			</Modal>
 			<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 			<AppBar position="static" className={classes.bar}>
 				{/* TODO is there a better way to put the logo in the middle AND the icons at the right side at the same height?
@@ -96,18 +112,17 @@ function TopBar(props) {
 								</center>
 							</td>
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
-								<Link to={'/transactions'}>
-									<Badge
-										anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-										badgeContent={getPendingTransactions().length}
-										color="secondary">
-										{getPendingTransactions().length === 0 ? (
-											<HourglassEmptyIcon className={classes.transactionsIcon} />
-										) : (
-											<HourglassFullIcon className={classes.transactionsIcon} />
-										)}
-									</Badge>
-								</Link>
+								<Badge
+									onClick={togglePendingTxModal}
+									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+									badgeContent={getPendingTransactions().length}
+									color="secondary">
+									{getPendingTransactions().length === 0 ? (
+										<HourglassEmptyIcon className={classes.transactionsIcon} />
+									) : (
+										<HourglassFullIcon className={classes.transactionsIcon} />
+									)}
+								</Badge>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 								<RefreshIcon onClick={() => window.location.reload()} />
 								<Link to={'/messages'}>
