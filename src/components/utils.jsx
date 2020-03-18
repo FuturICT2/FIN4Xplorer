@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import web3 from 'web3';
 const nanoid = require('nanoid');
 
 const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
+
+const BNstr = numb => {
+	return web3.utils.toBN(numb).toString();
+};
 
 const buildIconLabelLink = (link, icon, label, enabled = true, newLineAfterwards = true) => {
 	let style = { textDecoration: 'none' };
@@ -70,5 +75,6 @@ export {
 	getFormattedSelectOptions,
 	getRandomTokenCreationDraftID,
 	findProofTypeAddressByName,
-	TCRactive
+	TCRactive,
+	BNstr
 };

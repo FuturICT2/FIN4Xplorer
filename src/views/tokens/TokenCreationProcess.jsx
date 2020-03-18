@@ -18,7 +18,7 @@ import StepProving from './creationProcess/Step5Proving';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName } from '../../components/utils';
+import { findProofTypeAddressByName, BNstr } from '../../components/utils';
 import { findTokenBySymbol } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { IconButton } from '@material-ui/core';
@@ -118,7 +118,11 @@ function TokenCreationProcess(props, context) {
 			draft.basics.name,
 			draft.basics.symbol,
 			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
-			[draft.properties.decimals, draft.properties.initialSupply, draft.properties.cap],
+			[
+				draft.properties.decimals, // TODO restrict to max 18
+				BNstr(draft.properties.initialSupply),
+				BNstr(draft.properties.cap)
+			],
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name))
 		];
 
