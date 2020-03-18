@@ -123,11 +123,7 @@ function TokenCreationProcess(props, context) {
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
 			],
-			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name))
-		];
-
-		let postCreationStepsArgs = [
-			null, // tokenAddress
+			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			draft.basics.description,
 			draft.actions.text,
 			draft.value.fixedQuantity,
@@ -146,7 +142,6 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
 				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
-				postCreationStepsArgs[0] = newTokenAddress;
 
 				for (var name in draft.proofs) {
 					if (draft.proofs.hasOwnProperty(name)) {
@@ -162,22 +157,11 @@ function TokenCreationProcess(props, context) {
 					}
 				}
 
-				setTokenCreationStage('Further transactions confirmed: 0 / ' + furtherTransactionsCount.current);
-
-				context.drizzle.contracts[tokenCreatorContract].methods
-					.postCreationSteps(...postCreationStepsArgs)
-					.send({
-						from: props.defaultAccount
-					})
-					.then(result => {
-						console.log('Results of submitting ' + tokenCreatorContract + '.postCreationSteps: ', result);
-						transactionCounter.current++;
-						incrementTransactionCounter();
-					});
+				updateTokenCreationStage();
 			});
 	};
 
-	const incrementTransactionCounter = () => {
+	const updateTokenCreationStage = () => {
 		if (transactionCounter.current == furtherTransactionsCount.current) {
 			setTokenCreationStage('completed');
 		} else {
@@ -190,7 +174,7 @@ function TokenCreationProcess(props, context) {
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const furtherTransactionsCount = useRef(1);
+	const furtherTransactionsCount = useRef(0);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
 	const setParamsOnProofContract = (contractName, tokenAddr, values) => {
@@ -202,7 +186,7 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + contractName + '.setParameters: ', result);
 				transactionCounter.current++;
-				incrementTransactionCounter();
+				updateTokenCreationStage();
 			});
 	};
 
