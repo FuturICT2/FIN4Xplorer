@@ -15,6 +15,8 @@ import Badge from '@material-ui/core/Badge';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'; // alternatively: History, Timelapse
 import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
 import Modal from './Modal';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ReactInterval from 'react-interval';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -74,23 +76,47 @@ function TopBar(props) {
 		setPendingTxOpen(!isPendingTxOpen);
 	};
 
+	const [timeNow, setTimeNow] = useState(Date.now());
+
 	const getPendingTransactions = () => {
 		return props.transactions.filter(pt => pt.status === 'BROADCASTED');
 	};
 
 	return (
 		<>
+			<ReactInterval timeout={1000} enabled={true} callback={() => setTimeNow(Date.now())} />
 			<Modal isOpen={isPendingTxOpen} handleClose={togglePendingTxModal} title="Pending transactions" width="300px">
 				<div style={{ fontFamily: 'arial' }}>
 					{getPendingTransactions().map((tx, index) => {
-						// TODO show seconds since broadcasted
-						// TODO CircularProgress animation
-						return <div key={'pTx_' + index}>{tx.displayStr}</div>;
+						return (
+							<div
+								key={'pTx_' + index}
+								style={{
+									borderRadius: '15px',
+									background: '#FED8B1',
+									padding: '10px 10px 6px 15px',
+									marginBottom: '10px'
+								}}>
+								<CircularProgress size={20} style={{ color: '#695EAD' }} />
+								{tx.displayStr && (
+									<>
+										<span style={{ paddingLeft: '8px' }}>
+											{tx.displayStr}
+											<small>
+												<span style={{ color: '#695EAD', marginLeft: '5px' }}>
+													{Math.round((timeNow - tx.timestamp) / 1000) + 's'}
+												</span>
+											</small>
+										</span>
+									</>
+								)}
+							</div>
+						);
 					})}
 					<br />
 					<Link to={'/transactions'} onClick={togglePendingTxModal}>
 						<center>
-							<small>See more</small>
+							<small style={{ color: 'gray', textDecoration: 'none' }}>See log</small>
 						</center>
 					</Link>
 				</div>
@@ -117,7 +143,10 @@ function TopBar(props) {
 							</td>
 							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
 								<Badge
-									onClick={togglePendingTxModal}
+									onClick={() => {
+										setTimeNow(Date.now());
+										togglePendingTxModal();
+									}}
 									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
 									badgeContent={getPendingTransactions().length}
 									color="secondary">
