@@ -113,6 +113,7 @@ function TopBar(props) {
 							</div>
 						);
 					})}
+					{getPendingTransactions().length === 0 && <center style={{ color: 'gray' }}>No pending transactions</center>}
 					<br />
 					<Link to={'/transactions'} onClick={togglePendingTxModal}>
 						<center>
