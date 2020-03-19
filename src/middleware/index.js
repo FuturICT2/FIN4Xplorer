@@ -665,6 +665,7 @@ function fin4StoreReducer(state = initialState, action) {
 		case 'TX_ERROR':
 			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
 			let index_error = state.transactions.indexOf(pendingTx_error);
+			toast.error('Transaction failed', { position: toast.POSITION.TOP_RIGHT });
 			return update(state, {
 				transactions: {
 					[index_error]: {

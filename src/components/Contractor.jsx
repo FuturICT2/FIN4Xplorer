@@ -1,5 +1,7 @@
+import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
+import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
 
@@ -48,6 +50,14 @@ const contractCall = (
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
 			console.log('Dry run failed with error: ' + errObj.reason, err);
+			toast.error(
+				<div>
+					<b>Transaction test failed</b>
+					<br />
+					{'Reson: ' + errObj.reason}
+				</div>,
+				{ position: toast.POSITION.TOP_RIGHT }
+			);
 			props.dispatch({
 				type: 'DRY_RUN_FAILED',
 				methodStr: methodStr,
