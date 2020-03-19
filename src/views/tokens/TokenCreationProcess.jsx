@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
 import { findProofTypeAddressByName, BNstr } from '../../components/utils';
-import { findTokenBySymbol } from '../../components/Contractor';
+import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
@@ -134,15 +134,15 @@ function TokenCreationProcess(props, context) {
 		setTokenCreationStage('Waiting for the token creation to complete');
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
-		context.drizzle.contracts[tokenCreatorContract].methods
-			.createNewToken(...tokenCreationArgs)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(result => {
-				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
-				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
-
+		contractCall(
+			context,
+			props,
+			tokenCreatorContract,
+			'createNewToken',
+			tokenCreationArgs,
+			'Create new token: ' + draft.basics.symbol,
+			receipt => {
+				let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 				for (var name in draft.proofs) {
 					if (draft.proofs.hasOwnProperty(name)) {
 						let proof = draft.proofs[name];
@@ -156,9 +156,9 @@ function TokenCreationProcess(props, context) {
 						setParamsOnProofContract(name, newTokenAddress, values);
 					}
 				}
-
 				updateTokenCreationStage();
-			});
+			}
+		);
 	};
 
 	const updateTokenCreationStage = () => {
