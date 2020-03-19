@@ -18,7 +18,7 @@ import StepProving from './creationProcess/Step5Proving';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName } from '../../components/utils';
+import { findProofTypeAddressByName, BNstr } from '../../components/utils';
 import { findTokenBySymbol } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { IconButton } from '@material-ui/core';
@@ -118,12 +118,12 @@ function TokenCreationProcess(props, context) {
 			draft.basics.name,
 			draft.basics.symbol,
 			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
-			[draft.properties.decimals, draft.properties.initialSupply, draft.properties.cap],
-			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name))
-		];
-
-		let postCreationStepsArgs = [
-			null, // tokenAddress
+			[
+				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
+				BNstr(draft.properties.initialSupply),
+				BNstr(draft.properties.cap)
+			],
+			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			draft.basics.description,
 			draft.actions.text,
 			draft.value.fixedQuantity,
@@ -142,7 +142,6 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
 				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
-				postCreationStepsArgs[0] = newTokenAddress;
 
 				for (var name in draft.proofs) {
 					if (draft.proofs.hasOwnProperty(name)) {
@@ -158,22 +157,11 @@ function TokenCreationProcess(props, context) {
 					}
 				}
 
-				setTokenCreationStage('Further transactions confirmed: 0 / ' + furtherTransactionsCount.current);
-
-				context.drizzle.contracts[tokenCreatorContract].methods
-					.postCreationSteps(...postCreationStepsArgs)
-					.send({
-						from: props.defaultAccount
-					})
-					.then(result => {
-						console.log('Results of submitting ' + tokenCreatorContract + '.postCreationSteps: ', result);
-						transactionCounter.current++;
-						incrementTransactionCounter();
-					});
+				updateTokenCreationStage();
 			});
 	};
 
-	const incrementTransactionCounter = () => {
+	const updateTokenCreationStage = () => {
 		if (transactionCounter.current == furtherTransactionsCount.current) {
 			setTokenCreationStage('completed');
 		} else {
@@ -186,7 +174,7 @@ function TokenCreationProcess(props, context) {
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const furtherTransactionsCount = useRef(1);
+	const furtherTransactionsCount = useRef(0);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
 	const setParamsOnProofContract = (contractName, tokenAddr, values) => {
@@ -198,7 +186,7 @@ function TokenCreationProcess(props, context) {
 			.then(result => {
 				console.log('Results of submitting ' + contractName + '.setParameters: ', result);
 				transactionCounter.current++;
-				incrementTransactionCounter();
+				updateTokenCreationStage();
 			});
 	};
 
