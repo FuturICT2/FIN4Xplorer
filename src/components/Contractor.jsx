@@ -18,10 +18,10 @@ const contractCall = (
 	methodName,
 	params,
 	displayStr = '',
+	callbackTxCompleted = () => {},
 	callbackDryRunFailed = () => {},
 	callbackDryRunSucceeded = () => {},
-	callbackTxFailed = () => {},
-	callbackTxCompleted = () => {}
+	callbackTxFailed = () => {}
 ) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	let contract = context.drizzle.contracts[contractName];
