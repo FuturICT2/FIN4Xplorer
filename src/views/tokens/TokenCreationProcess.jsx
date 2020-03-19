@@ -119,7 +119,7 @@ function TokenCreationProcess(props, context) {
 			draft.basics.symbol,
 			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
 			[
-				draft.properties.decimals, // TODO restrict to max 18
+				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
 			],
