@@ -651,8 +651,10 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			});
 		case 'TX_SUCCESSFUL':
+			// TODO shield against transactions that don't go through our controlled lifecycle?
 			let pendingTx_successful = state.transactions.filter(tx => tx.txHash === action.txHash)[0];
 			let index_successful = state.transactions.indexOf(pendingTx_successful);
+			console.log('Transaction completed successfully: ' + pendingTx_successful.methodStr);
 			pendingTx_successful.callbackTxCompleted(action.receipt);
 			return update(state, {
 				transactions: {
