@@ -14,6 +14,9 @@ function TransactionLog(props, context) {
 		<Container>
 			<Box title="Transaction log">
 				<div style={{ fontFamily: 'arial' }}>
+					<center style={{ color: 'gray' }}>Log entries are cleared upon reloading the page.</center>
+					<br />
+					<br />
 					{props.transactions.map((tx, index) => {
 						return (
 							<span key={'tx_' + index}>
