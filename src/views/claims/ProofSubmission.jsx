@@ -64,6 +64,7 @@ function ProofSubmission(props) {
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;*/
 			default:
 				return (
+					// TODO replace ContractForm
 					<ContractForm
 						contractName={proofTypeName}
 						method={'submitProof_' + proofTypeName}

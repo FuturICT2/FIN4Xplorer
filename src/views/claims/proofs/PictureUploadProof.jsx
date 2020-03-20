@@ -9,12 +9,10 @@ function PictureUploadProof(props, context) {
 	const { t } = useTranslation();
 
 	const onSubmit = (approverAddress, ipfsHash) => {
-		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-
 		contractCall(
 			context,
 			props,
-			defaultAccount,
+			props.store.getState().fin4Store.defaultAccount,
 			props.contractName,
 			'submitProof_' + props.contractName,
 			[props.tokenAddr, props.claimId, approverAddress, ipfsHash],
