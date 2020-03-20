@@ -19,7 +19,7 @@ function TransactionLog(props, context) {
 					<br />
 					{props.transactions.map((tx, index) => {
 						return (
-							<span key={'tx_' + index}>
+							<span key={'tx_' + index} style={{ wordWrap: 'break-word' }}>
 								{tx.displayStr && (
 									<>
 										<b>{tx.displayStr}</b>:{' ' + tx.methodStr}
