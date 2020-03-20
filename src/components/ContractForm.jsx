@@ -20,7 +20,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DateFnsUtils from '@date-io/moment';
 import moment from 'moment';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { findTokenBySymbol } from './Contractor.jsx';
+import { findTokenBySymbol, contractCall } from './Contractor.jsx';
 
 const translateType = type => {
 	switch (true) {
@@ -39,7 +39,7 @@ class ContractForm extends Component {
 	constructor(props, context) {
 		super(props);
 
-		this.drizzle = context.drizzle;
+		this.context = context;
 		this.newValue = null;
 		this.contractName = this.props.contractName;
 		this.inputs = [];
@@ -148,15 +148,19 @@ class ContractForm extends Component {
 			}
 		}
 
-		let self = this;
-		this.drizzle.contracts[this.contractName].methods[this.props.method](...convertedInputs)
-			.send({
-				from: this.props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-				self.postSubmitCallback(true, result);
-			});
+		let self = this; // needed? TODO
+		contractCall(
+			this.context,
+			this.props,
+			this.props.store.getState().fin4Store.defaultAccount,
+			this.contractName,
+			this.props.method,
+			[...convertedInputs],
+			this.props.method, // TODO pass a displayStr too
+			receipt => {
+				self.postSubmitCallback(true, receipt);
+			}
+		);
 	};
 
 	postSubmitCallback(success, result) {
