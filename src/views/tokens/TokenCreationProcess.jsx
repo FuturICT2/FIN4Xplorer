@@ -180,17 +180,20 @@ function TokenCreationProcess(props, context) {
 	const furtherTransactionsCount = useRef(0);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
-	const setParamsOnProofContract = (contractName, tokenAddr, values) => {
-		context.drizzle.contracts[contractName].methods
-			.setParameters(tokenAddr, ...values)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(result => {
-				console.log('Results of submitting ' + contractName + '.setParameters: ', result);
+	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			contractName,
+			'setParameters',
+			[tokenAddr, ...values],
+			'Set parameter on proof type: ' + contractName,
+			() => {
 				transactionCounter.current++;
 				updateTokenCreationStage();
-			});
+			}
+		);
 	};
 
 	return (
