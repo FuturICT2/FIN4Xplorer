@@ -143,7 +143,7 @@ function TokenCreationProcess(props, context) {
 			tokenCreatorContract,
 			'createNewToken',
 			tokenCreationArgs,
-			'Create new token: ' + draft.basics.symbol,
+			'Create new token: ' + draft.basics.symbol.toUpperCase(),
 			receipt => {
 				let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 				for (var name in draft.proofs) {
@@ -153,7 +153,7 @@ function TokenCreationProcess(props, context) {
 						if (parameterNames.length === 0) {
 							continue;
 						}
-						furtherTransactionsCount.current++;
+						proofContractsToParameterize.current++;
 						let values = parameterNames.map(pName => proof.parameters[pName]);
 						// TODO is the correct order of values guaranteed?
 						setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
@@ -165,11 +165,11 @@ function TokenCreationProcess(props, context) {
 	};
 
 	const updateTokenCreationStage = () => {
-		if (transactionCounter.current == furtherTransactionsCount.current) {
+		if (transactionCounter.current == proofContractsToParameterize.current) {
 			setTokenCreationStage('completed');
 		} else {
 			setTokenCreationStage(
-				'Further transactions confirmed: ' + transactionCounter.current + ' / ' + furtherTransactionsCount.current
+				'Proof contracts parameterized: ' + transactionCounter.current + ' / ' + proofContractsToParameterize.current
 			);
 		}
 	};
@@ -177,7 +177,7 @@ function TokenCreationProcess(props, context) {
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const furtherTransactionsCount = useRef(0);
+	const proofContractsToParameterize = useRef(0);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
 	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
