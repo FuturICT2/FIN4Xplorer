@@ -60,7 +60,18 @@ function Home(props, context) {
 	};
 
 	const dev = () => {
-		contractCall(context, props, 'Fin4Main', 'dev', 3, 'dev method call');
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Main',
+			'dev',
+			3,
+			'dev method call',
+			() => {
+				alert('callback works');
+			}
+		);
 	};
 
 	return (

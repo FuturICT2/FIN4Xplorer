@@ -14,6 +14,7 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 const contractCall = (
 	context,
 	props,
+	defaultAccount,
 	contractName,
 	methodName,
 	params,
@@ -23,7 +24,6 @@ const contractCall = (
 	callbackDryRunSucceeded = () => {},
 	callbackTxFailed = () => {}
 ) => {
-	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];

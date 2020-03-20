@@ -134,9 +134,12 @@ function TokenCreationProcess(props, context) {
 		setTokenCreationStage('Waiting for the token creation to complete');
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+
 		contractCall(
 			context,
 			props,
+			defaultAccount,
 			tokenCreatorContract,
 			'createNewToken',
 			tokenCreationArgs,
@@ -153,7 +156,7 @@ function TokenCreationProcess(props, context) {
 						furtherTransactionsCount.current++;
 						let values = parameterNames.map(pName => proof.parameters[pName]);
 						// TODO is the correct order of values guaranteed?
-						setParamsOnProofContract(name, newTokenAddress, values);
+						setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
 					}
 				}
 				updateTokenCreationStage();
