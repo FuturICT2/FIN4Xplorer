@@ -8,7 +8,7 @@ import Dropdown from '../../components/Dropdown';
 import PreviousClaims from './PreviousClaims';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
-import { findTokenBySymbol } from '../../components/Contractor.jsx';
+import { findTokenBySymbol, contractCall } from '../../components/Contractor.jsx';
 import PropTypes from 'prop-types';
 import { getFormattedSelectOptions } from '../../components/utils';
 
@@ -29,14 +29,16 @@ function Claim(props, context) {
 			alert('Token must be selected');
 			return;
 		}
-		context.drizzle.contracts.Fin4Claiming.methods
-			.submitClaim(values.tokenAddress, values.quantity, values.comment)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Claiming',
+			'submitClaim',
+			[values.tokenAddress, values.quantity, values.comment],
+			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
+			() => {}
+		);
 	};
 
 	useEffect(() => {
