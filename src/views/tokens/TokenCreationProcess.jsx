@@ -169,7 +169,10 @@ function TokenCreationProcess(props, context) {
 			setTokenCreationStage('completed');
 		} else {
 			setTokenCreationStage(
-				'Proof contracts parameterized: ' + transactionCounter.current + ' / ' + proofContractsToParameterize.current
+				'Waiting for proof contracts to receive parameters: ' +
+					transactionCounter.current +
+					' / ' +
+					proofContractsToParameterize.current
 			);
 		}
 	};

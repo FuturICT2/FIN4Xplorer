@@ -22,7 +22,9 @@ function TransactionLog(props, context) {
 							<span key={'tx_' + index} style={{ wordWrap: 'break-word' }}>
 								{tx.displayStr && (
 									<>
-										<b>{tx.displayStr}</b>:{' ' + tx.methodStr}
+										<b>{tx.displayStr}</b>
+										<br />
+										<small>{tx.methodStr}</small>
 										<br />
 									</>
 								)}
