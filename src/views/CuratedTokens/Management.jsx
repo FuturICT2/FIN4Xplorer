@@ -5,13 +5,13 @@ import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
-import ContractForm from '../../components/ContractForm';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { getContractData } from '../../components/Contractor';
 import Container from '../../components/Container';
 import GovNavComponent from './GovNavComponent';
 import { TCRactive } from '../../components/utils';
+import ContractFormSimple from '../../components/ContractFormSimple';
 const BN = require('bignumber.js');
 
 function Management(props, context) {
@@ -109,14 +109,12 @@ function Management(props, context) {
 						handleClose={toggleDelegateModal}
 						title="Delegate GOV tokens"
 						width="400px">
-						<ContractForm
+						<ContractFormSimple
 							contractName="GOV"
-							method="delegate"
-							labels={['Delegator address', 'Amount']}
-							postSubmitCallback={(success, result) => {
-								if (!success) {
-									alert(result.message);
-								}
+							contractMethod="delegate"
+							pendingTxStr="Delegate GOV"
+							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
+							callbackUponSubmit={() => {
 								toggleDelegateModal();
 							}}
 						/>
@@ -126,14 +124,12 @@ function Management(props, context) {
 						handleClose={toggleRefundDelegationModal}
 						title="Refund delegated GOV tokens"
 						width="400px">
-						<ContractForm
+						<ContractFormSimple
 							contractName="GOV"
-							method="refundDelegation"
-							labels={['Delegator address', 'Amount']}
-							postSubmitCallback={(success, result) => {
-								if (!success) {
-									alert(result.message);
-								}
+							contractMethod="refundDelegation"
+							pendingTxStr="Delegate GOV"
+							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
+							callbackUponSubmit={() => {
 								toggleRefundDelegationModal();
 							}}
 						/>
