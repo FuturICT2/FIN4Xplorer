@@ -27,7 +27,9 @@ function ContractFormSimple(props, context) {
 	});
 
 	const doContractCall = () => {
-		console.log(data);
+		if (props.callbackUponSubmit) {
+			props.callbackUponSubmit();
+		}
 		contractCall(
 			context,
 			props,
