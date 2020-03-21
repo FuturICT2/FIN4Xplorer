@@ -20,7 +20,12 @@ function ContractFormSimple(props, context) {
 		}
 		let dataObj = [];
 		for (let i = 0; i < props.fields.length; i++) {
-			dataObj.push('');
+			let label = props.fields[i][0];
+			if (props.fixValues && props.fixValues[label]) {
+				dataObj.push(props.fixValues[label]);
+			} else {
+				dataObj.push('');
+			}
 		}
 		setData(dataObj);
 		setIsReady(true);
@@ -57,11 +62,15 @@ function ContractFormSimple(props, context) {
 			{isReady ? (
 				<>
 					{props.fields.map((field, index) => {
+						let label = field[0];
+						if (props.fixValues[label]) {
+							return;
+						}
 						return (
 							<TextField
 								key={index}
 								type={field[1]}
-								label={field[0]}
+								label={label}
 								value={data[index]}
 								onChange={e => updateVal(index, e.target.value)}
 								style={inputFieldStyle}
