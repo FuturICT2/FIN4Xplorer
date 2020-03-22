@@ -69,6 +69,12 @@ const findProofTypeAddressByName = (proofTypes, name) => {
 	return null;
 };
 
+const doCallback = (callbackCollection, name, args) => {
+	if (callbackCollection[name]) {
+		callbackCollection[name](args);
+	}
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -76,5 +82,6 @@ export {
 	getRandomTokenCreationDraftID,
 	findProofTypeAddressByName,
 	TCRactive,
-	BNstr
+	BNstr,
+	doCallback
 };

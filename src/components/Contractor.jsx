@@ -1,6 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
+import { doCallback } from './utils';
 import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
@@ -19,10 +20,7 @@ const contractCall = (
 	methodName,
 	params,
 	displayStr = '',
-	callbackTxCompleted = () => {},
-	callbackDryRunFailed = () => {},
-	callbackDryRunSucceeded = () => {},
-	callbackTxFailed = () => {}
+	callbacks = {} // transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -64,11 +62,11 @@ const contractCall = (
 				displayStr: displayStr,
 				errorReason: errObj.reason
 			});
-			callbackDryRunFailed(errObj.reason);
+			doCallback(callbacks, 'dryRunFailed', errObj.reason);
 			return;
 		}
 		console.log('Dry run succeeded, initiating transaction', res);
-		callbackDryRunSucceeded();
+		doCallback(callbacks, 'dryRunSucceeded', res);
 
 		const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
 
@@ -77,8 +75,7 @@ const contractCall = (
 			stackId: stackId,
 			methodStr: methodStr,
 			displayStr: displayStr,
-			callbackTxCompleted: callbackTxCompleted,
-			callbackTxFailed: callbackTxFailed
+			callbacks: callbacks
 		});
 	});
 };

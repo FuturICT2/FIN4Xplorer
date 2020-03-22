@@ -68,8 +68,19 @@ function Home(props, context) {
 			'dev',
 			3,
 			'dev method call',
-			() => {
-				alert('callback works');
+			{
+				transactionCompleted: () => {
+					console.log('--> transactionCompleted callback');
+				},
+				transactionFailed: () => {
+					console.log('--> transactionFailed callback');
+				},
+				dryRunSucceeded: () => {
+					console.log('--> dryRunSucceeded callback');
+				},
+				dryRunFailed: () => {
+					console.log('--> dryRunFailed callback');
+				}
 			}
 		);
 	};

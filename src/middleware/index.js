@@ -4,6 +4,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
+import { doCallback } from '../components/utils';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -632,8 +633,7 @@ function fin4StoreReducer(state = initialState, action) {
 						status: { $set: 'ENRICHED' },
 						methodStr: { $set: action.methodStr },
 						displayStr: { $set: action.displayStr },
-						callbackTxCompleted: { $set: action.callbackTxCompleted },
-						callbackTxFailed: { $set: action.callbackTxFailed },
+						callbacks: { $set: action.callbacks },
 						timestamp: { $set: Date.now() }
 					}
 				}
@@ -655,7 +655,7 @@ function fin4StoreReducer(state = initialState, action) {
 			let pendingTx_successful = state.transactions.filter(tx => tx.txHash === action.txHash)[0];
 			let index_successful = state.transactions.indexOf(pendingTx_successful);
 			console.log('Transaction completed successfully: ' + pendingTx_successful.methodStr);
-			pendingTx_successful.callbackTxCompleted(action.receipt);
+			doCallback(pendingTx_successful.callbacks, 'transactionCompleted', action.receipt);
 			return update(state, {
 				transactions: {
 					[index_successful]: {
@@ -669,7 +669,7 @@ function fin4StoreReducer(state = initialState, action) {
 			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
 			let index_error = state.transactions.indexOf(pendingTx_error);
 			toast.error('Transaction failed', { position: toast.POSITION.TOP_RIGHT });
-			pendingTx_error.callbackTxFailed(action.error);
+			doCallback(pendingTx_error.callbacks, 'transactionFailed', action.error);
 			return update(state, {
 				transactions: {
 					[index_error]: {
