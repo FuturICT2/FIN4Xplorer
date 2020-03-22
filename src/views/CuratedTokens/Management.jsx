@@ -114,9 +114,7 @@ function Management(props, context) {
 							contractMethod="delegate"
 							pendingTxStr="Delegate GOV"
 							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
-							callbackUponSubmit={() => {
-								toggleDelegateModal();
-							}}
+							callbackUponSubmit={toggleDelegateModal}
 						/>
 					</Modal>
 					<Modal
@@ -129,9 +127,7 @@ function Management(props, context) {
 							contractMethod="refundDelegation"
 							pendingTxStr="Delegate GOV"
 							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
-							callbackUponSubmit={() => {
-								toggleRefundDelegationModal();
-							}}
+							callbackUponSubmit={toggleRefundDelegationModal}
 						/>
 					</Modal>
 				</Box>
