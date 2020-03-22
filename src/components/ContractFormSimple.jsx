@@ -63,7 +63,7 @@ function ContractFormSimple(props, context) {
 				<>
 					{props.fields.map((field, index) => {
 						let label = field[0];
-						if (props.fixValues[label]) {
+						if (props.fixValues && props.fixValues[label]) {
 							return;
 						}
 						return (
