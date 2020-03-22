@@ -43,8 +43,12 @@ function ContractFormSimple(props, context) {
 			props.contractMethod,
 			data,
 			props.pendingTxStr ? props.pendingTxStr : props.contractMethod + '()',
-			() => {
-				props.callbackTxSuccess && props.callbackTxSuccess();
+			{
+				transactionCompleted: receipt => {
+					if (props.callbackTansactionCompleted) {
+						props.callbackTansactionCompleted(receipt);
+					}
+				}
 			}
 		);
 	};
