@@ -37,7 +37,7 @@ function Claim(props, context) {
 			'submitClaim',
 			[values.tokenAddress, values.quantity, values.comment],
 			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
-			() => {}
+			{}
 		);
 	};
 

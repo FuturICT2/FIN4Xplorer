@@ -157,8 +157,10 @@ class ContractForm extends Component {
 			this.props.method,
 			[...convertedInputs],
 			this.props.method, // TODO pass a displayStr too
-			receipt => {
-				self.postSubmitCallback(true, receipt);
+			{
+				transactionCompleted: receipt => {
+					self.postSubmitCallback(true, receipt);
+				}
 			}
 		);
 	};

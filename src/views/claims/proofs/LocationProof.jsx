@@ -46,7 +46,7 @@ function LocationProof(props, context) {
 					'submitProof_Location',
 					[props.tokenAddr, props.claimId, distanceToTokenCreatorsLocation],
 					'Submit location proof',
-					() => {}
+					{}
 				);
 			});
 		});

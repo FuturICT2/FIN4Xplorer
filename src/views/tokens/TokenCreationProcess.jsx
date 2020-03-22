@@ -144,22 +144,24 @@ function TokenCreationProcess(props, context) {
 			'createNewToken',
 			tokenCreationArgs,
 			'Create new token: ' + draft.basics.symbol.toUpperCase(),
-			receipt => {
-				let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
-				for (var name in draft.proofs) {
-					if (draft.proofs.hasOwnProperty(name)) {
-						let proof = draft.proofs[name];
-						let parameterNames = Object.keys(proof.parameters);
-						if (parameterNames.length === 0) {
-							continue;
+			{
+				transactionCompleted: receipt => {
+					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
+					for (var name in draft.proofs) {
+						if (draft.proofs.hasOwnProperty(name)) {
+							let proof = draft.proofs[name];
+							let parameterNames = Object.keys(proof.parameters);
+							if (parameterNames.length === 0) {
+								continue;
+							}
+							proofContractsToParameterize.current++;
+							let values = parameterNames.map(pName => proof.parameters[pName]);
+							// TODO is the correct order of values guaranteed?
+							setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
 						}
-						proofContractsToParameterize.current++;
-						let values = parameterNames.map(pName => proof.parameters[pName]);
-						// TODO is the correct order of values guaranteed?
-						setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
 					}
+					updateTokenCreationStage();
 				}
-				updateTokenCreationStage();
 			}
 		);
 	};
@@ -192,9 +194,11 @@ function TokenCreationProcess(props, context) {
 			'setParameters',
 			[tokenAddr, ...values],
 			'Set parameter on proof type: ' + contractName,
-			() => {
-				transactionCounter.current++;
-				updateTokenCreationStage();
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage();
+				}
 			}
 		);
 	};
