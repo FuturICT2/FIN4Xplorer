@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import TextField from '@material-ui/core/TextField';
 import MessageIcon from '@material-ui/icons/Message';
 import AddressQRreader from '../../components/AddressQRreader';
-import { isValidPublicAddress } from '../../components/Contractor';
+import { isValidPublicAddress, contractCall } from '../../components/Contractor';
 import PropTypes from 'prop-types';
 
 function UserMessage(props, context) {
@@ -25,14 +25,15 @@ function UserMessage(props, context) {
 	});
 
 	const sendMessage = () => {
-		context.drizzle.contracts.Fin4Messaging.methods
-			.addUserMessage(addressValue.current, msgText.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Messaging',
+			'addUserMessage',
+			[addressValue.current, msgText.current],
+			'Send message to user'
+		);
 	};
 
 	return (
