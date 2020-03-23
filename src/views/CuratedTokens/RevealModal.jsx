@@ -21,6 +21,7 @@ function RevealModal(props) {
 							props.handleClose();
 						}
 					}}
+					skipDryRun={true}
 				/>
 			</Modal>
 		</center>

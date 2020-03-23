@@ -43,7 +43,8 @@ function ContractFormSimple(props, context) {
 			props.contractMethod,
 			data,
 			props.pendingTxStr ? props.pendingTxStr : props.contractMethod + '()',
-			props.callbacks
+			props.callbacks,
+			props.skipDryRun ? props.skipDryRun : false
 		);
 	};
 

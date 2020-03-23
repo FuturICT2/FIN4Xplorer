@@ -20,7 +20,8 @@ const contractCall = (
 	methodName,
 	params,
 	displayStr = '',
-	callbacks = {} // transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	callbacks = {}, // transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	skipDryRun = false
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -40,9 +41,12 @@ const contractCall = (
 		.join(',');
 	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
 
-	console.log('Initiating dry run: ' + methodStr);
+	if (skipDryRun) {
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		return;
+	}
 
-	// TODO include dry runs in the pending transactions lifecycle too for a log page? #ConceptualDecision
+	console.log('Initiating dry run: ' + methodStr);
 	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
 		if (err) {
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
@@ -68,15 +72,19 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		doCallback(callbacks, 'dryRunSucceeded', res);
 
-		const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+	});
+};
 
-		props.dispatch({
-			type: 'ENRICH_PENDING_TRANSACTION',
-			stackId: stackId,
-			methodStr: methodStr,
-			displayStr: displayStr,
-			callbacks: callbacks
-		});
+const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
+	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+
+	props.dispatch({
+		type: 'ENRICH_PENDING_TRANSACTION',
+		stackId: stackId,
+		methodStr: methodStr,
+		displayStr: displayStr,
+		callbacks: callbacks
 	});
 };
 
