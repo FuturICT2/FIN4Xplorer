@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import { fetchMessage } from '../components/Contractor';
+import { fetchMessage, contractCall } from '../components/Contractor';
 import history from '../components/history';
 import Container from '../components/Container';
 
@@ -36,36 +36,39 @@ function Messages(props, context) {
 	});
 
 	const approveRequest = (proofTypeName, pendingApprovalId) => {
-		context.drizzle.contracts[proofTypeName].methods
-			.receiveApprovalFromSpecificAddress(pendingApprovalId)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			proofTypeName,
+			'receiveApprovalFromSpecificAddress',
+			pendingApprovalId,
+			'Approve approval request'
+		);
 	};
 
 	const rejectRequest = (proofTypeName, pendingApprovalId) => {
-		context.drizzle.contracts[proofTypeName].methods
-			.receiveRejectionFromSpecificAddress(pendingApprovalId)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			proofTypeName,
+			'receiveRejectionFromSpecificAddress',
+			pendingApprovalId,
+			'Reject approval request'
+		);
 	};
 
 	const markAsRead = messageId => {
-		context.drizzle.contracts.Fin4Messaging.methods
-			.markMessageAsActedUpon(props.defaultAccount, messageId)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'Fin4Messaging',
+			'markMessageAsActedUpon',
+			[props.defaultAccount, messageId],
+			'Mark message as read'
+		);
 	};
 
 	const getIntroText = messageType => {
