@@ -2,34 +2,26 @@ import React, { useState } from 'react';
 import Box from '../../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
-import ContractForm from '../../components/ContractForm';
+import ContractFormSimple from '../../components/ContractFormSimple';
 
-function CreateCollection(props, context) {
+function CreateCollection() {
 	const { t } = useTranslation();
-	const [showHint, setShowHint] = useState(false);
 
 	return (
 		<Box title="Create token collection">
-			<ContractForm
+			<ContractFormSimple
 				contractName="Fin4Collections"
-				method="createCollection"
-				labels={['Collection-Name', 'Short-name (e.g. "ethz" for "ETH Zürich")', 'Description']}
-				postSubmitCallback={() => setShowHint(true)}
+				contractMethod="createCollection"
+				pendingTxStr="Create collection"
+				fields={[
+					['Collection-Name', 'text'],
+					['Short-name (e.g. "ethz" for "ETH Zürich")', 'text'],
+					['Description', 'text']
+				]}
 			/>
-			{showHint && (
-				<center style={{ color: 'gray', fontFamily: 'arial' }}>Reload the page to see your new collection.</center>
-			)}
+			<center style={{ color: 'gray', fontFamily: 'arial' }}>Reload the page to see newly created collections.</center>
 		</Box>
 	);
 }
 
-CreateCollection.contextTypes = {
-	drizzle: PropTypes.object
-};
-
-const mapStateToProps = state => {
-	return {};
-};
-
-export default drizzleConnect(CreateCollection, mapStateToProps);
+export default drizzleConnect(CreateCollection);

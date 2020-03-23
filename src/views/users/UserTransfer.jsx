@@ -13,7 +13,7 @@ import AddressQRreader from '../../components/AddressQRreader';
 import Dropdown from '../../components/Dropdown';
 import { TextField } from '@material-ui/core';
 import Button from '../../components/Button';
-import { isValidPublicAddress } from '../../components/Contractor';
+import { isValidPublicAddress, contractCall } from '../../components/Contractor';
 
 function UserTransfer(props, context) {
 	const { t } = useTranslation();
@@ -90,15 +90,16 @@ function UserTransfer(props, context) {
 		}
 	};
 
-	const doSendTransfer = name => {
-		context.drizzle.contracts[name].methods
-			.transfer(data.current.userAddress, data.current.amount)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+	const doSendTransfer = tokenName => {
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			tokenName,
+			'transfer',
+			[data.current.userAddress, data.current.amount],
+			'Transfer token to user'
+		);
 	};
 
 	return (

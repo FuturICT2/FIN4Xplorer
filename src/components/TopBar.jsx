@@ -11,6 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import QRModal from './QRModal';
+import Badge from '@material-ui/core/Badge';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'; // alternatively: History, Timelapse
+import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
+import Modal from './Modal';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ReactInterval from 'react-interval';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -48,6 +54,12 @@ const useStyles = makeStyles(theme => ({
 		width: '20px',
 		height: '20px',
 		padding: '0 4px 4px 0'
+	},
+	transactionsIcon: {
+		color: 'white',
+		width: '22px',
+		height: '22px',
+		padding: '0 6px 14px 0'
 	}
 }));
 
@@ -59,9 +71,57 @@ function TopBar(props) {
 	const toggleQRModal = () => {
 		setQRModalOpen(!isQRModalOpen);
 	};
+	const [isPendingTxOpen, setPendingTxOpen] = useState(false);
+	const togglePendingTxModal = () => {
+		setPendingTxOpen(!isPendingTxOpen);
+	};
+
+	const [timeNow, setTimeNow] = useState(Date.now());
+
+	const getPendingTransactions = () => {
+		return props.transactions.filter(pt => pt.status === 'BROADCASTED');
+	};
 
 	return (
 		<>
+			<ReactInterval timeout={1000} enabled={true} callback={() => setTimeNow(Date.now())} />
+			<Modal isOpen={isPendingTxOpen} handleClose={togglePendingTxModal} title="Pending transactions" width="300px">
+				<div style={{ fontFamily: 'arial' }}>
+					{getPendingTransactions().map((tx, index) => {
+						return (
+							<div
+								key={'pTx_' + index}
+								style={{
+									borderRadius: '15px',
+									background: '#FED8B1',
+									padding: '10px 10px 6px 15px',
+									marginBottom: '10px'
+								}}>
+								<CircularProgress size={20} style={{ color: '#695EAD' }} />
+								{tx.displayStr && (
+									<>
+										<span style={{ paddingLeft: '8px' }}>
+											{tx.displayStr}
+											<small>
+												<span style={{ color: '#695EAD', marginLeft: '5px' }}>
+													{Math.round((timeNow - tx.timestamp) / 1000) + 's'}
+												</span>
+											</small>
+										</span>
+									</>
+								)}
+							</div>
+						);
+					})}
+					{getPendingTransactions().length === 0 && <center style={{ color: 'gray' }}>No pending transactions</center>}
+					<br />
+					<Link to={'/transactions'} onClick={togglePendingTxModal}>
+						<center>
+							<small style={{ color: 'gray', textDecoration: 'none' }}>See log</small>
+						</center>
+					</Link>
+				</div>
+			</Modal>
 			<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 			<AppBar position="static" className={classes.bar}>
 				{/* TODO is there a better way to put the logo in the middle AND the icons at the right side at the same height?
@@ -82,7 +142,21 @@ function TopBar(props) {
 									</Link>
 								</center>
 							</td>
-							<td style={{ width: '75px', whiteSpace: 'nowrap' }}>
+							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
+								<Badge
+									onClick={() => {
+										setTimeNow(Date.now());
+										togglePendingTxModal();
+									}}
+									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+									badgeContent={getPendingTransactions().length}
+									color="secondary">
+									{getPendingTransactions().length === 0 ? (
+										<HourglassEmptyIcon className={classes.transactionsIcon} />
+									) : (
+										<HourglassFullIcon className={classes.transactionsIcon} />
+									)}
+								</Badge>
 								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 								<RefreshIcon onClick={() => window.location.reload()} />
 								<Link to={'/messages'}>
@@ -138,7 +212,8 @@ function TopBar(props) {
 const mapStateToProps = state => {
 	return {
 		defaultAccount: state.fin4Store.defaultAccount,
-		messages: state.fin4Store.messages
+		messages: state.fin4Store.messages,
+		transactions: state.fin4Store.transactions
 	};
 };
 

@@ -6,7 +6,7 @@ import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import { TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import Button from '../../components/Button';
-import { getContractData } from '../../components/Contractor';
+import { getContractData, contractCall } from '../../components/Contractor';
 import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import { Link } from 'react-router-dom';
@@ -83,29 +83,30 @@ function Groups(props, context) {
 			alert('Group name invalid');
 			return;
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.createGroup(val.name, val.addCreator)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-				setShowHint(true);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'createGroup',
+			[val.name, val.addCreator],
+			'Create group'
+		);
 	};
 
 	const removeUsersMembership = () => {
 		let groupId = leaveGroupValues.current.groupId;
 		let notifyOwner = leaveGroupValues.current.notifyOwner;
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-		context.drizzle.contracts.Fin4Groups.methods
-			.removeMember(groupId, defaultAccount, notifyOwner)
-			.send({
-				from: defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Groups',
+			'removeMember',
+			[groupId, defaultAccount, notifyOwner],
+			'Remove user from group'
+		);
 	};
 
 	return (

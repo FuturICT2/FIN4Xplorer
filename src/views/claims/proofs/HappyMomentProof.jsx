@@ -45,6 +45,7 @@ function HappyMomentProof(props, context) {
 			alert('No completed upload');
 			return;
 		}
+		// TODO use new contractCall()
 		context.drizzle.contracts.HappyMoment.methods
 			.submitProof(props.tokenAddr, props.claimId, ipfsHash.current)
 			.send({ from: props.store.getState().fin4Store.defaultAccount })

@@ -20,6 +20,7 @@ import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
+import { contractCall } from '../../components/Contractor';
 
 let faucetConfig = null;
 try {
@@ -59,12 +60,29 @@ function Home(props, context) {
 	};
 
 	const dev = () => {
-		context.drizzle.contracts.Fin4Main.methods
-			.dev(3)
-			.send({ from: props.store.getState().fin4Store.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Main',
+			'dev',
+			3,
+			'dev method call',
+			{
+				transactionCompleted: () => {
+					console.log('--> transactionCompleted callback');
+				},
+				transactionFailed: () => {
+					console.log('--> transactionFailed callback');
+				},
+				dryRunSucceeded: () => {
+					console.log('--> dryRunSucceeded callback');
+				},
+				dryRunFailed: () => {
+					console.log('--> dryRunFailed callback');
+				}
+			}
+		);
 	};
 
 	return (

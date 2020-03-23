@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Divider } from '@material-ui/core';
-import ContractForm from '../../components/ContractForm';
 import styled from 'styled-components';
 import colors from '../../config/colors-config';
 import { drizzleConnect } from 'drizzle-react';
@@ -11,6 +10,8 @@ import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
+import ContractFormSimple from '../../components/ContractFormSimple';
+import { abiTypeToTextfieldType, capitalizeFirstLetter } from '../../components/utils';
 
 function ProofSubmission(props) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
@@ -63,15 +64,22 @@ function ProofSubmission(props) {
 			case 'HappyMoment':
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;*/
 			default:
+				const abi = require('../../build/contracts/' + proofTypeName).abi;
+				let contractMethod = 'submitProof_' + proofTypeName;
+				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
+				let fields = inputs.map(input => {
+					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
+				});
 				return (
-					<ContractForm
+					<ContractFormSimple
 						contractName={proofTypeName}
-						method={'submitProof_' + proofTypeName}
-						staticArgs={{
-							tokenAddrToReceiveProof: tokenAddrToReceiveProof,
-							claimId: claimId + ''
+						contractMethod={'submitProof_' + proofTypeName}
+						pendingTxStr={'Submit proof ' + proofTypeName}
+						fields={fields}
+						fixValues={{
+							TokenAddrToReceiveProof: tokenAddrToReceiveProof,
+							ClaimId: claimId + ''
 						}}
-						buttonLabel="Submit proof"
 					/>
 				);
 		}

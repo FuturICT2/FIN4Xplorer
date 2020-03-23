@@ -4,6 +4,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
+import { doCallback } from '../components/utils';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -316,7 +317,8 @@ const initialState = {
 	parameterizerParams: {},
 	systemParameters: {},
 	tokenCreationDrafts: {},
-	submissions: {}
+	submissions: {},
+	transactions: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -588,6 +590,95 @@ function fin4StoreReducer(state = initialState, action) {
 				};
 			}
 			return state;
+		case 'DRY_RUN_FAILED':
+			// this entry is not connected to a "real" transaction lifecycle
+			// it only serves to provide details for the transaction log page
+			return Object.assign({}, state, {
+				transactions: [
+					...state.transactions,
+					{
+						status: 'DRY_RUN_FAILED',
+						methodStr: action.methodStr,
+						displayStr: action.displayStr,
+						err: action.errorReason,
+						timestamp: Date.now()
+					}
+				]
+			});
+		case 'SEND_CONTRACT_TX':
+			return Object.assign({}, state, {
+				transactions: [
+					...state.transactions,
+					{
+						stackTempKey: action.stackTempKey,
+						stackId: action.stackId,
+						txHash: null,
+						err: null,
+						status: 'SENT',
+						methodStr: null,
+						displayStr: null,
+						receiptObj: null,
+						callbackTxCompleted: null,
+						callbackTxFailed: null,
+						timestamp: Date.now()
+					}
+				]
+			});
+		case 'ENRICH_PENDING_TRANSACTION':
+			let pendingTx_enrich = state.transactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_enrich = state.transactions.indexOf(pendingTx_enrich);
+			return update(state, {
+				transactions: {
+					[index_enrich]: {
+						status: { $set: 'ENRICHED' },
+						methodStr: { $set: action.methodStr },
+						displayStr: { $set: action.displayStr },
+						callbacks: { $set: action.callbacks },
+						timestamp: { $set: Date.now() }
+					}
+				}
+			});
+		case 'TX_BROADCASTED':
+			let pendingTx_broadcasted = state.transactions.filter(tx => tx.stackId === action.stackId)[0];
+			let index_broadcasted = state.transactions.indexOf(pendingTx_broadcasted);
+			return update(state, {
+				transactions: {
+					[index_broadcasted]: {
+						txHash: { $set: action.txHash },
+						status: { $set: 'BROADCASTED' },
+						timestamp: { $set: Date.now() }
+					}
+				}
+			});
+		case 'TX_SUCCESSFUL':
+			// TODO shield against transactions that don't go through our controlled lifecycle?
+			let pendingTx_successful = state.transactions.filter(tx => tx.txHash === action.txHash)[0];
+			let index_successful = state.transactions.indexOf(pendingTx_successful);
+			console.log('Transaction completed successfully: ' + pendingTx_successful.methodStr);
+			doCallback(pendingTx_successful.callbacks, 'transactionCompleted', action.receipt);
+			return update(state, {
+				transactions: {
+					[index_successful]: {
+						status: { $set: 'SUCCESSFUL' },
+						receiptObj: { $set: action.receipt },
+						timestamp: { $set: Date.now() }
+					}
+				}
+			});
+		case 'TX_ERROR':
+			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
+			let index_error = state.transactions.indexOf(pendingTx_error);
+			toast.error('Transaction failed', { position: toast.POSITION.TOP_RIGHT });
+			doCallback(pendingTx_error.callbacks, 'transactionFailed', action.error);
+			return update(state, {
+				transactions: {
+					[index_error]: {
+						status: { $set: 'ERROR' },
+						err: { $set: action.error },
+						timestamp: { $set: Date.now() }
+					}
+				}
+			});
 		default:
 			return state;
 	}

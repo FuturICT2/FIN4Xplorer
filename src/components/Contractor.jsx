@@ -1,5 +1,8 @@
+import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
+import { doCallback } from './utils';
+import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
 
@@ -8,6 +11,82 @@ const web3 = new Web3(window.ethereum);
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
+
+const contractCall = (
+	context,
+	props,
+	defaultAccount,
+	contractName,
+	methodName,
+	params,
+	displayStr = '',
+	callbacks = {}, // transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	skipDryRun = false
+) => {
+	let contract = context.drizzle.contracts[contractName];
+	let abiArr = contract.abi;
+	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
+	let methodInputs = methodAbi.inputs.map(el => el.type);
+	let eth = context.drizzle.web3.eth;
+	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
+	if (!Array.isArray(params)) {
+		params = [params];
+	}
+	let param = eth.abi.encodeParameters(methodInputs, params);
+	let data = funcSig + param.slice(2);
+	let paramStr = params
+		.map(el => {
+			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
+		})
+		.join(',');
+	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
+
+	if (skipDryRun) {
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		return;
+	}
+
+	console.log('Initiating dry run: ' + methodStr);
+	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
+		if (err) {
+			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
+			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
+			console.log('Dry run failed with error: ' + errObj.reason, err);
+			toast.error(
+				<div>
+					<b>Transaction test failed</b>
+					<br />
+					{'Reson: ' + errObj.reason}
+				</div>,
+				{ position: toast.POSITION.TOP_RIGHT }
+			);
+			props.dispatch({
+				type: 'DRY_RUN_FAILED',
+				methodStr: methodStr,
+				displayStr: displayStr,
+				errorReason: errObj.reason
+			});
+			doCallback(callbacks, 'dryRunFailed', errObj.reason);
+			return;
+		}
+		console.log('Dry run succeeded, initiating transaction', res);
+		doCallback(callbacks, 'dryRunSucceeded', res);
+
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+	});
+};
+
+const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
+	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+
+	props.dispatch({
+		type: 'ENRICH_PENDING_TRANSACTION',
+		stackId: stackId,
+		methodStr: methodStr,
+		displayStr: displayStr,
+		callbacks: callbacks
+	});
+};
 
 const getContractData = (contract, defaultAccount, method, ...methodArgs) => {
 	if (methodArgs.length === 0) {
@@ -524,23 +603,6 @@ export {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchOPATs,
-	fetchSystemParameters
+	fetchSystemParameters,
+	contractCall
 };
-
-/*
-// DEPRECATED
-const getAllActionTypes = () => {
-	return getContractData_deprecated(Fin4MainAddress, 'Fin4Main', 'getAllFin4Tokens')
-		.then(tokens => {
-			return tokens.map(address => {
-				return getContractData_deprecated(address, 'Fin4Token', 'getInfo').then(({ 0: name, 1: symbol, 2: description }) => {
-					return {
-						value: address,
-						label: `[${symbol}] ${name}`
-					};
-				});
-			});
-		})
-		.then(data => Promise.all(data));
-};
-*/

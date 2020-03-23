@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
 import { findProofTypeAddressByName, BNstr } from '../../components/utils';
-import { findTokenBySymbol } from '../../components/Contractor';
+import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
@@ -134,39 +134,47 @@ function TokenCreationProcess(props, context) {
 		setTokenCreationStage('Waiting for the token creation to complete');
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
-		context.drizzle.contracts[tokenCreatorContract].methods
-			.createNewToken(...tokenCreationArgs)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(result => {
-				console.log('Results of submitting ' + tokenCreatorContract + '.createNewToken: ', result);
-				let newTokenAddress = result.events.NewFin4TokenAddress.returnValues.tokenAddress;
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
-				for (var name in draft.proofs) {
-					if (draft.proofs.hasOwnProperty(name)) {
-						let proof = draft.proofs[name];
-						let parameterNames = Object.keys(proof.parameters);
-						if (parameterNames.length === 0) {
-							continue;
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			tokenCreatorContract,
+			'createNewToken',
+			tokenCreationArgs,
+			'Create new token: ' + draft.basics.symbol.toUpperCase(),
+			{
+				transactionCompleted: receipt => {
+					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
+					for (var name in draft.proofs) {
+						if (draft.proofs.hasOwnProperty(name)) {
+							let proof = draft.proofs[name];
+							let parameterNames = Object.keys(proof.parameters);
+							if (parameterNames.length === 0) {
+								continue;
+							}
+							proofContractsToParameterize.current++;
+							let values = parameterNames.map(pName => proof.parameters[pName]);
+							// TODO is the correct order of values guaranteed?
+							setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
 						}
-						furtherTransactionsCount.current++;
-						let values = parameterNames.map(pName => proof.parameters[pName]);
-						// TODO is the correct order of values guaranteed?
-						setParamsOnProofContract(name, newTokenAddress, values);
 					}
+					updateTokenCreationStage();
 				}
-
-				updateTokenCreationStage();
-			});
+			}
+		);
 	};
 
 	const updateTokenCreationStage = () => {
-		if (transactionCounter.current == furtherTransactionsCount.current) {
+		if (transactionCounter.current == proofContractsToParameterize.current) {
 			setTokenCreationStage('completed');
 		} else {
 			setTokenCreationStage(
-				'Further transactions confirmed: ' + transactionCounter.current + ' / ' + furtherTransactionsCount.current
+				'Waiting for proof contracts to receive parameters: ' +
+					transactionCounter.current +
+					' / ' +
+					proofContractsToParameterize.current
 			);
 		}
 	};
@@ -174,20 +182,25 @@ function TokenCreationProcess(props, context) {
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const furtherTransactionsCount = useRef(0);
+	const proofContractsToParameterize = useRef(0);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
-	const setParamsOnProofContract = (contractName, tokenAddr, values) => {
-		context.drizzle.contracts[contractName].methods
-			.setParameters(tokenAddr, ...values)
-			.send({
-				from: props.defaultAccount
-			})
-			.then(result => {
-				console.log('Results of submitting ' + contractName + '.setParameters: ', result);
-				transactionCounter.current++;
-				updateTokenCreationStage();
-			});
+	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			contractName,
+			'setParameters',
+			[tokenAddr, ...values],
+			'Set parameter on proof type: ' + contractName,
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage();
+				}
+			}
+		);
 	};
 
 	return (
