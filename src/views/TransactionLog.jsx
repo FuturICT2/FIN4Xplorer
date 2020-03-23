@@ -17,7 +17,7 @@ function TransactionLog(props, context) {
 					<center style={{ color: 'gray' }}>Log entries are cleared upon reloading the page.</center>
 					<br />
 					<br />
-					{props.transactions.map((tx, index) => {
+					{props.transactions.reverse().map((tx, index) => {
 						return (
 							<span key={'tx_' + index} style={{ wordWrap: 'break-word' }}>
 								{tx.displayStr && (
