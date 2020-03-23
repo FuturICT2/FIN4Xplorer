@@ -70,7 +70,7 @@ const findProofTypeAddressByName = (proofTypes, name) => {
 };
 
 const doCallback = (callbackCollection, name, args) => {
-	if (callbackCollection[name]) {
+	if (callbackCollection && callbackCollection[name]) {
 		callbackCollection[name](args);
 	}
 };
