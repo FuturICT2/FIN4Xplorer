@@ -15,7 +15,7 @@ import TableRow from '../../components/TableRow';
 import Currency from '../../components/Currency';
 import Modal from '../../components/Modal';
 import TextField from '@material-ui/core/TextField';
-import { isValidPublicAddress } from '../../components/Contractor';
+import { isValidPublicAddress, contractCall } from '../../components/Contractor';
 import AddressQRreader from '../../components/AddressQRreader';
 
 function CollectionEdit(props, context) {
@@ -71,49 +71,52 @@ function CollectionEdit(props, context) {
 			alert('No tokens selected');
 			return;
 		}
-
-		context.drizzle.contracts.Fin4Collections.methods
-			.addTokens(collection.collectionId, tokensToAddArr.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Collections',
+			'addTokens',
+			[collection.collectionId, tokensToAddArr.current],
+			'Add tokens to collection'
+		);
 	};
 
 	const removeToken = tokenToRemove => {
-		context.drizzle.contracts.Fin4Collections.methods
-			.removeToken(collection.collectionId, tokenToRemove)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Collections',
+			'removeToken',
+			[collection.collectionId, tokenToRemove],
+			'Remove token from collection'
+		);
 	};
 
 	const setAdminGroup = () => {
 		toggleModal();
-		context.drizzle.contracts.Fin4Collections.methods
-			.setAdminGroupId(collection.collectionId, groupIdViaModal.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Collections',
+			'setAdminGroupId',
+			[collection.collectionId, groupIdViaModal.current],
+			'Set admin group'
+		);
 	};
 
 	const removeAdminGroup = () => {
-		context.drizzle.contracts.Fin4Collections.methods
-			.removeAdminGroup(collection.collectionId)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Collections',
+			'removeAdminGroup',
+			[collection.collectionId],
+			'Remove admin group'
+		);
 	};
 
 	const transferOwnership = () => {
@@ -125,14 +128,15 @@ function CollectionEdit(props, context) {
 			alert('Invalid Ethereum public address');
 			return;
 		}
-		context.drizzle.contracts.Fin4Collections.methods
-			.transferOwnership(collection.collectionId, newOwnerAddress.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Collections',
+			'transferOwnership',
+			[collection.collectionId, newOwnerAddress.current],
+			'Transfer collection ownership'
+		);
 	};
 
 	return (
