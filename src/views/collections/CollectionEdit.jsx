@@ -161,6 +161,9 @@ function CollectionEdit(props, context) {
 							<Table headers={['Token', 'Action']} colWidths={[85, 15]}>
 								{collection.tokens.map((tokenAddress, index) => {
 									let token = props.fin4Tokens[tokenAddress];
+									if (!token) {
+										return;
+									}
 									return (
 										<TableRow
 											key={'token_' + index}
