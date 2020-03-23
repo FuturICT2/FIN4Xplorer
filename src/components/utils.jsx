@@ -75,6 +75,21 @@ const doCallback = (callbackCollection, name, args) => {
 	}
 };
 
+const abiTypeToTextfieldType = abiType => {
+	switch (abiType) {
+		case 'uint256':
+			return 'number';
+		case 'string':
+			return 'text';
+		default:
+			return abiType;
+	}
+};
+
+const capitalizeFirstLetter = str => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -83,5 +98,7 @@ export {
 	findProofTypeAddressByName,
 	TCRactive,
 	BNstr,
-	doCallback
+	doCallback,
+	abiTypeToTextfieldType,
+	capitalizeFirstLetter
 };
