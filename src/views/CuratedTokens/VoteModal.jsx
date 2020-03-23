@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { getContractData } from '../../components/Contractor';
+import { getContractData, contractCall } from '../../components/Contractor';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import { drizzleConnect } from 'drizzle-react';
@@ -52,31 +52,39 @@ function VoteModal(props, context) {
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 		let PLCRVotingContract = context.drizzle.contracts.PLCRVoting;
 
-		context.drizzle.contracts.GOV.methods
-			.approve(PLCRVotingContract.address, numbTokens)
-			.send({ from: defaultAccount })
-			.then(result => {
-				console.log('Results of submitting GOV.approve: ', result);
-
-				getContractData(
-					PLCRVotingContract,
-					defaultAccount,
-					'getInsertPointForNumTokens',
-					defaultAccount,
-					numbTokens,
-					pollID
-				).then(prevPollIdBN => {
-					let prevPollID = new BN(prevPollIdBN).toNumber();
-					let secretHash = soliditySha3(vote, salt);
-
-					PLCRVotingContract.methods
-						.commitVote(pollID, secretHash, numbTokens, prevPollID)
-						.send({ from: defaultAccount })
-						.then(result => {
-							console.log('Results of submitting PLCRVoting.commitVote: ', result);
-						});
-				});
-			});
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'GOV',
+			'approve',
+			[PLCRVotingContract.address, numbTokens],
+			'Approve GOV spending',
+			{
+				transactionCompleted: () => {
+					getContractData(
+						PLCRVotingContract,
+						defaultAccount,
+						'getInsertPointForNumTokens',
+						defaultAccount,
+						numbTokens,
+						pollID
+					).then(prevPollIdBN => {
+						let prevPollID = new BN(prevPollIdBN).toNumber();
+						let secretHash = soliditySha3(vote, salt);
+						contractCall(
+							context,
+							props,
+							defaultAccount,
+							'PLCRVoting',
+							'commitVote',
+							[pollID, secretHash, numbTokens, prevPollID],
+							'Commit vote'
+						);
+					});
+				}
+			}
+		);
 	};
 
 	return (

@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { getContractData } from '../../components/Contractor';
+import { getContractData, contractCall } from '../../components/Contractor';
 import Container from '../../components/Container';
 import GovNavComponent from './GovNavComponent';
 import { TCRactive } from '../../components/utils';
@@ -38,12 +38,17 @@ function Management(props, context) {
 	};
 
 	const claimGOV = () => {
-		context.drizzle.contracts.Fin4Reputation.methods
-			.getGOVFromReputation()
-			.send({ from: props.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting GOV.approve: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'Fin4Reputation',
+			'getGOVFromReputation',
+			[],
+			'Claim GOV from REP',
+			{},
+			true // TODO why does dry-run fail?
+		);
 	};
 
 	const toggleDelegateModal = () => {
