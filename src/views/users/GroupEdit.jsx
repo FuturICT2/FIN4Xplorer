@@ -4,7 +4,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
-import { getContractData, zeroAddress, isValidPublicAddress } from '../../components/Contractor';
+import { getContractData, zeroAddress, isValidPublicAddress, contractCall } from '../../components/Contractor';
 import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@material-ui/core';
@@ -62,14 +62,15 @@ function GroupEdit(props, context) {
 	};
 
 	const removeMember = address => {
-		context.drizzle.contracts.Fin4Groups.methods
-			.removeMember(groupId, address, false)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'removeMember',
+			[groupId, address, false],
+			'Remove user from group'
+		);
 	};
 
 	const addMembers = () => {
@@ -84,14 +85,15 @@ function GroupEdit(props, context) {
 				return;
 			}
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.addMembers(groupId, addresses)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'addMembers',
+			[groupId, addresses],
+			'Add members to group'
+		);
 	};
 
 	const transferOwnership = () => {
@@ -103,14 +105,15 @@ function GroupEdit(props, context) {
 			alert('Invalid Ethereum public address');
 			return;
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.transferOwnership(groupId, newOwnerAddress.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'transferOwnership',
+			[groupId, newOwnerAddress.current],
+			'Transfer group ownership'
+		);
 	};
 
 	return (
