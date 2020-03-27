@@ -192,6 +192,7 @@ function TokenView(props, context) {
 								{Number(details.fixedAmount) === 0
 									? buildInfoLine('Variable minting amount set by user')
 									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
+								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
 							</span>
 						)}

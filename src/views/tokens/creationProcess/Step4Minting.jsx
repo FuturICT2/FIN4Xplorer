@@ -129,7 +129,7 @@ function StepMinting(props) {
 							<TextField
 								disabled={choice === 'isMintableFalse'}
 								type="text"
-								label="unit"
+								label="Unit of measurement"
 								value={value.unit}
 								onChange={e => updateVal('unit', e.target.value)}
 								style={{ width: '100%' }}
