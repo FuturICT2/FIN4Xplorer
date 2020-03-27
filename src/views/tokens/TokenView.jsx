@@ -162,7 +162,8 @@ function TokenView(props, context) {
 								</Link>
 							</p>
 						)}
-						{buildInfoLine('Description', tokenViaURL.description)}
+						{buildInfoLine('Short description', tokenViaURL.description.split('||')[0])}
+						{buildInfoLine('Long description', tokenViaURL.description.split('||')[1])}
 						{!details ? (
 							<span style={{ fontFamily: 'arial' }}>Loading details...</span>
 						) : (
