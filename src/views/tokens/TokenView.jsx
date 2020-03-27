@@ -46,7 +46,7 @@ function TokenView(props, context) {
 					isCapped: boolPropertiesArr[3],
 					cap: uintValuesArr[0],
 					decimals: uintValuesArr[1],
-					fixedQuantity: uintValuesArr[2],
+					fixedAmount: uintValuesArr[2],
 					initialSupply: uintValuesArr[3],
 					actionsText: actionsText
 				});
@@ -189,9 +189,9 @@ function TokenView(props, context) {
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{Number(details.fixedQuantity) === 0
+								{Number(details.fixedAmount) === 0
 									? buildInfoLine('Variable minting amount set by user')
-									: buildInfoLine('Fixed minting quantity per claim', details.fixedQuantity)}
+									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
 							</span>
 						)}

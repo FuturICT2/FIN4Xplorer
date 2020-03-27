@@ -6,7 +6,7 @@ import StepsBottomNav from './StepsBottomNav';
 import { FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 
 const PROPERTY_DEFAULT = {
-	fixedQuantity: 1,
+	fixedAmount: 1,
 	unit: 'quantity'
 };
 
@@ -26,9 +26,9 @@ function StepMinting(props) {
 		}
 		let draft = props.draft;
 
-		let fixed = getValue(draft, 'fixedQuantity');
+		let fixed = getValue(draft, 'fixedAmount');
 		setValue({
-			fixedQuantity: fixed,
+			fixedAmount: fixed,
 			unit: getValue(draft, 'unit')
 		});
 
@@ -61,7 +61,7 @@ function StepMinting(props) {
 		props.handleNext();
 	};
 
-	const [choice, setChoice] = useState('fixedQuantity');
+	const [choice, setChoice] = useState('fixedAmount');
 
 	return (
 		<>
@@ -80,25 +80,25 @@ function StepMinting(props) {
 						<td style={{ width: '50%' }}>
 							<FormControlLabel
 								disabled={choice === 'isMintableFalse'}
-								checked={choice === 'fixedQuantity'}
+								checked={choice === 'fixedAmount'}
 								control={<Radio />}
 								label="Fixed amount"
 								onChange={e => {
-									setChoice('fixedQuantity');
+									setChoice('fixedAmount');
 									setValue({
 										...value,
-										fixedQuantity: 1
+										fixedAmount: 1
 									});
 								}}
 							/>
 						</td>
 						<td>
 							<TextField
-								disabled={choice !== 'fixedQuantity'}
+								disabled={choice !== 'fixedAmount'}
 								type="number"
 								label="per claim"
-								value={value.fixedQuantity}
-								onChange={e => updateVal('fixedQuantity', Number(e.target.value))}
+								value={value.fixedAmount}
+								onChange={e => updateVal('fixedAmount', Number(e.target.value))}
 							/>
 						</td>
 					</tr>
@@ -117,7 +117,7 @@ function StepMinting(props) {
 									setChoice('variableAmount');
 									setValue({
 										...value,
-										fixedQuantity: 0
+										fixedAmount: 0
 									});
 								}}
 							/>

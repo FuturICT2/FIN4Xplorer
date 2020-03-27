@@ -126,7 +126,7 @@ function TokenCreationProcess(props, context) {
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			draft.basics.description,
 			draft.actions.text,
-			draft.value.fixedQuantity,
+			draft.value.fixedAmount,
 			draft.value.unit
 		];
 
