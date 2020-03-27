@@ -9,6 +9,14 @@ const BNstr = numb => {
 	return web3.utils.toBN(numb).toString();
 };
 
+const stringToBytes32 = str => {
+	return web3.utils.toAscii(str);
+};
+
+const bytes32ToString = bytes32 => {
+	return web3.utils.hexToUtf8(bytes32);
+};
+
 const buildIconLabelLink = (link, icon, label, enabled = true, newLineAfterwards = true) => {
 	let style = { textDecoration: 'none' };
 	let tooltip = null;
@@ -100,5 +108,7 @@ export {
 	BNstr,
 	doCallback,
 	abiTypeToTextfieldType,
-	capitalizeFirstLetter
+	capitalizeFirstLetter,
+	stringToBytes32,
+	bytes32ToString
 };
