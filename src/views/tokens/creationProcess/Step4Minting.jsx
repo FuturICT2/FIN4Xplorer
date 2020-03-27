@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import { FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 const PROPERTY_DEFAULT = {
 	fixedAmount: 1,
 	unit: 'quantity'
 };
 
-function StepMinting(props) {
+function StepMinting(props, context) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -38,6 +39,8 @@ function StepMinting(props) {
 
 		if (!draft.properties.isMintable) {
 			setChoice('isMintableFalse');
+		} else if (!draft.properties.minterRoles.split(',').includes(context.drizzle.contracts.Fin4Claiming.address)) {
+			setChoice('fin4HasNoMinterRole');
 		}
 
 		setDraftId(draft.id);
@@ -63,13 +66,25 @@ function StepMinting(props) {
 
 	const [choice, setChoice] = useState('fixedAmount');
 
+	const disabled = () => {
+		return choice === 'isMintableFalse' || choice === 'fin4HasNoMinterRole';
+	};
+
 	return (
 		<>
 			{choice === 'isMintableFalse' && (
 				<>
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
-						You set your token to not be mintable in the design step. Approving claims won't mint a balance to the
-						claimer.
+						You set your token to not be mintable in the design step.
+					</center>
+					<br />
+				</>
+			)}
+			{choice === 'fin4HasNoMinterRole' && (
+				<>
+					<center style={{ fontFamily: 'arial', color: 'orange' }}>
+						You removed the address of the Fin4Claiming contract from the minter roles in the design step. Therefore a
+						minting policy can't be effectuated from the Finance 4.0 system.
 					</center>
 					<br />
 				</>
@@ -79,7 +94,7 @@ function StepMinting(props) {
 					<tr>
 						<td style={{ width: '50%' }}>
 							<FormControlLabel
-								disabled={choice === 'isMintableFalse'}
+								disabled={disabled()}
 								checked={choice === 'fixedAmount'}
 								control={<Radio />}
 								label="Fixed amount"
@@ -109,7 +124,7 @@ function StepMinting(props) {
 					<tr>
 						<td colSpan={2}>
 							<FormControlLabel
-								disabled={choice === 'isMintableFalse'}
+								disabled={disabled()}
 								checked={choice === 'variableAmount'}
 								control={<Radio />}
 								label="Variable amount"
@@ -127,7 +142,7 @@ function StepMinting(props) {
 						<td colSpan={2}>
 							<br />
 							<TextField
-								disabled={choice === 'isMintableFalse'}
+								disabled={disabled()}
 								type="text"
 								label="Unit of measurement"
 								value={value.unit}
@@ -143,5 +158,9 @@ function StepMinting(props) {
 		</>
 	);
 }
+
+StepMinting.contextTypes = {
+	drizzle: PropTypes.object
+};
 
 export default drizzleConnect(StepMinting);
