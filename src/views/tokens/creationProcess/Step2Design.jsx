@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 // put these somewhere central? #ConceptualDecision
 const PROPERTY_DEFAULT = {
@@ -13,10 +14,11 @@ const PROPERTY_DEFAULT = {
 	isCapped: false,
 	cap: 0,
 	decimals: 0,
-	initialSupply: 0
+	initialSupply: 0,
+	minterRoles: ''
 };
 
-function StepDesign(props) {
+function StepDesign(props, context) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -40,7 +42,10 @@ function StepDesign(props) {
 			isCapped: getValue(draft, 'isCapped'),
 			cap: getValue(draft, 'cap'),
 			decimals: getValue(draft, 'decimals'),
-			initialSupply: getValue(draft, 'initialSupply')
+			initialSupply: getValue(draft, 'initialSupply'),
+			minterRoles: draft.properties.hasOwnProperty('minterRoles')
+				? draft.properties['minterRoles']
+				: context.drizzle.contracts.Fin4Claiming.address
 		});
 
 		setDraftId(draft.id);
@@ -106,6 +111,21 @@ function StepDesign(props) {
 					onChange={e => updateVal('initialSupply', Number(e.target.value))}
 				/>
 				{buildCheckboxWithLabel('is mintable', 'isMintable')}
+				{properties.isMintable && (
+					<TextField
+						label="Minter roles" // TODO add to info text on the right side
+						style={{ marginTop: '10px' }}
+						inputProps={{
+							style: { fontSize: 'small' }
+						}}
+						multiline
+						rows="2"
+						fullWidth
+						variant="outlined"
+						value={properties.minterRoles}
+						onChange={e => updateVal('minterRoles', e.target.value)}
+					/>
+				)}
 				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
 				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
 				<TextField
@@ -125,6 +145,10 @@ const styles = {
 	numberField: {
 		marginBottom: '15px'
 	}
+};
+
+StepDesign.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 export default drizzleConnect(StepDesign);
