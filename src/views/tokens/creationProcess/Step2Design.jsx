@@ -88,9 +88,6 @@ function StepDesign(props) {
 	return (
 		<>
 			<div style={{ padding: '10px 0 0 85px' }}>
-				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
-				{buildCheckboxWithLabel('is mintable', 'isMintable')}
-				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
 				{buildCheckboxWithLabel('is capped', 'isCapped')}
 				<TextField
 					disabled={!properties['isCapped']}
@@ -103,17 +100,20 @@ function StepDesign(props) {
 				/>
 				<TextField
 					type="number"
-					label="Decimals"
-					style={styles.numberField}
-					value={properties.decimals}
-					onChange={e => updateVal('decimals', Number(e.target.value))}
-				/>
-				<TextField
-					type="number"
 					label="Initial supply"
 					style={styles.numberField}
 					value={properties.initialSupply}
 					onChange={e => updateVal('initialSupply', Number(e.target.value))}
+				/>
+				{buildCheckboxWithLabel('is mintable', 'isMintable')}
+				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
+				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
+				<TextField
+					type="number"
+					label="Decimals"
+					style={styles.numberField}
+					value={properties.decimals}
+					onChange={e => updateVal('decimals', Number(e.target.value))}
 				/>
 			</div>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
