@@ -47,8 +47,7 @@ function TokenView(props, context) {
 					cap: uintValuesArr[0],
 					decimals: uintValuesArr[1],
 					fixedQuantity: uintValuesArr[2],
-					userDefinedQuantityFactor: uintValuesArr[3],
-					initialSupply: uintValuesArr[4],
+					initialSupply: uintValuesArr[3],
 					actionsText: actionsText
 				});
 			}
@@ -97,7 +96,11 @@ function TokenView(props, context) {
 	const buildInfoLine = (label, value) => {
 		return (
 			<p>
-				<span style={{ color: 'gray' }}>{label}:</span> {value}
+				<span style={{ color: 'gray' }}>
+					{label}
+					{value ? ':' : ''}
+				</span>{' '}
+				{value}
 			</p>
 		);
 	};
@@ -186,8 +189,9 @@ function TokenView(props, context) {
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Fixed minting quantity per claim', details.fixedQuantity)}
-								{buildInfoLine('Minting user-given quantity times', details.userDefinedQuantityFactor)}
+								{Number(details.fixedQuantity) === 0
+									? buildInfoLine('Variable minting amount set by user')
+									: buildInfoLine('Fixed minting quantity per claim', details.fixedQuantity)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
 							</span>
 						)}

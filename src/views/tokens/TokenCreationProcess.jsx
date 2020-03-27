@@ -127,7 +127,6 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.value.fixedQuantity,
-			draft.value.userDefinedQuantityFactor,
 			draft.value.unit
 		];
 
