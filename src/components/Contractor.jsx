@@ -310,18 +310,16 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 				return getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
 					({
 						0: userIsCreator,
-						1: userIsAdmin,
-						2: name,
-						3: symbol,
-						4: description,
-						5: unit,
-						6: totalSupply,
-						7: creationTime,
-						8: hasFixedMintingQuantity
+						1: name,
+						2: symbol,
+						3: description,
+						4: unit,
+						5: totalSupply,
+						6: creationTime,
+						7: hasFixedMintingQuantity
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
-							userIsAdmin: userIsAdmin,
 							address: tokenAddr,
 							name: name,
 							symbol: symbol,
