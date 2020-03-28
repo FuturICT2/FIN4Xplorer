@@ -42,7 +42,7 @@ function Management(props, context) {
 			context,
 			props,
 			props.defaultAccount,
-			'Fin4Reputation',
+			'REP',
 			'getGOVFromReputation',
 			[],
 			'Claim GOV from REP',
@@ -70,10 +70,10 @@ function Management(props, context) {
 							data={{
 								token: 'Reputation Token',
 								balance:
-									props.contracts.Fin4Reputation &&
-									props.contracts.Fin4Reputation.initialized &&
-									props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.Fin4Reputation.address] !== undefined
-										? props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.Fin4Reputation.address]
+									props.contracts.REP &&
+									props.contracts.REP.initialized &&
+									props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.REP.address] !== undefined
+										? props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.REP.address]
 										: '?',
 								actions: <Button onClick={claimGOV}>Claim GOV</Button>
 							}}

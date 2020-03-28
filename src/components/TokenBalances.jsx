@@ -75,9 +75,9 @@ function TokenBalances(props, context) {
 					{props.contracts.GOV &&
 						props.contracts.GOV.initialized &&
 						buildGovernanceTokenBalance(context.drizzle.contracts.GOV, 'Fin4 Governance Token', 'GOV')}
-					{props.contracts.Fin4Reputation &&
-						props.contracts.Fin4Reputation.initialized &&
-						buildGovernanceTokenBalance(context.drizzle.contracts.Fin4Reputation, 'Fin4 Reputation Token', 'REP', {
+					{props.contracts.REP &&
+						props.contracts.REP.initialized &&
+						buildGovernanceTokenBalance(context.drizzle.contracts.REP, 'Fin4 Reputation Token', 'REP', {
 							borderBottom: '2px dotted silver'
 						})}
 					{getTokenAddressesSortedByBalance().map((tokenAddr, index) => {

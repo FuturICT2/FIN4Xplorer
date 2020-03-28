@@ -70,9 +70,9 @@ function LoadInitialData(props, context) {
 			fetchUsersGOVbalance(props, context.drizzle.contracts.GOV);
 		}
 
-		if (!isInit.current.REP && props.contracts.Fin4Reputation && props.contracts.Fin4Reputation.initialized) {
+		if (!isInit.current.REP && props.contracts.REP && props.contracts.REP.initialized) {
 			isInit.current.REP = true;
-			fetchUsersREPbalance(props, context.drizzle.contracts.Fin4Reputation);
+			fetchUsersREPbalance(props, context.drizzle.contracts.REP);
 		}
 
 		if (
