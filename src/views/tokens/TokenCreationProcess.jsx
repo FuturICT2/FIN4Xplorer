@@ -122,7 +122,11 @@ function TokenCreationProcess(props, context) {
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
-			],
+			]
+		];
+
+		let postCreationStepsArgs = [
+			null, // token address
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			draft.basics.description,
 			draft.actions.text,
@@ -130,11 +134,28 @@ function TokenCreationProcess(props, context) {
 			draft.value.unit
 		];
 
-		setTokenCreationStage('Waiting for the token creation to complete');
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
-
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
+		// proof types with parameters
+		let proofsToParameterize = [];
+		for (var name in draft.proofs) {
+			if (draft.proofs.hasOwnProperty(name)) {
+				let proof = draft.proofs[name];
+				let parameterNames = Object.keys(proof.parameters);
+				if (parameterNames.length === 0) {
+					continue;
+				}
+				transactionsRequired.current++;
+				let values = parameterNames.map(pName => proof.parameters[pName]);
+				proofsToParameterize.push({
+					name: name,
+					values: values
+				});
+			}
+		}
+
+		updateTokenCreationStage('Waiting for the token creation to complete.');
 		contractCall(
 			context,
 			props,
@@ -145,35 +166,45 @@ function TokenCreationProcess(props, context) {
 			'Create new token: ' + draft.basics.symbol.toUpperCase(),
 			{
 				transactionCompleted: receipt => {
+					transactionCounter.current++;
+					updateTokenCreationStage('Waiting for the new token to receive further parameters.');
+
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
-					for (var name in draft.proofs) {
-						if (draft.proofs.hasOwnProperty(name)) {
-							let proof = draft.proofs[name];
-							let parameterNames = Object.keys(proof.parameters);
-							if (parameterNames.length === 0) {
-								continue;
+					postCreationStepsArgs[0] = newTokenAddress;
+
+					contractCall(
+						context,
+						props,
+						defaultAccount,
+						tokenCreatorContract,
+						'postCreationSteps',
+						postCreationStepsArgs,
+						'Set parameters on new token',
+						{
+							transactionCompleted: () => {
+								transactionCounter.current++;
+								updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+								proofsToParameterize.map(proof => {
+									setParamsOnProofContract(defaultAccount, proof.name, newTokenAddress, proof.values);
+								});
 							}
-							proofContractsToParameterize.current++;
-							let values = parameterNames.map(pName => proof.parameters[pName]);
-							// TODO is the correct order of values guaranteed?
-							setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
 						}
-					}
-					updateTokenCreationStage();
+					);
 				}
 			}
 		);
 	};
 
-	const updateTokenCreationStage = () => {
-		if (transactionCounter.current == proofContractsToParameterize.current) {
+	const updateTokenCreationStage = text => {
+		if (transactionCounter.current == transactionsRequired.current) {
 			setTokenCreationStage('completed');
 		} else {
 			setTokenCreationStage(
-				'Waiting for proof contracts to receive parameters: ' +
-					transactionCounter.current +
-					' / ' +
-					proofContractsToParameterize.current
+				<span>
+					{text}
+					<br />
+					Step: {transactionCounter.current + 1} / {transactionsRequired.current}
+				</span>
 			);
 		}
 	};
@@ -181,7 +212,7 @@ function TokenCreationProcess(props, context) {
 	// TODO combine these two with one useState-counter?
 	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const proofContractsToParameterize = useRef(0);
+	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState(null);
 
 	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
@@ -196,7 +227,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage();
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
 				}
 			}
 		);
