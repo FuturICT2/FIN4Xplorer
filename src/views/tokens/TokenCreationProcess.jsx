@@ -167,29 +167,26 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: receipt => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for the new token to receive further parameters.');
 
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					contractCall(
-						context,
-						props,
-						defaultAccount,
-						tokenCreatorContract,
-						'postCreationSteps',
-						postCreationStepsArgs,
-						'Set parameters on new token',
-						{
-							transactionCompleted: () => {
-								transactionCounter.current++;
-								updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
-								proofsToParameterize.map(proof => {
-									setParamsOnProofContract(defaultAccount, proof.name, newTokenAddress, proof.values);
-								});
-							}
-						}
-					);
+					if (proofsToParameterize.length === 0) {
+						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+						return;
+					}
+
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					proofsToParameterize.map(proof => {
+						setParamsOnProofContract(
+							defaultAccount,
+							proof.name,
+							newTokenAddress,
+							proof.values,
+							tokenCreatorContract,
+							postCreationStepsArgs
+						);
+					});
 				}
 			}
 		);
@@ -213,7 +210,14 @@ function TokenCreationProcess(props, context) {
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
-	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
+	const setParamsOnProofContract = (
+		defaultAccount,
+		contractName,
+		tokenAddr,
+		values,
+		tokenCreatorContract,
+		postCreationStepsArgs
+	) => {
 		contractCall(
 			context,
 			props,
@@ -222,6 +226,30 @@ function TokenCreationProcess(props, context) {
 			'setParameters',
 			[tokenAddr, ...values],
 			'Set parameter on proof type: ' + contractName,
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+					}
+				}
+			}
+		);
+	};
+
+	const tokenParameterization = (defaultAccount, tokenCreatorContract, postCreationStepsArgs) => {
+		updateTokenCreationStage('Waiting for the new token to receive further parameters.');
+
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			tokenCreatorContract,
+			'postCreationSteps',
+			postCreationStepsArgs,
+			'Set parameters on new token',
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
