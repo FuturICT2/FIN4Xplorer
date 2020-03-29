@@ -137,6 +137,7 @@ function TokenCreationProcess(props, context) {
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
 			draft.value.fixedAmount,
