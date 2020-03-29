@@ -209,11 +209,9 @@ function TokenCreationProcess(props, context) {
 		}
 	};
 
-	// TODO combine these two with one useState-counter?
-	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
 	const transactionsRequired = useRef(2);
-	const [tokenCreationStage, setTokenCreationStage] = useState(null);
+	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
 	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
 		contractCall(
@@ -266,7 +264,7 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
 							{activeStep === 4 && buildStepComponent(StepProving)}
-							{activeStep === steps.length && tokenCreationStage === null && (
+							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>
 									{/*countProofsWithParams() > 0 && (
@@ -288,13 +286,13 @@ function TokenCreationProcess(props, context) {
 									</div>
 								</center>
 							)}
-							{activeStep === steps.length && tokenCreationStage !== null && tokenCreationStage !== 'completed' && (
+							{activeStep === steps.length && tokenCreationStage !== 'unstarted' && tokenCreationStage !== 'completed' && (
 								<center>
 									<CircularProgress />
 									<br />
 									<br />
 									<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
-										{tokenCreationStage ? tokenCreationStage : ''}
+										{tokenCreationStage}
 									</span>
 								</center>
 							)}
