@@ -21,6 +21,7 @@ import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/
 import { findProofTypeAddressByName, BNstr } from '../../components/utils';
 import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -187,6 +188,12 @@ function TokenCreationProcess(props, context) {
 							postCreationStepsArgs
 						);
 					});
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
 				}
 			}
 		);
@@ -234,6 +241,12 @@ function TokenCreationProcess(props, context) {
 					if (transactionCounter.current == transactionsRequired.current - 1) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
 				}
 			}
 		);
@@ -254,6 +267,12 @@ function TokenCreationProcess(props, context) {
 				transactionCompleted: () => {
 					transactionCounter.current++;
 					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
 				}
 			}
 		);
@@ -314,16 +333,19 @@ function TokenCreationProcess(props, context) {
 									</div>
 								</center>
 							)}
-							{activeStep === steps.length && tokenCreationStage !== 'unstarted' && tokenCreationStage !== 'completed' && (
-								<center>
-									<CircularProgress />
-									<br />
-									<br />
-									<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
-										{tokenCreationStage}
-									</span>
-								</center>
-							)}
+							{activeStep === steps.length &&
+								tokenCreationStage !== 'unstarted' &&
+								tokenCreationStage !== 'completed' &&
+								!tokenCreationStage.toString().includes('failed') && (
+									<center>
+										<CircularProgress />
+										<br />
+										<br />
+										<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
+											{tokenCreationStage}
+										</span>
+									</center>
+								)}
 							{activeStep === steps.length && tokenCreationStage === 'completed' && (
 								<center>
 									<Typography className={classes.instructions}>Token successfully created!</Typography>
@@ -332,6 +354,15 @@ function TokenCreationProcess(props, context) {
 										style={{ color: 'green', transform: 'scale(2.4)' }}
 										onClick={() => history.push('/tokens')}>
 										<CheckIcon />
+									</IconButton>
+								</center>
+							)}
+							{activeStep === steps.length && tokenCreationStage.toString().includes('failed') && (
+								<center>
+									<Typography className={classes.instructions}>{tokenCreationStage}</Typography>
+									<br />
+									<IconButton style={{ color: 'red', transform: 'scale(2.4)' }} onClick={() => history.push('/tokens')}>
+										<CancelIcon />
 									</IconButton>
 								</center>
 							)}
