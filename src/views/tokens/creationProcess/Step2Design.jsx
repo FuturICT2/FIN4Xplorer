@@ -83,10 +83,20 @@ function StepDesign(props, context) {
 	};
 
 	const updateVal = (key, val) => {
-		setProperties({
-			...properties,
-			[key]: val
-		});
+		if (!val && key === 'isMintable') {
+			// a bit of a hack, a more elegant solution?
+			setProperties({
+				...properties,
+				isMintable: false,
+				Fin4ClaimingHasMinterRole: true,
+				additionalMinterRoles: ''
+			});
+		} else {
+			setProperties({
+				...properties,
+				[key]: val
+			});
+		}
 	};
 
 	return (
