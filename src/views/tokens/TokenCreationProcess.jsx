@@ -126,6 +126,14 @@ function TokenCreationProcess(props, context) {
 			]
 		];
 
+		let minterRoles = [];
+		if (draft.properties.additionalMinterRoles.length > 0) {
+			minterRoles = draft.properties.additionalMinterRoles.split(',').map(addr => addr.trim());
+		}
+		if (draft.properties.Fin4ClaimingHasMinterRole) {
+			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
+		}
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),

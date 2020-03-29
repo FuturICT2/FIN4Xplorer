@@ -15,7 +15,8 @@ const PROPERTY_DEFAULT = {
 	cap: 0,
 	decimals: 0,
 	initialSupply: 0,
-	minterRoles: ''
+	Fin4ClaimingHasMinterRole: true,
+	additionalMinterRoles: ''
 };
 
 function StepDesign(props, context) {
@@ -43,9 +44,8 @@ function StepDesign(props, context) {
 			cap: getValue(draft, 'cap'),
 			decimals: getValue(draft, 'decimals'),
 			initialSupply: getValue(draft, 'initialSupply'),
-			minterRoles: draft.properties.hasOwnProperty('minterRoles')
-				? draft.properties['minterRoles']
-				: context.drizzle.contracts.Fin4Claiming.address
+			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
+			additionalMinterRoles: getValue(draft, 'additionalMinterRoles')
 		});
 
 		setDraftId(draft.id);
@@ -62,21 +62,20 @@ function StepDesign(props, context) {
 		props.handleNext();
 	};
 
-	const buildCheckboxWithLabel = (label, fieldName, enabled = true, tooltip = null) => {
+	const buildCheckboxWithLabel = (label, fieldName, size = 'medium') => {
 		return (
 			<>
 				<FormControlLabel
 					control={
 						<Checkbox
+							size={size}
 							checked={properties[fieldName]}
 							onChange={() => {
 								updateVal(fieldName, !properties[fieldName]);
 							}}
-							disabled={!enabled}
 						/>
 					}
-					label={label}
-					title={tooltip}
+					label={<span style={{ fontSize: size === 'medium' ? '1rem' : '0.9rem' }}>{label}</span>}
 				/>
 				<br />
 			</>
@@ -112,19 +111,22 @@ function StepDesign(props, context) {
 				/>
 				{buildCheckboxWithLabel('is mintable', 'isMintable')}
 				{properties.isMintable && (
-					<TextField
-						label="Minter roles" // TODO add to info text on the right side
-						style={{ marginTop: '10px' }}
-						inputProps={{
-							style: { fontSize: 'small' }
-						}}
-						multiline
-						rows="2"
-						fullWidth
-						variant="outlined"
-						value={properties.minterRoles}
-						onChange={e => updateVal('minterRoles', e.target.value)}
-					/>
+					<div style={{ marginLeft: '40px', color: 'gray' }}>
+						{buildCheckboxWithLabel('Fin4 has minter role', 'Fin4ClaimingHasMinterRole', 'small')}
+						<TextField
+							label="Additional minter roles" // TODO add to info text on the right side
+							style={{ margin: '10px 0 10px 0' }}
+							inputProps={{
+								style: { fontSize: 'small', color: 'gray' }
+							}}
+							multiline
+							rows="2"
+							fullWidth
+							variant="outlined"
+							value={properties.additionalMinterRoles}
+							onChange={e => updateVal('additionalMinterRoles', e.target.value)}
+						/>
+					</div>
 				)}
 				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
 				{buildCheckboxWithLabel('is burnable', 'isBurnable')}

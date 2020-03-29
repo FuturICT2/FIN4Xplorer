@@ -39,7 +39,7 @@ function StepMinting(props, context) {
 
 		if (!draft.properties.isMintable) {
 			setChoice('isMintableFalse');
-		} else if (!draft.properties.minterRoles.split(',').includes(context.drizzle.contracts.Fin4Claiming.address)) {
+		} else if (!draft.properties.Fin4ClaimingHasMinterRole) {
 			setChoice('fin4HasNoMinterRole');
 		}
 
