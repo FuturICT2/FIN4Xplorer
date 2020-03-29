@@ -35,7 +35,6 @@ function StepIdentity(props) {
 	});
 
 	const submit = () => {
-		updateVal('symbol', basics.symbol.toUpperCase());
 		props.dispatch({
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
