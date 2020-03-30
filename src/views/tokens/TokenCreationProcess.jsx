@@ -115,6 +115,8 @@ function TokenCreationProcess(props, context) {
 			return;
 		}
 
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+
 		let tokenCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
@@ -141,11 +143,11 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.value.fixedAmount,
-			draft.value.unit
+			draft.value.unit,
+			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
-		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
 		// proof types with parameters
 		let proofsToParameterize = [];
