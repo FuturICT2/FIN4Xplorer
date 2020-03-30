@@ -3,7 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
+import { FormControlLabel, Radio, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const PROPERTY_DEFAULT = {

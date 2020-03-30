@@ -3,8 +3,9 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField, Radio } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 
 // put these somewhere central? #ConceptualDecision
 const PROPERTY_DEFAULT = {
@@ -15,12 +16,22 @@ const PROPERTY_DEFAULT = {
 	cap: 0,
 	decimals: 0,
 	initialSupply: 0,
+	initialSupplyUserIsOwner: true,
+	initialSupplyOtherOwner: '',
 	Fin4ClaimingHasMinterRole: true,
 	additionalMinterRoles: ''
 };
 
+const useStyles = makeStyles(theme => ({
+	label: {
+		fontSize: '0.9rem',
+		color: 'gray'
+	}
+}));
+
 function StepDesign(props, context) {
 	const { t } = useTranslation();
+	const classes = useStyles();
 
 	const [draftId, setDraftId] = useState(null);
 	const [properties, setProperties] = useState(PROPERTY_DEFAULT);
@@ -44,6 +55,8 @@ function StepDesign(props, context) {
 			cap: getValue(draft, 'cap'),
 			decimals: getValue(draft, 'decimals'),
 			initialSupply: getValue(draft, 'initialSupply'),
+			initialSupplyUserIsOwner: getValue(draft, 'initialSupplyUserIsOwner'),
+			initialSupplyOtherOwner: getValue(draft, 'initialSupplyOtherOwner'),
 			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
 			additionalMinterRoles: getValue(draft, 'additionalMinterRoles')
 		});
@@ -119,6 +132,41 @@ function StepDesign(props, context) {
 					value={properties.initialSupply}
 					onChange={e => updateVal('initialSupply', Number(e.target.value))}
 				/>
+				{properties.initialSupply > 0 && (
+					<div style={{ margin: '0 0 10px 40px', color: 'gray' }}>
+						<FormControlLabel
+							checked={properties.initialSupplyUserIsOwner}
+							control={<Radio />}
+							label="You are owner"
+							classes={{
+								label: classes.label
+							}}
+							onChange={e => {
+								setProperties({
+									...properties,
+									initialSupplyUserIsOwner: true,
+									initialSupplyOtherOwner: ''
+								});
+							}}
+						/>
+						<FormControlLabel
+							checked={!properties.initialSupplyUserIsOwner}
+							control={<Radio />}
+							label={
+								<TextField
+									disabled={properties.initialSupplyUserIsOwner}
+									type="text"
+									label="Owner address"
+									value={properties.initialSupplyOtherOwner}
+									onChange={e => updateVal('initialSupplyOtherOwner', e.target.value)}
+								/>
+							}
+							onChange={e => {
+								updateVal('initialSupplyUserIsOwner', false);
+							}}
+						/>
+					</div>
+				)}
 				{buildCheckboxWithLabel('is mintable', 'isMintable')}
 				{properties.isMintable && (
 					<div style={{ marginLeft: '40px', color: 'gray' }}>
