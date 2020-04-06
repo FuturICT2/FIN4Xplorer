@@ -135,7 +135,7 @@ function Home(props, context) {
 				{faucetConfig && faucetConfig.FAUCET_URL && (
 					<>
 						<br />
-						{buildIconLabelCallback(() => {}, <SaveAltIcon />, t('request-ether'), false)}
+						{buildIconLabelCallback(requestEther, <SaveAltIcon />, t('request-ether'), false)}
 					</>
 				)}
 			</Box>
