@@ -145,7 +145,8 @@ function Token(props) {
 				properties: {},
 				actions: {},
 				minting: {},
-				proofs: {}
+				proofs: {},
+				underlying: {}
 			},
 			addToCookies: true
 		});
