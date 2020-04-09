@@ -127,7 +127,8 @@ function TokenCreationProcess(props, context) {
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
-			]
+			],
+			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
 		];
 
 		let minterRoles = [];
@@ -145,8 +146,7 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.minting.fixedAmount,
-			draft.minting.unit,
-			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
+			draft.minting.unit
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
