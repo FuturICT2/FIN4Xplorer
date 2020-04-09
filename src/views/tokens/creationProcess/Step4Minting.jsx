@@ -98,15 +98,15 @@ function StepMinting(props, context) {
 
 	return (
 		<>
-			{buildCheckboxWithLabel('is mintable', 'isMintable')}
+			{buildCheckboxWithLabel('Token is mintable', 'isMintable')}
 			{minting.isMintable && (
-				<div style={{ marginLeft: '40px', color: 'gray' }}>
-					{buildCheckboxWithLabel('Fin4 has minter role', 'Fin4ClaimingHasMinterRole', 'small')}
+				<>
+					{buildCheckboxWithLabel('Fin4 has the minter role', 'Fin4ClaimingHasMinterRole')}
 					<TextField
 						label="Additional minter roles" // TODO add to info text on the right side
 						style={{ margin: '10px 0 10px 0' }}
 						inputProps={{
-							style: { fontSize: 'small', color: 'gray' }
+							style: { fontSize: 'small' }
 						}}
 						multiline
 						rows="2"
@@ -115,7 +115,7 @@ function StepMinting(props, context) {
 						value={minting.additionalMinterRoles}
 						onChange={e => updateVal('additionalMinterRoles', e.target.value)}
 					/>
-				</div>
+				</>
 			)}
 			{!minting.isMintable && (
 				<>
