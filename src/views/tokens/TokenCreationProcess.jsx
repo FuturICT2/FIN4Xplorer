@@ -91,6 +91,7 @@ function TokenCreationProcess(props, context) {
 			return 'Symbol must have between 3 and 5 characters';
 		}
 
+		// do a call to check on the contract here instead?
 		if (findTokenBySymbol(props, draft.basics.symbol) !== null) {
 			return 'Symbol is already in use';
 		}
@@ -120,7 +121,7 @@ function TokenCreationProcess(props, context) {
 		let tokenCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
-			[draft.properties.isBurnable, draft.properties.isTransferable, draft.value.isMintable],
+			[draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
 			[
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
@@ -129,10 +130,10 @@ function TokenCreationProcess(props, context) {
 		];
 
 		let minterRoles = [];
-		if (draft.value.additionalMinterRoles.length > 0) {
-			minterRoles = draft.value.additionalMinterRoles.split(',').map(addr => addr.trim());
+		if (draft.minting.additionalMinterRoles.length > 0) {
+			minterRoles = draft.minting.additionalMinterRoles.split(',').map(addr => addr.trim());
 		}
-		if (draft.value.Fin4ClaimingHasMinterRole) {
+		if (draft.minting.Fin4ClaimingHasMinterRole) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 
@@ -142,8 +143,8 @@ function TokenCreationProcess(props, context) {
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
-			draft.value.fixedAmount,
-			draft.value.unit,
+			draft.minting.fixedAmount,
+			draft.minting.unit,
 			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
 		];
 

@@ -18,10 +18,10 @@ function StepMinting(props, context) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [value, setValue] = useState(PROPERTY_DEFAULT);
+	const [minting, setMinting] = useState(PROPERTY_DEFAULT);
 
 	const getValue = (draft, prop) => {
-		return draft.value.hasOwnProperty(prop) ? draft.value[prop] : PROPERTY_DEFAULT[prop];
+		return draft.minting.hasOwnProperty(prop) ? draft.minting[prop] : PROPERTY_DEFAULT[prop];
 	};
 
 	const [choice, setChoice] = useState('fixedAmount');
@@ -33,7 +33,7 @@ function StepMinting(props, context) {
 		let draft = props.draft;
 
 		let fixed = getValue(draft, 'fixedAmount');
-		setValue({
+		setMinting({
 			isMintable: getValue(draft, 'isMintable'),
 			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
 			additionalMinterRoles: getValue(draft, 'additionalMinterRoles'),
@@ -55,9 +55,9 @@ function StepMinting(props, context) {
 					control={
 						<Checkbox
 							size={size}
-							checked={value[fieldName]}
+							checked={minting[fieldName]}
 							onChange={() => {
-								updateVal(fieldName, !value[fieldName]);
+								updateVal(fieldName, !minting[fieldName]);
 							}}
 						/>
 					}
@@ -70,16 +70,16 @@ function StepMinting(props, context) {
 
 	const updateVal = (key, val) => {
 		if (!val && (key === 'isMintable' || key === 'Fin4ClaimingHasMinterRole')) {
-			setValue({
-				...value,
+			setMinting({
+				...minting,
 				fixedAmount: 1,
 				unit: 'quantity',
 				[key]: val
 			});
 			setChoice('fixedAmount');
 		} else {
-			setValue({
-				...value,
+			setMinting({
+				...minting,
 				[key]: val
 			});
 		}
@@ -90,8 +90,8 @@ function StepMinting(props, context) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'value',
-			node: value
+			nodeName: 'minting',
+			node: minting
 		});
 		props.handleNext();
 	};
@@ -99,7 +99,7 @@ function StepMinting(props, context) {
 	return (
 		<>
 			{buildCheckboxWithLabel('is mintable', 'isMintable')}
-			{value.isMintable && (
+			{minting.isMintable && (
 				<div style={{ marginLeft: '40px', color: 'gray' }}>
 					{buildCheckboxWithLabel('Fin4 has minter role', 'Fin4ClaimingHasMinterRole', 'small')}
 					<TextField
@@ -112,19 +112,19 @@ function StepMinting(props, context) {
 						rows="2"
 						fullWidth
 						variant="outlined"
-						value={value.additionalMinterRoles}
+						value={minting.additionalMinterRoles}
 						onChange={e => updateVal('additionalMinterRoles', e.target.value)}
 					/>
 				</div>
 			)}
-			{!value.isMintable && (
+			{!minting.isMintable && (
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>You set your token to not be mintable.</center>
 					<br />
 				</>
 			)}
-			{!value.Fin4ClaimingHasMinterRole && value.isMintable && (
+			{!minting.Fin4ClaimingHasMinterRole && minting.isMintable && (
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
@@ -134,20 +134,20 @@ function StepMinting(props, context) {
 					<br />
 				</>
 			)}
-			{value.isMintable && value.Fin4ClaimingHasMinterRole && (
+			{minting.isMintable && minting.Fin4ClaimingHasMinterRole && (
 				<table>
 					<tbody>
 						<tr>
 							<td style={{ width: '50%' }}>
 								<FormControlLabel
-									disabled={!value.Fin4ClaimingHasMinterRole}
+									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'fixedAmount'}
 									control={<Radio />}
 									label="Fixed amount"
 									onChange={e => {
 										setChoice('fixedAmount');
-										setValue({
-											...value,
+										setMinting({
+											...minting,
 											fixedAmount: 1
 										});
 									}}
@@ -158,7 +158,7 @@ function StepMinting(props, context) {
 									disabled={choice !== 'fixedAmount'}
 									type="number"
 									label="per claim"
-									value={value.fixedAmount}
+									value={minting.fixedAmount}
 									onChange={e => updateVal('fixedAmount', Number(e.target.value))}
 								/>
 							</td>
@@ -170,14 +170,14 @@ function StepMinting(props, context) {
 						<tr>
 							<td colSpan={2}>
 								<FormControlLabel
-									disabled={!value.Fin4ClaimingHasMinterRole}
+									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'variableAmount'}
 									control={<Radio />}
 									label="Variable amount"
 									onChange={e => {
 										setChoice('variableAmount');
-										setValue({
-											...value,
+										setMinting({
+											...minting,
 											fixedAmount: 0
 										});
 									}}
@@ -188,10 +188,10 @@ function StepMinting(props, context) {
 							<td colSpan={2}>
 								<br />
 								<TextField
-									disabled={!value.Fin4ClaimingHasMinterRole}
+									disabled={!minting.Fin4ClaimingHasMinterRole}
 									type="text"
 									label="Unit of measurement"
-									value={value.unit}
+									value={minting.unit}
 									onChange={e => updateVal('unit', e.target.value)}
 									style={{ width: '100%' }}
 								/>
