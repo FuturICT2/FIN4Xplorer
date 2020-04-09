@@ -120,7 +120,7 @@ function TokenCreationProcess(props, context) {
 		let tokenCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
-			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
+			[draft.properties.isBurnable, draft.properties.isTransferable, draft.value.isMintable],
 			[
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
@@ -129,10 +129,10 @@ function TokenCreationProcess(props, context) {
 		];
 
 		let minterRoles = [];
-		if (draft.properties.additionalMinterRoles.length > 0) {
-			minterRoles = draft.properties.additionalMinterRoles.split(',').map(addr => addr.trim());
+		if (draft.value.additionalMinterRoles.length > 0) {
+			minterRoles = draft.value.additionalMinterRoles.split(',').map(addr => addr.trim());
 		}
-		if (draft.properties.Fin4ClaimingHasMinterRole) {
+		if (draft.value.Fin4ClaimingHasMinterRole) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 

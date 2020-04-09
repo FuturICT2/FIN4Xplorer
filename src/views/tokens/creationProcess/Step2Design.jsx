@@ -10,16 +10,13 @@ import { makeStyles } from '@material-ui/core/styles';
 // put these somewhere central? #ConceptualDecision
 const PROPERTY_DEFAULT = {
 	isTransferable: true,
-	isMintable: true,
 	isBurnable: false,
 	isCapped: false,
 	cap: 0,
 	decimals: 0,
 	initialSupply: 0,
 	initialSupplyUserIsOwner: true,
-	initialSupplyOtherOwner: '',
-	Fin4ClaimingHasMinterRole: true,
-	additionalMinterRoles: ''
+	initialSupplyOtherOwner: ''
 };
 
 const useStyles = makeStyles(theme => ({
@@ -49,16 +46,13 @@ function StepDesign(props, context) {
 
 		setProperties({
 			isTransferable: getValue(draft, 'isTransferable'),
-			isMintable: getValue(draft, 'isMintable'),
 			isBurnable: getValue(draft, 'isBurnable'),
 			isCapped: getValue(draft, 'isCapped'),
 			cap: getValue(draft, 'cap'),
 			decimals: getValue(draft, 'decimals'),
 			initialSupply: getValue(draft, 'initialSupply'),
 			initialSupplyUserIsOwner: getValue(draft, 'initialSupplyUserIsOwner'),
-			initialSupplyOtherOwner: getValue(draft, 'initialSupplyOtherOwner'),
-			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
-			additionalMinterRoles: getValue(draft, 'additionalMinterRoles')
+			initialSupplyOtherOwner: getValue(draft, 'initialSupplyOtherOwner')
 		});
 
 		setDraftId(draft.id);
@@ -96,20 +90,10 @@ function StepDesign(props, context) {
 	};
 
 	const updateVal = (key, val) => {
-		if (!val && key === 'isMintable') {
-			// a bit of a hack, a more elegant solution?
-			setProperties({
-				...properties,
-				isMintable: false,
-				Fin4ClaimingHasMinterRole: true,
-				additionalMinterRoles: ''
-			});
-		} else {
-			setProperties({
-				...properties,
-				[key]: val
-			});
-		}
+		setProperties({
+			...properties,
+			[key]: val
+		});
 	};
 
 	return (
@@ -164,25 +148,6 @@ function StepDesign(props, context) {
 							onChange={e => {
 								updateVal('initialSupplyUserIsOwner', false);
 							}}
-						/>
-					</div>
-				)}
-				{buildCheckboxWithLabel('is mintable', 'isMintable')}
-				{properties.isMintable && (
-					<div style={{ marginLeft: '40px', color: 'gray' }}>
-						{buildCheckboxWithLabel('Fin4 has minter role', 'Fin4ClaimingHasMinterRole', 'small')}
-						<TextField
-							label="Additional minter roles" // TODO add to info text on the right side
-							style={{ margin: '10px 0 10px 0' }}
-							inputProps={{
-								style: { fontSize: 'small', color: 'gray' }
-							}}
-							multiline
-							rows="2"
-							fullWidth
-							variant="outlined"
-							value={properties.additionalMinterRoles}
-							onChange={e => updateVal('additionalMinterRoles', e.target.value)}
 						/>
 					</div>
 				)}
