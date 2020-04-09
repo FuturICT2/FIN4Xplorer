@@ -21,8 +21,7 @@ const PROPERTY_DEFAULT = {
 
 const useStyles = makeStyles(theme => ({
 	label: {
-		fontSize: '0.9rem',
-		color: 'gray'
+		fontSize: '0.9rem'
 	}
 }));
 
@@ -109,50 +108,56 @@ function StepDesign(props, context) {
 					onChange={e => updateVal('cap', Number(e.target.value))}
 					title="Not supported yet"
 				/>
-				<TextField
-					type="number"
-					label="Initial supply"
-					style={styles.numberField}
-					value={properties.initialSupply}
-					onChange={e => updateVal('initialSupply', Number(e.target.value))}
-				/>
-				{properties.initialSupply > 0 && (
-					<div style={{ margin: '0 0 10px 40px', color: 'gray' }}>
-						<FormControlLabel
-							checked={properties.initialSupplyUserIsOwner}
-							control={<Radio />}
-							label="You are owner"
-							classes={{
-								label: classes.label
-							}}
-							onChange={e => {
-								setProperties({
-									...properties,
-									initialSupplyUserIsOwner: true,
-									initialSupplyOtherOwner: ''
-								});
-							}}
-						/>
-						<FormControlLabel
-							checked={!properties.initialSupplyUserIsOwner}
-							control={<Radio />}
-							label={
-								<TextField
-									disabled={properties.initialSupplyUserIsOwner}
-									type="text"
-									label="Owner address"
-									value={properties.initialSupplyOtherOwner}
-									onChange={e => updateVal('initialSupplyOtherOwner', e.target.value)}
-								/>
-							}
-							onChange={e => {
-								updateVal('initialSupplyUserIsOwner', false);
-							}}
-						/>
-					</div>
-				)}
+				<div style={properties.initialSupply > 0 ? styles.divOutline : null}>
+					<TextField
+						type="number"
+						label="Initial supply"
+						style={styles.numberField}
+						value={properties.initialSupply}
+						onChange={e => updateVal('initialSupply', Number(e.target.value))}
+					/>
+					{properties.initialSupply > 0 && (
+						<>
+							<FormControlLabel
+								checked={properties.initialSupplyUserIsOwner}
+								control={<Radio />}
+								label="Token creator owns"
+								classes={{
+									label: classes.label
+								}}
+								onChange={e => {
+									setProperties({
+										...properties,
+										initialSupplyUserIsOwner: true,
+										initialSupplyOtherOwner: ''
+									});
+								}}
+							/>
+							<FormControlLabel
+								checked={!properties.initialSupplyUserIsOwner}
+								control={<Radio />}
+								label={
+									<TextField
+										disabled={properties.initialSupplyUserIsOwner}
+										type="text"
+										label="Owner address"
+										inputProps={{
+											style: { fontSize: 'small' }
+										}}
+										value={properties.initialSupplyOtherOwner}
+										onChange={e => updateVal('initialSupplyOtherOwner', e.target.value)}
+									/>
+								}
+								onChange={e => {
+									updateVal('initialSupplyUserIsOwner', false);
+								}}
+							/>
+						</>
+					)}
+				</div>
 				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
 				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
+				<br />
 				<TextField
 					type="number"
 					label="Decimals"
@@ -169,6 +174,14 @@ function StepDesign(props, context) {
 const styles = {
 	numberField: {
 		marginBottom: '15px'
+	},
+	divOutline: {
+		borderRadius: '25px',
+		border: '2px solid silver',
+		padding: '20px',
+		position: 'relative',
+		left: '-20px',
+		margin: '10px 0 10px 0'
 	}
 };
 
