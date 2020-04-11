@@ -45,7 +45,8 @@ const contractEventNotifier = store => next => action => {
 				totalSupply: 0,
 				creationTime: token.creationTime,
 				hasFixedMintingQuantity: token.hasFixedMintingQuantity,
-				isOPAT: null
+				isOPAT: null,
+				mechanisms: token.mechanisms
 			}
 		});
 	}
@@ -318,7 +319,7 @@ const initialState = {
 	tokenCreationDrafts: {},
 	submissions: {},
 	transactions: [],
-	underlyingMechanisms: [{ title: 'Dev 1' }, { title: 'Dev 2' }, { title: 'Dev 3' }]
+	underlyingMechanisms: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -678,6 +679,10 @@ function fin4StoreReducer(state = initialState, action) {
 						timestamp: { $set: Date.now() }
 					}
 				}
+			});
+		case 'SET_MECHANISMS':
+			return Object.assign({}, state, {
+				underlyingMechanisms: action.underlyingMechanisms
 			});
 		default:
 			return state;

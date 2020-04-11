@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
-import { doCallback } from './utils';
+import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
@@ -316,7 +316,8 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 						4: unit,
 						5: totalSupply,
 						6: creationTime,
-						7: hasFixedMintingQuantity
+						7: hasFixedMintingQuantity,
+						8: mechanisms
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
@@ -328,7 +329,8 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 							totalSupply: new BN(totalSupply).toNumber(),
 							creationTime: creationTime,
 							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null
+							isOPAT: null,
+							mechanisms: mechanisms
 						};
 					}
 				);
@@ -358,6 +360,20 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 			});
 		}
 	);
+};
+
+const fetchMechanisms = (props, Fin4TokenManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMechanisms').then(mechanismsBytes32Arr => {
+		props.dispatch({
+			type: 'SET_MECHANISMS',
+			underlyingMechanisms: mechanismsBytes32Arr.map(b32 => {
+				return {
+					title: bytes32ToString(b32)
+				};
+			})
+		});
+	});
 };
 
 const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
@@ -602,5 +618,6 @@ export {
 	fetchUsersREPbalance,
 	fetchOPATs,
 	fetchSystemParameters,
-	contractCall
+	contractCall,
+	fetchMechanisms
 };

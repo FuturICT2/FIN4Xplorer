@@ -14,7 +14,8 @@ import {
 	fetchSystemParameters,
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
-	fetchParameterizerParams
+	fetchParameterizerParams,
+	fetchMechanisms
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -98,6 +99,7 @@ function LoadInitialData(props, context) {
 				}
 				fetchUsersNonzeroTokenBalances(props, Fin4TokenManagementContract);
 			});
+			fetchMechanisms(props, Fin4TokenManagementContract);
 		}
 
 		if (!isInit.current.Fin4Messaging && props.contracts.Fin4Messaging && props.contracts.Fin4Messaging.initialized) {
