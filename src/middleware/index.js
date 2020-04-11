@@ -317,7 +317,8 @@ const initialState = {
 	systemParameters: {},
 	tokenCreationDrafts: {},
 	submissions: {},
-	transactions: []
+	transactions: [],
+	underlyingMechanisms: [{ title: 'Dev 1' }, { title: 'Dev 2' }, { title: 'Dev 3' }]
 };
 
 function fin4StoreReducer(state = initialState, action) {
