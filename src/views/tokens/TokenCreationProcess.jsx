@@ -55,6 +55,7 @@ function TokenCreationProcess(props, context) {
 			return;
 		}
 
+		// TODO browser back/forth navigation doesn't work, should be possible to make it work
 		let stepIdViaURL = props.match.params.stepId;
 		if (stepIdViaURL && Number(stepIdViaURL) > 0 && Number(stepIdViaURL) <= 8) {
 			setActiveStep(Number(stepIdViaURL) - 1);
@@ -315,9 +316,15 @@ function TokenCreationProcess(props, context) {
 					<Box title="Token creation">
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} alternativeLabel>
-								{steps.map(label => (
+								{steps.map((label, index) => (
 									<Step key={label}>
-										<StepLabel>{label}</StepLabel>
+										<StepLabel
+											onClick={() => {
+												modifyURL(draftId, index + 1);
+												setActiveStep(index);
+											}}>
+											{label}
+										</StepLabel>
 									</Step>
 								))}
 							</Stepper>
