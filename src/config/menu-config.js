@@ -46,6 +46,11 @@ const menu = [
 		showInNavBar: false
 	},
 	{
+		component: TokenCreationProcess,
+		path: '/token/create/:draftId/:stepId',
+		showInNavBar: false
+	},
+	{
 		component: TokenView,
 		path: '/token/view/',
 		showInNavBar: false

@@ -53,20 +53,35 @@ function TokenCreationProcess(props, context) {
 		if (draftId || !draftIdViaURL || !props.tokenCreationDrafts[draftIdViaURL]) {
 			return;
 		}
+
+		let stepIdViaURL = props.match.params.stepId;
+		if (stepIdViaURL && Number(stepIdViaURL) > 0 && Number(stepIdViaURL) <= 8) {
+			setActiveStep(Number(stepIdViaURL) - 1);
+		} else {
+			modifyURL(draftIdViaURL, 1);
+		}
+
 		setDraftId(draftIdViaURL);
 	});
 
 	const [activeStep, setActiveStep] = useState(0);
 
+	const modifyURL = (_draftId, step) => {
+		window.history.pushState('', '', '/token/create/' + _draftId + '/' + step);
+	};
+
 	const handleNext = () => {
+		modifyURL(draftId, activeStep + 2);
 		setActiveStep(prevActiveStep => prevActiveStep + 1);
 	};
 
 	const handleBack = () => {
+		modifyURL(draftId, activeStep);
 		setActiveStep(prevActiveStep => prevActiveStep - 1);
 	};
 
 	const handleReset = () => {
+		modifyURL(draftId, 1);
 		setActiveStep(0);
 	};
 
