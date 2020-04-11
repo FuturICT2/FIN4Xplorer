@@ -14,7 +14,8 @@ import {
 	fetchSystemParameters,
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
-	fetchParameterizerParams
+	fetchParameterizerParams,
+	fetchMechanisms
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -70,9 +71,9 @@ function LoadInitialData(props, context) {
 			fetchUsersGOVbalance(props, context.drizzle.contracts.GOV);
 		}
 
-		if (!isInit.current.REP && props.contracts.Fin4Reputation && props.contracts.Fin4Reputation.initialized) {
+		if (!isInit.current.REP && props.contracts.REP && props.contracts.REP.initialized) {
 			isInit.current.REP = true;
-			fetchUsersREPbalance(props, context.drizzle.contracts.Fin4Reputation);
+			fetchUsersREPbalance(props, context.drizzle.contracts.REP);
 		}
 
 		if (
@@ -98,6 +99,7 @@ function LoadInitialData(props, context) {
 				}
 				fetchUsersNonzeroTokenBalances(props, Fin4TokenManagementContract);
 			});
+			fetchMechanisms(props, Fin4TokenManagementContract);
 		}
 
 		if (!isInit.current.Fin4Messaging && props.contracts.Fin4Messaging && props.contracts.Fin4Messaging.initialized) {

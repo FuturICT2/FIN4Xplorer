@@ -42,11 +42,11 @@ const contractEventNotifier = store => next => action => {
 				description: token.description,
 				unit: token.unit,
 				userIsCreator: token.creator === defaultAccount,
-				userIsAdmin: false, // TODO
 				totalSupply: 0,
 				creationTime: token.creationTime,
 				hasFixedMintingQuantity: token.hasFixedMintingQuantity,
-				isOPAT: null
+				isOPAT: null,
+				mechanisms: token.mechanisms
 			}
 		});
 	}
@@ -318,7 +318,8 @@ const initialState = {
 	systemParameters: {},
 	tokenCreationDrafts: {},
 	submissions: {},
-	transactions: []
+	transactions: [],
+	underlyingMechanisms: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -669,7 +670,7 @@ function fin4StoreReducer(state = initialState, action) {
 			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
 			let index_error = state.transactions.indexOf(pendingTx_error);
 			toast.error('Transaction failed', { position: toast.POSITION.TOP_RIGHT });
-			doCallback(pendingTx_error.callbacks, 'transactionFailed', action.error);
+			doCallback(pendingTx_error.callbacks, 'transactionFailed', action.error.message);
 			return update(state, {
 				transactions: {
 					[index_error]: {
@@ -678,6 +679,10 @@ function fin4StoreReducer(state = initialState, action) {
 						timestamp: { $set: Date.now() }
 					}
 				}
+			});
+		case 'SET_MECHANISMS':
+			return Object.assign({}, state, {
+				underlyingMechanisms: action.underlyingMechanisms
 			});
 		default:
 			return state;

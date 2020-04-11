@@ -74,10 +74,10 @@ function TokenBalances(props, context) {
 				<Table headers={[t('token-name'), t('token-balance'), 'Transfer']} colWidths={[70, 15, 15]}>
 					{props.contracts.GOV &&
 						props.contracts.GOV.initialized &&
-						buildGovernanceTokenBalance(context.drizzle.contracts.GOV, 'Fin4 Governance Token', 'GOV')}
-					{props.contracts.Fin4Reputation &&
-						props.contracts.Fin4Reputation.initialized &&
-						buildGovernanceTokenBalance(context.drizzle.contracts.Fin4Reputation, 'Fin4 Reputation Token', 'REP', {
+						buildGovernanceTokenBalance(context.drizzle.contracts.GOV, 'Governance Token', 'GOV')}
+					{props.contracts.REP &&
+						props.contracts.REP.initialized &&
+						buildGovernanceTokenBalance(context.drizzle.contracts.REP, 'Reputation Token', 'REP', {
 							borderBottom: '2px dotted silver'
 						})}
 					{getTokenAddressesSortedByBalance().map((tokenAddr, index) => {

@@ -3,21 +3,31 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField, Radio } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 
 // put these somewhere central? #ConceptualDecision
 const PROPERTY_DEFAULT = {
 	isTransferable: true,
-	isMintable: true,
 	isBurnable: false,
 	isCapped: false,
 	cap: 0,
 	decimals: 0,
-	initialSupply: 0
+	initialSupply: 0,
+	initialSupplyUserIsOwner: true,
+	initialSupplyOtherOwner: ''
 };
 
-function StepDesign(props) {
+const useStyles = makeStyles(theme => ({
+	label: {
+		fontSize: '0.9rem'
+	}
+}));
+
+function StepDesign(props, context) {
 	const { t } = useTranslation();
+	const classes = useStyles();
 
 	const [draftId, setDraftId] = useState(null);
 	const [properties, setProperties] = useState(PROPERTY_DEFAULT);
@@ -35,12 +45,13 @@ function StepDesign(props) {
 
 		setProperties({
 			isTransferable: getValue(draft, 'isTransferable'),
-			isMintable: getValue(draft, 'isMintable'),
 			isBurnable: getValue(draft, 'isBurnable'),
 			isCapped: getValue(draft, 'isCapped'),
 			cap: getValue(draft, 'cap'),
 			decimals: getValue(draft, 'decimals'),
-			initialSupply: getValue(draft, 'initialSupply')
+			initialSupply: getValue(draft, 'initialSupply'),
+			initialSupplyUserIsOwner: getValue(draft, 'initialSupplyUserIsOwner'),
+			initialSupplyOtherOwner: getValue(draft, 'initialSupplyOtherOwner')
 		});
 
 		setDraftId(draft.id);
@@ -57,21 +68,20 @@ function StepDesign(props) {
 		props.handleNext();
 	};
 
-	const buildCheckboxWithLabel = (label, fieldName, enabled = true, tooltip = null) => {
+	const buildCheckboxWithLabel = (label, fieldName, size = 'medium') => {
 		return (
 			<>
 				<FormControlLabel
 					control={
 						<Checkbox
+							size={size}
 							checked={properties[fieldName]}
 							onChange={() => {
 								updateVal(fieldName, !properties[fieldName]);
 							}}
-							disabled={!enabled}
 						/>
 					}
-					label={label}
-					title={tooltip}
+					label={<span style={{ fontSize: size === 'medium' ? '1rem' : '0.9rem' }}>{label}</span>}
 				/>
 				<br />
 			</>
@@ -88,9 +98,6 @@ function StepDesign(props) {
 	return (
 		<>
 			<div style={{ padding: '10px 0 0 85px' }}>
-				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
-				{buildCheckboxWithLabel('is mintable', 'isMintable')}
-				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
 				{buildCheckboxWithLabel('is capped', 'isCapped')}
 				<TextField
 					disabled={!properties['isCapped']}
@@ -101,19 +108,62 @@ function StepDesign(props) {
 					onChange={e => updateVal('cap', Number(e.target.value))}
 					title="Not supported yet"
 				/>
+				<div style={properties.initialSupply > 0 ? styles.divOutline : null}>
+					<TextField
+						type="number"
+						label="Initial supply"
+						style={styles.numberField}
+						value={properties.initialSupply}
+						onChange={e => updateVal('initialSupply', Number(e.target.value))}
+					/>
+					{properties.initialSupply > 0 && (
+						<>
+							<FormControlLabel
+								checked={properties.initialSupplyUserIsOwner}
+								control={<Radio />}
+								label="Token creator owns"
+								classes={{
+									label: classes.label
+								}}
+								onChange={e => {
+									setProperties({
+										...properties,
+										initialSupplyUserIsOwner: true,
+										initialSupplyOtherOwner: ''
+									});
+								}}
+							/>
+							<FormControlLabel
+								checked={!properties.initialSupplyUserIsOwner}
+								control={<Radio />}
+								label={
+									<TextField
+										disabled={properties.initialSupplyUserIsOwner}
+										type="text"
+										label="Owner address"
+										inputProps={{
+											style: { fontSize: 'small' }
+										}}
+										value={properties.initialSupplyOtherOwner}
+										onChange={e => updateVal('initialSupplyOtherOwner', e.target.value)}
+									/>
+								}
+								onChange={e => {
+									updateVal('initialSupplyUserIsOwner', false);
+								}}
+							/>
+						</>
+					)}
+				</div>
+				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
+				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
+				<br />
 				<TextField
 					type="number"
 					label="Decimals"
 					style={styles.numberField}
 					value={properties.decimals}
 					onChange={e => updateVal('decimals', Number(e.target.value))}
-				/>
-				<TextField
-					type="number"
-					label="Initial supply"
-					style={styles.numberField}
-					value={properties.initialSupply}
-					onChange={e => updateVal('initialSupply', Number(e.target.value))}
 				/>
 			</div>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
@@ -124,7 +174,19 @@ function StepDesign(props) {
 const styles = {
 	numberField: {
 		marginBottom: '15px'
+	},
+	divOutline: {
+		borderRadius: '25px',
+		border: '2px solid silver',
+		padding: '20px',
+		position: 'relative',
+		left: '-20px',
+		margin: '10px 0 10px 0'
 	}
+};
+
+StepDesign.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 export default drizzleConnect(StepDesign);

@@ -46,9 +46,8 @@ function TokenView(props, context) {
 					isCapped: boolPropertiesArr[3],
 					cap: uintValuesArr[0],
 					decimals: uintValuesArr[1],
-					fixedQuantity: uintValuesArr[2],
-					userDefinedQuantityFactor: uintValuesArr[3],
-					initialSupply: uintValuesArr[4],
+					fixedAmount: uintValuesArr[2],
+					initialSupply: uintValuesArr[3],
 					actionsText: actionsText
 				});
 			}
@@ -97,7 +96,11 @@ function TokenView(props, context) {
 	const buildInfoLine = (label, value) => {
 		return (
 			<p>
-				<span style={{ color: 'gray' }}>{label}:</span> {value}
+				<span style={{ color: 'gray' }}>
+					{label}
+					{value ? ':' : ''}
+				</span>{' '}
+				{value}
 			</p>
 		);
 	};
@@ -159,7 +162,8 @@ function TokenView(props, context) {
 								</Link>
 							</p>
 						)}
-						{buildInfoLine('Description', tokenViaURL.description)}
+						{buildInfoLine('Short description', tokenViaURL.description.split('||')[0])}
+						{buildInfoLine('Long description', tokenViaURL.description.split('||')[1])}
 						{!details ? (
 							<span style={{ fontFamily: 'arial' }}>Loading details...</span>
 						) : (
@@ -186,8 +190,10 @@ function TokenView(props, context) {
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Fixed minting quantity per claim', details.fixedQuantity)}
-								{buildInfoLine('Minting user-given quantity times', details.userDefinedQuantityFactor)}
+								{Number(details.fixedAmount) === 0
+									? buildInfoLine('Variable minting amount set by user')
+									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
+								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
 							</span>
 						)}

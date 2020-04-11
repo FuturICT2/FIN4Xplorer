@@ -1,6 +1,7 @@
 import React from 'react';
 
-const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Proving']; // Disbursement/Valuation instead of Value?
+//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Proving', 'Underlying']; // Disbursement/Valuation instead of Value?
+const steps = ['', '', '', '', '', ''];
 
 const getStepContent = stepIndex => {
 	switch (stepIndex) {
@@ -14,6 +15,8 @@ const getStepContent = stepIndex => {
 			return 'Minting policy'; // Formerly: What quantity can be obtained per claim?
 		case 4:
 			return 'Proving policy'; // Formerly: Add proof types that users will have to provide
+		case 5:
+			return 'Source of Token Value';
 		default:
 			return '';
 	}
@@ -188,6 +191,13 @@ const getStepInfoBoxContent = (stepIndex, proofTypes) => {
 					<br />
 					The token creator specifies one or more user groups, of which one member has to approve. Handle with care!
 					*/}
+				</>
+			);
+		case 5: // Underlying
+			return (
+				<>
+					<b>Source of Token Value</b>
+					<br />
 				</>
 			);
 		default:

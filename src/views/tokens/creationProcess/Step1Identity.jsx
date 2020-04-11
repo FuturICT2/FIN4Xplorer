@@ -12,7 +12,8 @@ function StepIdentity(props) {
 	const [basics, setBasics] = useState({
 		name: '',
 		symbol: '',
-		description: ''
+		shortDescription: '',
+		longDescription: ''
 	});
 
 	const getValue = (draft, prop) => {
@@ -27,19 +28,23 @@ function StepIdentity(props) {
 		setBasics({
 			name: getValue(draft, 'name'),
 			symbol: getValue(draft, 'symbol'),
-			description: getValue(draft, 'description')
+			shortDescription: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[0] : '',
+			longDescription: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[1] : ''
 		});
 		setDraftId(draft.id);
 	});
 
 	const submit = () => {
-		updateVal('symbol', basics.symbol.toUpperCase());
 		props.dispatch({
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(), // TODO only set that if actual changes took place: compare
 			nodeName: 'basics',
-			node: basics
+			node: {
+				name: basics.name,
+				symbol: basics.symbol,
+				description: basics.shortDescription + '||' + basics.longDescription
+			}
 		});
 		props.handleNext();
 	};
@@ -70,11 +75,19 @@ function StepIdentity(props) {
 				style={inputFieldStyle}
 			/>
 			<TextField
-				key="description-field"
+				key="short-description-field"
 				type="text"
-				label="Description"
-				value={basics.description}
-				onChange={e => updateVal('description', e.target.value)}
+				label="Short description"
+				value={basics.shortDescription}
+				onChange={e => updateVal('shortDescription', e.target.value)}
+				style={inputFieldStyle}
+			/>
+			<TextField
+				key="long-description-field"
+				type="text"
+				label="Long description"
+				value={basics.longDescription}
+				onChange={e => updateVal('longDescription', e.target.value)}
 				style={inputFieldStyle}
 			/>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />

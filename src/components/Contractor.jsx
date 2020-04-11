@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
-import { doCallback } from './utils';
+import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
@@ -249,7 +249,7 @@ const addTCRcontracts = (props, Fin4MainContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4MainContract, defaultAccount, 'getTCRaddresses').then(
 		({ 0: REPTokenAddress, 1: GOVTokenAddress, 2: RegistryAddress, 3: PLCRVotingAddress, 4: ParameterizerAddress }) => {
-			addContract(props, drizzle, 'Fin4Reputation', REPTokenAddress, []);
+			addContract(props, drizzle, 'REP', REPTokenAddress, []);
 			addContract(props, drizzle, 'GOV', GOVTokenAddress, []);
 			addContract(props, drizzle, 'Registry', RegistryAddress, []);
 			addContract(props, drizzle, 'PLCRVoting', PLCRVotingAddress, []);
@@ -310,18 +310,17 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 				return getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
 					({
 						0: userIsCreator,
-						1: userIsAdmin,
-						2: name,
-						3: symbol,
-						4: description,
-						5: unit,
-						6: totalSupply,
-						7: creationTime,
-						8: hasFixedMintingQuantity
+						1: name,
+						2: symbol,
+						3: description,
+						4: unit,
+						5: totalSupply,
+						6: creationTime,
+						7: hasFixedMintingQuantity,
+						8: mechanisms
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
-							userIsAdmin: userIsAdmin,
 							address: tokenAddr,
 							name: name,
 							symbol: symbol,
@@ -330,7 +329,8 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 							totalSupply: new BN(totalSupply).toNumber(),
 							creationTime: creationTime,
 							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null
+							isOPAT: null,
+							mechanisms: mechanisms
 						};
 					}
 				);
@@ -360,6 +360,20 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 			});
 		}
 	);
+};
+
+const fetchMechanisms = (props, Fin4TokenManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMechanisms').then(mechanismsBytes32Arr => {
+		props.dispatch({
+			type: 'SET_MECHANISMS',
+			underlyingMechanisms: mechanismsBytes32Arr.map(b32 => {
+				return {
+					title: bytes32ToString(b32)
+				};
+			})
+		});
+	});
 };
 
 const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
@@ -604,5 +618,6 @@ export {
 	fetchUsersREPbalance,
 	fetchOPATs,
 	fetchSystemParameters,
-	contractCall
+	contractCall,
+	fetchMechanisms
 };

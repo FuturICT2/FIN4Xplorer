@@ -15,12 +15,14 @@ import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
 import StepProving from './creationProcess/Step5Proving';
+import StepUnderlying from './creationProcess/Step6Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName, BNstr } from '../../components/utils';
+import { findProofTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
 import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -51,20 +53,35 @@ function TokenCreationProcess(props, context) {
 		if (draftId || !draftIdViaURL || !props.tokenCreationDrafts[draftIdViaURL]) {
 			return;
 		}
+
+		let stepIdViaURL = props.match.params.stepId;
+		if (stepIdViaURL && Number(stepIdViaURL) > 0 && Number(stepIdViaURL) <= 8) {
+			setActiveStep(Number(stepIdViaURL) - 1);
+		} else {
+			modifyURL(draftIdViaURL, 1);
+		}
+
 		setDraftId(draftIdViaURL);
 	});
 
 	const [activeStep, setActiveStep] = useState(0);
 
+	const modifyURL = (_draftId, step) => {
+		window.history.pushState('', '', '/token/create/' + _draftId + '/' + step);
+	};
+
 	const handleNext = () => {
+		modifyURL(draftId, activeStep + 2);
 		setActiveStep(prevActiveStep => prevActiveStep + 1);
 	};
 
 	const handleBack = () => {
+		modifyURL(draftId, activeStep);
 		setActiveStep(prevActiveStep => prevActiveStep - 1);
 	};
 
 	const handleReset = () => {
+		modifyURL(draftId, 1);
 		setActiveStep(0);
 	};
 
@@ -90,6 +107,7 @@ function TokenCreationProcess(props, context) {
 			return 'Symbol must have between 3 and 5 characters';
 		}
 
+		// do a call to check on the contract here instead?
 		if (findTokenBySymbol(props, draft.basics.symbol) !== null) {
 			return 'Symbol is already in use';
 		}
@@ -114,28 +132,60 @@ function TokenCreationProcess(props, context) {
 			return;
 		}
 
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+
 		let tokenCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
-			[draft.properties.isBurnable, draft.properties.isTransferable, draft.properties.isMintable],
+			[draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
 			[
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
 			],
-			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
-			draft.basics.description,
-			draft.actions.text,
-			draft.value.fixedQuantity,
-			draft.value.userDefinedQuantityFactor,
-			draft.value.unit
+			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
 		];
 
-		setTokenCreationStage('Waiting for the token creation to complete');
+		let minterRoles = [];
+		if (draft.minting.additionalMinterRoles.length > 0) {
+			minterRoles = draft.minting.additionalMinterRoles.split(',').map(addr => addr.trim());
+		}
+		if (draft.minting.Fin4ClaimingHasMinterRole) {
+			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
+		}
+
+		let postCreationStepsArgs = [
+			null, // token address
+			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			minterRoles,
+			draft.basics.description,
+			draft.actions.text,
+			draft.minting.fixedAmount,
+			draft.minting.unit,
+			draft.underlying.mechanisms.map(el => stringToBytes32(el.title))
+		];
+
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
-		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+		// proof types with parameters
+		let proofsToParameterize = [];
+		for (var name in draft.proofs) {
+			if (draft.proofs.hasOwnProperty(name)) {
+				let proof = draft.proofs[name];
+				let parameterNames = Object.keys(proof.parameters);
+				if (parameterNames.length === 0) {
+					continue;
+				}
+				transactionsRequired.current++;
+				let values = parameterNames.map(pName => proof.parameters[pName]);
+				proofsToParameterize.push({
+					name: name,
+					values: values
+				});
+			}
+		}
 
+		updateTokenCreationStage('Waiting for the token creation to complete.');
 		contractCall(
 			context,
 			props,
@@ -146,46 +196,64 @@ function TokenCreationProcess(props, context) {
 			'Create new token: ' + draft.basics.symbol.toUpperCase(),
 			{
 				transactionCompleted: receipt => {
+					transactionCounter.current++;
+
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
-					for (var name in draft.proofs) {
-						if (draft.proofs.hasOwnProperty(name)) {
-							let proof = draft.proofs[name];
-							let parameterNames = Object.keys(proof.parameters);
-							if (parameterNames.length === 0) {
-								continue;
-							}
-							proofContractsToParameterize.current++;
-							let values = parameterNames.map(pName => proof.parameters[pName]);
-							// TODO is the correct order of values guaranteed?
-							setParamsOnProofContract(defaultAccount, name, newTokenAddress, values);
-						}
+					postCreationStepsArgs[0] = newTokenAddress;
+
+					if (proofsToParameterize.length === 0) {
+						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+						return;
 					}
-					updateTokenCreationStage();
+
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					proofsToParameterize.map(proof => {
+						setParamsOnProofContract(
+							defaultAccount,
+							proof.name,
+							newTokenAddress,
+							proof.values,
+							tokenCreatorContract,
+							postCreationStepsArgs
+						);
+					});
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
 				}
 			}
 		);
 	};
 
-	const updateTokenCreationStage = () => {
-		if (transactionCounter.current == proofContractsToParameterize.current) {
+	const updateTokenCreationStage = text => {
+		if (transactionCounter.current == transactionsRequired.current) {
 			setTokenCreationStage('completed');
 		} else {
 			setTokenCreationStage(
-				'Waiting for proof contracts to receive parameters: ' +
-					transactionCounter.current +
-					' / ' +
-					proofContractsToParameterize.current
+				<span>
+					{text}
+					<br />
+					Step: {transactionCounter.current + 1} / {transactionsRequired.current}
+				</span>
 			);
 		}
 	};
 
-	// TODO combine these two with one useState-counter?
-	// Tried to do that but couldn't figure it out in reasonable time for some reason
 	const transactionCounter = useRef(0);
-	const proofContractsToParameterize = useRef(0);
-	const [tokenCreationStage, setTokenCreationStage] = useState(null);
+	const transactionsRequired = useRef(2);
+	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
-	const setParamsOnProofContract = (defaultAccount, contractName, tokenAddr, values) => {
+	const setParamsOnProofContract = (
+		defaultAccount,
+		contractName,
+		tokenAddr,
+		values,
+		tokenCreatorContract,
+		postCreationStepsArgs
+	) => {
 		contractCall(
 			context,
 			props,
@@ -197,7 +265,43 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage();
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				}
+			}
+		);
+	};
+
+	const tokenParameterization = (defaultAccount, tokenCreatorContract, postCreationStepsArgs) => {
+		updateTokenCreationStage('Waiting for the new token to receive further parameters.');
+
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			tokenCreatorContract,
+			'postCreationSteps',
+			postCreationStepsArgs,
+			'Set parameters on new token',
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
 				}
 			}
 		);
@@ -236,7 +340,8 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
 							{activeStep === 4 && buildStepComponent(StepProving)}
-							{activeStep === steps.length && tokenCreationStage === null && (
+							{activeStep === 5 && buildStepComponent(StepUnderlying)}
+							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>
 									{/*countProofsWithParams() > 0 && (
@@ -258,16 +363,19 @@ function TokenCreationProcess(props, context) {
 									</div>
 								</center>
 							)}
-							{activeStep === steps.length && tokenCreationStage !== null && tokenCreationStage !== 'completed' && (
-								<center>
-									<CircularProgress />
-									<br />
-									<br />
-									<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
-										{tokenCreationStage ? tokenCreationStage : ''}
-									</span>
-								</center>
-							)}
+							{activeStep === steps.length &&
+								tokenCreationStage !== 'unstarted' &&
+								tokenCreationStage !== 'completed' &&
+								!tokenCreationStage.toString().includes('failed') && (
+									<center>
+										<CircularProgress />
+										<br />
+										<br />
+										<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
+											{tokenCreationStage}
+										</span>
+									</center>
+								)}
 							{activeStep === steps.length && tokenCreationStage === 'completed' && (
 								<center>
 									<Typography className={classes.instructions}>Token successfully created!</Typography>
@@ -276,6 +384,15 @@ function TokenCreationProcess(props, context) {
 										style={{ color: 'green', transform: 'scale(2.4)' }}
 										onClick={() => history.push('/tokens')}>
 										<CheckIcon />
+									</IconButton>
+								</center>
+							)}
+							{activeStep === steps.length && tokenCreationStage.toString().includes('failed') && (
+								<center>
+									<Typography className={classes.instructions}>{tokenCreationStage}</Typography>
+									<br />
+									<IconButton style={{ color: 'red', transform: 'scale(2.4)' }} onClick={() => history.push('/tokens')}>
+										<CancelIcon />
 									</IconButton>
 								</center>
 							)}
