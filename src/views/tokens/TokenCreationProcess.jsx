@@ -19,7 +19,7 @@ import StepUnderlying from './creationProcess/Step6Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName, BNstr } from '../../components/utils';
+import { findProofTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
 import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -146,7 +146,8 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.minting.fixedAmount,
-			draft.minting.unit
+			draft.minting.unit,
+			draft.underlying.mechanisms.map(el => stringToBytes32(el.title))
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
