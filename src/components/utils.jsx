@@ -10,7 +10,7 @@ const BNstr = numb => {
 };
 
 const stringToBytes32 = str => {
-	return web3.utils.toAscii(str);
+	return web3.utils.fromAscii(str);
 };
 
 const bytes32ToString = bytes32 => {
