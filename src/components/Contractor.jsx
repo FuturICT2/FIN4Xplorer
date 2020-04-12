@@ -407,7 +407,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 
 const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ClaimingContract, defaultAccount, 'getActionsWhereUserHasClaims')
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getTokensWhereUserHasClaims')
 		.then(tokenAddresses => {
 			return tokenAddresses.map(tokenAddr => {
 				return getContractData(Fin4ClaimingContract, defaultAccount, 'getMyClaimIdsOnThisToken', tokenAddr).then(
