@@ -192,6 +192,7 @@ function StepProving(props) {
 				<Dropdown
 					onChange={e => addProof(e.value)}
 					options={Object.keys(props.proofTypes)
+						.filter(addr => !props.proofTypes[addr].isConstraint)
 						.filter(addr => !proofs.current[props.proofTypes[addr].label])
 						.map(addr => props.proofTypes[addr])}
 					label="Add proof type"

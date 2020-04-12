@@ -46,7 +46,10 @@ function StepOther(props) {
 			{showDropdown ? (
 				<Dropdown
 					onChange={e => {}}
-					options={[]} // TODO
+					options={Object.keys(props.proofTypes)
+						.filter(addr => props.proofTypes[addr].isConstraint)
+						//.filter(addr => !proofs.current[props.proofTypes[addr].label]) TODO
+						.map(addr => props.proofTypes[addr])}
 					label="Add token constraint"
 				/>
 			) : (
@@ -60,7 +63,9 @@ function StepOther(props) {
 }
 
 const mapStateToProps = state => {
-	return {};
+	return {
+		proofTypes: state.fin4Store.proofTypes
+	};
 };
 
 export default drizzleConnect(StepOther, mapStateToProps);
