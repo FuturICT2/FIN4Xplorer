@@ -389,8 +389,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 							value: proofTypeAddress,
 							label: name,
 							description: description,
-							paramsEncoded: parameterForTokenCreatorToSetEncoded,
-							paramValues: {} // TODO remove this weird placeholder to be used in ContractForm
+							paramsEncoded: parameterForTokenCreatorToSetEncoded
 						};
 					}
 				);
