@@ -156,9 +156,14 @@ function TokenCreationProcess(props, context) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 
+		let proofAndConstraints = {
+			...draft.proofs,
+			...draft.other.constraints
+		};
+
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			Object.keys(proofAndConstraints).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
@@ -171,9 +176,9 @@ function TokenCreationProcess(props, context) {
 
 		// proof types with parameters
 		let proofsToParameterize = [];
-		for (var name in draft.proofs) {
-			if (draft.proofs.hasOwnProperty(name)) {
-				let proof = draft.proofs[name];
+		for (var name in proofAndConstraints) {
+			if (proofAndConstraints.hasOwnProperty(name)) {
+				let proof = proofAndConstraints[name];
 				let parameterNames = Object.keys(proof.parameters);
 				if (parameterNames.length === 0) {
 					continue;
@@ -208,7 +213,7 @@ function TokenCreationProcess(props, context) {
 						return;
 					}
 
-					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for proof and constraint contracts to receive parameters.');
 					proofsToParameterize.map(proof => {
 						setParamsOnProofContract(
 							defaultAccount,
