@@ -177,7 +177,7 @@ const styles = {
 	},
 	divOutline: {
 		borderRadius: '25px',
-		border: '2px solid silver',
+		border: '2px solid #cc1c6e',
 		padding: '20px',
 		position: 'relative',
 		left: '-20px',
