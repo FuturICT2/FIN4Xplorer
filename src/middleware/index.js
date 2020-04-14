@@ -684,6 +684,10 @@ function fin4StoreReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				allUnderlying: action.allUnderlying
 			});
+		case 'ADD_UNDERLYINGS':
+			return Object.assign({}, state, {
+				allUnderlying: [...state.allUnderlying, ...action.underlyings]
+			});
 		default:
 			return state;
 	}

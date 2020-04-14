@@ -30,6 +30,14 @@ function StepUnderlying(props) {
 			nodeName: 'underlying',
 			node: underlying
 		});
+		// adding them here already to avoid having to reload for the
+		// newly added ones to become available
+		props.dispatch({
+			type: 'ADD_UNDERLYINGS',
+			underlyings: underlying.filter(
+				el => props.allUnderlying.filter(reduxEl => reduxEl.title === el.title).length === 0
+			)
+		});
 		props.handleNext();
 	};
 
