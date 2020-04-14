@@ -128,8 +128,9 @@ function StepMinting(props, context) {
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
-						You removed the address of the Fin4Claiming contract from the minter roles in the design step. Therefore a
-						minting policy can't be effectuated from the Finance 4.0 system.
+						To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this
+						option is not checked you have to take care of implementing your own minting policy (by handling the
+						ClaimApproved event from the Fin4Claiming contract).
 					</center>
 					<br />
 				</>

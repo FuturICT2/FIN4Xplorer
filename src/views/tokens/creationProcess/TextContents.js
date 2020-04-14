@@ -18,7 +18,7 @@ const getStepContent = stepIndex => {
 		case 5:
 			return 'Other policies';
 		case 6:
-			return 'Source of Token Value';
+			return 'Source of Value';
 		default:
 			return '';
 	}

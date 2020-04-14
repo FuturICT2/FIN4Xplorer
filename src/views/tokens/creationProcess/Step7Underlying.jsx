@@ -87,7 +87,7 @@ function StepUnderlying(props) {
 							<TextField
 								{...params}
 								variant="outlined"
-								label="Choose underlying mechanisms"
+								label="Determine source of value"
 								//placeholder="Add new mechanism by typing a new string"
 							/>
 						)}
