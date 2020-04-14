@@ -169,7 +169,7 @@ function TokenCreationProcess(props, context) {
 			draft.actions.text,
 			draft.minting.fixedAmount,
 			draft.minting.unit,
-			draft.underlying.mechanisms.map(el => stringToBytes32(el.title))
+			draft.underlying.map(el => stringToBytes32(el.title))
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';

@@ -317,7 +317,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 						5: totalSupply,
 						6: creationTime,
 						7: hasFixedMintingQuantity,
-						8: mechanisms
+						8: underlyings
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
@@ -330,7 +330,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 							creationTime: creationTime,
 							hasFixedMintingQuantity: hasFixedMintingQuantity,
 							isOPAT: null,
-							mechanisms: mechanisms
+							underlyings: underlyings
 						};
 					}
 				);
@@ -362,12 +362,12 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchMechanisms = (props, Fin4TokenManagementContract) => {
+const fetchUnderlyings = (props, Fin4TokenManagementContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMechanisms').then(mechanismsBytes32Arr => {
+	getContractData(Fin4TokenManagementContract, defaultAccount, 'getUnderlyings').then(underlyingsBytes32Arr => {
 		props.dispatch({
-			type: 'SET_MECHANISMS',
-			underlyingMechanisms: mechanismsBytes32Arr.map(b32 => {
+			type: 'SET_UNDERLYINGS',
+			allUnderlying: underlyingsBytes32Arr.map(b32 => {
 				return {
 					title: bytes32ToString(b32)
 				};
@@ -619,5 +619,5 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchMechanisms
+	fetchUnderlyings
 };

@@ -7,28 +7,18 @@ import { TextField } from '@material-ui/core';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 const filter = createFilterOptions();
 
-const PROPERTY_DEFAULT = {
-	mechanisms: []
-};
-
 function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlying, setUnderlying] = useState(null);
+	const [underlying, setUnderlying] = useState([]);
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
-
-		setUnderlying({
-			mechanisms: draft.underlying.hasOwnProperty('mechanisms')
-				? draft.underlying.mechanisms
-				: PROPERTY_DEFAULT.mechanisms
-		});
-
+		setUnderlying(draft.underlying);
 		setDraftId(draft.id);
 	});
 
@@ -44,10 +34,8 @@ function StepUnderlying(props) {
 	};
 
 	const updateOptions = () => {
-		// return only options that are in the redux list of all mechanisms and NOT in the already selected ones here
-		return props.underlyingMechanisms.filter(
-			reduxEl => underlying.mechanisms.filter(el => el.title === reduxEl.title).length === 0
-		);
+		// return only options that are in the redux list of all underlying and NOT in the already selected ones here
+		return props.allUnderlying.filter(reduxEl => underlying.filter(el => el.title === reduxEl.title).length === 0);
 	};
 
 	return (
@@ -58,21 +46,20 @@ function StepUnderlying(props) {
 						multiple
 						options={updateOptions()}
 						getOptionLabel={option => {
-							if (option.inputValue && underlying.mechanisms.filter(el => el.title === option.inputValue).length > 0) {
+							if (option.inputValue && underlying.filter(el => el.title === option.inputValue).length > 0) {
 								return option.inputValue; // don't show the "Add"
 							}
 							return option.title;
 						}}
 						onChange={(event, selectedOptions) => {
-							setUnderlying({
-								...underlying,
-								mechanisms: selectedOptions.map(val => {
+							setUnderlying(
+								selectedOptions.map(val => {
 									return { title: val.inputValue ? val.inputValue : val.title };
+									// TODO add new-flag to apply CSS coloring differently
 								})
-								// TODO add new-flag to apply CSS coloring differently
-							});
+							);
 						}}
-						value={underlying.mechanisms}
+						value={underlying}
 						filterOptions={(options, params) => {
 							const filtered = filter(options, params);
 							if (params.inputValue !== '') {
@@ -88,7 +75,7 @@ function StepUnderlying(props) {
 								{...params}
 								variant="outlined"
 								label="Determine source of value"
-								//placeholder="Add new mechanism by typing a new string"
+								//placeholder="Add new underlying by typing a new string"
 							/>
 						)}
 					/>
@@ -102,7 +89,7 @@ function StepUnderlying(props) {
 
 const mapStateToProps = state => {
 	return {
-		underlyingMechanisms: state.fin4Store.underlyingMechanisms
+		allUnderlying: state.fin4Store.allUnderlying
 	};
 };
 

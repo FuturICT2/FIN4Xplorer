@@ -46,7 +46,7 @@ const contractEventNotifier = store => next => action => {
 				creationTime: token.creationTime,
 				hasFixedMintingQuantity: token.hasFixedMintingQuantity,
 				isOPAT: null,
-				mechanisms: token.mechanisms
+				underlyings: token.underlyings
 			}
 		});
 	}
@@ -319,7 +319,7 @@ const initialState = {
 	tokenCreationDrafts: {},
 	submissions: {},
 	transactions: [],
-	underlyingMechanisms: []
+	allUnderlying: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -680,9 +680,9 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				}
 			});
-		case 'SET_MECHANISMS':
+		case 'SET_UNDERLYINGS':
 			return Object.assign({}, state, {
-				underlyingMechanisms: action.underlyingMechanisms
+				allUnderlying: action.allUnderlying
 			});
 		default:
 			return state;
