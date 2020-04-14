@@ -11,14 +11,14 @@ function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlying, setUnderlying] = useState([]);
+	const [underlyings, setUnderlyings] = useState([]);
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
-		setUnderlying(draft.underlying);
+		setUnderlyings(draft.underlyings);
 		setDraftId(draft.id);
 	});
 
@@ -27,15 +27,15 @@ function StepUnderlying(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'underlying',
-			node: underlying
+			nodeName: 'underlyings',
+			node: underlyings
 		});
 		// adding them here already to avoid having to reload for the
 		// newly added ones to become available
 		props.dispatch({
 			type: 'ADD_UNDERLYINGS',
-			underlyings: underlying.filter(
-				el => props.allUnderlying.filter(reduxEl => reduxEl.title === el.title).length === 0
+			underlyings: underlyings.filter(
+				el => props.allUnderlyings.filter(reduxEl => reduxEl.title === el.title).length === 0
 			)
 		});
 		props.handleNext();
@@ -43,31 +43,31 @@ function StepUnderlying(props) {
 
 	const updateOptions = () => {
 		// return only options that are in the redux list of all underlying and NOT in the already selected ones here
-		return props.allUnderlying.filter(reduxEl => underlying.filter(el => el.title === reduxEl.title).length === 0);
+		return props.allUnderlyings.filter(reduxEl => underlyings.filter(el => el.title === reduxEl.title).length === 0);
 	};
 
 	return (
 		<>
-			{underlying && (
+			{underlyings && (
 				<>
 					<Autocomplete // see https://material-ui.com/components/autocomplete/
 						multiple
 						options={updateOptions()}
 						getOptionLabel={option => {
-							if (option.inputValue && underlying.filter(el => el.title === option.inputValue).length > 0) {
+							if (option.inputValue && underlyings.filter(el => el.title === option.inputValue).length > 0) {
 								return option.inputValue; // don't show the "Add"
 							}
 							return option.title;
 						}}
 						onChange={(event, selectedOptions) => {
-							setUnderlying(
+							setUnderlyings(
 								selectedOptions.map(val => {
 									return { title: val.inputValue ? val.inputValue : val.title };
 									// TODO add new-flag to apply CSS coloring differently
 								})
 							);
 						}}
-						value={underlying}
+						value={underlyings}
 						filterOptions={(options, params) => {
 							const filtered = filter(options, params);
 							if (params.inputValue !== '') {
@@ -97,7 +97,7 @@ function StepUnderlying(props) {
 
 const mapStateToProps = state => {
 	return {
-		allUnderlying: state.fin4Store.allUnderlying
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 

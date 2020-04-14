@@ -367,7 +367,7 @@ const fetchUnderlyings = (props, Fin4TokenManagementContract) => {
 	getContractData(Fin4TokenManagementContract, defaultAccount, 'getUnderlyings').then(underlyingsBytes32Arr => {
 		props.dispatch({
 			type: 'SET_UNDERLYINGS',
-			allUnderlying: underlyingsBytes32Arr.map(b32 => {
+			allUnderlyings: underlyingsBytes32Arr.map(b32 => {
 				return {
 					title: bytes32ToString(b32)
 				};
