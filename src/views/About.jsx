@@ -40,8 +40,8 @@ function About(props, context) {
 					<br />
 					<br />
 					The project is open source and welcomes contributors:{' '}
-					<a href="https://github.com/FuturICT2/FIN4Xplorer" target="_blank">
-						FIN4Xplorer
+					<a href="https://github.com/FuturICT2/" target="_blank">
+						github.com/FuturICT2
 					</a>
 					<br />
 					<br />
