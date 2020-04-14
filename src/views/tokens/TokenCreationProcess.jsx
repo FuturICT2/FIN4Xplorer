@@ -261,6 +261,12 @@ function TokenCreationProcess(props, context) {
 		tokenCreatorContract,
 		postCreationStepsArgs
 	) => {
+		// hackish, find a better way to handle this conversion? TODO
+		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+			let userList = values[0];
+			let groupsList = values[1];
+			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+		}
 		contractCall(
 			context,
 			props,

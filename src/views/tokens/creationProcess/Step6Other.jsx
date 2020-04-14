@@ -112,6 +112,7 @@ function StepOther(props) {
 									constraint.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
 										let type = paramStr.split(':')[0];
+										let isArray = type.includes('[]');
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
 										let key = 'constraint_' + index + '_param_' + paramIndex;
@@ -125,6 +126,12 @@ function StepOther(props) {
 															{description && <small> ({description})</small>}{' '}
 														</>
 													}
+													inputProps={{
+														style: { fontSize: isArray ? 'small' : 'medium' }
+													}}
+													multiline={isArray ? true : null}
+													rows={isArray ? 1 : null}
+													variant={isArray ? 'outlined' : 'standard'}
 													defaultValue={constraints.current[name].parameters[paramName]}
 													onChange={e => (constraints.current[name].parameters[paramName] = e.target.value)}
 													style={styles.normalField}
