@@ -109,12 +109,12 @@ function ProofSubmission(props) {
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
 										{proofIsApproved ? (
-											<Status isapproved="true">
+											<Status status="approved">
 												{'The proof ' + proofObj.label + ' was submitted successfully.'}
 											</Status>
 										) : (
 											<>
-												<Status isapproved="false">
+												<Status status="unsubmitted">
 													{'Your claim requires you to provide the following proof: ' + proofObj.description}
 												</Status>
 												{buildProofSubmissionForm(proofObj.label, claim.token, claim.claimId, index)}
@@ -131,9 +131,20 @@ function ProofSubmission(props) {
 	);
 }
 
+const getStatusColor = status => {
+	switch (status) {
+		case 'approved':
+			return colors.true;
+		case 'unsubmitted':
+			return colors.wrong;
+		case 'pending':
+			return '#FED8B1'; // light orange
+	} // case rejected not needed because the whole submission-page collapses into one message
+};
+
 const Status = styled(Typography)`
 	&& {
-		background: ${props => (props.isapproved === 'true' ? colors.true : colors.wrong)};
+		background: ${props => getStatusColor(props.status)};
 		padding: 10px;
 		margin: 20px 0;
 		box-sizing: border-box;

@@ -15,7 +15,8 @@ import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
 import StepProving from './creationProcess/Step5Proving';
-import StepUnderlying from './creationProcess/Step6Underlying';
+import StepOther from './creationProcess/Step6Other';
+import StepUnderlying from './creationProcess/Step7Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
@@ -54,6 +55,7 @@ function TokenCreationProcess(props, context) {
 			return;
 		}
 
+		// TODO browser back/forth navigation doesn't work, should be possible to make it work
 		let stepIdViaURL = props.match.params.stepId;
 		if (stepIdViaURL && Number(stepIdViaURL) > 0 && Number(stepIdViaURL) <= 8) {
 			setActiveStep(Number(stepIdViaURL) - 1);
@@ -154,9 +156,14 @@ function TokenCreationProcess(props, context) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 
+		let proofAndConstraints = {
+			...draft.proofs,
+			...draft.other.constraints
+		};
+
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			Object.keys(proofAndConstraints).map(name => findProofTypeAddressByName(props.proofTypes, name)),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
@@ -169,9 +176,9 @@ function TokenCreationProcess(props, context) {
 
 		// proof types with parameters
 		let proofsToParameterize = [];
-		for (var name in draft.proofs) {
-			if (draft.proofs.hasOwnProperty(name)) {
-				let proof = draft.proofs[name];
+		for (var name in proofAndConstraints) {
+			if (proofAndConstraints.hasOwnProperty(name)) {
+				let proof = proofAndConstraints[name];
 				let parameterNames = Object.keys(proof.parameters);
 				if (parameterNames.length === 0) {
 					continue;
@@ -206,7 +213,7 @@ function TokenCreationProcess(props, context) {
 						return;
 					}
 
-					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for proof and constraint contracts to receive parameters.');
 					proofsToParameterize.map(proof => {
 						setParamsOnProofContract(
 							defaultAccount,
@@ -254,6 +261,12 @@ function TokenCreationProcess(props, context) {
 		tokenCreatorContract,
 		postCreationStepsArgs
 	) => {
+		// hackish, find a better way to handle this conversion? TODO
+		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+			let userList = values[0];
+			let groupsList = values[1];
+			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+		}
 		contractCall(
 			context,
 			props,
@@ -314,9 +327,15 @@ function TokenCreationProcess(props, context) {
 					<Box title="Token creation">
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} alternativeLabel>
-								{steps.map(label => (
+								{steps.map((label, index) => (
 									<Step key={label}>
-										<StepLabel>{label}</StepLabel>
+										<StepLabel
+											onClick={() => {
+												modifyURL(draftId, index + 1);
+												setActiveStep(index);
+											}}>
+											{label}
+										</StepLabel>
 									</Step>
 								))}
 							</Stepper>
@@ -340,7 +359,8 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
 							{activeStep === 4 && buildStepComponent(StepProving)}
-							{activeStep === 5 && buildStepComponent(StepUnderlying)}
+							{activeStep === 5 && buildStepComponent(StepOther)}
+							{activeStep === 6 && buildStepComponent(StepUnderlying)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>

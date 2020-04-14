@@ -104,6 +104,12 @@ function Settings(props, context) {
 										<b>Parameters</b>: {proofType.paramsEncoded}
 									</small>
 								)}
+								{proofType.isConstraint && (
+									<small style={{ color: 'orange' }}>
+										<br />
+										<b>is constraint</b>
+									</small>
+								)}
 								{index < Object.keys(props.proofTypes).length - 1 && (
 									<Divider style={{ margin: '10px 0' }} variant="middle" />
 								)}

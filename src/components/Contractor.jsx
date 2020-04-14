@@ -382,7 +382,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 		.then(proofTypeAddresses => {
 			return proofTypeAddresses.map(proofTypeAddress => {
 				return getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
-					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded }) => {
+					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isConstraint }) => {
 						// add Contract objects to drizzle
 						addContract(props, drizzle, name, proofTypeAddress, []);
 						return {
@@ -390,7 +390,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 							label: name,
 							description: description,
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
-							paramValues: {} // TODO remove this weird placeholder to be used in ContractForm
+							isConstraint: isConstraint
 						};
 					}
 				);
@@ -407,7 +407,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 
 const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ClaimingContract, defaultAccount, 'getActionsWhereUserHasClaims')
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getTokensWhereUserHasClaims')
 		.then(tokenAddresses => {
 			return tokenAddresses.map(tokenAddr => {
 				return getContractData(Fin4ClaimingContract, defaultAccount, 'getMyClaimIdsOnThisToken', tokenAddr).then(
