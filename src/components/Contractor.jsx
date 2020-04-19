@@ -222,7 +222,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			3: Fin4ClaimingAddress,
 			4: Fin4CollectionsAddress,
 			5: Fin4MessagingAddress,
-			6: Fin4ProvingAddress,
+			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
 			8: Fin4SystemParametersAddress
 		}) => {
@@ -238,7 +238,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 				'UpdatedTotalSupply'
 			]);
 			addContract(props, drizzle, 'Fin4Collections', Fin4CollectionsAddress, []);
-			addContract(props, drizzle, 'Fin4Proving', Fin4ProvingAddress, ['SubmissionAdded']);
+			addContract(props, drizzle, 'Fin4Verifying', Fin4VerifyingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
 		}
@@ -376,17 +376,17 @@ const fetchUnderlyings = (props, Fin4TokenManagementContract) => {
 	});
 };
 
-const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
+const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypes')
-		.then(proofTypeAddresses => {
-			return proofTypeAddresses.map(proofTypeAddress => {
-				return getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
+	getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypes')
+		.then(verifierTypeAddresses => {
+			return verifierTypeAddresses.map(verifierTypeAddress => {
+				return getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypeInfo', verifierTypeAddress).then(
 					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isNoninteractive }) => {
 						// add Contract objects to drizzle
-						addContract(props, drizzle, name, proofTypeAddress, []);
+						addContract(props, drizzle, name, verifierTypeAddress, []);
 						return {
-							value: proofTypeAddress,
+							value: verifierTypeAddress,
 							label: name,
 							description: description,
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
@@ -399,8 +399,8 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 		.then(data => Promise.all(data))
 		.then(data => {
 			props.dispatch({
-				type: 'ADD_MULTIPLE_PROOF_TYPES',
-				proofTypesArr: data
+				type: 'ADD_MULTIPLE_VERIFIER_TYPES',
+				verifierTypesArr: data
 			});
 		});
 };
@@ -509,15 +509,15 @@ const fetchCollectionsInfo = (props, Fin4CollectionsContract) => {
 		});
 };
 
-const fetchAllSubmissions = (props, Fin4ProvingContract) => {
+const fetchAllSubmissions = (props, Fin4Verifying) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProvingContract, defaultAccount, 'getSubmissionsCount')
+	getContractData(Fin4Verifying, defaultAccount, 'getSubmissionsCount')
 		.then(submissionsCount => {
 			return Array(new BN(submissionsCount).toNumber())
 				.fill()
 				.map((x, i) => i)
 				.map(submissionId => {
-					return getContractData(Fin4ProvingContract, defaultAccount, 'submissions', submissionId).then(
+					return getContractData(Fin4Verifying, defaultAccount, 'submissions', submissionId).then(
 						({ 0: submissionId, 1: proofType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
 							return {
 								submissionId: submissionId,
@@ -604,7 +604,7 @@ export {
 	fetchAllTokens,
 	fetchUsersNonzeroTokenBalances,
 	fetchCurrentUsersClaims,
-	fetchAndAddAllProofTypes,
+	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	findTokenBySymbol,
 	isValidPublicAddress,

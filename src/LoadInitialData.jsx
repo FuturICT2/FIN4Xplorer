@@ -7,7 +7,7 @@ import {
 	fetchAllTokens,
 	fetchUsersNonzeroTokenBalances,
 	fetchCurrentUsersClaims,
-	fetchAndAddAllProofTypes,
+	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	fetchCollectionsInfo,
 	fetchOPATs,
@@ -29,7 +29,7 @@ function LoadInitialData(props, context) {
 		Fin4Messaging: false,
 		Fin4Claiming: false,
 		Fin4Collections: false,
-		Fin4Proving: false,
+		Fin4Verifying: false,
 		Registry: false,
 		Parameterizer: false,
 		Fin4SystemParameters: false,
@@ -121,10 +121,10 @@ function LoadInitialData(props, context) {
 			fetchCurrentUsersClaims(props, context.drizzle.contracts.Fin4Claiming);
 		}
 
-		if (!isInit.current.Fin4Proving && props.contracts.Fin4Proving && props.contracts.Fin4Proving.initialized) {
-			isInit.current.Fin4Proving = true;
-			fetchAndAddAllProofTypes(props, context.drizzle.contracts.Fin4Proving, context.drizzle);
-			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Proving);
+		if (!isInit.current.Fin4Verifying && props.contracts.Fin4Verifying && props.contracts.Fin4Verifying.initialized) {
+			isInit.current.Fin4Verifying = true;
+			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle);
+			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Verifying);
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {

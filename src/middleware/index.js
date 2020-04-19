@@ -438,14 +438,14 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				}
 			};
-		case 'ADD_MULTIPLE_PROOF_TYPES':
-			for (i = 0; i < action.proofTypesArr.length; i++) {
-				let proofType = action.proofTypesArr[i];
+		case 'ADD_MULTIPLE_VERIFIER_TYPES':
+			for (i = 0; i < action.verifierTypesArr.length; i++) {
+				let verifierType = action.verifierTypesArr[i];
 				state = {
 					...state,
 					proofTypes: {
 						...state.proofTypes,
-						[proofType.value]: proofType // TODO change value to address and label to name
+						[verifierType.value]: verifierType // TODO change value to address and label to name
 					}
 				};
 			}
