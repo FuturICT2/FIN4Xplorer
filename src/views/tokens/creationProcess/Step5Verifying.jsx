@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { findProofTypeAddressByName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
-function StepProving(props) {
+function StepVerifying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -240,4 +240,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepProving, mapStateToProps);
+export default drizzleConnect(StepVerifying, mapStateToProps);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Proving', 'Other', 'Underlying']; // Disbursement/Valuation instead of Value?
+//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying', 'Other', 'Underlying']; // Disbursement/Valuation instead of Value?
 const steps = ['', '', '', '', '', '', ''];
 
 const getStepContent = stepIndex => {
@@ -14,7 +14,7 @@ const getStepContent = stepIndex => {
 		case 3:
 			return 'Minting policy'; // Formerly: What quantity can be obtained per claim?
 		case 4:
-			return 'Proving policy'; // Formerly: Add proof types that users will have to provide
+			return 'Verifying policy'; // Formerly: Add proof types that users will have to provide
 		case 5:
 			return 'Other policies';
 		case 6:
