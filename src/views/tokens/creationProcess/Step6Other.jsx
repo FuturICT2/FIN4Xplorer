@@ -149,7 +149,7 @@ function StepOther(props) {
 				<Dropdown
 					onChange={e => addConstraint(e.value)}
 					options={Object.keys(props.proofTypes)
-						.filter(addr => props.proofTypes[addr].isConstraint)
+						.filter(addr => props.proofTypes[addr].isNoninteractive)
 						.filter(addr => !constraints.current[props.proofTypes[addr].label])
 						.map(addr => props.proofTypes[addr])}
 					label="Add token constraint"

@@ -382,7 +382,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 		.then(proofTypeAddresses => {
 			return proofTypeAddresses.map(proofTypeAddress => {
 				return getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
-					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isConstraint }) => {
+					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isNoninteractive }) => {
 						// add Contract objects to drizzle
 						addContract(props, drizzle, name, proofTypeAddress, []);
 						return {
@@ -390,7 +390,7 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 							label: name,
 							description: description,
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
-							isConstraint: isConstraint
+							isNoninteractive: isNoninteractive
 						};
 					}
 				);

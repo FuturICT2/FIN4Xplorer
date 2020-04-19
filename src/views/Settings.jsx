@@ -104,7 +104,7 @@ function Settings(props, context) {
 										<b>Parameters</b>: {proofType.paramsEncoded}
 									</small>
 								)}
-								{proofType.isConstraint && (
+								{proofType.isNoninteractive && (
 									<small style={{ color: 'orange' }}>
 										<br />
 										<b>is constraint</b>
