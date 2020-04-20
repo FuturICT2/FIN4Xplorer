@@ -77,7 +77,7 @@ function ProofSubmission(props) {
 						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
 						fixValues={{
-							TokenAddrToReceiveProof: tokenAddrToReceiveVerifierDecision,
+							TokenAddrToReceiveVerifierDecision: tokenAddrToReceiveVerifierDecision,
 							ClaimId: claimId + ''
 						}}
 					/>
