@@ -67,9 +67,9 @@ const contractEventNotifier = store => next => action => {
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
 		display = 'You are claiming ' + quantity + ' ' + token.name + ' [' + token.symbol + '] tokens';
 
-		let proofStatusesObj = {};
-		for (let i = 0; i < claim.requiredProofTypes.length; i++) {
-			proofStatusesObj[claim.requiredProofTypes[i]] = false;
+		let verifierStatusesObj = {};
+		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
+			verifierStatusesObj[claim.requiredVerifierTypes[i]] = false;
 		}
 
 		store.dispatch({
@@ -84,7 +84,7 @@ const contractEventNotifier = store => next => action => {
 				quantity: quantity,
 				claimCreationTime: new BN(claim.claimCreationTime).toNumber(),
 				comment: claim.comment,
-				proofStatuses: proofStatusesObj
+				verifierStatuses: verifierStatusesObj
 			}
 		});
 	}
@@ -160,12 +160,12 @@ const contractEventNotifier = store => next => action => {
 		});
 	}
 
-	// ------------------------------ ProofApproved ------------------------------
+	// ------------------------------ VerifierApproved ------------------------------
 
-	if (contractEvent === 'ProofApproved') {
-		let approvedProof = action.event.returnValues;
-		let belongsToCurrentUsersClaim = approvedProof.claimer === defaultAccount;
-		let pseudoClaimId = approvedProof.tokenAddrToReceiveProof + '_' + approvedProof.claimId;
+	if (contractEvent === 'VerifierApproved') {
+		let approvedVerifier = action.event.returnValues;
+		let belongsToCurrentUsersClaim = approvedVerifier.claimer === defaultAccount;
+		let pseudoClaimId = approvedVerifier.tokenAddrToReceiveVerifierDecision + '_' + approvedVerifier.claimId;
 
 		let usersClaims = store.getState().fin4Store.usersClaims;
 		if (!usersClaims[pseudoClaimId]) {
@@ -175,16 +175,16 @@ const contractEventNotifier = store => next => action => {
 
 		let claim = usersClaims[pseudoClaimId];
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
-		if (!belongsToCurrentUsersClaim || claim.proofStatuses[approvedProof.proofTypeAddress] === true) {
+		if (!belongsToCurrentUsersClaim || claim.verifierStatuses[approvedVerifier.verifierTypeAddress] === true) {
 			return next(action);
 		}
 
 		display = 'One proof of your claim got approved'; // TODO show more info
 
 		store.dispatch({
-			type: 'APPROVE_PROOF',
+			type: 'APPROVE_VERIFIER',
 			pseudoClaimId: pseudoClaimId,
-			proofType: approvedProof.proofTypeAddress
+			verifierType: approvedVerifier.verifierTypeAddress
 		});
 	}
 
@@ -211,7 +211,7 @@ const contractEventNotifier = store => next => action => {
 				messageId: messageId,
 				messageType: null,
 				sender: null,
-				proofTypeName: null,
+				verifierTypeName: null,
 				message: null,
 				hasBeenActedUpon: null,
 				attachment: null,
@@ -309,7 +309,7 @@ const initialState = {
 	usersClaims: {},
 	usersFin4TokenBalances: {},
 	usersFin4GovernanceTokenBalances: {}, // REP and GOV
-	proofTypes: {},
+	verifierTypes: {},
 	defaultAccount: null,
 	usersEthBalance: null,
 	messages: [],
@@ -438,28 +438,28 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				}
 			};
-		case 'ADD_MULTIPLE_PROOF_TYPES':
-			for (i = 0; i < action.proofTypesArr.length; i++) {
-				let proofType = action.proofTypesArr[i];
+		case 'ADD_MULTIPLE_VERIFIER_TYPES':
+			for (i = 0; i < action.verifierTypesArr.length; i++) {
+				let verifierType = action.verifierTypesArr[i];
 				state = {
 					...state,
-					proofTypes: {
-						...state.proofTypes,
-						[proofType.value]: proofType // TODO change value to address and label to name
+					verifierTypes: {
+						...state.verifierTypes,
+						[verifierType.value]: verifierType // TODO change value to address and label to name
 					}
 				};
 			}
 			return state;
-		case 'APPROVE_PROOF':
+		case 'APPROVE_VERIFIER':
 			return {
 				...state,
 				usersClaims: {
 					...state.usersClaims,
 					[action.pseudoClaimId]: {
 						...state.usersClaims[action.pseudoClaimId],
-						proofStatuses: {
-							...state.usersClaims[action.pseudoClaimId].proofStatuses,
-							[action.proofType]: true
+						verifierStatuses: {
+							...state.usersClaims[action.pseudoClaimId].verifierStatuses,
+							[action.verifierType]: true
 						}
 					}
 				}
@@ -479,7 +479,7 @@ function fin4StoreReducer(state = initialState, action) {
 					[msg.messageId]: {
 						messageType: { $set: msg.messageType },
 						sender: { $set: msg.sender },
-						proofTypeName: { $set: msg.proofTypeName },
+						verifierTypeName: { $set: msg.verifierTypeName },
 						message: { $set: msg.message },
 						hasBeenActedUpon: { $set: msg.hasBeenActedUpon },
 						attachment: { $set: msg.attachment },

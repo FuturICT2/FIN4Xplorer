@@ -14,13 +14,13 @@ import StepIdentity from './creationProcess/Step1Identity';
 import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
-import StepProving from './creationProcess/Step5Proving';
+import StepVerifying from './creationProcess/Step5Verifying';
 import StepOther from './creationProcess/Step6Other';
 import StepUnderlying from './creationProcess/Step7Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
+import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
 import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -114,11 +114,11 @@ function TokenCreationProcess(props, context) {
 			return 'Symbol is already in use';
 		}
 
-		if (draft.proofs.Location) {
-			let latLonStr = draft.proofs.Location.parameters['latitude / longitude'];
+		if (draft.verifiers.Location) {
+			let latLonStr = draft.verifiers.Location.parameters['latitude / longitude'];
 			if (latLonStr.split('/').length !== 2) {
 				// also check for other possibly wrong cases?
-				return "The 'latitude / longitude' field of the location proof must use '/' as separator";
+				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
 			}
 		}
 
@@ -156,14 +156,14 @@ function TokenCreationProcess(props, context) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 
-		let proofAndConstraints = {
-			...draft.proofs,
+		let verifiersAndConstraints = {
+			...draft.verifiers,
 			...draft.other.constraints
 		};
 
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(proofAndConstraints).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			Object.keys(verifiersAndConstraints).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
@@ -174,18 +174,18 @@ function TokenCreationProcess(props, context) {
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
-		// proof types with parameters
-		let proofsToParameterize = [];
-		for (var name in proofAndConstraints) {
-			if (proofAndConstraints.hasOwnProperty(name)) {
-				let proof = proofAndConstraints[name];
-				let parameterNames = Object.keys(proof.parameters);
+		// verifier types with parameters
+		let verifiersToParameterize = [];
+		for (var name in verifiersAndConstraints) {
+			if (verifiersAndConstraints.hasOwnProperty(name)) {
+				let verifier = verifiersAndConstraints[name];
+				let parameterNames = Object.keys(verifier.parameters);
 				if (parameterNames.length === 0) {
 					continue;
 				}
 				transactionsRequired.current++;
-				let values = parameterNames.map(pName => proof.parameters[pName]);
-				proofsToParameterize.push({
+				let values = parameterNames.map(pName => verifier.parameters[pName]);
+				verifiersToParameterize.push({
 					name: name,
 					values: values
 				});
@@ -208,18 +208,18 @@ function TokenCreationProcess(props, context) {
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					if (proofsToParameterize.length === 0) {
+					if (verifiersToParameterize.length === 0) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
 					}
 
-					updateTokenCreationStage('Waiting for proof and constraint contracts to receive parameters.');
-					proofsToParameterize.map(proof => {
-						setParamsOnProofContract(
+					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					verifiersToParameterize.map(verifier => {
+						setParamsOnVerifierContract(
 							defaultAccount,
-							proof.name,
+							verifier.name,
 							newTokenAddress,
-							proof.values,
+							verifier.values,
 							tokenCreatorContract,
 							postCreationStepsArgs
 						);
@@ -253,7 +253,7 @@ function TokenCreationProcess(props, context) {
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
-	const setParamsOnProofContract = (
+	const setParamsOnVerifierContract = (
 		defaultAccount,
 		contractName,
 		tokenAddr,
@@ -274,11 +274,11 @@ function TokenCreationProcess(props, context) {
 			contractName,
 			'setParameters',
 			[tokenAddr, ...values],
-			'Set parameter on proof type: ' + contractName,
+			'Set parameter on verifier type: ' + contractName,
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
 
 					if (transactionCounter.current == transactionsRequired.current - 1) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
@@ -308,7 +308,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for proof contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage('Token creation failed with reason: ' + reason);
@@ -358,7 +358,7 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 1 && buildStepComponent(StepDesign)}
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
-							{activeStep === 4 && buildStepComponent(StepProving)}
+							{activeStep === 4 && buildStepComponent(StepVerifying)}
 							{activeStep === 5 && buildStepComponent(StepOther)}
 							{activeStep === 6 && buildStepComponent(StepUnderlying)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
@@ -427,7 +427,7 @@ function TokenCreationProcess(props, context) {
 									</small>
 								</center>
 								<br />
-								{getStepInfoBoxContent(activeStep, props.proofTypes)}
+								{getStepInfoBoxContent(activeStep, props.verifierTypes)}
 							</div>
 						</Box>
 					)}
@@ -456,7 +456,7 @@ TokenCreationProcess.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
-		proofTypes: state.fin4Store.proofTypes,
+		verifierTypes: state.fin4Store.verifierTypes,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		defaultAccount: state.fin4Store.defaultAccount
 	};

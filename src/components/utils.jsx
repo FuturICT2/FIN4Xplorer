@@ -66,10 +66,10 @@ const getRandomTokenCreationDraftID = () => {
 	return nanoid(5);
 };
 
-const findProofTypeAddressByName = (proofTypes, name) => {
-	for (var addr in proofTypes) {
-		if (proofTypes.hasOwnProperty(addr)) {
-			if (proofTypes[addr].label === name) {
+const findVerifierTypeAddressByName = (verifierTypes, name) => {
+	for (var addr in verifierTypes) {
+		if (verifierTypes.hasOwnProperty(addr)) {
+			if (verifierTypes[addr].label === name) {
 				return addr;
 			}
 		}
@@ -103,7 +103,7 @@ export {
 	buildIconLabelCallback,
 	getFormattedSelectOptions,
 	getRandomTokenCreationDraftID,
-	findProofTypeAddressByName,
+	findVerifierTypeAddressByName,
 	TCRactive,
 	BNstr,
 	doCallback,

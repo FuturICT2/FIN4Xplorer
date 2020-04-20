@@ -80,8 +80,10 @@ function Token(props) {
 				},
 				properties: {},
 				actions: {},
-				value: {},
-				proofs: {}
+				minting: {},
+				verifiers: {},
+				other: {},
+				underlyings: []
 				// TODO copy more (all) the fields...
 			},
 			addToCookies: true
@@ -145,7 +147,7 @@ function Token(props) {
 				properties: {},
 				actions: {},
 				minting: {},
-				proofs: {},
+				verifiers: {},
 				other: {},
 				underlyings: []
 			},

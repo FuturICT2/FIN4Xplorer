@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from '@material-ui/core';
 import styled from 'styled-components';
-import { findProofTypeAddressByName } from '../../../components/utils';
+import { findVerifierTypeAddressByName } from '../../../components/utils';
 
 const PROPERTY_DEFAULT = {
 	constraints: {}
@@ -36,7 +36,7 @@ function StepOther(props) {
 			: PROPERTY_DEFAULT.constraints;
 
 		setConstraintsAdded(
-			Object.keys(constraints.current).map(name => findProofTypeAddressByName(props.proofTypes, name))
+			Object.keys(constraints.current).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
 		);
 		setDraftId(draft.id);
 	});
@@ -55,7 +55,7 @@ function StepOther(props) {
 	};
 
 	const addConstraint = addr => {
-		let constraint = props.proofTypes[addr];
+		let constraint = props.verifierTypes[addr];
 		let name = constraint.label;
 
 		constraints.current[name] = {
@@ -76,15 +76,15 @@ function StepOther(props) {
 
 	const removeConstraint = addr => {
 		setConstraintsAdded(constraintsAdded.filter(a => a !== addr));
-		delete constraints.current[props.proofTypes[addr].label];
+		delete constraints.current[props.verifierTypes[addr].label];
 	};
 
 	return (
 		<>
-			{constraintsAdded.length > 0 && Object.keys(props.proofTypes).length > 0 && (
+			{constraintsAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{constraintsAdded.map((constraintAddress, index) => {
-						let constraint = props.proofTypes[constraintAddress];
+						let constraint = props.verifierTypes[constraintAddress];
 						let name = constraint.label;
 						return (
 							<div key={'constraint_' + index} style={{ paddingTop: '20px' }}>
@@ -148,10 +148,10 @@ function StepOther(props) {
 			{showDropdown ? (
 				<Dropdown
 					onChange={e => addConstraint(e.value)}
-					options={Object.keys(props.proofTypes)
-						.filter(addr => props.proofTypes[addr].isConstraint)
-						.filter(addr => !constraints.current[props.proofTypes[addr].label])
-						.map(addr => props.proofTypes[addr])}
+					options={Object.keys(props.verifierTypes)
+						.filter(addr => props.verifierTypes[addr].isNoninteractive)
+						.filter(addr => !constraints.current[props.verifierTypes[addr].label])
+						.map(addr => props.verifierTypes[addr])}
 					label="Add token constraint"
 				/>
 			) : (
@@ -189,7 +189,7 @@ const styles = {
 
 const mapStateToProps = state => {
 	return {
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 

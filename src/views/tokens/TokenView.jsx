@@ -16,7 +16,7 @@ function TokenView(props, context) {
 
 	const [tokenViaURL, setTokenViaURL] = useState(null);
 	const [details, setDetails] = useState(null);
-	const [proofTypesLoaded, setProofTypesLoaded] = useState(false);
+	const [verifierTypesLoaded, setVerifierTypesLoaded] = useState(false);
 
 	const fetchDetailedTokenInfo = () => {
 		getContractData(
@@ -25,7 +25,7 @@ function TokenView(props, context) {
 			'getDetailedTokenInfo'
 		).then(
 			({
-				0: requiredProofTypes,
+				0: requiredVerifierTypes,
 				1: claimsCount,
 				2: usersBalance,
 				3: totalSupply,
@@ -35,7 +35,7 @@ function TokenView(props, context) {
 				7: actionsText
 			}) => {
 				setDetails({
-					requiredProofTypes: requiredProofTypes,
+					requiredVerifierTypes: requiredVerifierTypes,
 					claimsCount: claimsCount,
 					usersBalance: usersBalance,
 					totalSupply: totalSupply, // how much of this token has been minted
@@ -54,10 +54,10 @@ function TokenView(props, context) {
 		);
 	};
 
-	const getProofTypesStr = () => {
+	const getVerifierTypesStr = () => {
 		let str = '';
-		for (let i = 0; i < details.requiredProofTypes.length; i++) {
-			str += props.proofTypes[details.requiredProofTypes[i]].label + ', ';
+		for (let i = 0; i < details.requiredVerifierTypes.length; i++) {
+			str += props.verifierTypes[details.requiredVerifierTypes[i]].label + ', ';
 		}
 		return str.substring(0, str.length - 2);
 	};
@@ -88,8 +88,8 @@ function TokenView(props, context) {
 		}
 
 		// TODO is there no other way? seems awkward
-		if (!proofTypesLoaded && Object.keys(props.proofTypes).length > 0) {
-			setProofTypesLoaded(true);
+		if (!verifierTypesLoaded && Object.keys(props.verifierTypes).length > 0) {
+			setVerifierTypesLoaded(true);
 		}
 	});
 
@@ -171,7 +171,7 @@ function TokenView(props, context) {
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
 								{buildInfoLine('Created at', details.tokenCreationTime)}
-								{buildInfoLine('Proof types', proofTypesLoaded ? getProofTypesStr() : 'Loading...')}
+								{buildInfoLine('Proof types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
 								{buildInfoLine('Total number of claims', details.claimsCount)}
 								{buildInfoLine('Total supply', details.totalSupply)}
 
@@ -228,7 +228,7 @@ const mapStateToProps = state => {
 		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		submissions: state.fin4Store.submissions,
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 
