@@ -145,7 +145,7 @@ function Token(props) {
 				properties: {},
 				actions: {},
 				minting: {},
-				proofs: {},
+				verifiers: {},
 				other: {},
 				underlyings: []
 			},

@@ -82,14 +82,14 @@ function Settings(props, context) {
 					)}
 				</div>
 			</Box>
-			<Box title="Proof type addresses">
+			<Box title="Verifier type addresses">
 				<div style={{ fontFamily: 'arial' }}>
 					{Object.keys(props.verifierTypes).map((addr, index) => {
 						let verifierType = props.verifierTypes[addr];
 						let name = verifierType.label;
 						let address = verifierType.value;
 						return (
-							<span key={'proof_' + index}>
+							<span key={'verifier_' + index}>
 								{name}
 								<br />
 								<a
