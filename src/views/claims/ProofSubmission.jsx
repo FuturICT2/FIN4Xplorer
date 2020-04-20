@@ -101,9 +101,9 @@ function ProofSubmission(props) {
 						</center>
 					) : (
 						<>
-							{Object.keys(props.usersClaims[pseudoClaimId].proofStatuses).map((verifierTypeAddr, index) => {
+							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
 								let claim = props.usersClaims[pseudoClaimId];
-								let proofIsApproved = claim.proofStatuses[verifierTypeAddr];
+								let proofIsApproved = claim.verifierStatuses[verifierTypeAddr];
 								let proofObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>

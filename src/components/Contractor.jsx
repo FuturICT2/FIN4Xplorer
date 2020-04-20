@@ -428,11 +428,11 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 									4: claimCreationTimeBN,
 									5: comment,
 									6: requiredVerifierTypes,
-									7: proofStatusesBool
+									7: verifierStatuses // boolean
 								}) => {
-									let proofStatusesObj = {};
+									let verifierStatusesObj = {};
 									for (let i = 0; i < requiredVerifierTypes.length; i++) {
-										proofStatusesObj[requiredVerifierTypes[i]] = proofStatusesBool[i];
+										verifierStatusesObj[requiredVerifierTypes[i]] = verifierStatuses[i];
 									}
 									return {
 										id: tokenAddr + '_' + claimId, // pseudoId
@@ -444,7 +444,7 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 										quantity: new BN(quantityBN).toNumber(),
 										claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
 										comment: comment,
-										proofStatuses: proofStatusesObj
+										verifierStatuses: verifierStatusesObj
 									};
 								}
 							);

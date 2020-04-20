@@ -67,9 +67,9 @@ const contractEventNotifier = store => next => action => {
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
 		display = 'You are claiming ' + quantity + ' ' + token.name + ' [' + token.symbol + '] tokens';
 
-		let proofStatusesObj = {};
+		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
-			proofStatusesObj[claim.requiredVerifierTypes[i]] = false;
+			verifierStatusesObj[claim.requiredVerifierTypes[i]] = false;
 		}
 
 		store.dispatch({
@@ -84,7 +84,7 @@ const contractEventNotifier = store => next => action => {
 				quantity: quantity,
 				claimCreationTime: new BN(claim.claimCreationTime).toNumber(),
 				comment: claim.comment,
-				proofStatuses: proofStatusesObj
+				verifierStatuses: verifierStatusesObj
 			}
 		});
 	}
@@ -175,7 +175,7 @@ const contractEventNotifier = store => next => action => {
 
 		let claim = usersClaims[pseudoClaimId];
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
-		if (!belongsToCurrentUsersClaim || claim.proofStatuses[approvedProof.verifierTypeAddress] === true) {
+		if (!belongsToCurrentUsersClaim || claim.verifierStatuses[approvedProof.verifierTypeAddress] === true) {
 			return next(action);
 		}
 
@@ -457,8 +457,8 @@ function fin4StoreReducer(state = initialState, action) {
 					...state.usersClaims,
 					[action.pseudoClaimId]: {
 						...state.usersClaims[action.pseudoClaimId],
-						proofStatuses: {
-							...state.usersClaims[action.pseudoClaimId].proofStatuses,
+						verifierStatuses: {
+							...state.usersClaims[action.pseudoClaimId].verifierStatuses,
 							[action.verifierType]: true
 						}
 					}
