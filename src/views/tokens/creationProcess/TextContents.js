@@ -24,7 +24,7 @@ const getStepContent = stepIndex => {
 	}
 };
 
-const getStepInfoBoxContent = (stepIndex, proofTypes) => {
+const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 	switch (stepIndex) {
 		case 0: // Basics
 			return (
@@ -129,8 +129,8 @@ const getStepInfoBoxContent = (stepIndex, proofTypes) => {
 					actions is a complex matter and we constantly work to improve the proving mechanisms.
 					<br />
 					<br />
-					{Object.keys(proofTypes).map((proofAddr, idx) => {
-						let proof = proofTypes[proofAddr];
+					{Object.keys(verifierTypes).map((proofAddr, idx) => {
+						let proof = verifierTypes[proofAddr];
 						return (
 							<span key={'proofInfo_' + idx}>
 								<b>Proof type: {proof.label}</b>

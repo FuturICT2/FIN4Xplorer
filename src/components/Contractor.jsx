@@ -158,7 +158,7 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 				messageId: messageId.toString(),
 				messageType: messageType.toString(),
 				sender: sender,
-				proofTypeName: senderStr,
+				verifierTypeName: senderStr,
 				message: message,
 				hasBeenActedUpon: hasBeenActedUpon,
 				attachment: attachment,
@@ -427,12 +427,12 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 									3: quantityBN,
 									4: claimCreationTimeBN,
 									5: comment,
-									6: requiredProofTypes,
+									6: requiredVerifierTypes,
 									7: proofStatusesBool
 								}) => {
 									let proofStatusesObj = {};
-									for (let i = 0; i < requiredProofTypes.length; i++) {
-										proofStatusesObj[requiredProofTypes[i]] = proofStatusesBool[i];
+									for (let i = 0; i < requiredVerifierTypes.length; i++) {
+										proofStatusesObj[requiredVerifierTypes[i]] = proofStatusesBool[i];
 									}
 									return {
 										id: tokenAddr + '_' + claimId, // pseudoId
@@ -518,10 +518,10 @@ const fetchAllSubmissions = (props, Fin4Verifying) => {
 				.map((x, i) => i)
 				.map(submissionId => {
 					return getContractData(Fin4Verifying, defaultAccount, 'submissions', submissionId).then(
-						({ 0: submissionId, 1: proofType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
+						({ 0: submissionId, 1: verifierType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
 							return {
 								submissionId: submissionId,
-								proofType: proofType,
+								verifierType: verifierType,
 								token: token,
 								user: user,
 								timestamp: timestamp,

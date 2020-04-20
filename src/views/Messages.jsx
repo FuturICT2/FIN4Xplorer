@@ -35,24 +35,24 @@ function Messages(props, context) {
 			});
 	});
 
-	const approveRequest = (proofTypeName, pendingApprovalId) => {
+	const approveRequest = (verifierTypeName, pendingApprovalId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
-			proofTypeName,
+			verifierTypeName,
 			'receiveApprovalFromSpecificAddress',
 			pendingApprovalId,
 			'Approve approval request'
 		);
 	};
 
-	const rejectRequest = (proofTypeName, pendingApprovalId) => {
+	const rejectRequest = (verifierTypeName, pendingApprovalId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
-			proofTypeName,
+			verifierTypeName,
 			'receiveRejectionFromSpecificAddress',
 			pendingApprovalId,
 			'Reject approval request'
@@ -93,7 +93,7 @@ function Messages(props, context) {
 							.filter(msg => !msg.hasBeenActedUpon && msg.messageType)
 							.map((msg, index) => {
 								return (
-									<Message key={`${msg.proofTypeName}_${msg.pendingApprovalId}_${index}`}>
+									<Message key={`${msg.verifierTypeName}_${msg.pendingApprovalId}_${index}`}>
 										<span style={{ color: 'gray' }}>
 											<Typography color="inherit" variant="body2">
 												<b>{getIntroText(msg.messageType).toUpperCase()}</b>
@@ -112,7 +112,7 @@ function Messages(props, context) {
 												<br />
 												{msg.attachment &&
 												msg.attachment.length > 0 &&
-												msg.proofTypeName !== 'Networking' && ( // TODO generic solution!
+												msg.verifierTypeName !== 'Networking' && ( // TODO generic solution!
 														<>
 															<Button
 																center="true"
@@ -128,7 +128,7 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbUpIcon}
-															onClick={() => approveRequest(msg.proofTypeName, msg.pendingApprovalId)}>
+															onClick={() => approveRequest(msg.verifierTypeName, msg.pendingApprovalId)}>
 															Approve
 														</Button>
 													</span>
@@ -137,7 +137,7 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbDownIcon}
-															onClick={() => rejectRequest(msg.proofTypeName, msg.pendingApprovalId)}>
+															onClick={() => rejectRequest(msg.verifierTypeName, msg.pendingApprovalId)}>
 															Reject
 														</Button>
 													</span>

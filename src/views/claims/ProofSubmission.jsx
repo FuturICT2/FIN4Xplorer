@@ -21,7 +21,7 @@ function ProofSubmission(props) {
 		if (
 			!pseudoClaimId &&
 			Object.keys(props.fin4Tokens).length > 0 &&
-			Object.keys(props.proofTypes).length > 0 &&
+			Object.keys(props.verifierTypes).length > 0 &&
 			symbol
 		) {
 			let token = findTokenBySymbol(props, symbol);
@@ -37,8 +37,8 @@ function ProofSubmission(props) {
 		}
 	});
 
-	const buildProofSubmissionForm = (proofTypeName, tokenAddrToReceiveProof, claimId, index) => {
-		switch (proofTypeName) {
+	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveProof, claimId, index) => {
+		switch (verifierTypeName) {
 			case 'Location':
 				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
 			case 'SelfieTogether':
@@ -64,17 +64,17 @@ function ProofSubmission(props) {
 			case 'HappyMoment':
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;*/
 			default:
-				const abi = require('../../build/contracts/' + proofTypeName).abi;
-				let contractMethod = 'submitProof_' + proofTypeName;
+				const abi = require('../../build/contracts/' + verifierTypeName).abi;
+				let contractMethod = 'submitProof_' + verifierTypeName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
 				});
 				return (
 					<ContractFormSimple
-						contractName={proofTypeName}
-						contractMethod={'submitProof_' + proofTypeName}
-						pendingTxStr={'Submit proof ' + proofTypeName}
+						contractName={verifierTypeName}
+						contractMethod={'submitProof_' + verifierTypeName}
+						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
 						fixValues={{
 							TokenAddrToReceiveProof: tokenAddrToReceiveProof,
@@ -101,10 +101,10 @@ function ProofSubmission(props) {
 						</center>
 					) : (
 						<>
-							{Object.keys(props.usersClaims[pseudoClaimId].proofStatuses).map((proofTypeAddr, index) => {
+							{Object.keys(props.usersClaims[pseudoClaimId].proofStatuses).map((verifierTypeAddr, index) => {
 								let claim = props.usersClaims[pseudoClaimId];
-								let proofIsApproved = claim.proofStatuses[proofTypeAddr];
-								let proofObj = props.proofTypes[proofTypeAddr];
+								let proofIsApproved = claim.proofStatuses[verifierTypeAddr];
+								let proofObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
@@ -160,7 +160,7 @@ const mapStateToProps = state => {
 	return {
 		usersClaims: state.fin4Store.usersClaims,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 

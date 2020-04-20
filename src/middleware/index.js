@@ -68,8 +68,8 @@ const contractEventNotifier = store => next => action => {
 		display = 'You are claiming ' + quantity + ' ' + token.name + ' [' + token.symbol + '] tokens';
 
 		let proofStatusesObj = {};
-		for (let i = 0; i < claim.requiredProofTypes.length; i++) {
-			proofStatusesObj[claim.requiredProofTypes[i]] = false;
+		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
+			proofStatusesObj[claim.requiredVerifierTypes[i]] = false;
 		}
 
 		store.dispatch({
@@ -175,7 +175,7 @@ const contractEventNotifier = store => next => action => {
 
 		let claim = usersClaims[pseudoClaimId];
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
-		if (!belongsToCurrentUsersClaim || claim.proofStatuses[approvedProof.proofTypeAddress] === true) {
+		if (!belongsToCurrentUsersClaim || claim.proofStatuses[approvedProof.verifierTypeAddress] === true) {
 			return next(action);
 		}
 
@@ -184,7 +184,7 @@ const contractEventNotifier = store => next => action => {
 		store.dispatch({
 			type: 'APPROVE_PROOF',
 			pseudoClaimId: pseudoClaimId,
-			proofType: approvedProof.proofTypeAddress
+			verifierType: approvedProof.verifierTypeAddress
 		});
 	}
 
@@ -211,7 +211,7 @@ const contractEventNotifier = store => next => action => {
 				messageId: messageId,
 				messageType: null,
 				sender: null,
-				proofTypeName: null,
+				verifierTypeName: null,
 				message: null,
 				hasBeenActedUpon: null,
 				attachment: null,
@@ -309,7 +309,7 @@ const initialState = {
 	usersClaims: {},
 	usersFin4TokenBalances: {},
 	usersFin4GovernanceTokenBalances: {}, // REP and GOV
-	proofTypes: {},
+	verifierTypes: {},
 	defaultAccount: null,
 	usersEthBalance: null,
 	messages: [],
@@ -443,8 +443,8 @@ function fin4StoreReducer(state = initialState, action) {
 				let verifierType = action.verifierTypesArr[i];
 				state = {
 					...state,
-					proofTypes: {
-						...state.proofTypes,
+					verifierTypes: {
+						...state.verifierTypes,
 						[verifierType.value]: verifierType // TODO change value to address and label to name
 					}
 				};
@@ -459,7 +459,7 @@ function fin4StoreReducer(state = initialState, action) {
 						...state.usersClaims[action.pseudoClaimId],
 						proofStatuses: {
 							...state.usersClaims[action.pseudoClaimId].proofStatuses,
-							[action.proofType]: true
+							[action.verifierType]: true
 						}
 					}
 				}
@@ -479,7 +479,7 @@ function fin4StoreReducer(state = initialState, action) {
 					[msg.messageId]: {
 						messageType: { $set: msg.messageType },
 						sender: { $set: msg.sender },
-						proofTypeName: { $set: msg.proofTypeName },
+						verifierTypeName: { $set: msg.verifierTypeName },
 						message: { $set: msg.message },
 						hasBeenActedUpon: { $set: msg.hasBeenActedUpon },
 						attachment: { $set: msg.attachment },

@@ -20,7 +20,7 @@ import StepUnderlying from './creationProcess/Step7Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findProofTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
+import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
 import { findTokenBySymbol, contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -163,7 +163,7 @@ function TokenCreationProcess(props, context) {
 
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(proofAndConstraints).map(name => findProofTypeAddressByName(props.proofTypes, name)),
+			Object.keys(proofAndConstraints).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
@@ -427,7 +427,7 @@ function TokenCreationProcess(props, context) {
 									</small>
 								</center>
 								<br />
-								{getStepInfoBoxContent(activeStep, props.proofTypes)}
+								{getStepInfoBoxContent(activeStep, props.verifierTypes)}
 							</div>
 						</Box>
 					)}
@@ -456,7 +456,7 @@ TokenCreationProcess.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
-		proofTypes: state.fin4Store.proofTypes,
+		verifierTypes: state.fin4Store.verifierTypes,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		defaultAccount: state.fin4Store.defaultAccount
 	};

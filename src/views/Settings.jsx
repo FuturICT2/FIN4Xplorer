@@ -84,10 +84,10 @@ function Settings(props, context) {
 			</Box>
 			<Box title="Proof type addresses">
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(props.proofTypes).map((addr, index) => {
-						let proofType = props.proofTypes[addr];
-						let name = proofType.label;
-						let address = proofType.value;
+					{Object.keys(props.verifierTypes).map((addr, index) => {
+						let verifierType = props.verifierTypes[addr];
+						let name = verifierType.label;
+						let address = verifierType.value;
 						return (
 							<span key={'proof_' + index}>
 								{name}
@@ -99,18 +99,18 @@ function Settings(props, context) {
 									{address}
 								</a>
 								<br />
-								{proofType.paramsEncoded && (
+								{verifierType.paramsEncoded && (
 									<small style={{ color: 'gray' }}>
-										<b>Parameters</b>: {proofType.paramsEncoded}
+										<b>Parameters</b>: {verifierType.paramsEncoded}
 									</small>
 								)}
-								{proofType.isNoninteractive && (
+								{verifierType.isNoninteractive && (
 									<small style={{ color: 'orange' }}>
 										<br />
 										<b>is constraint</b>
 									</small>
 								)}
-								{index < Object.keys(props.proofTypes).length - 1 && (
+								{index < Object.keys(props.verifierTypes).length - 1 && (
 									<Divider style={{ margin: '10px 0' }} variant="middle" />
 								)}
 							</span>
@@ -129,7 +129,7 @@ Settings.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 
