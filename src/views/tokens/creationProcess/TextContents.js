@@ -129,8 +129,8 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					actions is a complex matter and we constantly work to improve the proving mechanisms.
 					<br />
 					<br />
-					{Object.keys(verifierTypes).map((proofAddr, idx) => {
-						let proof = verifierTypes[proofAddr];
+					{Object.keys(verifierTypes).map((verifierAddr, idx) => {
+						let proof = verifierTypes[verifierAddr];
 						return (
 							<span key={'proofInfo_' + idx}>
 								<b>Proof type: {proof.label}</b>

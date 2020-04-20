@@ -37,15 +37,15 @@ function ProofSubmission(props) {
 		}
 	});
 
-	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveProof, claimId, index) => {
+	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierDecision, claimId, index) => {
 		switch (verifierTypeName) {
 			case 'Location':
-				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
+				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;
 			case 'SelfieTogether':
 				return (
 					<PictureUploadProof
 						key={'selfie_' + index}
-						tokenAddr={tokenAddrToReceiveProof}
+						tokenAddr={tokenAddrToReceiveVerifierDecision}
 						claimId={claimId}
 						contractName={'SelfieTogether'}
 					/>
@@ -54,15 +54,15 @@ function ProofSubmission(props) {
 				return (
 					<PictureUploadProof
 						key={'pic_' + index}
-						tokenAddr={tokenAddrToReceiveProof}
+						tokenAddr={tokenAddrToReceiveVerifierDecision}
 						claimId={claimId}
 						contractName={'Picture'}
 					/>
 				);
 			/*case 'Networking':
-				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
+				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;
 			case 'HappyMoment':
-				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;*/
+				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;*/
 			default:
 				const abi = require('../../build/contracts/' + verifierTypeName).abi;
 				let contractMethod = 'submitProof_' + verifierTypeName;
@@ -77,7 +77,7 @@ function ProofSubmission(props) {
 						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
 						fixValues={{
-							TokenAddrToReceiveProof: tokenAddrToReceiveProof,
+							TokenAddrToReceiveProof: tokenAddrToReceiveVerifierDecision,
 							ClaimId: claimId + ''
 						}}
 					/>
@@ -103,21 +103,21 @@ function ProofSubmission(props) {
 						<>
 							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
 								let claim = props.usersClaims[pseudoClaimId];
-								let proofIsApproved = claim.verifierStatuses[verifierTypeAddr];
-								let proofObj = props.verifierTypes[verifierTypeAddr];
+								let verifierIsApproved = claim.verifierStatuses[verifierTypeAddr];
+								let verifierObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
-										{proofIsApproved ? (
+										{verifierIsApproved ? (
 											<Status status="approved">
-												{'The proof ' + proofObj.label + ' was submitted successfully.'}
+												{'The proof ' + verifierObj.label + ' was submitted successfully.'}
 											</Status>
 										) : (
 											<>
 												<Status status="unsubmitted">
-													{'Your claim requires you to provide the following proof: ' + proofObj.description}
+													{'Your claim requires you to provide the following proof: ' + verifierObj.description}
 												</Status>
-												{buildProofSubmissionForm(proofObj.label, claim.token, claim.claimId, index)}
+												{buildProofSubmissionForm(verifierObj.label, claim.token, claim.claimId, index)}
 											</>
 										)}
 									</div>

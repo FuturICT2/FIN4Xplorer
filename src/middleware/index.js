@@ -160,12 +160,12 @@ const contractEventNotifier = store => next => action => {
 		});
 	}
 
-	// ------------------------------ ProofApproved ------------------------------
+	// ------------------------------ VerifierApproved ------------------------------
 
-	if (contractEvent === 'ProofApproved') {
-		let approvedProof = action.event.returnValues;
-		let belongsToCurrentUsersClaim = approvedProof.claimer === defaultAccount;
-		let pseudoClaimId = approvedProof.tokenAddrToReceiveProof + '_' + approvedProof.claimId;
+	if (contractEvent === 'VerifierApproved') {
+		let approvedVerifier = action.event.returnValues;
+		let belongsToCurrentUsersClaim = approvedVerifier.claimer === defaultAccount;
+		let pseudoClaimId = approvedVerifier.tokenAddrToReceiveVerifierDecision + '_' + approvedVerifier.claimId;
 
 		let usersClaims = store.getState().fin4Store.usersClaims;
 		if (!usersClaims[pseudoClaimId]) {
@@ -175,16 +175,16 @@ const contractEventNotifier = store => next => action => {
 
 		let claim = usersClaims[pseudoClaimId];
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
-		if (!belongsToCurrentUsersClaim || claim.verifierStatuses[approvedProof.verifierTypeAddress] === true) {
+		if (!belongsToCurrentUsersClaim || claim.verifierStatuses[approvedVerifier.verifierTypeAddress] === true) {
 			return next(action);
 		}
 
 		display = 'One proof of your claim got approved'; // TODO show more info
 
 		store.dispatch({
-			type: 'APPROVE_PROOF',
+			type: 'APPROVE_VERIFIER',
 			pseudoClaimId: pseudoClaimId,
-			verifierType: approvedProof.verifierTypeAddress
+			verifierType: approvedVerifier.verifierTypeAddress
 		});
 	}
 
@@ -450,7 +450,7 @@ function fin4StoreReducer(state = initialState, action) {
 				};
 			}
 			return state;
-		case 'APPROVE_PROOF':
+		case 'APPROVE_VERIFIER':
 			return {
 				...state,
 				usersClaims: {
