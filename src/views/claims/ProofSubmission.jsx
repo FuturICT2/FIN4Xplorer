@@ -11,7 +11,7 @@ import LocationProof from './proofs/LocationProof';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
-import { abiTypeToTextfieldType, capitalizeFirstLetter } from '../../components/utils';
+import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
 
 function ProofSubmission(props) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
@@ -103,7 +103,8 @@ function ProofSubmission(props) {
 						<>
 							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
 								let claim = props.usersClaims[pseudoClaimId];
-								let verifierIsApproved = claim.verifierStatuses[verifierTypeAddr];
+								let verifierIsApproved =
+									claim.verifierStatuses[verifierTypeAddr] === ProofAndVerifierStatusEnum.APPROVED;
 								let verifierObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>

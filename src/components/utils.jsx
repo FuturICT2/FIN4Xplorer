@@ -98,6 +98,14 @@ const capitalizeFirstLetter = str => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+const ProofAndVerifierStatusEnum = {
+	// corresponds with the Status enum in the Fin4TokenBase contract
+	UNSUBMITTED: 0,
+	PENDING: 1,
+	APPROVED: 2,
+	REJECTED: 3
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -110,5 +118,6 @@ export {
 	abiTypeToTextfieldType,
 	capitalizeFirstLetter,
 	stringToBytes32,
-	bytes32ToString
+	bytes32ToString,
+	ProofAndVerifierStatusEnum
 };

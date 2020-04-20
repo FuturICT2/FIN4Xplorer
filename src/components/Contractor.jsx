@@ -428,11 +428,11 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 									4: claimCreationTimeBN,
 									5: comment,
 									6: requiredVerifierTypes,
-									7: verifierStatuses // boolean
+									7: verifierStatuses // ProofAndVerifierStatusEnum
 								}) => {
 									let verifierStatusesObj = {};
 									for (let i = 0; i < requiredVerifierTypes.length; i++) {
-										verifierStatusesObj[requiredVerifierTypes[i]] = verifierStatuses[i];
+										verifierStatusesObj[requiredVerifierTypes[i]] = Number(verifierStatuses[i]);
 									}
 									return {
 										id: tokenAddr + '_' + claimId, // pseudoId

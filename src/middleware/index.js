@@ -4,7 +4,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
-import { doCallback } from '../components/utils';
+import { doCallback, ProofAndVerifierStatusEnum } from '../components/utils';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -69,7 +69,7 @@ const contractEventNotifier = store => next => action => {
 
 		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
-			verifierStatusesObj[claim.requiredVerifierTypes[i]] = false;
+			verifierStatusesObj[claim.requiredVerifierTypes[i]] = ProofAndVerifierStatusEnum.UNSUBMITTED;
 		}
 
 		store.dispatch({
@@ -175,7 +175,10 @@ const contractEventNotifier = store => next => action => {
 
 		let claim = usersClaims[pseudoClaimId];
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
-		if (!belongsToCurrentUsersClaim || claim.verifierStatuses[approvedVerifier.verifierTypeAddress] === true) {
+		if (
+			!belongsToCurrentUsersClaim ||
+			claim.verifierStatuses[approvedVerifier.verifierTypeAddress] === ProofAndVerifierStatusEnum.APPROVED
+		) {
 			return next(action);
 		}
 
@@ -459,7 +462,7 @@ function fin4StoreReducer(state = initialState, action) {
 						...state.usersClaims[action.pseudoClaimId],
 						verifierStatuses: {
 							...state.usersClaims[action.pseudoClaimId].verifierStatuses,
-							[action.verifierType]: true
+							[action.verifierType]: ProofAndVerifierStatusEnum.APPROVED
 						}
 					}
 				}
