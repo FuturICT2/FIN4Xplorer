@@ -17,19 +17,21 @@ function StepVerifying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const proofs = useRef({}); // TODO rework this to use state too as in other steps?
+	const verifiers = useRef({}); // TODO rework this to use state too as in other steps?
 
 	useEffect(() => {
 		if (!props.draft || draftId || Object.keys(props.verifierTypes).length === 0) {
 			return;
 		}
 		let draft = props.draft;
-		proofs.current = draft.proofs;
-		if (proofs.current['Location']) {
-			setLocVal(proofs.current['Location'].parameters['latitude / longitude']);
+		verifiers.current = draft.verifiers;
+		if (verifiers.current['Location']) {
+			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
 
-		setProofsAdded(Object.keys(draft.proofs).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)));
+		setVerifiersAdded(
+			Object.keys(draft.verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+		);
 		setDraftId(draft.id);
 	});
 
@@ -38,49 +40,49 @@ function StepVerifying(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'proofs',
-			node: proofs.current
+			nodeName: 'verifiers',
+			node: verifiers.current
 		});
 		props.handleNext();
 	};
 
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [proofsAdded, setProofsAdded] = useState([]);
+	const [verifiersAdded, setVerifiersAdded] = useState([]);
 
-	const addProof = addr => {
+	const addVerifier = addr => {
 		let verifierType = props.verifierTypes[addr];
 		let name = verifierType.label;
 
-		proofs.current[name] = {
+		verifiers.current[name] = {
 			// address: addr,
 			parameters: {}
 		};
 
 		if (verifierType.paramsEncoded) {
-			proofs.current[name].parameters = {};
+			verifiers.current[name].parameters = {};
 			verifierType.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
-				proofs.current[name].parameters[paramName] = null;
+				verifiers.current[name].parameters[paramName] = null;
 			});
 		}
 
-		setProofsAdded(proofsAdded.concat(addr));
+		setVerifiersAdded(verifiersAdded.concat(addr));
 		setShowDropdown(false);
 	};
 
-	const removeProof = addr => {
-		setProofsAdded(proofsAdded.filter(a => a !== addr));
-		delete proofs.current[props.verifierTypes[addr].label];
+	const removeVerifier = addr => {
+		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
+		delete verifiers.current[props.verifierTypes[addr].label];
 	};
 
-	const requestLocation = (proofName, paramName) => {
+	const requestLocation = (verifierName, paramName) => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				let latitude = pos.coords.latitude;
 				let longitude = pos.coords.longitude;
 				let locStr = latitude + ' / ' + longitude;
 				console.log('Captured location ' + locStr);
-				proofs.current[proofName].parameters[paramName] = locStr;
+				verifiers.current[verifierName].parameters[paramName] = locStr;
 				setLocVal(locStr);
 			});
 		} else {
@@ -93,15 +95,15 @@ function StepVerifying(props) {
 
 	return (
 		<>
-			{proofsAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
+			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{proofsAdded.map((proofAddress, index) => {
-						let verifierType = props.verifierTypes[proofAddress];
+					{verifiersAdded.map((verifierAddress, index) => {
+						let verifierType = props.verifierTypes[verifierAddress];
 						let name = verifierType.label;
 						return (
-							<div key={'proof_' + index} style={{ paddingTop: '20px' }}>
+							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
-									key={'proofLabel_' + index}
+									key={'verifierLabel_' + index}
 									title={verifierType.description}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
@@ -109,14 +111,14 @@ function StepVerifying(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title="Remove proof"
-										onClick={() => removeProof(proofAddress)}
+										title="Remove verifier"
+										onClick={() => removeVerifier(verifierAddress)}
 									/>
 									{verifierType.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title="Since this proof has parameters to set, it will require an extra transaction when creating the token"
+											title="Since this verifier has parameters to set, it will require an extra transaction when creating the token"
 										/>
 									)}
 								</div>
@@ -133,7 +135,7 @@ function StepVerifying(props) {
 										let type = paramStr.split(':')[0];
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
-										let key = 'proof_' + index + '_param_' + paramIndex;
+										let key = 'verifier_' + index + '_param_' + paramIndex;
 
 										if (description === 'gps') {
 											// ONLY FOR LAT/LON FIELD OF LOCATION
@@ -150,7 +152,7 @@ function StepVerifying(props) {
 														}
 														value={locVal}
 														onChange={e => {
-															proofs.current[name].parameters[paramName] = e.target.value;
+															verifiers.current[name].parameters[paramName] = e.target.value;
 															setLocVal(e.target.value);
 														}}
 														style={styles.shortenedField}
@@ -174,8 +176,8 @@ function StepVerifying(props) {
 																{description && <small> ({description})</small>}{' '}
 															</>
 														}
-														defaultValue={proofs.current[name].parameters[paramName]}
-														onChange={e => (proofs.current[name].parameters[paramName] = e.target.value)}
+														defaultValue={verifiers.current[name].parameters[paramName]}
+														onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
 													/>
 												</span>
@@ -187,15 +189,15 @@ function StepVerifying(props) {
 					})}
 				</div>
 			)}
-			{proofsAdded.length > 0 && <Spacer />}
+			{verifiersAdded.length > 0 && <Spacer />}
 			{showDropdown ? (
 				<Dropdown
-					onChange={e => addProof(e.value)}
+					onChange={e => addVerifier(e.value)}
 					options={Object.keys(props.verifierTypes)
 						.filter(addr => !props.verifierTypes[addr].isNoninteractive)
-						.filter(addr => !proofs.current[props.verifierTypes[addr].label])
+						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
 						.map(addr => props.verifierTypes[addr])}
-					label="Add proof type"
+					label="Add verifier type"
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
