@@ -185,9 +185,10 @@ const contractEventNotifier = store => next => action => {
 		display = 'One proof of your claim got approved'; // TODO show more info
 
 		store.dispatch({
-			type: 'APPROVE_VERIFIER',
+			type: 'SET_VERIFIER_STATUS',
 			pseudoClaimId: pseudoClaimId,
-			verifierType: approvedVerifier.verifierTypeAddress
+			verifierTypeAddress: approvedVerifier.verifierTypeAddress,
+			status: ProofAndVerifierStatusEnum.APPROVED
 		});
 	}
 
@@ -453,7 +454,7 @@ function fin4StoreReducer(state = initialState, action) {
 				};
 			}
 			return state;
-		case 'APPROVE_VERIFIER':
+		case 'SET_VERIFIER_STATUS':
 			return {
 				...state,
 				usersClaims: {
@@ -462,7 +463,7 @@ function fin4StoreReducer(state = initialState, action) {
 						...state.usersClaims[action.pseudoClaimId],
 						verifierStatuses: {
 							...state.usersClaims[action.pseudoClaimId].verifierStatuses,
-							[action.verifierType]: ProofAndVerifierStatusEnum.APPROVED
+							[action.verifierTypeAddress]: action.status
 						}
 					}
 				}
