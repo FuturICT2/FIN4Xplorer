@@ -165,7 +165,7 @@ const contractEventNotifier = store => next => action => {
 	if (contractEvent === 'VerifierApproved') {
 		let approvedVerifier = action.event.returnValues;
 		let belongsToCurrentUsersClaim = approvedVerifier.claimer === defaultAccount;
-		let pseudoClaimId = approvedVerifier.tokenAddrToReceiveVerifierDecision + '_' + approvedVerifier.claimId;
+		let pseudoClaimId = approvedVerifier.tokenAddrToReceiveVerifierNotice + '_' + approvedVerifier.claimId;
 
 		let usersClaims = store.getState().fin4Store.usersClaims;
 		if (!usersClaims[pseudoClaimId]) {

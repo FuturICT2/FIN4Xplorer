@@ -37,15 +37,15 @@ function ProofSubmission(props) {
 		}
 	});
 
-	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierDecision, claimId, index) => {
+	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
 		switch (verifierTypeName) {
 			case 'Location':
-				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;
+				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'SelfieTogether':
 				return (
 					<PictureUploadProof
 						key={'selfie_' + index}
-						tokenAddr={tokenAddrToReceiveVerifierDecision}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'SelfieTogether'}
 					/>
@@ -54,22 +54,22 @@ function ProofSubmission(props) {
 				return (
 					<PictureUploadProof
 						key={'pic_' + index}
-						tokenAddr={tokenAddrToReceiveVerifierDecision}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'Picture'}
 					/>
 				);
 			/*case 'Networking':
-				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;
+				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'HappyMoment':
-				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierDecision} claimId={claimId} />;*/
+				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
 			default:
 				const abi = require('../../build/contracts/' + verifierTypeName).abi;
 				let contractMethod = 'submitProof_' + verifierTypeName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
-				});
+				}); // I don't remember why I capitalized the first letter...
 				return (
 					<ContractFormSimple
 						contractName={verifierTypeName}
@@ -77,7 +77,7 @@ function ProofSubmission(props) {
 						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
 						fixValues={{
-							TokenAddrToReceiveVerifierDecision: tokenAddrToReceiveVerifierDecision,
+							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
 							ClaimId: claimId + ''
 						}}
 					/>
