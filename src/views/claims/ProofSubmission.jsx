@@ -11,7 +11,12 @@ import LocationProof from './proofs/LocationProof';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
-import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
+import {
+	abiTypeToTextfieldType,
+	capitalizeFirstLetter,
+	ProofAndVerifierStatusEnum,
+	findVerifierTypeAddressByName
+} from '../../components/utils';
 
 function ProofSubmission(props) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
@@ -40,7 +45,18 @@ function ProofSubmission(props) {
 	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
 		switch (verifierTypeName) {
 			case 'Location':
-				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
+				return (
+					<LocationProof
+						key={'loc_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						callbacks={{
+							transactionSent: () => {
+								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							}
+						}}
+					/>
+				);
 			case 'SelfieTogether':
 				return (
 					<PictureUploadProof
@@ -48,6 +64,11 @@ function ProofSubmission(props) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'SelfieTogether'}
+						callbacks={{
+							transactionSent: () => {
+								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							}
+						}}
 					/>
 				);
 			case 'Picture':
@@ -57,6 +78,11 @@ function ProofSubmission(props) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'Picture'}
+						callbacks={{
+							transactionSent: () => {
+								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							}
+						}}
 					/>
 				);
 			/*case 'Networking':
@@ -80,8 +106,48 @@ function ProofSubmission(props) {
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
 							ClaimId: claimId + ''
 						}}
+						callbacks={{
+							transactionSent: () => {
+								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							}
+						}}
 					/>
 				);
+		}
+	};
+
+	const transactionSentCallback = (_pseudoClaimId, _verifierTypeName) => {
+		props.dispatch({
+			type: 'SET_VERIFIER_STATUS',
+			pseudoClaimId: _pseudoClaimId,
+			verifierTypeAddress: findVerifierTypeAddressByName(props.verifierTypes, _verifierTypeName),
+			status: ProofAndVerifierStatusEnum.PENDING
+		});
+	};
+
+	const buildStatusElement = (status, text) => {
+		return <Status status={status}>{text}</Status>;
+	};
+
+	const buildVerifierAppearance = (index, claimObj, verifierObj) => {
+		let status = claimObj.verifierStatuses[verifierObj.value];
+		switch (status) {
+			case ProofAndVerifierStatusEnum.UNSUBMITTED:
+				return (
+					<>
+						{buildStatusElement(
+							status,
+							'Your claim requires you to provide the following proof: ' + verifierObj.description
+						)}
+						{buildProofSubmissionForm(verifierObj.label, claimObj.token, claimObj.claimId, index)}
+					</>
+				);
+			case ProofAndVerifierStatusEnum.PENDING:
+				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' is in pending state.');
+			case ProofAndVerifierStatusEnum.APPROVED:
+				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' got verified successfully.');
+			case ProofAndVerifierStatusEnum.REJECTED:
+				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' got rejected.');
 		}
 	};
 
@@ -102,25 +168,12 @@ function ProofSubmission(props) {
 					) : (
 						<>
 							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
-								let claim = props.usersClaims[pseudoClaimId];
-								let verifierIsApproved =
-									claim.verifierStatuses[verifierTypeAddr] === ProofAndVerifierStatusEnum.APPROVED;
+								let claimObj = props.usersClaims[pseudoClaimId];
 								let verifierObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
-										{verifierIsApproved ? (
-											<Status status="approved">
-												{'The proof ' + verifierObj.label + ' was submitted successfully.'}
-											</Status>
-										) : (
-											<>
-												<Status status="unsubmitted">
-													{'Your claim requires you to provide the following proof: ' + verifierObj.description}
-												</Status>
-												{buildProofSubmissionForm(verifierObj.label, claim.token, claim.claimId, index)}
-											</>
-										)}
+										{buildVerifierAppearance(index, claimObj, verifierObj)}
 									</div>
 								);
 							})}
@@ -134,13 +187,15 @@ function ProofSubmission(props) {
 
 const getStatusColor = status => {
 	switch (status) {
-		case 'approved':
-			return colors.true;
-		case 'unsubmitted':
+		case ProofAndVerifierStatusEnum.UNSUBMITTED:
 			return colors.wrong;
-		case 'pending':
+		case ProofAndVerifierStatusEnum.PENDING:
 			return '#FED8B1'; // light orange
-	} // case rejected not needed because the whole submission-page collapses into one message
+		case ProofAndVerifierStatusEnum.APPROVED:
+			return colors.true;
+		case ProofAndVerifierStatusEnum.REJECTED:
+			return 'gray';
+	}
 };
 
 const Status = styled(Typography)`
