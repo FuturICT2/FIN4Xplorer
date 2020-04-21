@@ -155,7 +155,7 @@ function ProofSubmission(props) {
 		pseudoClaimId && (
 			<Container>
 				<Box title="Proof Submission">
-					{props.usersClaims[pseudoClaimId].gotRejected ? (
+					{props.usersClaims[pseudoClaimId].gotRejected && (
 						<center style={{ fontFamily: 'arial' }}>
 							<b style={{ color: 'red' }}>Your claim got rejected.</b>
 							<br />
@@ -165,7 +165,8 @@ function ProofSubmission(props) {
 							If you want, you can submit <Link to={'/claim/' + props.match.params.tokenSymbol}>a new claim</Link>.
 							{/* TODO "or contact the token creator" too? #ConceptualDecision */}
 						</center>
-					) : (
+					)}
+					{
 						<>
 							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
 								let claimObj = props.usersClaims[pseudoClaimId];
@@ -178,7 +179,7 @@ function ProofSubmission(props) {
 								);
 							})}
 						</>
-					)}
+					}
 				</Box>
 			</Container>
 		)
@@ -194,7 +195,7 @@ const getStatusColor = status => {
 		case ProofAndVerifierStatusEnum.APPROVED:
 			return colors.true;
 		case ProofAndVerifierStatusEnum.REJECTED:
-			return 'gray';
+			return 'lightgray';
 	}
 };
 
