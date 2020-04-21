@@ -7,7 +7,6 @@ import { TextField } from '@material-ui/core';
 import Button from './Button';
 import AddIcon from '@material-ui/icons/Add';
 import update from 'react-addons-update';
-import { doCallback } from './utils';
 
 function ContractFormSimple(props, context) {
 	const { t } = useTranslation();
@@ -33,8 +32,6 @@ function ContractFormSimple(props, context) {
 	});
 
 	const doContractCall = () => {
-		doCallback(props.callbacks, 'callbackUponSubmit');
-
 		contractCall(
 			context,
 			props,

@@ -20,7 +20,7 @@ const contractCall = (
 	methodName,
 	params,
 	displayStr = '',
-	callbacks = {}, // transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
 	skipDryRun = false
 ) => {
 	let contract = context.drizzle.contracts[contractName];
@@ -78,6 +78,7 @@ const contractCall = (
 
 const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
 	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+	doCallback(callbacks, 'transactionSent');
 
 	props.dispatch({
 		type: 'ENRICH_PENDING_TRANSACTION',

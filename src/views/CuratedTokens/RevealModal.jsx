@@ -17,7 +17,7 @@ function RevealModal(props) {
 					fields={[['pollID', 'number'], ['Vote', 'number'], ['Salt', 'number']]}
 					fixValues={{ pollID: props.pollID }}
 					callbacks={{
-						callbackUponSubmit: () => {
+						transactionSent: () => {
 							props.handleClose();
 						}
 					}}

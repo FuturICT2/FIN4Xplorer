@@ -120,7 +120,7 @@ function Management(props, context) {
 							pendingTxStr="Delegate GOV"
 							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
 							callbacks={{
-								callbackUponSubmit: () => {
+								transactionSent: () => {
 									toggleDelegateModal();
 								}
 							}}
@@ -137,7 +137,7 @@ function Management(props, context) {
 							pendingTxStr="Delegate GOV"
 							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
 							callbacks={{
-								callbackUponSubmit: () => {
+								transactionSent: () => {
 									toggleRefundDelegationModal();
 								}
 							}}
