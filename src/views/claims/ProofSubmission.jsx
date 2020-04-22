@@ -11,12 +11,7 @@ import LocationProof from './proofs/LocationProof';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
-import {
-	abiTypeToTextfieldType,
-	capitalizeFirstLetter,
-	ProofAndVerifierStatusEnum,
-	findVerifierTypeAddressByName
-} from '../../components/utils';
+import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
 
 function ProofSubmission(props) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
@@ -51,8 +46,11 @@ function ProofSubmission(props) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						callbacks={{
-							transactionSent: () => {
-								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
 							}
 						}}
 					/>
@@ -65,8 +63,11 @@ function ProofSubmission(props) {
 						claimId={claimId}
 						contractName={'SelfieTogether'}
 						callbacks={{
-							transactionSent: () => {
-								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
 							}
 						}}
 					/>
@@ -79,8 +80,11 @@ function ProofSubmission(props) {
 						claimId={claimId}
 						contractName={'Picture'}
 						callbacks={{
-							transactionSent: () => {
-								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
 							}
 						}}
 					/>
@@ -107,8 +111,11 @@ function ProofSubmission(props) {
 							ClaimId: claimId + ''
 						}}
 						callbacks={{
-							transactionSent: () => {
-								transactionSentCallback(pseudoClaimId, verifierTypeName);
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
 							}
 						}}
 					/>
@@ -116,14 +123,14 @@ function ProofSubmission(props) {
 		}
 	};
 
-	const transactionSentCallback = (_pseudoClaimId, _verifierTypeName) => {
+	/*const transactionSentCallback = (_pseudoClaimId, _verifierTypeName) => {
 		props.dispatch({
 			type: 'SET_VERIFIER_STATUS',
 			pseudoClaimId: _pseudoClaimId,
 			verifierTypeAddress: findVerifierTypeAddressByName(props.verifierTypes, _verifierTypeName),
 			status: ProofAndVerifierStatusEnum.PENDING
 		});
-	};
+	};*/
 
 	const buildStatusElement = (status, text) => {
 		return <Status status={status}>{text}</Status>;
