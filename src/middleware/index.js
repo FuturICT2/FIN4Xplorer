@@ -192,6 +192,40 @@ const contractEventNotifier = store => next => action => {
 		});
 	}
 
+	// ------------------------------ VerifierRejected ------------------------------
+
+	// TODO combine code with VerifierApproved above
+
+	if (contractEvent === 'VerifierRejected') {
+		let rejectedVerifier = action.event.returnValues;
+		let belongsToCurrentUsersClaim = rejectedVerifier.claimer === defaultAccount;
+		let pseudoClaimId = rejectedVerifier.tokenAddrToReceiveVerifierNotice + '_' + rejectedVerifier.claimId;
+
+		let usersClaims = store.getState().fin4Store.usersClaims;
+		if (!usersClaims[pseudoClaimId]) {
+			console.log('Dev: this should not happen! Investigate why');
+			return next(action);
+		}
+
+		let claim = usersClaims[pseudoClaimId];
+		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
+		if (
+			!belongsToCurrentUsersClaim ||
+			claim.verifierStatuses[rejectedVerifier.verifierTypeAddress] === ProofAndVerifierStatusEnum.REJECTED
+		) {
+			return next(action);
+		}
+
+		display = 'One proof of your claim got rejected';
+
+		store.dispatch({
+			type: 'SET_VERIFIER_STATUS',
+			pseudoClaimId: pseudoClaimId,
+			verifierTypeAddress: rejectedVerifier.verifierTypeAddress,
+			status: ProofAndVerifierStatusEnum.REJECTED
+		});
+	}
+
 	// ------------------------------ NewMessage ------------------------------
 
 	if (contractEvent === 'NewMessage') {
