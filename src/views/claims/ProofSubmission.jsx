@@ -136,25 +136,33 @@ function ProofSubmission(props) {
 		return <Status status={status}>{text}</Status>;
 	};
 
-	const buildVerifierAppearance = (index, claimObj, verifierObj) => {
-		let status = claimObj.verifierStatuses[verifierObj.value];
+	const buildVerifierAppearance = (index, claimObj, generalVerifierObj) => {
+		let statusObj = claimObj.verifierStatuses[generalVerifierObj.value];
+		let status = statusObj.status;
+		let message = statusObj.message;
 		switch (status) {
 			case ProofAndVerifierStatusEnum.UNSUBMITTED:
 				return (
 					<>
 						{buildStatusElement(
 							status,
-							'Your claim requires you to provide the following proof: ' + verifierObj.description
+							'Your claim requires you to provide the following proof: ' + generalVerifierObj.description
 						)}
-						{buildProofSubmissionForm(verifierObj.label, claimObj.token, claimObj.claimId, index)}
+						{buildProofSubmissionForm(generalVerifierObj.label, claimObj.token, claimObj.claimId, index)}
 					</>
 				);
 			case ProofAndVerifierStatusEnum.PENDING:
-				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' is in pending state.');
+				return buildStatusElement(status, 'The proof ' + generalVerifierObj.label + ' is in pending state.');
 			case ProofAndVerifierStatusEnum.APPROVED:
-				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' got verified successfully.');
+				return buildStatusElement(
+					status,
+					'The proof ' + generalVerifierObj.label + ' got verified successfully' + (message ? ': ' + message : '.')
+				);
 			case ProofAndVerifierStatusEnum.REJECTED:
-				return buildStatusElement(status, 'The proof ' + verifierObj.label + ' got rejected.');
+				return buildStatusElement(
+					status,
+					'The proof ' + generalVerifierObj.label + ' got rejected' + (message ? ': ' + message : '.')
+				);
 		}
 	};
 
@@ -177,11 +185,11 @@ function ProofSubmission(props) {
 						<>
 							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
 								let claimObj = props.usersClaims[pseudoClaimId];
-								let verifierObj = props.verifierTypes[verifierTypeAddr];
+								let generalVerifierObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
-										{buildVerifierAppearance(index, claimObj, verifierObj)}
+										{buildVerifierAppearance(index, claimObj, generalVerifierObj)}
 									</div>
 								);
 							})}

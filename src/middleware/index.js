@@ -69,7 +69,10 @@ const contractEventNotifier = store => next => action => {
 
 		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
-			verifierStatusesObj[claim.requiredVerifierTypes[i]] = ProofAndVerifierStatusEnum.UNSUBMITTED;
+			verifierStatusesObj[claim.requiredVerifierTypes[i]] = {
+				status: ProofAndVerifierStatusEnum.UNSUBMITTED,
+				message: ''
+			};
 		}
 
 		store.dispatch({
@@ -177,7 +180,7 @@ const contractEventNotifier = store => next => action => {
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
 		if (
 			!belongsToCurrentUsersClaim ||
-			claim.verifierStatuses[approvedVerifier.verifierTypeAddress] === ProofAndVerifierStatusEnum.APPROVED
+			claim.verifierStatuses[approvedVerifier.verifierTypeAddress].status === ProofAndVerifierStatusEnum.APPROVED
 		) {
 			return next(action);
 		}
@@ -188,7 +191,10 @@ const contractEventNotifier = store => next => action => {
 			type: 'SET_VERIFIER_STATUS',
 			pseudoClaimId: pseudoClaimId,
 			verifierTypeAddress: approvedVerifier.verifierTypeAddress,
-			status: ProofAndVerifierStatusEnum.APPROVED
+			statusObj: {
+				status: ProofAndVerifierStatusEnum.APPROVED,
+				message: approvedVerifier.message
+			}
 		});
 	}
 
@@ -211,7 +217,7 @@ const contractEventNotifier = store => next => action => {
 		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
 		if (
 			!belongsToCurrentUsersClaim ||
-			claim.verifierStatuses[rejectedVerifier.verifierTypeAddress] === ProofAndVerifierStatusEnum.REJECTED
+			claim.verifierStatuses[rejectedVerifier.verifierTypeAddress].status === ProofAndVerifierStatusEnum.REJECTED
 		) {
 			return next(action);
 		}
@@ -222,7 +228,10 @@ const contractEventNotifier = store => next => action => {
 			type: 'SET_VERIFIER_STATUS',
 			pseudoClaimId: pseudoClaimId,
 			verifierTypeAddress: rejectedVerifier.verifierTypeAddress,
-			status: ProofAndVerifierStatusEnum.REJECTED
+			statusObj: {
+				status: ProofAndVerifierStatusEnum.REJECTED,
+				message: rejectedVerifier.message
+			}
 		});
 	}
 
@@ -497,7 +506,7 @@ function fin4StoreReducer(state = initialState, action) {
 						...state.usersClaims[action.pseudoClaimId],
 						verifierStatuses: {
 							...state.usersClaims[action.pseudoClaimId].verifierStatuses,
-							[action.verifierTypeAddress]: action.status
+							[action.verifierTypeAddress]: action.statusObj
 						}
 					}
 				}
