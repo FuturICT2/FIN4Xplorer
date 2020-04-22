@@ -114,8 +114,8 @@ function TokenCreationProcess(props, context) {
 			return 'Symbol is already in use';
 		}
 
-		if (draft.verifiers.Location) {
-			let latLonStr = draft.verifiers.Location.parameters['latitude / longitude'];
+		if (draft.interactiveVerifiers.Location) {
+			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
 			if (latLonStr.split('/').length !== 2) {
 				// also check for other possibly wrong cases?
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
@@ -156,14 +156,14 @@ function TokenCreationProcess(props, context) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
 
-		let verifiersAndConstraints = {
-			...draft.verifiers,
-			...draft.other.constraints
+		let verifiers = {
+			...draft.noninteractiveVerifiers,
+			...draft.interactiveVerifiers
 		};
 
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(verifiersAndConstraints).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
+			Object.keys(verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,
@@ -176,9 +176,9 @@ function TokenCreationProcess(props, context) {
 
 		// verifier types with parameters
 		let verifiersToParameterize = [];
-		for (var name in verifiersAndConstraints) {
-			if (verifiersAndConstraints.hasOwnProperty(name)) {
-				let verifier = verifiersAndConstraints[name];
+		for (var name in verifiers) {
+			if (verifiers.hasOwnProperty(name)) {
+				let verifier = verifiers[name];
 				let parameterNames = Object.keys(verifier.parameters);
 				if (parameterNames.length === 0) {
 					continue;

@@ -12,31 +12,23 @@ import { TextField } from '@material-ui/core';
 import styled from 'styled-components';
 import { findVerifierTypeAddressByName } from '../../../components/utils';
 
-const PROPERTY_DEFAULT = {
-	constraints: {}
-};
-
 function StepNoninteractiveVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	// const [other, setOther] = useState(null); // TODO utilize more sub-nodes when it becomes applicable
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [constraintsAdded, setConstraintsAdded] = useState([]);
-	const constraints = useRef({});
+	const [verifiersAdded, setVerifiersAdded] = useState([]);
+	const verifiers = useRef({});
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
+		verifiers.current = draft.noninteractiveVerifiers;
 
-		constraints.current = draft.other.hasOwnProperty('constraints')
-			? draft.other.constraints
-			: PROPERTY_DEFAULT.constraints;
-
-		setConstraintsAdded(
-			Object.keys(constraints.current).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+		setVerifiersAdded(
+			Object.keys(draft.noninteractiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
 		);
 		setDraftId(draft.id);
 	});
@@ -46,76 +38,74 @@ function StepNoninteractiveVerifier(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'other',
-			node: {
-				constraints: constraints.current
-			}
+			nodeName: 'noninteractiveVerifiers',
+			node: verifiers.current
 		});
 		props.handleNext();
 	};
 
-	const addConstraint = addr => {
-		let constraint = props.verifierTypes[addr];
-		let name = constraint.label;
+	const addVerifier = addr => {
+		let verifier = props.verifierTypes[addr];
+		let name = verifier.label;
 
-		constraints.current[name] = {
+		verifiers.current[name] = {
 			parameters: {}
 		};
 
-		if (constraint.paramsEncoded) {
-			constraints.current[name].parameters = {};
-			constraint.paramsEncoded.split(',').map(paramStr => {
+		if (verifier.paramsEncoded) {
+			verifiers.current[name].parameters = {};
+			verifier.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
-				constraints.current[name].parameters[paramName] = null;
+				verifiers.current[name].parameters[paramName] = null;
 			});
 		}
 
-		setConstraintsAdded(constraintsAdded.concat(addr));
+		setVerifiersAdded(verifiersAdded.concat(addr));
 		setShowDropdown(false);
 	};
 
-	const removeConstraint = addr => {
-		setConstraintsAdded(constraintsAdded.filter(a => a !== addr));
-		delete constraints.current[props.verifierTypes[addr].label];
+	const removeVerifier = addr => {
+		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
+		delete verifiers.current[props.verifierTypes[addr].label];
 	};
 
 	return (
 		<>
-			{constraintsAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
+			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{constraintsAdded.map((constraintAddress, index) => {
-						let constraint = props.verifierTypes[constraintAddress];
-						let name = constraint.label;
+					{verifiersAdded.map((verifierAddress, index) => {
+						let verifier = props.verifierTypes[verifierAddress];
+						let name = verifier.label;
 						return (
-							<div key={'constraint_' + index} style={{ paddingTop: '20px' }}>
+							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
-									key={'constraintLabel_' + index}
-									title={constraint.description}
+									key={'verifierLabel_' + index}
+									title={verifier.description}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
 									{name}
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title="Remove constraint"
-										onClick={() => removeConstraint(constraintAddress)}
+										title="Remove verifier"
+										onClick={() => removeVerifier(verifierAddress)}
 									/>
-									{constraint.paramsEncoded.length > 0 && (
+									{verifier.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title="Since this constraint has parameters to set, it will require an extra transaction when creating the token"
+											title="Since this verifier has parameters to set, it will require an extra transaction when creating the token"
 										/>
 									)}
 								</div>
-								{constraint.paramsEncoded &&
-									constraint.paramsEncoded.split(',').map((paramStr, paramIndex) => {
+								{verifier.paramsEncoded &&
+									verifier.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
 										let type = paramStr.split(':')[0];
 										let isArray = type.includes('[]');
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
-										let key = 'constraint_' + index + '_param_' + paramIndex;
+										let key = 'verifier_' + index + '_param_' + paramIndex;
 										return (
 											<span key={key}>
 												<TextField
@@ -132,8 +122,8 @@ function StepNoninteractiveVerifier(props) {
 													multiline={isArray ? true : null}
 													rows={isArray ? 1 : null}
 													variant={isArray ? 'outlined' : 'standard'}
-													defaultValue={constraints.current[name].parameters[paramName]}
-													onChange={e => (constraints.current[name].parameters[paramName] = e.target.value)}
+													defaultValue={verifiers.current[name].parameters[paramName]}
+													onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
 													style={styles.normalField}
 												/>
 											</span>
@@ -144,15 +134,15 @@ function StepNoninteractiveVerifier(props) {
 					})}
 				</div>
 			)}
-			{constraintsAdded.length > 0 && <Spacer />}
+			{verifiersAdded.length > 0 && <Spacer />}
 			{showDropdown ? (
 				<Dropdown
-					onChange={e => addConstraint(e.value)}
+					onChange={e => addVerifier(e.value)}
 					options={Object.keys(props.verifierTypes)
 						.filter(addr => props.verifierTypes[addr].isNoninteractive)
-						.filter(addr => !constraints.current[props.verifierTypes[addr].label])
+						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
 						.map(addr => props.verifierTypes[addr])}
-					label="Add token constraint"
+					label="Add token verifier"
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">

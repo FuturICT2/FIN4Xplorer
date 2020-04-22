@@ -24,13 +24,13 @@ function StepInteractiveVerifier(props) {
 			return;
 		}
 		let draft = props.draft;
-		verifiers.current = draft.verifiers;
+		verifiers.current = draft.interactiveVerifiers;
 		if (verifiers.current['Location']) {
 			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
 
 		setVerifiersAdded(
-			Object.keys(draft.verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+			Object.keys(draft.interactiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
 		);
 		setDraftId(draft.id);
 	});
@@ -40,7 +40,7 @@ function StepInteractiveVerifier(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'verifiers',
+			nodeName: 'interactiveVerifiers',
 			node: verifiers.current
 		});
 		props.handleNext();
