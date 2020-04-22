@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { findVerifierTypeAddressByName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
-function StepVerifying(props) {
+function StepInteractiveVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -242,4 +242,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepVerifying, mapStateToProps);
+export default drizzleConnect(StepInteractiveVerifier, mapStateToProps);

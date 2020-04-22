@@ -14,8 +14,8 @@ import StepIdentity from './creationProcess/Step1Identity';
 import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
-import StepVerifying from './creationProcess/Step5Verifying';
-import StepOther from './creationProcess/Step6Other';
+import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
+import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
 import StepUnderlying from './creationProcess/Step7Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -358,8 +358,8 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 1 && buildStepComponent(StepDesign)}
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
-							{activeStep === 4 && buildStepComponent(StepVerifying)}
-							{activeStep === 5 && buildStepComponent(StepOther)}
+							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
+							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
 							{activeStep === 6 && buildStepComponent(StepUnderlying)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>

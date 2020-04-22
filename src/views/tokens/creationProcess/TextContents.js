@@ -1,6 +1,6 @@
 import React from 'react';
 
-//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying', 'Other', 'Underlying']; // Disbursement/Valuation instead of Value?
+//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Underlying']; // Disbursement/Valuation instead of Value?
 const steps = ['', '', '', '', '', '', ''];
 
 const getStepContent = stepIndex => {
@@ -14,9 +14,9 @@ const getStepContent = stepIndex => {
 		case 3:
 			return 'Minting policy'; // Formerly: What quantity can be obtained per claim?
 		case 4:
-			return 'Verifying policy'; // Formerly: Add proof types that users will have to provide
+			return 'Noninteractive Verifiers'; // Formerly: Add proof types that users will have to provide
 		case 5:
-			return 'Other policies';
+			return 'Interactive Verifiers';
 		case 6:
 			return 'Source of Value';
 		default:
@@ -115,7 +115,7 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					Default is a fixed factor of 1.
 				</>
 			);
-		case 4: // Proofs
+		case 4: // Noninteractive verifiers
 			return (
 				<>
 					<b>Proving actions (read thoroughly)</b>
@@ -195,10 +195,10 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					*/}
 				</>
 			);
-		case 5: // Other
+		case 5: // Interactive verifiers
 			return (
 				<>
-					<b>Other policies</b>
+					<b>Interactive verifiers</b>
 					<br />
 				</>
 			);

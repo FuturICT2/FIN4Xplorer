@@ -16,7 +16,7 @@ const PROPERTY_DEFAULT = {
 	constraints: {}
 };
 
-function StepOther(props) {
+function StepNoninteractiveVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -193,4 +193,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepOther, mapStateToProps);
+export default drizzleConnect(StepNoninteractiveVerifier, mapStateToProps);
