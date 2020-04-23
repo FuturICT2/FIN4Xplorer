@@ -39,7 +39,7 @@ function LoadInitialData(props, context) {
 	});
 
 	useEffect(() => {
-		if (!props.drizzleInitialized) {
+		if (!props.drizzleInitialized || !window.web3) {
 			return; // we don't move a muscle until that is done
 		}
 

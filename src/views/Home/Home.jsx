@@ -95,7 +95,7 @@ function Home(props, context) {
 					{t('your-public-address')}
 					<br />
 					<span style={{ fontSize: 'x-small' }}>
-						{props.defaultAccount === null ? (
+						{!window.web3 ? (
 							t('info-not-yet-available')
 						) : (
 							<>
@@ -122,7 +122,7 @@ function Home(props, context) {
 						: // TODO dynamic rounding / unit?
 						  `${Math.round(props.usersEthBalance * 1000) / 1000} ETH`}
 				</div>
-				{props.usersEthBalance === 0 && (
+				{window.web3 && props.usersEthBalance === 0 && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
 						<small>Without Ether you are limited to read-only interactions.</small>
 					</div>

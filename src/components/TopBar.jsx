@@ -170,7 +170,7 @@ function TopBar(props) {
 						</tr>
 					</tbody>
 				</table>
-				{props.defaultAccount === null && (
+				{!(window.web3 && props.defaultAccount) && (
 					<center className={classes.noWeb3Warning}>
 						<div className={classes.activeLng}>
 							Not connected to the Ethereum Rinkeby network. Is MetaMask installed and connected?

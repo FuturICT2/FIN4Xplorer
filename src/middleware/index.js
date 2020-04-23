@@ -376,7 +376,7 @@ function fin4StoreReducer(state = initialState, action) {
 			return {
 				...state,
 				defaultAccount: action.account,
-				usersEthBalance: window.web3.toDecimal(window.web3.fromWei(action.accountBalance, 'ether'))
+				usersEthBalance: window.web3 ? window.web3.toDecimal(window.web3.fromWei(action.accountBalance, 'ether')) : 0
 			};
 		case 'DRIZZLE_INITIALIZED':
 			return {
