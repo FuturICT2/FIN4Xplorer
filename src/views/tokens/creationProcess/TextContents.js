@@ -40,32 +40,14 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					system rejects symbols that are already in use.
 					<br />
 					<br />
-					<b>Description</b>
+					<b>Short and long description</b>
 					<br />
-					Describe the purpose/idea of your new token in a short and understandable text.
+					Describe the purpose/idea of your new token in two understandable versions.
 				</>
 			);
 		case 1: // Traits (= Properties)
 			return (
 				<>
-					<b>Token is transferable</b>
-					<br />
-					Users who have a balance on this token, can transfer some or all of it to other users. In most cases users
-					want to be able to transfer positive action tokens (e.g. for trading).
-					<br />
-					<br />
-					<b>Token is mintable</b>
-					<br />
-					Eligible users or smart contracts can "mint" any amount to a public address of their choosing. The total
-					supply of this token gets increased by that amount.
-					<br />
-					<br />
-					<b>Token is burnable</b>
-					<br />
-					Users can burn some or all of their balance on this token. The burned amount gets deducted from their balance
-					and the total supply of the token shrinks by that amount.
-					<br />
-					<br />
 					<b>Token supply is capped</b>
 					<br />
 					Once the cap is reached, nobody (incl. the token creator) can mint this token anymore.
@@ -76,17 +58,28 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					If the token is capped, this is the value of the cap.
 					<br />
 					<br />
+					<b>Initial token supply</b>
+					<br />
+					As the token creator, you can give yourself an initial amount of your new token. The total supply (above) will
+					adjust to this amount. <br />
+					<br />
+					<b>Token is transferable</b>
+					<br />
+					Users who have a balance on this token, can transfer some or all of it to other users. In most cases users
+					want to be able to transfer positive action tokens (e.g. for trading).
+					<br />
+					<br />
+					<b>Token is burnable</b>
+					<br />
+					Users can burn some or all of their balance on this token. The burned amount gets deducted from their balance
+					and the total supply of the token shrinks by that amount.
+					<br />
+					<br />
 					<b>Decimals</b>
 					<br />
 					The digits by which your token is divisible. Zero means that users can only have natural numbers (0,1,2,3,4..)
 					as balance on your token and only amounts in natural numbers can be transferred. Other number indicate the
 					decimal places, e.g., "3" means the token is divisible with 0.001 being the smallest unit.
-					<br />
-					<br />
-					<b>Initial token supply</b>
-					<br />
-					As the token creator, you can give yourself an initial amount of your new token. The total supply (above) will
-					adjust to this amount.{' '}
 				</>
 			);
 		case 2: // Actions
@@ -99,9 +92,15 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					that users are able to prove they did the actions using the different proving methods (c.f. last section).
 				</>
 			);
-		case 3: // Value
-			return (
+		case 3: // Minting Policy
+			return <center>TODO</center>;
+		/*(
 				<>
+					<b>Token is mintable</b>
+					<br />
+					Eligible users or smart contracts can "mint" any amount to a public address of their choosing. The total
+					supply of this token gets increased by that amount.
+
 					<b>Fixed amount</b>
 					<br />
 					Once the claim is successful, this fixed amount of tokens will be minted to the user. Default is 1 token per
@@ -114,28 +113,31 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					is successful, the amount minted to the user is that quantity multiplied with the fixed factor you set here.
 					Default is a fixed factor of 1.
 				</>
-			);
+			);*/
 		case 4: // Noninteractive verifiers
 			return (
 				<>
-					<b>Proving actions (read thoroughly)</b>
+					<b>Verifying actions</b>
 					<br />
 					To obtain tokens, users need to prove to the system that they actually performed the action required. You can
-					choose any combination of proofs from the list. Please take your time to think precisely about any combination
-					you choose. Good proofs are suitable to the the nature of the token, suitable and practical for the users
-					trying to obtain them, and practical for the token creators. The harder the proving is, the less users will
-					try to obtain your token; the easier the proving is, the less perceived quality users will see in the token.
-					In complex cases, you may want to experiment with different token designs at the same time. Finally, proving
-					actions is a complex matter and we constantly work to improve the proving mechanisms.
+					choose any combination of verifiers from the list. Please take your time to think precisely about any
+					combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical for
+					the users trying to obtain them, and practical for the token creators. The harder the proving is, the less
+					users will try to obtain your token; the easier the proving is, the less perceived quality users will see in
+					the token. In complex cases, you may want to experiment with different token designs at the same time.
+					Finally, proving actions is a complex matter and we constantly work to improve the verifiying mechanisms.
 					<br />
 					<br />
 					{Object.keys(verifierTypes).map((verifierAddr, idx) => {
-						let proof = verifierTypes[verifierAddr];
+						let verifier = verifierTypes[verifierAddr];
+						if (!verifier.isNoninteractive) {
+							return '';
+						}
 						return (
-							<span key={'proofInfo_' + idx}>
-								<b>Proof type: {proof.label}</b>
+							<span key={'verifierInfo_' + idx}>
+								<b>{verifier.label}</b>
 								<br />
-								{proof.description}
+								{verifier.description}
 								<br />
 								<br />
 							</span>
@@ -198,19 +200,27 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 		case 5: // Interactive verifiers
 			return (
 				<>
-					<b>Interactive verifiers</b>
-					<br />
+					{Object.keys(verifierTypes).map((verifierAddr, idx) => {
+						let verifier = verifierTypes[verifierAddr];
+						if (verifier.isNoninteractive) {
+							return '';
+						}
+						return (
+							<span key={'verifierInfo_' + idx}>
+								<b>{verifier.label}</b>
+								<br />
+								{verifier.description}
+								<br />
+								<br />
+							</span>
+						);
+					})}
 				</>
 			);
 		case 6: // Underlying
-			return (
-				<>
-					<b>Source of Token Value</b>
-					<br />
-				</>
-			);
+			return <center>TODO</center>;
 		default:
-			return <>TODO</>;
+			return <center>TODO</center>;
 	}
 };
 
