@@ -17,7 +17,7 @@ function PictureUploadProof(props, context) {
 			'submitProof_' + props.contractName,
 			[props.tokenAddr, props.claimId, approverAddress, ipfsHash],
 			'Submit ' + props.contractName + ' proof',
-			{}
+			props.callbacks
 		);
 	};
 
