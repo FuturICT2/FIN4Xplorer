@@ -692,6 +692,10 @@ function fin4StoreReducer(state = initialState, action) {
 			if (pendingTx_broadcasted.callbacks.markVerifierPendingUponBroadcastedTransaction) {
 				let infoObj = pendingTx_broadcasted.callbacks.markVerifierPendingUponBroadcastedTransaction();
 				let verifierTypeAddress = findVerifierTypeAddressByName(state.verifierTypes, infoObj.verifierTypeName);
+				let pendingStatusObj = {
+					status: ProofAndVerifierStatusEnum.PENDING,
+					message: ''
+				};
 				// outsource the following as method to be used in SET_VERIFIER_STATUS also?
 				state = {
 					...state,
@@ -701,7 +705,7 @@ function fin4StoreReducer(state = initialState, action) {
 							...state.usersClaims[infoObj.pseudoClaimId],
 							verifierStatuses: {
 								...state.usersClaims[infoObj.pseudoClaimId].verifierStatuses,
-								[verifierTypeAddress]: ProofAndVerifierStatusEnum.PENDING
+								[verifierTypeAddress]: pendingStatusObj
 							}
 						}
 					}
