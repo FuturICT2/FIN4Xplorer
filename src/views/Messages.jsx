@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import Button from '../components/Button';
 import Photo from '@material-ui/icons/Photo';
-import { Typography, Divider, Paper } from '@material-ui/core';
+import { Typography, Divider, Paper, TextField } from '@material-ui/core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -15,6 +15,8 @@ import Container from '../components/Container';
 
 function Messages(props, context) {
 	const { t } = useTranslation();
+
+	const [attachedMessage, setAttachedMessage] = useState('');
 
 	useEffect(() => {
 		// missing messageType = indicator that this is only a message stub
@@ -42,7 +44,7 @@ function Messages(props, context) {
 			props.defaultAccount,
 			verifierTypeName,
 			'receiveApprovalFromSpecificAddress',
-			pendingApprovalId,
+			[pendingApprovalId, attachedMessage],
 			'Approve approval request'
 		);
 	};
@@ -54,7 +56,7 @@ function Messages(props, context) {
 			props.defaultAccount,
 			verifierTypeName,
 			'receiveRejectionFromSpecificAddress',
-			pendingApprovalId,
+			[pendingApprovalId, attachedMessage],
 			'Reject approval request'
 		);
 	};
@@ -123,6 +125,14 @@ function Messages(props, context) {
 															<br />
 														</>
 													)}
+												<TextField
+													key="approve-reject-message"
+													type="text"
+													label="Optional: attach a message"
+													value={attachedMessage}
+													onChange={e => setAttachedMessage(e.target.value)}
+													style={inputFieldStyle}
+												/>
 												<center>
 													<span style={{ color: 'green' }}>
 														<Button
@@ -185,6 +195,11 @@ const Message = styled(Paper)`
 		background: rgba(0, 0, 0, 0.07);
 	}
 `;
+
+const inputFieldStyle = {
+	width: '100%',
+	marginBottom: '25px'
+};
 
 Messages.contextTypes = {
 	drizzle: PropTypes.object
