@@ -3,7 +3,7 @@ import { Typography, Divider } from '@material-ui/core';
 import styled from 'styled-components';
 import colors from '../../config/colors-config';
 import { drizzleConnect } from 'drizzle-react';
-import { findTokenBySymbol } from '../../components/Contractor';
+import { findTokenBySymbol, getContractData } from '../../components/Contractor';
 import Box from '../../components/Box';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
 import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
 
-function ProofSubmission(props) {
+function ProofSubmission(props, context) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
 
 	useEffect(() => {
@@ -33,9 +33,37 @@ function ProofSubmission(props) {
 			if (props.usersClaims[_pseudoClaimId]) {
 				// acts as barrier to wait until usersClaims is available
 				setPseudoClaimId(_pseudoClaimId);
+				fetchMessagesFromVerifiers(_pseudoClaimId);
 			}
 		}
 	});
+
+	const fetchMessagesFromVerifiers = _pseudoClaimId => {
+		let claim = props.usersClaims[_pseudoClaimId];
+		let verifiersWithMessages = claim.verifiersWithMessages;
+		if (verifiersWithMessages.length === 0) {
+			return;
+		}
+		let Fin4ClaimingContract = context.drizzle.contracts.Fin4Claiming;
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+		verifiersWithMessages.map(verifierAddr => {
+			getContractData(
+				Fin4ClaimingContract,
+				defaultAccount,
+				'getVerifierMessageOnClaim',
+				claim.token,
+				claim.claimId,
+				verifierAddr
+			).then(message => {
+				props.dispatch({
+					type: 'SET_VERIFIER_MESSAGE',
+					pseudoClaimId: _pseudoClaimId,
+					verifierTypeAddress: verifierAddr,
+					message: message
+				});
+			});
+		});
+	};
 
 	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
 		switch (verifierTypeName) {

@@ -430,7 +430,8 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 									4: claimCreationTimeBN,
 									5: comment,
 									6: requiredVerifierTypes,
-									7: verifierStatuses // ProofAndVerifierStatusEnum
+									7: verifierStatuses, // ProofAndVerifierStatusEnum
+									8: verifiersWithMessages
 								}) => {
 									let verifierStatusesObj = {};
 									for (let i = 0; i < requiredVerifierTypes.length; i++) {
@@ -449,7 +450,8 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 										quantity: new BN(quantityBN).toNumber(),
 										claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
 										comment: comment,
-										verifierStatuses: verifierStatusesObj
+										verifierStatuses: verifierStatusesObj,
+										verifiersWithMessages: verifiersWithMessages.filter(addr => addr !== zeroAddress)
 									};
 								}
 							);

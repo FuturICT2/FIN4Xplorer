@@ -87,7 +87,10 @@ const contractEventNotifier = store => next => action => {
 				quantity: quantity,
 				claimCreationTime: new BN(claim.claimCreationTime).toNumber(),
 				comment: claim.comment,
-				verifierStatuses: verifierStatusesObj
+				verifierStatuses: verifierStatusesObj,
+				// these will be fetched "upon request" (when opening the site) in ProofSubmission
+				// and then filled into the
+				verifiersWithMessages: []
 			}
 		});
 	}
@@ -511,6 +514,19 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				}
 			};
+		case 'SET_VERIFIER_MESSAGE':
+			// TODO use this nice shorter syntax in the case above too
+			return update(state, {
+				usersClaims: {
+					[action.pseudoClaimId]: {
+						verifierStatuses: {
+							[action.verifierTypeAddress]: {
+								message: { $set: action.message }
+							}
+						}
+					}
+				}
+			});
 		case 'ADD_MULTIPLE_MESSAGES':
 			return Object.assign({}, state, {
 				messages: [...state.messages, ...action.messagesArr]
