@@ -180,18 +180,44 @@ function ProofSubmission(props, context) {
 					</>
 				);
 			case ProofAndVerifierStatusEnum.PENDING:
-				return buildStatusElement(status, 'The proof ' + generalVerifierObj.label + ' is in pending state.');
+				return buildStatusElement(
+					status,
+					<span>
+						{'The proof ' + generalVerifierObj.label + ' is in pending state'}
+						{addMessageIfExistent(message)}
+					</span>
+				);
 			case ProofAndVerifierStatusEnum.APPROVED:
 				return buildStatusElement(
 					status,
-					'The proof ' + generalVerifierObj.label + ' got verified successfully' + (message ? ': ' + message : '.')
+					<span>
+						{'The proof ' + generalVerifierObj.label + ' got verified successfully'}
+						{addMessageIfExistent(message)}
+					</span>
 				);
 			case ProofAndVerifierStatusEnum.REJECTED:
 				return buildStatusElement(
 					status,
-					'The proof ' + generalVerifierObj.label + ' got rejected' + (message ? ': ' + message : '.')
+					<span>
+						{'The proof ' + generalVerifierObj.label + ' got rejected'}
+						{addMessageIfExistent(message)}
+					</span>
 				);
 		}
+	};
+
+	const addMessageIfExistent = message => {
+		if (!message) {
+			return '';
+		}
+		return (
+			<>
+				<br />
+				<small>
+					<i>{message}</i>
+				</small>
+			</>
+		);
 	};
 
 	return (
