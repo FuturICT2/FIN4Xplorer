@@ -17,6 +17,7 @@ import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
 import Modal from './Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReactInterval from 'react-interval';
+import { getEtherscanTxURL } from './utils';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -103,7 +104,7 @@ function TopBar(props) {
 										<span style={{ paddingLeft: '8px' }}>
 											<a
 												style={{ color: 'black', textDecorationColor: 'silver' }}
-												href={'https://rinkeby.etherscan.io/tx/' + tx.txHash}
+												href={getEtherscanTxURL(tx.txHash)}
 												target="_blank">
 												{tx.displayStr}
 											</a>

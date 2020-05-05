@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Container from '../components/Container';
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
+import { getEtherscanTxURL } from '../components/utils';
 
 function TransactionLog(props, context) {
 	const { t } = useTranslation();
@@ -43,10 +44,7 @@ function TransactionLog(props, context) {
 								{tx.txHash && (
 									<>
 										<br />
-										<a
-											style={{ fontSize: 'xx-small' }}
-											href={'https://rinkeby.etherscan.io/tx/' + tx.txHash}
-											target="_blank">
+										<a style={{ fontSize: 'xx-small' }} href={getEtherscanTxURL(tx.txHash)} target="_blank">
 											{tx.txHash}
 										</a>
 									</>

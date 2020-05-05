@@ -10,6 +10,7 @@ import { Divider } from '@material-ui/core';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { getEtherscanAddressURL } from '../../components/utils';
 
 function TokenView(props, context) {
 	const { t } = useTranslation();
@@ -141,7 +142,7 @@ function TokenView(props, context) {
 							<Currency symbol={tokenViaURL.symbol} name={<b>{tokenViaURL.name}</b>} />
 							<br />
 							<span style={{ fontSize: 'x-small' }}>
-								<a href={'https://rinkeby.etherscan.io/address/' + tokenViaURL.address} target="_blank">
+								<a href={getEtherscanAddressURL(tokenViaURL.address)} target="_blank">
 									{tokenViaURL.address}
 								</a>
 							</span>

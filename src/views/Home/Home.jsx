@@ -17,7 +17,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
-import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
+import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { contractCall } from '../../components/Contractor';
@@ -100,7 +100,7 @@ function Home(props, context) {
 						) : (
 							<>
 								{/* TODO make network-generic */}
-								<a href={'https://rinkeby.etherscan.io/address/' + props.defaultAccount} target="_blank">
+								<a href={getEtherscanAddressURL(props.defaultAccount)} target="_blank">
 									{props.defaultAccount}
 								</a>
 								<FontAwesomeIcon

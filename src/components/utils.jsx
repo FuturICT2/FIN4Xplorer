@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import web3 from 'web3';
+import { networkName } from '../config/deployment-info.js';
 const nanoid = require('nanoid');
 
 const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
@@ -106,6 +107,14 @@ const ProofAndVerifierStatusEnum = {
 	REJECTED: 3
 };
 
+const getEtherscanTxURL = txHash => {
+	return 'https://' + networkName + '.etherscan.io/tx/' + txHash;
+};
+
+const getEtherscanAddressURL = contractAddress => {
+	return 'https://' + networkName + '.etherscan.io/address/' + contractAddress;
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -119,5 +128,7 @@ export {
 	capitalizeFirstLetter,
 	stringToBytes32,
 	bytes32ToString,
-	ProofAndVerifierStatusEnum
+	ProofAndVerifierStatusEnum,
+	getEtherscanTxURL,
+	getEtherscanAddressURL
 };

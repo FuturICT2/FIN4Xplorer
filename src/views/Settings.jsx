@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
+import { getEtherscanAddressURL } from '../components/utils';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -71,9 +72,7 @@ function Settings(props, context) {
 					<br />
 					{props.contracts.Fin4Main && props.contracts.Fin4Main.initialized && context.drizzle.contracts.Fin4Main ? (
 						<small>
-							<a
-								href={'https://rinkeby.etherscan.io/address/' + context.drizzle.contracts.Fin4Main.address}
-								target="_blank">
+							<a href={getEtherscanAddressURL(context.drizzle.contracts.Fin4Main.address)} target="_blank">
 								{context.drizzle.contracts.Fin4Main.address}
 							</a>
 						</small>
@@ -92,10 +91,7 @@ function Settings(props, context) {
 							<span key={'verifier_' + index}>
 								{name}
 								<br />
-								<a
-									style={{ fontSize: 'small' }}
-									href={'https://rinkeby.etherscan.io/address/' + address}
-									target="_blank">
+								<a style={{ fontSize: 'small' }} href={getEtherscanAddressURL(address)} target="_blank">
 									{address}
 								</a>
 								<br />
