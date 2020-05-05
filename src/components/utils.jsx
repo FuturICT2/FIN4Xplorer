@@ -107,6 +107,10 @@ const ProofAndVerifierStatusEnum = {
 	REJECTED: 3
 };
 
+const getNetworkName = () => {
+	return capitalizeFirstLetter(networkName);
+};
+
 const getEtherscanTxURL = txHash => {
 	return 'https://' + networkName + '.etherscan.io/tx/' + txHash;
 };
@@ -129,6 +133,7 @@ export {
 	stringToBytes32,
 	bytes32ToString,
 	ProofAndVerifierStatusEnum,
+	getNetworkName,
 	getEtherscanTxURL,
 	getEtherscanAddressURL
 };
