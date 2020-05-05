@@ -1,5 +1,5 @@
 import Fin4Main from '../build/contracts/Fin4Main.json';
-import { Fin4MainAddress } from './Fin4MainAddress.js';
+import { Fin4MainAddress } from './deployment-info.js';
 
 import Web3 from 'web3';
 const web3 = new Web3(window.ethereum);
