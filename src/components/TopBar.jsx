@@ -101,7 +101,12 @@ function TopBar(props) {
 								{tx.displayStr && (
 									<>
 										<span style={{ paddingLeft: '8px' }}>
-											{tx.displayStr}
+											<a
+												style={{ color: 'black', textDecorationColor: 'silver' }}
+												href={'https://rinkeby.etherscan.io/tx/' + tx.txHash}
+												target="_blank">
+												{tx.displayStr}
+											</a>
 											<small>
 												<span style={{ color: '#695EAD', marginLeft: '5px' }}>
 													{Math.round((timeNow - tx.timestamp) / 1000) + 's'}
