@@ -161,6 +161,12 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
+		let existingUnderlyings = draft.underlyings
+			.map(pseudoId => props.allUnderlyings[pseudoId])
+			.filter(obj => !obj.hasOwnProperty('addToFin4'));
+
+		// let newUnderlyings = draft.underlyings.filter(pseudoId => props.allUnderlyings[pseudoId].hasOwnProperty('addToFin4'));
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
@@ -169,7 +175,10 @@ function TokenCreationProcess(props, context) {
 			draft.actions.text,
 			draft.minting.fixedAmount,
 			draft.minting.unit,
-			draft.underlyings.map(el => stringToBytes32(el.title))
+			existingUnderlyings.map(obj => obj.id)
+			// TODO decide if in this step or gets standalone page in dApp
+			// newUnderlyings.map(obj => stringToBytes32(obj.name)
+			// newUnderlyings.map(obj => obj.contractAddress))
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
@@ -458,7 +467,8 @@ const mapStateToProps = state => {
 		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
 		verifierTypes: state.fin4Store.verifierTypes,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		defaultAccount: state.fin4Store.defaultAccount
+		defaultAccount: state.fin4Store.defaultAccount,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 
