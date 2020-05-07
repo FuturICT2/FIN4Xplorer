@@ -11,7 +11,8 @@ function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlyings, setUnderlyings] = useState([]);
+	const [underlyings, setUnderlyings] = useState([]); // just their Ids
+	const [newUnderlyingDraft, setNewUnderlyingDraft] = useState({});
 
 	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
 
@@ -30,15 +31,7 @@ function StepUnderlying(props) {
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'underlyings',
-			node: underlyings
-		});
-		// adding them here already to avoid having to reload for the
-		// newly added ones to become available
-		props.dispatch({
-			type: 'ADD_UNDERLYINGS',
-			underlyings: underlyings.filter(
-				el => props.allUnderlyings.filter(reduxEl => reduxEl.name === el.name).length === 0
-			)
+			node: {}
 		});
 		props.handleNext();
 	};
@@ -48,51 +41,105 @@ function StepUnderlying(props) {
 		return props.allUnderlyings.filter(reduxEl => underlyings.filter(el => el.name === reduxEl.name).length === 0);
 	};
 
+	const updateVal = (key, val) => {
+		setNewUnderlyingDraft({
+			...newUnderlyingDraft,
+			[key]: val
+		});
+	};
+
 	return (
 		<>
-			{underlyings && (
-				<>
-					{mode === 'allCollapsed' && (
-						<>
-							<Button onClick={() => setMode('addExisting')} center="true" color="inherit">
-								Add existing underlying
-							</Button>
-							<div style={{ marginBottom: '30px' }}> </div>
-							<Button onClick={() => setMode('addNew')} center="true" color="inherit">
-								Add new underlying
-							</Button>
-						</>
-					)}
-					{mode === 'addExisting' && <Dropdown onChange={e => {}} options={[]} label="Choose existing underlying" />}
-					{mode === 'addNew' && (
-						<>
-							<TextField
-								key="name-field"
-								type="text"
-								label="Name"
-								//value={}
-								//onChange={e => {}}
-								style={inputFieldStyle}
-							/>
-							<TextField
-								key="contract-address-field"
-								type="text"
-								label="Contract address (optional)"
-								//value={}
-								//onChange={e => {}}
-								style={inputFieldStyle}
-							/>
-							<FormControlLabel
-								control={<Checkbox checked={true} onChange={() => {}} />}
-								label="Other token creators can add this too"
-							/>
-							<Button onClick={() => {}} center="true" color="inherit">
+			{underlyings && <></>}
+			<>
+				{mode === 'allCollapsed' && (
+					<>
+						<Button onClick={() => setMode('addExisting')} center="true" color="inherit">
+							Add existing underlying
+						</Button>
+						<div style={{ marginBottom: '30px' }}></div>
+						<Button
+							center="true"
+							color="inherit"
+							onClick={() => {
+								setMode('addNew');
+								setNewUnderlyingDraft({
+									id: props.allUnderlyings.length, // pseudo ID for use in redux
+									name: '',
+									contractAddress: '',
+									addToFin4: true
+								});
+							}}>
+							Add new underlying
+						</Button>
+					</>
+				)}
+				{mode === 'addExisting' && (
+					<Dropdown
+						onChange={e => {
+							setUnderlyings([...underlyings, e.value]);
+							setMode('allCollapsed');
+						}}
+						options={props.allUnderlyings.map(el => {
+							return {
+								value: el.id,
+								label: el.name
+							};
+						})}
+						label="Choose existing underlying"
+					/>
+				)}
+				{mode === 'addNew' && (
+					<>
+						<TextField
+							key="name-field"
+							type="text"
+							label="Name"
+							value={newUnderlyingDraft.name}
+							onChange={e => updateVal('name', e.target.value)}
+							style={inputFieldStyle}
+						/>
+						<TextField
+							key="contract-address-field"
+							type="text"
+							label="Contract address (optional)"
+							value={newUnderlyingDraft.contractAddress}
+							onChange={e => updateVal('contractAddress', e.target.value)}
+							style={inputFieldStyle}
+						/>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={newUnderlyingDraft.addToFin4}
+									onChange={() => updateVal('addToFin4', !newUnderlyingDraft.addToFin4)}
+								/>
+							}
+							label="Other token creators can add this too"
+						/>
+						<center style={{ marginTop: '10px' }}>
+							<Button
+								color="inherit"
+								onClick={() => {
+									// adding them here already to avoid having to reload for the
+									// newly added ones to become available
+									props.dispatch({
+										type: 'ADD_UNDERLYING',
+										underlying: newUnderlyingDraft
+									});
+									setUnderlyings([...underlyings, newUnderlyingDraft.id]);
+									setMode('allCollapsed');
+								}}>
 								Add
 							</Button>
-						</>
-					)}
-				</>
-			)}
+							<span style={{ marginRight: '20px' }}></span>
+							<Button onClick={() => setMode('allCollapsed')} color="inherit">
+								Cancel
+							</Button>
+						</center>
+						<br />
+					</>
+				)}
+			</>
 
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
