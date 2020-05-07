@@ -10,12 +10,13 @@ import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import slugify from 'slugify';
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlyings, setUnderlyings] = useState([]); // just their Ids
+	const [underlyings, setUnderlyings] = useState([]); // pseudoIds
 	const [newUnderlyingDraft, setNewUnderlyingDraft] = useState({});
 
 	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
@@ -35,37 +36,39 @@ function StepUnderlying(props) {
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'underlyings',
-			node: {}
+			node: underlyings
 		});
 		props.handleNext();
 	};
 
-	const updateOptions = () => {
-		// return only options that are in the redux list of all underlying and NOT in the already selected ones here
-		return props.allUnderlyings.filter(reduxEl => underlyings.filter(el => el.name === reduxEl.name).length === 0);
-	};
-
 	const updateVal = (key, val) => {
-		setNewUnderlyingDraft({
-			...newUnderlyingDraft,
-			[key]: val
-		});
+		if (key === 'name') {
+			setNewUnderlyingDraft({
+				...newUnderlyingDraft,
+				name: val,
+				pseudoId: 'NEW_' + slugify(val)
+			});
+		} else {
+			setNewUnderlyingDraft({
+				...newUnderlyingDraft,
+				[key]: val
+			});
+		}
 	};
 
-	const removeUnderlying = id => {
-		// TODO
+	const removeUnderlying = pseudoId => {
+		setUnderlyings(underlyings.filter(pId => pId !== pseudoId));
 	};
 
 	return (
 		<>
 			{underlyings.length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{underlyings.map((id, index) => {
-						if (!props.allUnderlyings[id]) {
-							// is ok to assume id always like index in array
+					{underlyings.map((pseudoId, index) => {
+						if (!props.allUnderlyings[pseudoId]) {
 							return;
 						}
-						let underlyingObj = props.allUnderlyings[id];
+						let underlyingObj = props.allUnderlyings[pseudoId];
 						return (
 							<div key={'underlying_' + index} style={{ paddingTop: '20px' }}>
 								<div
@@ -78,7 +81,7 @@ function StepUnderlying(props) {
 										icon={faMinusCircle}
 										style={styles.removeIcon}
 										title="Remove underlying"
-										onClick={() => removeUnderlying(id)}
+										onClick={() => removeUnderlying(pseudoId)}
 									/>
 								</div>
 							</div>
@@ -100,7 +103,8 @@ function StepUnderlying(props) {
 							onClick={() => {
 								setMode('addNew');
 								setNewUnderlyingDraft({
-									id: props.allUnderlyings.length, // pseudo ID for use in redux
+									pseudoId: '',
+									id: null,
 									name: '',
 									contractAddress: '',
 									addToFin4: true
@@ -116,12 +120,14 @@ function StepUnderlying(props) {
 							setUnderlyings([...underlyings, e.value]);
 							setMode('allCollapsed');
 						}}
-						options={props.allUnderlyings.map(el => {
-							return {
-								value: el.id,
-								label: el.name
-							};
-						})}
+						options={Object.keys(props.allUnderlyings)
+							.filter(pseudoIdAll => underlyings.filter(pseudoId => pseudoId === pseudoIdAll).length === 0)
+							.map(pseudoId => {
+								return {
+									value: pseudoId,
+									label: props.allUnderlyings[pseudoId].name
+								};
+							})}
 						label="Choose existing underlying"
 					/>
 				)}
@@ -162,7 +168,7 @@ function StepUnderlying(props) {
 										type: 'ADD_UNDERLYING',
 										underlying: newUnderlyingDraft
 									});
-									setUnderlyings([...underlyings, newUnderlyingDraft.id]);
+									setUnderlyings([...underlyings, newUnderlyingDraft.pseudoId]);
 									setMode('allCollapsed');
 								}}>
 								Add

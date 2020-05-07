@@ -369,7 +369,7 @@ const initialState = {
 	tokenCreationDrafts: {},
 	submissions: {},
 	transactions: [],
-	allUnderlyings: []
+	allUnderlyings: {}
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -771,9 +771,13 @@ function fin4StoreReducer(state = initialState, action) {
 				allUnderlyings: action.allUnderlyings
 			});
 		case 'ADD_UNDERLYING':
-			return Object.assign({}, state, {
-				allUnderlyings: [...state.allUnderlyings, action.underlying]
-			});
+			return {
+				...state,
+				allUnderlyings: {
+					...state.allUnderlyings,
+					[action.underlying.pseudoId]: action.underlying
+				}
+			};
 		default:
 			return state;
 	}

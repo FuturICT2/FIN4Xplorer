@@ -5,6 +5,7 @@ import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
+const slugify = require('slugify');
 
 // --------------------- CONSTANTS ---------------------
 
@@ -370,15 +371,20 @@ const fetchAllUnderlyings = (props, Fin4UnderlyingsContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
 		({ 0: ids, 1: names, 2: contractAddresses }) => {
+			let underlyingsObj = {};
+			for (let i = 0; i < ids.length; i++) {
+				let name = bytes32ToString(names[i]);
+				let pseudoId = ids[i] + '_' + slugify(name);
+				underlyingsObj[pseudoId] = {
+					pseudoId: pseudoId,
+					id: ids[i],
+					name: name,
+					contractAddress: contractAddresses[i]
+				};
+			}
 			props.dispatch({
 				type: 'SET_UNDERLYINGS',
-				allUnderlyings: ids.map((id, index) => {
-					return {
-						id: id,
-						name: bytes32ToString(names[index]),
-						contractAddress: contractAddresses[index]
-					};
-				})
+				allUnderlyings: underlyingsObj
 			});
 		}
 	);
