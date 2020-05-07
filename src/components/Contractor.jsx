@@ -225,7 +225,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			5: Fin4MessagingAddress,
 			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
-			8: Fin4SystemParametersAddress
+			8: Fin4SystemParametersAddress,
+			9: Fin4UnderlyingsAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -243,6 +244,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4Verifying', Fin4VerifyingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
+			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
 		}
 	);
 };
