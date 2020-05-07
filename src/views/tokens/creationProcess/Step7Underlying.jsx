@@ -35,7 +35,7 @@ function StepUnderlying(props) {
 		props.dispatch({
 			type: 'ADD_UNDERLYINGS',
 			underlyings: underlyings.filter(
-				el => props.allUnderlyings.filter(reduxEl => reduxEl.title === el.title).length === 0
+				el => props.allUnderlyings.filter(reduxEl => reduxEl.name === el.name).length === 0
 			)
 		});
 		props.handleNext();
@@ -43,7 +43,7 @@ function StepUnderlying(props) {
 
 	const updateOptions = () => {
 		// return only options that are in the redux list of all underlying and NOT in the already selected ones here
-		return props.allUnderlyings.filter(reduxEl => underlyings.filter(el => el.title === reduxEl.title).length === 0);
+		return props.allUnderlyings.filter(reduxEl => underlyings.filter(el => el.name === reduxEl.name).length === 0);
 	};
 
 	return (
@@ -54,15 +54,15 @@ function StepUnderlying(props) {
 						multiple
 						options={updateOptions()}
 						getOptionLabel={option => {
-							if (option.inputValue && underlyings.filter(el => el.title === option.inputValue).length > 0) {
+							if (option.inputValue && underlyings.filter(el => el.name === option.inputValue).length > 0) {
 								return option.inputValue; // don't show the "Add"
 							}
-							return option.title;
+							return option.name;
 						}}
 						onChange={(event, selectedOptions) => {
 							setUnderlyings(
 								selectedOptions.map(val => {
-									return { title: val.inputValue ? val.inputValue : val.title };
+									return { name: val.inputValue ? val.inputValue : val.name };
 									// TODO add new-flag to apply CSS coloring differently
 								})
 							);
@@ -73,7 +73,7 @@ function StepUnderlying(props) {
 							if (params.inputValue !== '') {
 								filtered.push({
 									inputValue: params.inputValue,
-									title: `Add "${params.inputValue}"`
+									name: `Add "${params.inputValue}"`
 								});
 							}
 							return filtered;
