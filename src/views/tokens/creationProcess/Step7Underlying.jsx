@@ -6,6 +6,10 @@ import StepsBottomNav from './StepsBottomNav';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import styled from 'styled-components';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
@@ -48,9 +52,41 @@ function StepUnderlying(props) {
 		});
 	};
 
+	const removeUnderlying = id => {
+		// TODO
+	};
+
 	return (
 		<>
-			{underlyings && <></>}
+			{underlyings.length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
+				<div style={{ fontFamily: 'arial' }}>
+					{underlyings.map((id, index) => {
+						if (!props.allUnderlyings[id]) {
+							// is ok to assume id always like index in array
+							return;
+						}
+						let underlyingObj = props.allUnderlyings[id];
+						return (
+							<div key={'underlying_' + index} style={{ paddingTop: '20px' }}>
+								<div
+									key={'underlyingLabel_' + index}
+									title={underlyingObj.contractAddress}
+									style={{ display: 'flex', alignItems: 'center' }}>
+									<ArrowRightIcon />
+									{underlyingObj.name}
+									<FontAwesomeIcon
+										icon={faMinusCircle}
+										style={styles.removeIcon}
+										title="Remove underlying"
+										onClick={() => removeUnderlying(id)}
+									/>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+			{underlyings.length > 0 && <Spacer />}
 			<>
 				{mode === 'allCollapsed' && (
 					<>
@@ -145,6 +181,19 @@ function StepUnderlying(props) {
 		</>
 	);
 }
+
+const Spacer = styled.div`
+	height: 30px;
+`;
+
+const styles = {
+	removeIcon: {
+		color: 'lightsalmon',
+		width: '14px',
+		height: '14px',
+		paddingLeft: '7px'
+	}
+};
 
 const inputFieldStyle = {
 	width: '100%',
