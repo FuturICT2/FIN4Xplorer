@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import { TextField } from '@material-ui/core';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-const filter = createFilterOptions();
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
@@ -48,48 +46,7 @@ function StepUnderlying(props) {
 
 	return (
 		<>
-			{underlyings && (
-				<>
-					<Autocomplete // see https://material-ui.com/components/autocomplete/
-						multiple
-						options={updateOptions()}
-						getOptionLabel={option => {
-							if (option.inputValue && underlyings.filter(el => el.name === option.inputValue).length > 0) {
-								return option.inputValue; // don't show the "Add"
-							}
-							return option.name;
-						}}
-						onChange={(event, selectedOptions) => {
-							setUnderlyings(
-								selectedOptions.map(val => {
-									return { name: val.inputValue ? val.inputValue : val.name };
-									// TODO add new-flag to apply CSS coloring differently
-								})
-							);
-						}}
-						value={underlyings}
-						filterOptions={(options, params) => {
-							const filtered = filter(options, params);
-							if (params.inputValue !== '') {
-								filtered.push({
-									inputValue: params.inputValue,
-									name: `Add "${params.inputValue}"`
-								});
-							}
-							return filtered;
-						}}
-						renderInput={params => (
-							<TextField
-								{...params}
-								variant="outlined"
-								label="Determine source of value"
-								//placeholder="Add new underlying by typing a new string"
-							/>
-						)}
-					/>
-					<br />
-				</>
-			)}
+			{underlyings && <></>}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
