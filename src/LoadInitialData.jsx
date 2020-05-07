@@ -15,7 +15,7 @@ import {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchParameterizerParams,
-	fetchUnderlyings
+	fetchAllUnderlyings
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -33,6 +33,7 @@ function LoadInitialData(props, context) {
 		Registry: false,
 		Parameterizer: false,
 		Fin4SystemParameters: false,
+		Fin4Underlyings: false,
 		REP: false,
 		GOV: false,
 		tokenCreationDraftsLoaded: false // from cookies to store
@@ -99,7 +100,6 @@ function LoadInitialData(props, context) {
 				}
 				fetchUsersNonzeroTokenBalances(props, Fin4TokenManagementContract);
 			});
-			fetchUnderlyings(props, Fin4TokenManagementContract);
 		}
 
 		if (!isInit.current.Fin4Messaging && props.contracts.Fin4Messaging && props.contracts.Fin4Messaging.initialized) {
@@ -125,6 +125,15 @@ function LoadInitialData(props, context) {
 			isInit.current.Fin4Verifying = true;
 			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle);
 			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Verifying);
+		}
+
+		if (
+			!isInit.current.Fin4Underlyings &&
+			props.contracts.Fin4Underlyings &&
+			props.contracts.Fin4Underlyings.initialized
+		) {
+			isInit.current.Fin4Underlyings = true;
+			fetchAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings);
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {

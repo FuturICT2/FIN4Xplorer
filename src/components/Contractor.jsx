@@ -364,18 +364,22 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchUnderlyings = (props, Fin4TokenManagementContract) => {
+const fetchAllUnderlyings = (props, Fin4UnderlyingsContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getUnderlyings').then(underlyingsBytes32Arr => {
-		props.dispatch({
-			type: 'SET_UNDERLYINGS',
-			allUnderlyings: underlyingsBytes32Arr.map(b32 => {
-				return {
-					title: bytes32ToString(b32)
-				};
-			})
-		});
-	});
+	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
+		({ 0: ids, 1: names, 2: contractAddresses }) => {
+			props.dispatch({
+				type: 'SET_UNDERLYINGS',
+				allUnderlyings: ids.map((id, index) => {
+					return {
+						id: id,
+						name: bytes32ToString(names[index]),
+						contractAddress: contractAddresses[index]
+					};
+				})
+			});
+		}
+	);
 };
 
 const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
@@ -626,5 +630,5 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchUnderlyings
+	fetchAllUnderlyings
 };
