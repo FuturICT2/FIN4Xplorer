@@ -6,7 +6,7 @@ import StepsBottomNav from './StepsBottomNav';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -83,6 +83,13 @@ function StepUnderlying(props) {
 										title="Remove underlying"
 										onClick={() => removeUnderlying(pseudoId)}
 									/>
+									{underlyingObj.hasOwnProperty('addToFin4') && (
+										<FontAwesomeIcon
+											icon={faAsterisk}
+											style={styles.newIcon}
+											title="Will be created new during token creation"
+										/>
+									)}
 								</div>
 							</div>
 						);
@@ -195,6 +202,12 @@ const Spacer = styled.div`
 const styles = {
 	removeIcon: {
 		color: 'lightsalmon',
+		width: '14px',
+		height: '14px',
+		paddingLeft: '7px'
+	},
+	newIcon: {
+		color: 'orange',
 		width: '14px',
 		height: '14px',
 		paddingLeft: '7px'
