@@ -3,13 +3,17 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import Dropdown from '../../../components/Dropdown';
+import Button from '../../../components/Button';
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
 	const [underlyings, setUnderlyings] = useState([]);
+
+	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
@@ -46,11 +50,59 @@ function StepUnderlying(props) {
 
 	return (
 		<>
-			{underlyings && <></>}
+			{underlyings && (
+				<>
+					{mode === 'allCollapsed' && (
+						<>
+							<Button onClick={() => setMode('addExisting')} center="true" color="inherit">
+								Add existing underlying
+							</Button>
+							<div style={{ marginBottom: '30px' }}> </div>
+							<Button onClick={() => setMode('addNew')} center="true" color="inherit">
+								Add new underlying
+							</Button>
+						</>
+					)}
+					{mode === 'addExisting' && <Dropdown onChange={e => {}} options={[]} label="Choose existing underlying" />}
+					{mode === 'addNew' && (
+						<>
+							<TextField
+								key="name-field"
+								type="text"
+								label="Name"
+								//value={}
+								//onChange={e => {}}
+								style={inputFieldStyle}
+							/>
+							<TextField
+								key="contract-address-field"
+								type="text"
+								label="Contract address (optional)"
+								//value={}
+								//onChange={e => {}}
+								style={inputFieldStyle}
+							/>
+							<FormControlLabel
+								control={<Checkbox checked={true} onChange={() => {}} />}
+								label="Other token creators can add this too"
+							/>
+							<Button onClick={() => {}} center="true" color="inherit">
+								Add
+							</Button>
+						</>
+					)}
+				</>
+			)}
+
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
+
+const inputFieldStyle = {
+	width: '100%',
+	marginBottom: '15px'
+};
 
 const mapStateToProps = state => {
 	return {
