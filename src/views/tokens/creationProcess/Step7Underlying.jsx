@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import slugify from 'slugify';
+import update from 'react-addons-update';
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
@@ -57,6 +58,18 @@ function StepUnderlying(props) {
 				[key]: val
 			});
 		}
+	};
+
+	const updateUnderlyingParamVal = (pseudoId, paramName, val) => {
+		setUnderlyings(
+			update(underlyings, {
+				[pseudoId]: {
+					parameters: {
+						[paramName]: { $set: val }
+					}
+				}
+			})
+		);
 	};
 
 	const removeUnderlying = pseudoId => {
@@ -111,8 +124,8 @@ function StepUnderlying(props) {
 															{description && <span style={{ fontSize: 'x-small' }}> ({description})</span>}{' '}
 														</>
 													}
-													// defaultValue={}
-													// onChange={e => ()}
+													defaultValue={underlyings[pseudoId].parameters[paramName]}
+													onChange={e => updateUnderlyingParamVal(pseudoId, paramName, e.target.value)}
 													style={styles.normalField}
 												/>
 											</span>
