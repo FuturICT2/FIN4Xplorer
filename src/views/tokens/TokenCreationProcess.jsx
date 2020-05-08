@@ -243,7 +243,8 @@ function TokenCreationProcess(props, context) {
 
 					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
 					verifiersToParameterize.map(verifier => {
-						setParamsOnVerifierContract(
+						setParamsOnOtherContract(
+							'verifier',
 							defaultAccount,
 							verifier.name,
 							newTokenAddress,
@@ -280,9 +281,9 @@ function TokenCreationProcess(props, context) {
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
-	const setParamsOnVerifierContract = (defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
+	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? TODO
-		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+		if (type === 'verifier' && (contractName === 'Whitelisting' || contractName === 'Blacklisting')) {
 			let userList = values[0];
 			let groupsList = values[1];
 			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
@@ -294,7 +295,7 @@ function TokenCreationProcess(props, context) {
 			contractName,
 			'setParameters',
 			[tokenAddr, ...values],
-			'Set parameter on verifier type: ' + contractName,
+			'Set parameter on ' + type + ': ' + contractName,
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
