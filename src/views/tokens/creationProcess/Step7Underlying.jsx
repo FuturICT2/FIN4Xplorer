@@ -16,7 +16,7 @@ function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlyings, setUnderlyings] = useState([]); // pseudoIds
+	const [underlyings, setUnderlyings] = useState({}); // pseudoId and parameters
 	const [newUnderlyingDraft, setNewUnderlyingDraft] = useState({});
 
 	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
@@ -29,7 +29,7 @@ function StepUnderlying(props) {
 		// that filter strips off new ones that were not created on-chain
 		// TODO the complete draft-way would be to store info for new ones
 		// and dispatch it to redux right here if its not there?
-		setUnderlyings(draft.underlyings.filter(pseudoId => props.allUnderlyings[pseudoId]));
+		// setUnderlyings(draft.underlyings.filter(pseudoId => props.allUnderlyings[pseudoId]));
 		setDraftId(draft.id);
 	});
 
@@ -44,7 +44,7 @@ function StepUnderlying(props) {
 		props.handleNext();
 	};
 
-	const updateVal = (key, val) => {
+	const updateDraftVal = (key, val) => {
 		if (key === 'name') {
 			setNewUnderlyingDraft({
 				...newUnderlyingDraft,
@@ -60,18 +60,19 @@ function StepUnderlying(props) {
 	};
 
 	const removeUnderlying = pseudoId => {
-		setUnderlyings(underlyings.filter(pId => pId !== pseudoId));
+		setUnderlyings(Object.keys(underlyings).filter(pId => pId !== pseudoId));
 	};
 
 	return (
 		<>
-			{underlyings.length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
+			{Object.keys(underlyings).length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{underlyings.map((pseudoId, index) => {
+					{Object.keys(underlyings).map((pseudoId, index) => {
+						let underlyingParamObj = underlyings[pseudoId];
+						let underlyingObj = props.allUnderlyings[pseudoId];
 						if (!props.allUnderlyings[pseudoId]) {
 							return;
 						}
-						let underlyingObj = props.allUnderlyings[pseudoId];
 						return (
 							<div key={'underlying_' + index} style={{ paddingTop: '20px' }}>
 								<div
@@ -122,7 +123,7 @@ function StepUnderlying(props) {
 					})}
 				</div>
 			)}
-			{underlyings.length > 0 && <Spacer />}
+			{Object.keys(underlyings).length > 0 && <Spacer />}
 			<>
 				{mode === 'allCollapsed' && (
 					<>
@@ -151,11 +152,26 @@ function StepUnderlying(props) {
 				{mode === 'addExisting' && (
 					<Dropdown
 						onChange={e => {
-							setUnderlyings([...underlyings, e.value]);
+							let pseudoId = e.value;
+							let undelyingParamObj = {
+								pseudoId: pseudoId,
+								parameters: {}
+							};
+							let underlyingObj = props.allUnderlyings[pseudoId];
+							if (underlyingObj.contractParamsEncoded) {
+								underlyingObj.contractParamsEncoded.split(',').map(paramStr => {
+									let paramName = paramStr.split(':')[1];
+									undelyingParamObj.parameters[paramName] = null;
+								});
+							}
+							setUnderlyings({
+								...underlyings,
+								[pseudoId]: undelyingParamObj
+							});
 							setMode('allCollapsed');
 						}}
 						options={Object.keys(props.allUnderlyings)
-							.filter(pseudoIdAll => underlyings.filter(pseudoId => pseudoId === pseudoIdAll).length === 0)
+							.filter(pseudoIdAll => Object.keys(underlyings).filter(pseudoId => pseudoId === pseudoIdAll).length === 0)
 							.map(pseudoId => {
 								return {
 									value: pseudoId,
@@ -172,7 +188,7 @@ function StepUnderlying(props) {
 							type="text"
 							label="Name"
 							value={newUnderlyingDraft.name}
-							onChange={e => updateVal('name', e.target.value)}
+							onChange={e => updateDraftVal('name', e.target.value)}
 							style={inputFieldStyle}
 						/>
 						<TextField
@@ -180,14 +196,14 @@ function StepUnderlying(props) {
 							type="text"
 							label="Contract address (optional)"
 							value={newUnderlyingDraft.contractAddress}
-							onChange={e => updateVal('contractAddress', e.target.value)}
+							onChange={e => updateDraftVal('contractAddress', e.target.value)}
 							style={inputFieldStyle}
 						/>
 						<FormControlLabel
 							control={
 								<Checkbox
 									checked={newUnderlyingDraft.addToFin4}
-									onChange={() => updateVal('addToFin4', !newUnderlyingDraft.addToFin4)}
+									onChange={() => updateDraftVal('addToFin4', !newUnderlyingDraft.addToFin4)}
 								/>
 							}
 							label="Other token creators can add this too"
@@ -202,7 +218,10 @@ function StepUnderlying(props) {
 										type: 'ADD_UNDERLYING',
 										underlying: newUnderlyingDraft
 									});
-									setUnderlyings([...underlyings, newUnderlyingDraft.pseudoId]);
+									setUnderlyings({
+										...underlyings,
+										[newUnderlyingDraft.pseudoId]: newUnderlyingDraft
+									});
 									setMode('allCollapsed');
 								}}>
 								Add
