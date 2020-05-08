@@ -149,11 +149,8 @@ function StepUnderlying(props) {
 							onClick={() => {
 								setMode('addNew');
 								setNewUnderlyingDraft({
-									pseudoId: '',
-									id: null,
 									name: '',
 									contractAddress: '',
-									contractParamsEncoded: '',
 									addToFin4: true
 								});
 							}}>
