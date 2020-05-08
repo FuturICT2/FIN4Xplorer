@@ -161,11 +161,28 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
-		let existingUnderlyings = draft.underlyings
-			.map(pseudoId => props.allUnderlyings[pseudoId])
-			.filter(obj => !obj.hasOwnProperty('addToFin4'));
-
-		// let newUnderlyings = draft.underlyings.filter(pseudoId => props.allUnderlyings[pseudoId].hasOwnProperty('addToFin4'));
+		let existingUnderlyingIds = [];
+		// let newUnderlyings = ... TODO decide if in this step or gets standalone page in dApp
+		let underylingsToParameterize = [];
+		for (var pseudoId in draft.underlyings) {
+			if (draft.underlyings.hasOwnProperty(pseudoId)) {
+				let underlyingsParamObj = draft.underlyings[pseudoId];
+				if (underlyingsParamObj.hasOwnProperty('addToFin4')) {
+					continue;
+				}
+				let underlyingsReduxObj = props.allUnderlyings[pseudoId];
+				existingUnderlyingIds.push(underlyingsReduxObj.id);
+				if (underlyingsReduxObj.contractAddress) {
+					transactionsRequired.current++;
+					underylingsToParameterize.push({
+						// id: underlyingsReduxObj.id,
+						contractAddress: underlyingsReduxObj.contractAddress,
+						name: underlyingsReduxObj.name,
+						params: underlyingsParamObj.parameters
+					});
+				}
+			}
+		}
 
 		let postCreationStepsArgs = [
 			null, // token address
@@ -175,10 +192,7 @@ function TokenCreationProcess(props, context) {
 			draft.actions.text,
 			draft.minting.fixedAmount,
 			draft.minting.unit,
-			existingUnderlyings.map(obj => obj.id)
-			// TODO decide if in this step or gets standalone page in dApp
-			// newUnderlyings.map(obj => stringToBytes32(obj.name)
-			// newUnderlyings.map(obj => obj.contractAddress))
+			existingUnderlyingIds
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
