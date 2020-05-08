@@ -117,6 +117,7 @@ function StepUnderlying(props) {
 									id: null,
 									name: '',
 									contractAddress: '',
+									contractParamsEncoded: '',
 									addToFin4: true
 								});
 							}}>

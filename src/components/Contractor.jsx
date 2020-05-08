@@ -367,24 +367,42 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchAllUnderlyings = (props, Fin4UnderlyingsContract) => {
+const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
 		({ 0: ids, 1: names, 2: contractAddresses }) => {
 			let underlyingsObj = {};
+			let promises = [];
 			for (let i = 0; i < ids.length; i++) {
 				let name = bytes32ToString(names[i]);
 				let pseudoId = ids[i] + '_' + slugify(name);
+				let contractAddress = contractAddresses[i];
 				underlyingsObj[pseudoId] = {
 					pseudoId: pseudoId,
 					id: ids[i],
 					name: name,
-					contractAddress: contractAddresses[i]
+					contractAddress: contractAddress,
+					contractParamsEncoded: ''
 				};
+				if (contractAddress !== zeroAddress) {
+					addContract(props, drizzle, name, contractAddress, []);
+					promises.push(
+						getContractData(
+							Fin4UnderlyingsContract,
+							defaultAccount,
+							'getParamsEncodedOnUnderlyingContract',
+							contractAddress
+						).then(paramsEncoded => {
+							underlyingsObj[pseudoId].contractParamsEncoded = paramsEncoded;
+						})
+					);
+				}
 			}
-			props.dispatch({
-				type: 'SET_UNDERLYINGS',
-				allUnderlyings: underlyingsObj
+			Promise.all(promises).then(() => {
+				props.dispatch({
+					type: 'SET_UNDERLYINGS',
+					allUnderlyings: underlyingsObj
+				});
 			});
 		}
 	);
@@ -638,5 +656,5 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchAllUnderlyings
+	fetchAndAddAllUnderlyings
 };

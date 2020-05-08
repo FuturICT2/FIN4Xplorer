@@ -15,7 +15,7 @@ import {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchParameterizerParams,
-	fetchAllUnderlyings
+	fetchAndAddAllUnderlyings
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -133,7 +133,7 @@ function LoadInitialData(props, context) {
 			props.contracts.Fin4Underlyings.initialized
 		) {
 			isInit.current.Fin4Underlyings = true;
-			fetchAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings);
+			fetchAndAddAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings, context.drizzle);
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {
