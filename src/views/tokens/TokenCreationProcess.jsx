@@ -174,11 +174,14 @@ function TokenCreationProcess(props, context) {
 				existingUnderlyingIds.push(underlyingsReduxObj.id);
 				if (underlyingsReduxObj.contractAddress) {
 					transactionsRequired.current++;
+					let parameterNames = Object.keys(underlyingsParamObj.parameters);
+					if (parameterNames.length === 0) {
+						continue;
+					}
+					let values = parameterNames.map(pName => underlyingsParamObj.parameters[pName]);
 					underlyingsToParameterize.push({
-						// id: underlyingsReduxObj.id,
-						contractAddress: underlyingsReduxObj.contractAddress,
 						name: underlyingsReduxObj.name,
-						params: underlyingsParamObj.parameters
+						values: values
 					});
 				}
 			}
