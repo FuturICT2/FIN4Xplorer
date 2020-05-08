@@ -30,7 +30,7 @@ function StepUnderlying(props) {
 		// that filter strips off new ones that were not created on-chain
 		// TODO the complete draft-way would be to store info for new ones
 		// and dispatch it to redux right here if its not there?
-		// setUnderlyings(draft.underlyings.filter(pseudoId => props.allUnderlyings[pseudoId]));
+		setUnderlyings(draft.underlyings);
 		setDraftId(draft.id);
 	});
 
