@@ -81,7 +81,6 @@ function StepUnderlying(props) {
 			{Object.keys(underlyings).length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{Object.keys(underlyings).map((pseudoId, index) => {
-						let underlyingParamObj = underlyings[pseudoId];
 						let underlyingObj = props.allUnderlyings[pseudoId];
 						if (!props.allUnderlyings[pseudoId]) {
 							return;
@@ -166,20 +165,19 @@ function StepUnderlying(props) {
 					<Dropdown
 						onChange={e => {
 							let pseudoId = e.value;
-							let undelyingParamObj = {
-								pseudoId: pseudoId,
-								parameters: {}
-							};
+							let parameters = {};
 							let underlyingObj = props.allUnderlyings[pseudoId];
 							if (underlyingObj.contractParamsEncoded) {
 								underlyingObj.contractParamsEncoded.split(',').map(paramStr => {
 									let paramName = paramStr.split(':')[1];
-									undelyingParamObj.parameters[paramName] = null;
+									parameters[paramName] = null;
 								});
 							}
 							setUnderlyings({
 								...underlyings,
-								[pseudoId]: undelyingParamObj
+								[pseudoId]: {
+									parameters: parameters
+								}
 							});
 							setMode('allCollapsed');
 						}}
