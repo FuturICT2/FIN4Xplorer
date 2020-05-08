@@ -163,7 +163,7 @@ function TokenCreationProcess(props, context) {
 
 		let existingUnderlyingIds = [];
 		// let newUnderlyings = ... TODO decide if in this step or gets standalone page in dApp
-		let underylingsToParameterize = [];
+		let underlyingsToParameterize = [];
 		for (var pseudoId in draft.underlyings) {
 			if (draft.underlyings.hasOwnProperty(pseudoId)) {
 				let underlyingsParamObj = draft.underlyings[pseudoId];
@@ -174,7 +174,7 @@ function TokenCreationProcess(props, context) {
 				existingUnderlyingIds.push(underlyingsReduxObj.id);
 				if (underlyingsReduxObj.contractAddress) {
 					transactionsRequired.current++;
-					underylingsToParameterize.push({
+					underlyingsToParameterize.push({
 						// id: underlyingsReduxObj.id,
 						contractAddress: underlyingsReduxObj.contractAddress,
 						name: underlyingsReduxObj.name,
