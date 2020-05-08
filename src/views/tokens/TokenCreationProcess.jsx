@@ -20,8 +20,8 @@ import StepUnderlying from './creationProcess/Step7Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
-import { findTokenBySymbol, contractCall } from '../../components/Contractor';
+import { findVerifierTypeAddressByName, BNstr } from '../../components/utils';
+import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
@@ -178,7 +178,13 @@ function TokenCreationProcess(props, context) {
 					if (parameterNames.length === 0) {
 						continue;
 					}
-					let values = parameterNames.map(pName => underlyingsParamObj.parameters[pName]);
+					let values = parameterNames.map(pName => {
+						let val = underlyingsParamObj.parameters[pName];
+						if (pName === 'beneficiary' && !val) {
+							return zeroAddress;
+						}
+						return val;
+					});
 					underlyingsToParameterize.push({
 						name: underlyingsReduxObj.name,
 						values: values
