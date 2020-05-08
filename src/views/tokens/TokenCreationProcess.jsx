@@ -331,7 +331,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					updateTokenCreationStage('');
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage('Token creation failed with reason: ' + reason);
