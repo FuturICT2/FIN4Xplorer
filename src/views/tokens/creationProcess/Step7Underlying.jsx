@@ -94,6 +94,29 @@ function StepUnderlying(props) {
 										/>
 									)}
 								</div>
+								{underlyingObj.contractParamsEncoded &&
+									underlyingObj.contractParamsEncoded.split(',').map((paramStr, paramIndex) => {
+										let type = paramStr.split(':')[0];
+										let paramName = paramStr.split(':')[1];
+										let description = paramStr.split(':')[2];
+										let key = 'underlying_' + index + '_param_' + paramIndex;
+										return (
+											<span key={key}>
+												<TextField
+													type={type === 'uint' ? 'number' : 'text'}
+													label={
+														<>
+															<span>{paramName}</span>
+															{description && <span style={{ fontSize: 'x-small' }}> ({description})</span>}{' '}
+														</>
+													}
+													// defaultValue={}
+													// onChange={e => ()}
+													style={styles.normalField}
+												/>
+											</span>
+										);
+									})}
 							</div>
 						);
 					})}
@@ -215,6 +238,10 @@ const styles = {
 		width: '14px',
 		height: '14px',
 		paddingLeft: '7px'
+	},
+	normalField: {
+		width: '80%',
+		margin: '8px 0 8px 25px'
 	}
 };
 
