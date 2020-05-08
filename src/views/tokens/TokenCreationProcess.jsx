@@ -236,7 +236,7 @@ function TokenCreationProcess(props, context) {
 						return;
 					}
 
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
 					verifiersToParameterize.map(verifier => {
 						setParamsOnVerifierContract(
 							defaultAccount,
@@ -301,7 +301,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
 
 					if (transactionCounter.current == transactionsRequired.current - 1) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
