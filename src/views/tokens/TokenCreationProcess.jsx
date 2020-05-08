@@ -234,7 +234,7 @@ function TokenCreationProcess(props, context) {
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					if (verifiersToParameterize.length === 0) {
+					if (verifiersToParameterize.length === 0 && underlyingsToParameterize.length === 0) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
 					}
@@ -252,6 +252,17 @@ function TokenCreationProcess(props, context) {
 							verifier.name,
 							newTokenAddress,
 							verifier.values,
+							callbackOthersDone
+						);
+					});
+
+					underlyingsToParameterize.map(underlying => {
+						setParamsOnOtherContract(
+							'underlying',
+							defaultAccount,
+							underlying.name,
+							newTokenAddress,
+							underlying.values,
 							callbackOthersDone
 						);
 					});
