@@ -114,6 +114,38 @@ function Settings(props, context) {
 					})}
 				</div>
 			</Box>
+			<Box title="Fin4 underlying addresses">
+				<div style={{ fontFamily: 'arial' }}>
+					{Object.keys(props.allUnderlyings).map((pseudoId, index) => {
+						let underlyingObj = props.allUnderlyings[pseudoId];
+						return (
+							<span key={'underlying_' + index}>
+								{underlyingObj.name}
+								<br />
+								{underlyingObj.contractAddress && (
+									<>
+										<a
+											style={{ fontSize: 'small' }}
+											href={getEtherscanAddressURL(underlyingObj.contractAddress)}
+											target="_blank">
+											{underlyingObj.contractAddress}
+										</a>
+										<br />
+									</>
+								)}
+								{underlyingObj.paramsEncoded && (
+									<small style={{ color: 'gray' }}>
+										<b>Parameters</b>: {underlyingObj.paramsEncoded}
+									</small>
+								)}
+								{index < Object.keys(props.allUnderlyings).length - 1 && (
+									<Divider style={{ margin: '10px 0' }} variant="middle" />
+								)}
+							</span>
+						);
+					})}
+				</div>
+			</Box>
 		</Container>
 	);
 }
@@ -125,7 +157,8 @@ Settings.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		verifierTypes: state.fin4Store.verifierTypes
+		verifierTypes: state.fin4Store.verifierTypes,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 
