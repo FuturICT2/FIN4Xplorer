@@ -107,8 +107,8 @@ function StepUnderlying(props) {
 										/>
 									)}
 								</div>
-								{underlyingObj.contractParamsEncoded &&
-									underlyingObj.contractParamsEncoded.split(',').map((paramStr, paramIndex) => {
+								{underlyingObj.paramsEncoded &&
+									underlyingObj.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										let type = paramStr.split(':')[0];
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
@@ -164,8 +164,8 @@ function StepUnderlying(props) {
 							let pseudoId = e.value;
 							let parameters = {};
 							let underlyingObj = props.allUnderlyings[pseudoId];
-							if (underlyingObj.contractParamsEncoded) {
-								underlyingObj.contractParamsEncoded.split(',').map(paramStr => {
+							if (underlyingObj.paramsEncoded) {
+								underlyingObj.paramsEncoded.split(',').map(paramStr => {
 									let paramName = paramStr.split(':')[1];
 									parameters[paramName] = null;
 								});

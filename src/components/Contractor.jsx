@@ -382,7 +382,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 					id: ids[i],
 					name: name,
 					contractAddress: contractAddress,
-					contractParamsEncoded: ''
+					paramsEncoded: ''
 				};
 				if (contractAddress !== zeroAddress) {
 					addContract(props, drizzle, name, contractAddress, []);
@@ -393,7 +393,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 							'getParamsEncodedOnUnderlyingContract',
 							contractAddress
 						).then(paramsEncoded => {
-							underlyingsObj[pseudoId].contractParamsEncoded = paramsEncoded;
+							underlyingsObj[pseudoId].paramsEncoded = paramsEncoded;
 						})
 					);
 				}
