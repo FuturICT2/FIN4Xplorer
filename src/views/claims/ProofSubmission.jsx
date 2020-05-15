@@ -126,7 +126,7 @@ function ProofSubmission(props, context) {
 				let contractMethod = 'submitProof_' + verifierTypeName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
-					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
+					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type, input.name)];
 				}); // I don't remember why I capitalized the first letter...
 				return (
 					<ContractFormSimple

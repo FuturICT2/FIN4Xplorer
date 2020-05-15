@@ -121,6 +121,13 @@ function TokenCreationProcess(props, context) {
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
 			}
 		}
+		if (draft.interactiveVerifiers.Password) {
+			let pass = draft.interactiveVerifiers.Password.parameters['password'];
+			var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+			if (!pass.match(decimal)) {
+				return "The password you have chosen doesn't abide by the rules described";
+			}
+		}
 
 		return '';
 	};

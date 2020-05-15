@@ -84,12 +84,13 @@ const doCallback = (callbackCollection, name, args) => {
 	}
 };
 
-const abiTypeToTextfieldType = abiType => {
+const abiTypeToTextfieldType = (abiType, name) => {
 	switch (abiType) {
 		case 'uint256':
 			return 'number';
 		case 'string':
-			return 'text';
+			if (name.localeCompare('password') != 0) return 'text';
+			else return 'password';
 		default:
 			return abiType;
 	}
