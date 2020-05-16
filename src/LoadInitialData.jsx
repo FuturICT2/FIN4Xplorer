@@ -138,7 +138,12 @@ function LoadInitialData(props, context) {
 			fetchAndAddAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings, context.drizzle);
 		}
 
-		if (!isInit.current.SwapSourcerer && props.contracts.SwapSourcerer && props.contracts.SwapSourcerer.initialized) {
+		if (
+			props.allUnderlyings.SwapSourcerer &&
+			!isInit.current.SwapSourcerer &&
+			props.contracts.SwapSourcerer &&
+			props.contracts.SwapSourcerer.initialized
+		) {
 			isInit.current.SwapSourcerer = true;
 			fetchSwapSourcererPairs(props, context.drizzle.contracts.SwapSourcerer);
 		}
@@ -172,7 +177,8 @@ LoadInitialData.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		drizzleInitialized: state.fin4Store.drizzleInitialized
+		drizzleInitialized: state.fin4Store.drizzleInitialized,
+		allUnderlyings: state.fin4Store.allUnderlyings // TODO shouldn't this be necessary for others too?
 	};
 };
 
