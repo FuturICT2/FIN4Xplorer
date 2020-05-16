@@ -321,8 +321,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 						4: unit,
 						5: totalSupply,
 						6: creationTime,
-						7: hasFixedMintingQuantity,
-						8: underlyings
+						7: hasFixedMintingQuantity
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
@@ -334,8 +333,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 							totalSupply: new BN(totalSupply).toNumber(),
 							creationTime: creationTime,
 							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null,
-							underlyings: underlyings
+							isOPAT: null
 						};
 					}
 				);

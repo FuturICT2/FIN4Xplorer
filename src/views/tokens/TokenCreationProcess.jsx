@@ -161,7 +161,7 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
-		let existingUnderlyingIds = [];
+		// let existingUnderlyingIds = [];
 		// let newUnderlyings = ... TODO decide if in this step or gets standalone page in dApp
 		let underlyingsToParameterize = [];
 		for (var pseudoId in draft.underlyings) {
@@ -171,7 +171,7 @@ function TokenCreationProcess(props, context) {
 					continue;
 				}
 				let underlyingsReduxObj = props.allUnderlyings[pseudoId];
-				existingUnderlyingIds.push(underlyingsReduxObj.id);
+				// existingUnderlyingIds.push(underlyingsReduxObj.id);
 				if (underlyingsReduxObj.contractAddress) {
 					transactionsRequired.current++;
 					let parameterNames = Object.keys(underlyingsParamObj.parameters);
@@ -200,8 +200,7 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.minting.fixedAmount,
-			draft.minting.unit,
-			existingUnderlyingIds
+			draft.minting.unit
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';

@@ -45,8 +45,7 @@ const contractEventNotifier = store => next => action => {
 				totalSupply: 0,
 				creationTime: token.creationTime,
 				hasFixedMintingQuantity: token.hasFixedMintingQuantity,
-				isOPAT: null,
-				underlyings: token.underlyings
+				isOPAT: null
 			}
 		});
 	}
