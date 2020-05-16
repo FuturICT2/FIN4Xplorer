@@ -774,7 +774,7 @@ function fin4StoreReducer(state = initialState, action) {
 				...state,
 				allUnderlyings: {
 					...state.allUnderlyings,
-					[action.underlying.pseudoId]: action.underlying
+					[action.underlying.name]: action.underlying
 				}
 			};
 		default:

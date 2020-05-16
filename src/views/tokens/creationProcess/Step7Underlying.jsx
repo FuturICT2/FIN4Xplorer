@@ -10,14 +10,13 @@ import { faMinusCircle, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import slugify from 'slugify';
 import update from 'react-addons-update';
 
 function StepUnderlying(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [underlyings, setUnderlyings] = useState({}); // pseudoId and parameters
+	const [underlyings, setUnderlyings] = useState({}); // name and parameters
 	const [newUnderlyingDraft, setNewUnderlyingDraft] = useState({});
 
 	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
@@ -49,8 +48,7 @@ function StepUnderlying(props) {
 		if (key === 'name') {
 			setNewUnderlyingDraft({
 				...newUnderlyingDraft,
-				name: val,
-				pseudoId: 'NEW_' + slugify(val)
+				name: val
 			});
 		} else {
 			setNewUnderlyingDraft({
@@ -60,10 +58,10 @@ function StepUnderlying(props) {
 		}
 	};
 
-	const updateUnderlyingParamVal = (pseudoId, paramName, val) => {
+	const updateUnderlyingParamVal = (name, paramName, val) => {
 		setUnderlyings(
 			update(underlyings, {
-				[pseudoId]: {
+				[name]: {
 					parameters: {
 						[paramName]: { $set: val }
 					}
@@ -72,17 +70,17 @@ function StepUnderlying(props) {
 		);
 	};
 
-	const removeUnderlying = pseudoId => {
-		setUnderlyings(Object.keys(underlyings).filter(pId => pId !== pseudoId));
+	const removeUnderlying = name => {
+		setUnderlyings(Object.keys(underlyings).filter(n => name !== name));
 	};
 
 	return (
 		<>
 			{Object.keys(underlyings).length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(underlyings).map((pseudoId, index) => {
-						let underlyingObj = props.allUnderlyings[pseudoId];
-						if (!props.allUnderlyings[pseudoId]) {
+					{Object.keys(underlyings).map((name, index) => {
+						let underlyingObj = props.allUnderlyings[name];
+						if (!props.allUnderlyings[name]) {
 							return;
 						}
 						return (
@@ -97,7 +95,7 @@ function StepUnderlying(props) {
 										icon={faMinusCircle}
 										style={styles.removeIcon}
 										title="Remove underlying"
-										onClick={() => removeUnderlying(pseudoId)}
+										onClick={() => removeUnderlying(name)}
 									/>
 									{underlyingObj.hasOwnProperty('addToFin4') && (
 										<FontAwesomeIcon
@@ -123,8 +121,8 @@ function StepUnderlying(props) {
 															{description && <span style={{ fontSize: 'x-small' }}> ({description})</span>}{' '}
 														</>
 													}
-													defaultValue={underlyings[pseudoId].parameters[paramName]}
-													onChange={e => updateUnderlyingParamVal(pseudoId, paramName, e.target.value)}
+													defaultValue={underlyings[name].parameters[paramName]}
+													onChange={e => updateUnderlyingParamVal(name, paramName, e.target.value)}
 													style={styles.normalField}
 												/>
 											</span>
@@ -161,9 +159,9 @@ function StepUnderlying(props) {
 				{mode === 'addExisting' && (
 					<Dropdown
 						onChange={e => {
-							let pseudoId = e.value;
+							let name = e.value;
 							let parameters = {};
-							let underlyingObj = props.allUnderlyings[pseudoId];
+							let underlyingObj = props.allUnderlyings[name];
 							if (underlyingObj.paramsEncoded) {
 								underlyingObj.paramsEncoded.split(',').map(paramStr => {
 									let paramName = paramStr.split(':')[1];
@@ -172,18 +170,18 @@ function StepUnderlying(props) {
 							}
 							setUnderlyings({
 								...underlyings,
-								[pseudoId]: {
+								[name]: {
 									parameters: parameters
 								}
 							});
 							setMode('allCollapsed');
 						}}
 						options={Object.keys(props.allUnderlyings)
-							.filter(pseudoIdAll => Object.keys(underlyings).filter(pseudoId => pseudoId === pseudoIdAll).length === 0)
-							.map(pseudoId => {
+							.filter(name => Object.keys(underlyings).filter(n => n === name).length === 0)
+							.map(name => {
 								return {
-									value: pseudoId,
-									label: props.allUnderlyings[pseudoId].name
+									value: name,
+									label: name
 								};
 							})}
 						label="Choose existing underlying"
@@ -228,7 +226,7 @@ function StepUnderlying(props) {
 									});
 									setUnderlyings({
 										...underlyings,
-										[newUnderlyingDraft.pseudoId]: newUnderlyingDraft
+										[newUnderlyingDraft.name]: newUnderlyingDraft
 									});
 									setMode('allCollapsed');
 								}}>

@@ -5,7 +5,6 @@ import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
-const slugify = require('slugify');
 
 // --------------------- CONSTANTS ---------------------
 
@@ -373,10 +372,9 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 			let promises = [];
 			for (let i = 0; i < ids.length; i++) {
 				let name = bytes32ToString(names[i]);
-				let pseudoId = ids[i] + '_' + slugify(name);
+				// let pseudoId = ids[i] + '_' + slugify(name);
 				let contractAddress = contractAddresses[i];
-				underlyingsObj[pseudoId] = {
-					pseudoId: pseudoId,
+				underlyingsObj[name] = {
 					id: ids[i],
 					name: name,
 					contractAddress: contractAddress,
@@ -391,7 +389,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 							'getParamsEncodedOnUnderlyingContract',
 							contractAddress
 						).then(paramsEncoded => {
-							underlyingsObj[pseudoId].paramsEncoded = paramsEncoded;
+							underlyingsObj[name].paramsEncoded = paramsEncoded;
 						})
 					);
 				}
