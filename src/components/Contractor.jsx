@@ -404,6 +404,27 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	);
 };
 
+const fetchSwapSourcererPairs = (props, SwapSourcererContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(SwapSourcererContract, defaultAccount, 'getSwapPairs').then(
+		({ 0: pats, 1: collaterals, 2: collateralBalances, 3: exchangeRatios }) => {
+			let pairs = [];
+			for (let i = 0; i < pats.length; i++) {
+				pairs.push({
+					pat: pats[i],
+					collateral: collaterals[i],
+					collateralBalance: collateralBalances[i],
+					exchangeRatio: exchangeRatios[i]
+				});
+			}
+			props.dispatch({
+				type: 'ADD_SWAPSOURCERER_PAIRS',
+				pairs: pairs
+			});
+		}
+	);
+};
+
 const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypes')
@@ -652,5 +673,6 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchAndAddAllUnderlyings
+	fetchAndAddAllUnderlyings,
+	fetchSwapSourcererPairs
 };
