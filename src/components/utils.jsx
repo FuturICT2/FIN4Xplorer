@@ -119,6 +119,14 @@ const getEtherscanAddressURL = contractAddress => {
 	return 'https://' + networkName + '.etherscan.io/address/' + contractAddress;
 };
 
+const isCollateralFor = (collateralAddress, allUnderlyings) => {
+	return allUnderlyings.SwapSourcerer.pairs.filter(pair => pair.collateral === collateralAddress);
+};
+
+const hasTheseCollaterals = (patAddress, allUnderlyings) => {
+	return allUnderlyings.SwapSourcerer.pairs.filter(pair => pair.pat === patAddress);
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -135,5 +143,7 @@ export {
 	ProofAndVerifierStatusEnum,
 	getNetworkName,
 	getEtherscanTxURL,
-	getEtherscanAddressURL
+	getEtherscanAddressURL,
+	isCollateralFor,
+	hasTheseCollaterals
 };

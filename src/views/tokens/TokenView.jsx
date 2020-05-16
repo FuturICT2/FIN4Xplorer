@@ -10,7 +10,7 @@ import { Divider } from '@material-ui/core';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { getEtherscanAddressURL } from '../../components/utils';
+import { getEtherscanAddressURL, isCollateralFor, hasTheseCollaterals } from '../../components/utils';
 
 function TokenView(props, context) {
 	const { t } = useTranslation();
@@ -196,6 +196,10 @@ function TokenView(props, context) {
 									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
 								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
+
+								{/*isCollateralFor(tokenViaURL.address, props.allUnderlyings).reduce((accumulator, pair) => {
+									return accumulator + pair.collateral // TODO
+								})*/}
 							</span>
 						)}
 					</span>
@@ -229,7 +233,8 @@ const mapStateToProps = state => {
 		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		submissions: state.fin4Store.submissions,
-		verifierTypes: state.fin4Store.verifierTypes
+		verifierTypes: state.fin4Store.verifierTypes,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 
