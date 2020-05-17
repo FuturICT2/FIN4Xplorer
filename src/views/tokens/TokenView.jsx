@@ -11,6 +11,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { getEtherscanAddressURL, isCollateralFor, hasTheseCollaterals } from '../../components/utils';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 
 function TokenView(props, context) {
 	const { t } = useTranslation();
@@ -180,11 +181,7 @@ function TokenView(props, context) {
 						<center>
 							<Currency symbol={tokenViaURL.symbol} name={<b>{tokenViaURL.name}</b>} />
 							<br />
-							<span style={{ fontSize: 'x-small' }}>
-								<a href={getEtherscanAddressURL(tokenViaURL.address)} target="_blank">
-									{tokenViaURL.address}
-								</a>
-							</span>
+							<AddressDisplayWithCopy address={tokenViaURL.address} />
 						</center>
 						<br />
 						{getSubmissionsOnToken().length > 0 && (

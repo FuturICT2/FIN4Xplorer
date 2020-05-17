@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
-import { getEtherscanAddressURL } from '../components/utils';
+import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -71,11 +71,7 @@ function Settings(props, context) {
 					Address of the Fin4Main smart contract:
 					<br />
 					{props.contracts.Fin4Main && props.contracts.Fin4Main.initialized && context.drizzle.contracts.Fin4Main ? (
-						<small>
-							<a href={getEtherscanAddressURL(context.drizzle.contracts.Fin4Main.address)} target="_blank">
-								{context.drizzle.contracts.Fin4Main.address}
-							</a>
-						</small>
+						<AddressDisplayWithCopy address={context.drizzle.contracts.Fin4Main.address} />
 					) : (
 						'Loading...'
 					)}
@@ -91,9 +87,7 @@ function Settings(props, context) {
 							<span key={'verifier_' + index}>
 								{name}
 								<br />
-								<a style={{ fontSize: 'small' }} href={getEtherscanAddressURL(address)} target="_blank">
-									{address}
-								</a>
+								<AddressDisplayWithCopy address={address} />
 								<br />
 								{verifierType.paramsEncoded && (
 									<small style={{ color: 'gray' }}>
@@ -124,12 +118,7 @@ function Settings(props, context) {
 								<br />
 								{underlyingObj.contractAddress && (
 									<>
-										<a
-											style={{ fontSize: 'small' }}
-											href={getEtherscanAddressURL(underlyingObj.contractAddress)}
-											target="_blank">
-											{underlyingObj.contractAddress}
-										</a>
+										<AddressDisplayWithCopy address={underlyingObj.contractAddress} />
 										<br />
 									</>
 								)}

@@ -18,6 +18,7 @@ import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { contractCall } from '../../components/Contractor';
@@ -99,10 +100,7 @@ function Home(props, context) {
 							t('info-not-yet-available')
 						) : (
 							<>
-								{/* TODO make network-generic */}
-								<a href={getEtherscanAddressURL(props.defaultAccount)} target="_blank">
-									{props.defaultAccount}
-								</a>
+								<AddressDisplayWithCopy address={props.defaultAccount} />
 								<FontAwesomeIcon
 									style={iconIsHovered ? styles.QRiconHover : styles.QRicon}
 									icon={faQrcode}
