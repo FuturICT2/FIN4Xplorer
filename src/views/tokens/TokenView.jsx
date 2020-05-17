@@ -125,6 +125,46 @@ function TokenView(props, context) {
 			.filter(sub => sub.token === tokenViaURL.address);
 	};
 
+	const buildCollateralInfos = () => {
+		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.allUnderlyings);
+		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.allUnderlyings);
+		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
+			return '';
+		}
+
+		let isCollateralForSymbols = '';
+		for (let i = 0; i < isCollateralForArr.length; i++) {
+			let symb = props.fin4Tokens[isCollateralForArr[i].pat].symbol;
+			isCollateralForSymbols = (
+				<>
+					{isCollateralForSymbols}
+					<a href={'/token/view/' + symb}>{symb}</a>
+					{i < isCollateralForArr.length - 1 ? ', ' : ''}
+				</>
+			);
+		}
+
+		let hasTheseCollateralsSymbols = '';
+		for (let i = 0; i < hasTheseCollateralsArr.length; i++) {
+			let symb = props.fin4Tokens[hasTheseCollateralsArr[i].collateral].symbol;
+			hasTheseCollateralsSymbols = (
+				<>
+					{hasTheseCollateralsSymbols}
+					<a href={'/token/view/' + symb}>{symb}</a>
+					{i < hasTheseCollateralsArr.length - 1 ? ', ' : ''}
+				</>
+			);
+		}
+
+		return (
+			<>
+				<Divider style={{ margin: '10px 0' }} variant="middle" />
+				{isCollateralForSymbols && buildInfoLine('Is collateral for', isCollateralForSymbols)}
+				{hasTheseCollateralsSymbols && buildInfoLine('Has these collaterals', hasTheseCollateralsSymbols)}
+			</>
+		);
+	};
+
 	return (
 		<Container>
 			<Box>
@@ -197,9 +237,7 @@ function TokenView(props, context) {
 								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
 
-								{/*isCollateralFor(tokenViaURL.address, props.allUnderlyings).reduce((accumulator, pair) => {
-									return accumulator + pair.collateral // TODO
-								})*/}
+								{buildCollateralInfos()}
 							</span>
 						)}
 					</span>
