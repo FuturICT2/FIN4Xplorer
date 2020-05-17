@@ -98,8 +98,7 @@ function TokenView(props, context) {
 		return (
 			<p>
 				<span style={{ color: 'gray' }}>
-					{label}
-					{value ? ':' : ''}
+					{label}:{value ? '' : ' -'}
 				</span>{' '}
 				{value}
 			</p>
