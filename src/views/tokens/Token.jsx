@@ -83,7 +83,8 @@ function Token(props) {
 				minting: {},
 				noninteractiveVerifiers: {},
 				interactiveVerifiers: {},
-				underlyings: []
+				sourcererPairs: [],
+				externalUnderlyings: []
 				// TODO copy more (all) the fields...
 			},
 			addToCookies: true
@@ -149,7 +150,8 @@ function Token(props) {
 				minting: {},
 				noninteractiveVerifiers: {},
 				interactiveVerifiers: {},
-				underlyings: []
+				sourcererPairs: [],
+				externalUnderlyings: []
 			},
 			addToCookies: true
 		});

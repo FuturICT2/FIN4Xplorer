@@ -7,6 +7,7 @@ function StepExternalUnderlyings(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
+	const [externalUnderlyings, setExternalUnderlyings] = useState({}); // name and parameters
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
