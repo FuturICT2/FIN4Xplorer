@@ -64,7 +64,11 @@ const getFormattedSelectOptions = tokens => {
 const getRandomTokenCreationDraftID = () => {
 	// let allCookies = Cookies.get();
 	// let nextIndex = Object.keys(allCookies).filter(key => key.startsWith('TokenCreationDraft')).length;
-	return nanoid(5);
+	return getRandomStringOfLength(5);
+};
+
+const getRandomStringOfLength = len => {
+	return nanoid(len);
 };
 
 const findVerifierTypeAddressByName = (verifierTypes, name) => {
@@ -131,6 +135,7 @@ export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
 	getFormattedSelectOptions,
+	getRandomStringOfLength,
 	getRandomTokenCreationDraftID,
 	findVerifierTypeAddressByName,
 	TCRactive,
