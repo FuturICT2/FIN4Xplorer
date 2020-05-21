@@ -12,7 +12,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'react-addons-update';
 
-function StepUnderlying(props) {
+function StepSourcerers(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
@@ -281,4 +281,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepUnderlying, mapStateToProps);
+export default drizzleConnect(StepSourcerers, mapStateToProps);

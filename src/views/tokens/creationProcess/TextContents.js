@@ -18,7 +18,7 @@ const getStepContent = stepIndex => {
 		case 5:
 			return 'Interactive Verifiers';
 		case 6:
-			return 'Source of Value';
+			return 'Sourcerers';
 		default:
 			return '';
 	}
@@ -217,7 +217,7 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					})}
 				</>
 			);
-		case 6: // Underlying
+		case 6: // Sourcerers
 			return <center>TODO</center>;
 		default:
 			return <center>TODO</center>;
