@@ -408,6 +408,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 							let pairs = [];
 							for (let i = 0; i < pats.length; i++) {
 								pairs.push({
+									sourcererName: name,
 									pat: pats[i],
 									collateral: collaterals[i],
 									beneficiary: beneficiaries[i],
