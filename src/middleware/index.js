@@ -368,7 +368,8 @@ const initialState = {
 	tokenCreationDrafts: {},
 	submissions: {},
 	transactions: [],
-	allUnderlyings: {}
+	allUnderlyings: {},
+	sourcererPairs: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -777,6 +778,10 @@ function fin4StoreReducer(state = initialState, action) {
 					[action.underlying.name]: action.underlying
 				}
 			};
+		case 'SET_SOURCERER_PAIRS':
+			return Object.assign({}, state, {
+				sourcererPairs: action.sourcererPairs
+			});
 		default:
 			return state;
 	}

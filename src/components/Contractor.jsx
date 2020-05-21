@@ -369,6 +369,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
 		({ 0: ids, 1: names, 2: isSourcerers, 3: contractAddresses }) => {
 			let underlyingsObj = {};
+			let sourcererPairs = [];
 			let promises = [];
 			for (let i = 0; i < ids.length; i++) {
 				let name = bytes32ToString(names[i]);
@@ -405,20 +406,17 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 							4: totalCollateralBalances,
 							5: totalExchangedPatAmounts
 						}) => {
-							let pairs = [];
 							for (let i = 0; i < pats.length; i++) {
-								pairs.push({
+								sourcererPairs.push({
 									sourcererName: name,
 									pat: pats[i],
 									collateral: collaterals[i],
 									beneficiary: beneficiaries[i],
-									collateralBalance: collateralBalances[i],
 									exchangeRatio: exchangeRatios[i],
 									totalCollateralBalance: totalCollateralBalances[i],
 									totalExchangedPatAmounts: totalExchangedPatAmounts[i]
 								});
 							}
-							underlyingsObj[name].pairs = pairs;
 						}
 					)
 				);
@@ -427,6 +425,10 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 				props.dispatch({
 					type: 'SET_UNDERLYINGS',
 					allUnderlyings: underlyingsObj
+				});
+				props.dispatch({
+					type: 'SET_SOURCERER_PAIRS',
+					sourcererPairs: sourcererPairs
 				});
 			});
 		}
