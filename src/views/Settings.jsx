@@ -108,31 +108,33 @@ function Settings(props, context) {
 					})}
 				</div>
 			</Box>
-			<Box title="Fin4 underlying addresses">
+			<Box title="Fin4 Sourcerer">
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(props.allUnderlyings).map((pseudoId, index) => {
-						let underlyingObj = props.allUnderlyings[pseudoId];
-						return (
-							<span key={'underlying_' + index}>
-								{underlyingObj.name}
-								<br />
-								{underlyingObj.contractAddress && (
-									<>
-										<AddressDisplayWithCopy address={underlyingObj.contractAddress} />
-										<br />
-									</>
-								)}
-								{underlyingObj.paramsEncoded && (
-									<small style={{ color: 'gray' }}>
-										<b>Parameters</b>: {underlyingObj.paramsEncoded}
-									</small>
-								)}
-								{index < Object.keys(props.allUnderlyings).length - 1 && (
-									<Divider style={{ margin: '10px 0' }} variant="middle" />
-								)}
-							</span>
-						);
-					})}
+					{Object.keys(props.allUnderlyings)
+						.filter(name => props.allUnderlyings[name].isSourcerer)
+						.map((name, index) => {
+							let underlyingObj = props.allUnderlyings[name];
+							return (
+								<span key={'underlying_' + index}>
+									{underlyingObj.name}
+									<br />
+									{underlyingObj.contractAddress && (
+										<>
+											<AddressDisplayWithCopy address={underlyingObj.contractAddress} />
+											<br />
+										</>
+									)}
+									{underlyingObj.paramsEncoded && (
+										<small style={{ color: 'gray' }}>
+											<b>Parameters</b>: {underlyingObj.paramsEncoded}
+										</small>
+									)}
+									{index < Object.keys(props.allUnderlyings).length - 1 && (
+										<Divider style={{ margin: '10px 0' }} variant="middle" />
+									)}
+								</span>
+							);
+						})}
 				</div>
 			</Box>
 		</Container>
