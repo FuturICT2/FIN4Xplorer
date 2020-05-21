@@ -15,8 +15,7 @@ import {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchParameterizerParams,
-	fetchAndAddAllUnderlyings,
-	fetchSwapSourcererPairs
+	fetchAndAddAllUnderlyings
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -35,7 +34,6 @@ function LoadInitialData(props, context) {
 		Parameterizer: false,
 		Fin4SystemParameters: false,
 		Fin4Underlyings: false,
-		SwapSourcerer: false,
 		REP: false,
 		GOV: false,
 		tokenCreationDraftsLoaded: false // from cookies to store
@@ -138,16 +136,6 @@ function LoadInitialData(props, context) {
 			fetchAndAddAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings, context.drizzle);
 		}
 
-		if (
-			props.allUnderlyings.SwapSourcerer &&
-			!isInit.current.SwapSourcerer &&
-			props.contracts.SwapSourcerer &&
-			props.contracts.SwapSourcerer.initialized
-		) {
-			isInit.current.SwapSourcerer = true;
-			fetchSwapSourcererPairs(props, context.drizzle.contracts.SwapSourcerer);
-		}
-
 		if (!isInit.current.tokenCreationDraftsLoaded) {
 			isInit.current.tokenCreationDraftsLoaded = true;
 			loadTokenCreationDraftsFromCookieToStore();
@@ -177,8 +165,7 @@ LoadInitialData.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		drizzleInitialized: state.fin4Store.drizzleInitialized,
-		allUnderlyings: state.fin4Store.allUnderlyings // TODO shouldn't this be necessary for others too?
+		drizzleInitialized: state.fin4Store.drizzleInitialized
 	};
 };
 

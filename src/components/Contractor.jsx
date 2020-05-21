@@ -673,6 +673,5 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchAndAddAllUnderlyings,
-	fetchSwapSourcererPairs
+	fetchAndAddAllUnderlyings
 };
