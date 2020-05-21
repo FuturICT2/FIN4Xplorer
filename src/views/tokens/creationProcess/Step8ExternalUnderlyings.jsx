@@ -17,7 +17,9 @@ function StepExternalUnderlyings(props) {
 		setDraftId(draft.id);
 	});
 
-	const submit = () => {};
+	const submit = () => {
+		props.handleNext();
+	};
 
 	return (
 		<>
