@@ -126,6 +126,7 @@ function TokenView(props, context) {
 	};
 
 	const buildCollateralInfos = () => {
+		return '';
 		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.allUnderlyings);
 		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.allUnderlyings);
 		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
