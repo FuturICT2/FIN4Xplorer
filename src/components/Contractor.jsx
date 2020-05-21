@@ -382,46 +382,51 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 					contractAddress: contractAddress,
 					paramsEncoded: ''
 				};
-				if (contractAddress !== zeroAddress) {
-					addContract(props, drizzle, name, contractAddress, []);
-					promises.push(
-						getContractData(
-							Fin4UnderlyingsContract,
-							defaultAccount,
-							'getParamsEncodedOnUnderlyingContract',
-							contractAddress
-						).then(paramsEncoded => {
-							underlyingsObj[name].paramsEncoded = paramsEncoded;
-						})
-					);
+
+				if (!isSourcerer) {
+					continue;
 				}
+
+				addContract(props, drizzle, name, contractAddress, []);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererParams', contractAddress).then(
+						paramsEncoded => {
+							underlyingsObj[name].paramsEncoded = paramsEncoded;
+						}
+					)
+				);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererPairs', contractAddress).then(
+						({
+							0: pats,
+							1: collaterals,
+							2: beneficiaries,
+							3: exchangeRatios,
+							4: totalCollateralBalances,
+							5: totalExchangedPatAmounts
+						}) => {
+							let pairs = [];
+							for (let i = 0; i < pats.length; i++) {
+								pairs.push({
+									pat: pats[i],
+									collateral: collaterals[i],
+									beneficiary: beneficiaries[i],
+									collateralBalance: collateralBalances[i],
+									exchangeRatio: exchangeRatios[i],
+									totalCollateralBalance: totalCollateralBalances[i],
+									totalExchangedPatAmounts: totalExchangedPatAmounts[i]
+								});
+							}
+							underlyingsObj[name].pairs = pairs;
+						}
+					)
+				);
 			}
 			Promise.all(promises).then(() => {
 				props.dispatch({
 					type: 'SET_UNDERLYINGS',
 					allUnderlyings: underlyingsObj
 				});
-			});
-		}
-	);
-};
-
-const fetchSwapSourcererPairs = (props, SwapSourcererContract) => {
-	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(SwapSourcererContract, defaultAccount, 'getSwapPairs').then(
-		({ 0: pats, 1: collaterals, 2: collateralBalances, 3: exchangeRatios }) => {
-			let pairs = [];
-			for (let i = 0; i < pats.length; i++) {
-				pairs.push({
-					pat: pats[i],
-					collateral: collaterals[i],
-					collateralBalance: collateralBalances[i],
-					exchangeRatio: exchangeRatios[i]
-				});
-			}
-			props.dispatch({
-				type: 'ADD_SWAPSOURCERER_PAIRS',
-				pairs: pairs
 			});
 		}
 	);

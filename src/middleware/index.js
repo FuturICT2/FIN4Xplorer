@@ -777,17 +777,6 @@ function fin4StoreReducer(state = initialState, action) {
 					[action.underlying.name]: action.underlying
 				}
 			};
-		case 'ADD_SWAPSOURCERER_PAIRS':
-			return {
-				...state,
-				allUnderlyings: {
-					...state.allUnderlyings,
-					SwapSourcerer: {
-						...state.allUnderlyings.SwapSourcerer,
-						pairs: action.pairs
-					}
-				}
-			};
 		default:
 			return state;
 	}
