@@ -17,6 +17,7 @@ import StepMinting from './creationProcess/Step4Minting';
 import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
 import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
 import StepSourcerers from './creationProcess/Step7Sourcerers';
+import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
@@ -401,6 +402,7 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
 							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
 							{activeStep === 6 && buildStepComponent(StepSourcerers)}
+							{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>
