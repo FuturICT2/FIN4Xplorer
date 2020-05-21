@@ -3,29 +3,28 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
 import { faMinusCircle, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'react-addons-update';
+import { getRandomStringOfLength } from '../../../components/utils';
 
 function StepSourcerers(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [sourcererPairs, setSourcererPairs] = useState({}); // name and pairs[]
-
-	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
+	const [sourcererPairs, setSourcererPairs] = useState([]); // name and pairs[]
+	const [mode, setMode] = useState('collapsed'); // addFromDropdown
 
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
-		// setUnderlyings(draft.underlyings);
+		setSourcererPairs(draft.sourcererPairs);
 		setDraftId(draft.id);
 	});
 
@@ -40,49 +39,41 @@ function StepSourcerers(props) {
 		props.handleNext();
 	};
 
-	const updateDraftVal = (key, val) => {
-		if (key === 'name') {
-			setNewUnderlyingDraft({
-				...newUnderlyingDraft,
-				name: val
-			});
-		} else {
-			setNewUnderlyingDraft({
-				...newUnderlyingDraft,
-				[key]: val
-			});
-		}
+	let updateParamValOnPair = (pair, paramName, val) => {
+		pair.parameters[paramName] = val;
+		return pair;
 	};
 
-	const updateUnderlyingParamVal = (name, paramName, val) => {
-		setUnderlyings(
-			update(underlyings, {
-				[name]: {
-					parameters: {
-						[paramName]: { $set: val }
-					}
-				}
+	const updateSourcererPairs = (id, paramName, val) => {
+		setSourcererPairs(
+			sourcererPairs.map(pair => {
+				return pair.id === id ? updateParamValOnPair(pair, paramName, val) : pair;
 			})
 		);
 	};
 
-	const removeUnderlying = name => {
-		setUnderlyings(Object.keys(underlyings).filter(n => name !== name));
+	const removeSourcerer = id => {
+		setSourcererPairs(sourcererPairs.filter(pair => pair.id !== id));
+	};
+
+	const getSourcererById = id => {
+		return sourcererPairs.filter(pair => pair.id === id)[0];
 	};
 
 	return (
 		<>
-			{Object.keys(underlyings).length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
+			{sourcererPairs.length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(underlyings).map((name, index) => {
-						let underlyingObj = props.allUnderlyings[name];
+					{sourcererPairs.map((pair, index) => {
+						let name = pair.sourcererName;
 						if (!props.allUnderlyings[name]) {
 							return;
 						}
+						let underlyingObj = props.allUnderlyings[name];
 						return (
-							<div key={'underlying_' + index} style={{ paddingTop: '20px' }}>
+							<div key={'sourcerer_' + index} style={{ paddingTop: '20px' }}>
 								<div
-									key={'underlyingLabel_' + index}
+									key={'sourcererLabel_' + index}
 									title={underlyingObj.contractAddress}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
@@ -90,16 +81,9 @@ function StepSourcerers(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title="Remove underlying"
-										onClick={() => removeUnderlying(name)}
+										title="Remove sourcerer"
+										onClick={() => removeSourcerer(pair.id)}
 									/>
-									{underlyingObj.hasOwnProperty('addToFin4') && (
-										<FontAwesomeIcon
-											icon={faAsterisk}
-											style={styles.newIcon}
-											title="Will be created new during token creation"
-										/>
-									)}
 								</div>
 								{underlyingObj.paramsEncoded &&
 									underlyingObj.paramsEncoded.split(',').map((paramStr, paramIndex) => {
@@ -117,8 +101,8 @@ function StepSourcerers(props) {
 															{description && <span style={{ fontSize: 'x-small' }}> ({description})</span>}{' '}
 														</>
 													}
-													defaultValue={underlyings[name].parameters[paramName]}
-													onChange={e => updateUnderlyingParamVal(name, paramName, e.target.value)}
+													defaultValue={getSourcererById(pair.id).parameters[paramName]}
+													onChange={e => updateSourcererPairs(pair.id, paramName, e.target.value)}
 													style={styles.normalField}
 												/>
 											</span>
@@ -129,30 +113,14 @@ function StepSourcerers(props) {
 					})}
 				</div>
 			)}
-			{Object.keys(underlyings).length > 0 && <Spacer />}
+			{sourcererPairs.length > 0 && <Spacer />}
 			<>
-				{mode === 'allCollapsed' && (
-					<>
-						<Button onClick={() => setMode('addExisting')} center="true" color="inherit">
-							Add existing underlying
-						</Button>
-						<div style={{ marginBottom: '30px' }}></div>
-						<Button
-							center="true"
-							color="inherit"
-							onClick={() => {
-								setMode('addNew');
-								setNewUnderlyingDraft({
-									name: '',
-									contractAddress: '',
-									addToFin4: true
-								});
-							}}>
-							Add new underlying
-						</Button>
-					</>
+				{mode === 'collapsed' && (
+					<Button onClick={() => setMode('addFromDropdown')} center="true" color="inherit">
+						Add Sourcerer
+					</Button>
 				)}
-				{mode === 'addExisting' && (
+				{mode === 'addFromDropdown' && (
 					<Dropdown
 						onChange={e => {
 							let name = e.value;
@@ -164,80 +132,26 @@ function StepSourcerers(props) {
 									parameters[paramName] = null;
 								});
 							}
-							setUnderlyings({
-								...underlyings,
-								[name]: {
+							setSourcererPairs([
+								...sourcererPairs,
+								{
+									id: getRandomStringOfLength(3),
+									sourcererName: name,
 									parameters: parameters
 								}
-							});
-							setMode('allCollapsed');
+							]);
+							setMode('collapsed');
 						}}
-						options={Object.keys(props.allUnderlyings)
-							.filter(name => Object.keys(underlyings).filter(n => n === name).length === 0)
-							.map(name => {
-								return {
-									value: name,
-									label: name
-								};
-							})}
-						label="Choose existing underlying"
+						options={Object.keys(props.allUnderlyings).map(name => {
+							return {
+								value: name,
+								label: name
+							};
+						})}
+						label="Choose sourcerer"
 					/>
 				)}
-				{mode === 'addNew' && (
-					<>
-						<TextField
-							key="name-field"
-							type="text"
-							label="Name"
-							value={newUnderlyingDraft.name}
-							onChange={e => updateDraftVal('name', e.target.value)}
-							style={inputFieldStyle}
-						/>
-						<TextField
-							key="contract-address-field"
-							type="text"
-							label="Contract address (optional)"
-							value={newUnderlyingDraft.contractAddress}
-							onChange={e => updateDraftVal('contractAddress', e.target.value)}
-							style={inputFieldStyle}
-						/>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={newUnderlyingDraft.addToFin4}
-									onChange={() => updateDraftVal('addToFin4', !newUnderlyingDraft.addToFin4)}
-								/>
-							}
-							label="Other token creators can add this too"
-						/>
-						<center style={{ marginTop: '10px' }}>
-							<Button
-								color="inherit"
-								onClick={() => {
-									// adding them here already to avoid having to reload for the
-									// newly added ones to become available
-									props.dispatch({
-										type: 'ADD_UNDERLYING',
-										underlying: newUnderlyingDraft
-									});
-									setUnderlyings({
-										...underlyings,
-										[newUnderlyingDraft.name]: newUnderlyingDraft
-									});
-									setMode('allCollapsed');
-								}}>
-								Add
-							</Button>
-							<span style={{ marginRight: '20px' }}></span>
-							<Button onClick={() => setMode('allCollapsed')} color="inherit">
-								Cancel
-							</Button>
-						</center>
-						<br />
-					</>
-				)}
 			</>
-
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
@@ -250,12 +164,6 @@ const Spacer = styled.div`
 const styles = {
 	removeIcon: {
 		color: 'lightsalmon',
-		width: '14px',
-		height: '14px',
-		paddingLeft: '7px'
-	},
-	newIcon: {
-		color: 'orange',
 		width: '14px',
 		height: '14px',
 		paddingLeft: '7px'

@@ -162,36 +162,31 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
-		// let existingUnderlyingIds = [];
-		// let newUnderlyings = ... TODO decide if in this step or gets standalone page in dApp
-		let underlyingsToParameterize = [];
-		for (var pseudoId in draft.underlyings) {
-			if (draft.underlyings.hasOwnProperty(pseudoId)) {
-				let underlyingsParamObj = draft.underlyings[pseudoId];
-				if (underlyingsParamObj.hasOwnProperty('addToFin4')) {
-					continue;
+		let sourcerersToParameterize = [];
+
+		transactionsRequired.current += draft.sourcererPairs.length;
+
+		for (let i = 0; i < draft.sourcererPairs.length; i++) {
+			let pair = draft.sourcererPairs[i];
+			let underlyingsObj = props.allUnderlyings[pair.sourcererName];
+
+			// use the split-string again to ensure the right oder of values
+			let values = underlyingsObj.paramsEncoded.split(',').map(paramStr => {
+				let pName = paramStr.split(':')[1];
+				let val = pair.parameters[pName];
+				if (pName === 'beneficiary' && !val) {
+					return zeroAddress;
 				}
-				let underlyingsReduxObj = props.allUnderlyings[pseudoId];
-				// existingUnderlyingIds.push(underlyingsReduxObj.id);
-				if (underlyingsReduxObj.contractAddress) {
-					transactionsRequired.current++;
-					let parameterNames = Object.keys(underlyingsParamObj.parameters);
-					if (parameterNames.length === 0) {
-						continue;
-					}
-					let values = parameterNames.map(pName => {
-						let val = underlyingsParamObj.parameters[pName];
-						if (pName === 'beneficiary' && !val) {
-							return zeroAddress;
-						}
-						return val;
-					});
-					underlyingsToParameterize.push({
-						name: underlyingsReduxObj.name,
-						values: values
-					});
-				}
+				return val;
+			});
+			if (pair.sourcererName === 'BurnSourcerer') {
+				// hacking it in here to be able to use the same setParameters() method in all sourcerers
+				values.splice(1, 0, zeroAddress);
 			}
+			sourcerersToParameterize.push({
+				name: pair.sourcererName,
+				values: values
+			});
 		}
 
 		let postCreationStepsArgs = [
@@ -240,7 +235,7 @@ function TokenCreationProcess(props, context) {
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					if (verifiersToParameterize.length === 0 && underlyingsToParameterize.length === 0) {
+					if (verifiersToParameterize.length === 0 && sourcerersToParameterize.length === 0) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
 					}
@@ -262,13 +257,13 @@ function TokenCreationProcess(props, context) {
 						);
 					});
 
-					underlyingsToParameterize.map(underlying => {
+					sourcerersToParameterize.map(sourcerer => {
 						setParamsOnOtherContract(
-							'underlying',
+							'sourcerer',
 							defaultAccount,
-							underlying.name,
+							sourcerer.name,
 							newTokenAddress,
-							underlying.values,
+							sourcerer.values,
 							callbackOthersDone
 						);
 					});
