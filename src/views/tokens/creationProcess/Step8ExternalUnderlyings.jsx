@@ -85,7 +85,24 @@ function StepExternalUnderlyings(props) {
 										/>
 									)}
 								</div>
-								{/* show params non-editable */}
+								{underlyingObj.contractAddress && (
+									<TextField
+										type="text"
+										label="Contract address"
+										value={underlyingObj.contractAddress}
+										style={styles.normalField}
+										disabled={true}
+									/>
+								)}
+								{underlyingObj.attachment && (
+									<TextField
+										type="text"
+										label="Attachment"
+										value={underlyingObj.attachment}
+										style={styles.normalField}
+										disabled={true}
+									/>
+								)}
 							</div>
 						);
 					})}
