@@ -60,6 +60,9 @@ function StepExternalUnderlyings(props) {
 				<div style={{ fontFamily: 'arial' }}>
 					{externalUnderlyings.map((name, index) => {
 						let underlyingObj = props.allUnderlyings[name];
+						if (!underlyingObj) {
+							return;
+						}
 						return (
 							<div key={'externalUnderlying_' + index} style={{ paddingTop: '20px' }}>
 								<div
