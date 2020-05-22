@@ -21,7 +21,7 @@ import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findVerifierTypeAddressByName, BNstr } from '../../components/utils';
+import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -162,6 +162,8 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
+		// SOURCERERS
+
 		let sourcerersToParameterize = [];
 
 		transactionsRequired.current += draft.sourcererPairs.length;
@@ -189,6 +191,35 @@ function TokenCreationProcess(props, context) {
 			});
 		}
 
+		// EXTERNAL UNDERLYINGS
+
+		let existingExternalUnderlyings = [];
+		let newExternalUnderlyings = {
+			names: [],
+			contractAddresses: [],
+			attachments: [],
+			usableForAlls: []
+		};
+		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
+			let name = draft.externalUnderlyings[i];
+			let underlyingObj = props.allUnderlyings[name];
+			let nameBytes32 = stringToBytes32(underlyingObj.name);
+			if (underlyingObj.hasOwnProperty('usableForAll')) {
+				newExternalUnderlyings.names.push(nameBytes32);
+				newExternalUnderlyings.contractAddresses.push(
+					underlyingObj.contractAddress ? underlyingObj.contractAddress : zeroAddress
+				);
+				newExternalUnderlyings.attachments.push(stringToBytes32(underlyingObj.attachment));
+				newExternalUnderlyings.usableForAlls.push(underlyingObj.usableForAll);
+			} else {
+				existingExternalUnderlyings.push(nameBytes32);
+			}
+		}
+
+		if (newExternalUnderlyings.names.length > 0) {
+			transactionsRequired.current += 1;
+		}
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
@@ -196,7 +227,8 @@ function TokenCreationProcess(props, context) {
 			draft.basics.description,
 			draft.actions.text,
 			draft.minting.fixedAmount,
-			draft.minting.unit
+			draft.minting.unit,
+			existingExternalUnderlyings
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
@@ -235,7 +267,11 @@ function TokenCreationProcess(props, context) {
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					if (verifiersToParameterize.length === 0 && sourcerersToParameterize.length === 0) {
+					if (
+						verifiersToParameterize.length === 0 &&
+						sourcerersToParameterize.length === 0 &&
+						newExternalUnderlyings.names.length === 0
+					) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
 					}
@@ -267,6 +303,10 @@ function TokenCreationProcess(props, context) {
 							callbackOthersDone
 						);
 					});
+
+					if (newExternalUnderlyings.names.length > 0) {
+						addNewExternalUnderlyingsOnContract(defaultAccount, newExternalUnderlyings, callbackOthersDone);
+					}
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage('Token creation failed with reason: ' + reason);
@@ -311,6 +351,34 @@ function TokenCreationProcess(props, context) {
 			'setParameters',
 			[tokenAddr, ...values],
 			'Set parameter on ' + type + ': ' + contractName,
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						callbackOthersDone();
+					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				}
+			}
+		);
+	};
+
+	const addNewExternalUnderlyingsOnContract = (defaultAccount, valueArrays, callbackOthersDone) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Underlyings',
+			'addUnderlyings',
+			[valueArrays.names, valueArrays.contractAddresses, valueArrays.attachments, valueArrays.usableForAlls],
+			'Adding new external underlying sources of value',
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
