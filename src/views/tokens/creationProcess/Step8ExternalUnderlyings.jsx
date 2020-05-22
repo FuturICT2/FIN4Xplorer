@@ -182,7 +182,7 @@ function StepExternalUnderlyings(props) {
 								onChange={() => updateDraftVal('usableForAll', !newDraft.usableForAll)}
 							/>
 						}
-						label="Other token creators can add this too"
+						label="Make available for other tokens"
 					/>
 					<center style={{ marginTop: '10px' }}>
 						<Button
