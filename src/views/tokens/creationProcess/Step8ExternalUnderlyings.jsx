@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import Dropdown from '../../../components/Dropdown';
 import moment from 'moment';
+import { zeroAddress } from '../../../components/Contractor';
 
 function StepExternalUnderlyings(props) {
 	const { t } = useTranslation();
@@ -85,7 +86,7 @@ function StepExternalUnderlyings(props) {
 										/>
 									)}
 								</div>
-								{underlyingObj.contractAddress && (
+								{underlyingObj.contractAddress && underlyingObj.contractAddress !== zeroAddress && (
 									<TextField
 										type="text"
 										label="Contract address"
