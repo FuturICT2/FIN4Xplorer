@@ -25,7 +25,8 @@ function StepExternalUnderlyings(props) {
 			return;
 		}
 		let draft = props.draft;
-		setExternalUnderlyings(draft.externalUnderlyings);
+		// prune off the newly added ones that were not added on-chain and lived only during the previous browser session
+		setExternalUnderlyings(draft.externalUnderlyings.filter(name => Object.keys(props.allUnderlyings).includes(name)));
 		setDraftId(draft.id);
 	});
 
