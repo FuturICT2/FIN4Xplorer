@@ -8,7 +8,6 @@ import { faMinusCircle, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
-import update from 'react-addons-update';
 import Dropdown from '../../../components/Dropdown';
 import moment from 'moment';
 
@@ -16,7 +15,7 @@ function StepExternalUnderlyings(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [externalUnderlyings, setExternalUnderlyings] = useState({}); // name and parameters
+	const [externalUnderlyings, setExternalUnderlyings] = useState([]); // just names
 	const [newDraft, setNewDraft] = useState({});
 	const [mode, setMode] = useState('allCollapsed'); // addExisting, addNew
 
@@ -47,31 +46,20 @@ function StepExternalUnderlyings(props) {
 		});
 	};
 
-	const updateParamVal = (name, pName, val) => {
-		setExternalUnderlyings(
-			update(externalUnderlyings, {
-				[name]: {
-					parameters: {
-						[pName]: { $set: val }
-					}
-				}
-			})
-		);
+	const addExternalUnderlying = name => {
+		setExternalUnderlyings([...externalUnderlyings, name]);
 	};
 
 	const removeExternalUnderlying = name => {
-		setExternalUnderlyings(Object.keys(externalUnderlyings).filter(n => name !== name));
+		setExternalUnderlyings(externalUnderlyings.filter(n => n !== name));
 	};
 
 	return (
 		<>
-			{Object.keys(externalUnderlyings).length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
+			{externalUnderlyings.length > 0 && Object.keys(props.allUnderlyings).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(externalUnderlyings).map((name, index) => {
+					{externalUnderlyings.map((name, index) => {
 						let underlyingObj = props.allUnderlyings[name];
-						if (!props.allUnderlyings[name]) {
-							return;
-						}
 						return (
 							<div key={'externalUnderlying_' + index} style={{ paddingTop: '20px' }}>
 								<div
@@ -79,7 +67,7 @@ function StepExternalUnderlyings(props) {
 									title={underlyingObj.contractAddress}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
-									{underlyingObj.name}
+									{name}
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
@@ -94,35 +82,13 @@ function StepExternalUnderlyings(props) {
 										/>
 									)}
 								</div>
-								{underlyingObj.paramsEncoded &&
-									underlyingObj.paramsEncoded.split(',').map((paramStr, paramIndex) => {
-										let type = paramStr.split(':')[0];
-										let paramName = paramStr.split(':')[1];
-										let description = paramStr.split(':')[2];
-										let key = 'externalUnderlying_' + index + '_param_' + paramIndex;
-										return (
-											<span key={key}>
-												<TextField
-													type={type === 'uint' ? 'number' : 'text'}
-													label={
-														<>
-															<span>{paramName}</span>
-															{description && <span style={{ fontSize: 'x-small' }}> ({description})</span>}{' '}
-														</>
-													}
-													defaultValue={externalUnderlyings[name].parameters[paramName]}
-													onChange={e => updateParamVal(name, paramName, e.target.value)}
-													style={styles.normalField}
-												/>
-											</span>
-										);
-									})}
+								{/* show params non-editable */}
 							</div>
 						);
 					})}
 				</div>
 			)}
-			{Object.keys(externalUnderlyings).length > 0 && <Spacer />}
+			{externalUnderlyings.length > 0 && <Spacer />}
 			{mode === 'allCollapsed' && (
 				<>
 					<Button onClick={() => setMode('addExisting')} center="true" color="inherit">
@@ -147,26 +113,12 @@ function StepExternalUnderlyings(props) {
 			{mode === 'addExisting' && (
 				<Dropdown
 					onChange={e => {
-						let name = e.value;
-						let parameters = {};
-						let underlyingObj = props.allUnderlyings[name];
-						if (underlyingObj.paramsEncoded) {
-							underlyingObj.paramsEncoded.split(',').map(paramStr => {
-								let paramName = paramStr.split(':')[1];
-								parameters[paramName] = null;
-							});
-						}
-						setExternalUnderlyings({
-							...externalUnderlyings,
-							[name]: {
-								parameters: parameters
-							}
-						});
+						addExternalUnderlying(e.value);
 						setMode('allCollapsed');
 					}}
 					options={Object.keys(props.allUnderlyings)
 						.filter(name => !props.allUnderlyings[name].isSourcerer)
-						.filter(name => Object.keys(externalUnderlyings).filter(n => n === name).length === 0)
+						.filter(name => externalUnderlyings.filter(_name => name === _name).length === 0)
 						.map(name => {
 							return {
 								value: name,
@@ -213,10 +165,7 @@ function StepExternalUnderlyings(props) {
 									type: 'ADD_UNDERLYING',
 									underlying: newDraft
 								});
-								setExternalUnderlyings({
-									...externalUnderlyings,
-									[newDraft.name]: newDraft
-								});
+								addExternalUnderlying(newDraft.name);
 								setMode('allCollapsed');
 							}}>
 							Add
