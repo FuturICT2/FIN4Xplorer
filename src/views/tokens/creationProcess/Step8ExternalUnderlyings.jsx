@@ -103,6 +103,7 @@ function StepExternalUnderlyings(props) {
 							setNewDraft({
 								name: '',
 								contractAddress: '',
+								attachment: '',
 								usableForAll: true
 							});
 						}}>
@@ -144,6 +145,14 @@ function StepExternalUnderlyings(props) {
 						label="Contract address (optional)"
 						value={newDraft.contractAddress}
 						onChange={e => updateDraftVal('contractAddress', e.target.value)}
+						style={inputFieldStyle}
+					/>
+					<TextField
+						key="contract-attachment-field"
+						type="text"
+						label="Attachment (optional, e.g. URL)"
+						value={newDraft.attachment}
+						onChange={e => updateDraftVal('attachment', e.target.value)}
 						style={inputFieldStyle}
 					/>
 					<FormControlLabel
