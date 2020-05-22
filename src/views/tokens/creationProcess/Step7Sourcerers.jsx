@@ -6,7 +6,7 @@ import StepsBottomNav from './StepsBottomNav';
 import { TextField } from '@material-ui/core';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
-import { faMinusCircle, faAsterisk } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -172,11 +172,6 @@ const styles = {
 		width: '80%',
 		margin: '8px 0 8px 25px'
 	}
-};
-
-const inputFieldStyle = {
-	width: '100%',
-	marginBottom: '15px'
 };
 
 const mapStateToProps = state => {
