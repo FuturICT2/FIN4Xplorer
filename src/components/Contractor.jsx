@@ -367,20 +367,19 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
-		({ 0: ids, 1: names, 2: isSourcerers, 3: contractAddresses }) => {
+		({ 0: names, 1: isSourcerers, 2: contractAddresses, 3: attachments }) => {
 			let underlyingsObj = {};
 			let sourcererPairs = [];
 			let promises = [];
-			for (let i = 0; i < ids.length; i++) {
+			for (let i = 0; i < names.length; i++) {
 				let name = bytes32ToString(names[i]);
-				// let pseudoId = ids[i] + '_' + slugify(name);
 				let contractAddress = contractAddresses[i];
 				let isSourcerer = isSourcerers[i];
 				underlyingsObj[name] = {
-					id: ids[i],
 					name: name,
 					isSourcerer: isSourcerer,
 					contractAddress: contractAddress,
+					attachment: bytes32ToString(attachments[i]),
 					paramsEncoded: ''
 				};
 
