@@ -234,8 +234,6 @@ function TokenView(props, context) {
 									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
 								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
 								{buildInfoLine('Claimable actions', details.actionsText)}
-
-								{buildCollateralInfos()}
 							</span>
 						)}
 					</span>
@@ -252,6 +250,7 @@ function TokenView(props, context) {
 						<Link to={'/claim/' + tokenViaURL.symbol}>Claim</Link>
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>
+						{buildCollateralInfos()}
 					</span>
 				)}
 			</Box>
