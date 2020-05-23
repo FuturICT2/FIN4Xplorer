@@ -5,6 +5,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { Fin4Colors } from './utils';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddressDisplayWithCopy from './AddressDisplayWithCopy';
+import { Link } from 'react-router-dom';
 
 function SourcererPairInfoComponent(props) {
 	const { t } = useTranslation();
@@ -13,7 +14,7 @@ function SourcererPairInfoComponent(props) {
 		return <AddressDisplayWithCopy address={address} fontSize="xx-small" />;
 	};
 
-	const getTokenAddressOrSymbol = address => {
+	const getTokenAddressOrSymbolElement = address => {
 		let token = props.fin4Tokens[address];
 		if (token) {
 			return (
@@ -32,6 +33,14 @@ function SourcererPairInfoComponent(props) {
 		return displayAddress(address);
 	};
 
+	const getTokenAddressOrSymbol = address => {
+		let token = props.fin4Tokens[address];
+		if (token) {
+			return token.symbol;
+		}
+		return address;
+	};
+
 	return (
 		<>
 			<div style={styles.pairDiv}>
@@ -45,7 +54,7 @@ function SourcererPairInfoComponent(props) {
 									<span style={styles.leftColumn}>PAT</span>
 								</Tooltip>
 							</td>
-							<td>{getTokenAddressOrSymbol(props.pair.pat)}</td>
+							<td>{getTokenAddressOrSymbolElement(props.pair.pat)}</td>
 						</tr>
 						<tr>
 							<td>
@@ -53,7 +62,7 @@ function SourcererPairInfoComponent(props) {
 									<span style={styles.leftColumn}>Collateral</span>
 								</Tooltip>
 							</td>
-							<td>{getTokenAddressOrSymbol(props.pair.collateral)}</td>
+							<td>{getTokenAddressOrSymbolElement(props.pair.collateral)}</td>
 						</tr>
 						<tr>
 							<td>
@@ -91,6 +100,30 @@ function SourcererPairInfoComponent(props) {
 						</tr>
 					</tbody>
 				</table>
+				<br />
+				<Link
+					to={
+						'/underlying/deposit/' +
+						props.pair.sourcererName +
+						'/' +
+						getTokenAddressOrSymbol(props.pair.pat) +
+						'/' +
+						getTokenAddressOrSymbol(props.pair.collateral)
+					}>
+					Deposit
+				</Link>
+				{', '}
+				<Link
+					to={
+						'/underlying/convert/' +
+						props.pair.sourcererName +
+						'/' +
+						getTokenAddressOrSymbol(props.pair.pat) +
+						'/' +
+						getTokenAddressOrSymbol(props.pair.collateral)
+					}>
+					Convert
+				</Link>
 			</div>
 		</>
 	);
