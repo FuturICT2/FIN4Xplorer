@@ -126,7 +126,7 @@ function TokenView(props, context) {
 			.filter(sub => sub.token === tokenViaURL.address);
 	};
 
-	const buildCollateralInfos = () => {
+	const buildSourcererInfos = () => {
 		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.sourcererPairs);
 		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.sourcererPairs);
 		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
@@ -240,7 +240,7 @@ function TokenView(props, context) {
 						<Link to={'/claim/' + tokenViaURL.symbol}>Claim</Link>
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>
-						{buildCollateralInfos()}
+						{buildSourcererInfos()}
 					</span>
 				)}
 			</Box>
