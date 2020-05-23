@@ -126,9 +126,9 @@ function TokenView(props, context) {
 	};
 
 	const buildCollateralInfos = () => {
-		return '';
-		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.allUnderlyings);
-		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.allUnderlyings);
+		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.sourcererPairs);
+		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.sourcererPairs);
+
 		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
 			return '';
 		}
@@ -269,7 +269,7 @@ const mapStateToProps = state => {
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		submissions: state.fin4Store.submissions,
 		verifierTypes: state.fin4Store.verifierTypes,
-		allUnderlyings: state.fin4Store.allUnderlyings
+		sourcererPairs: state.fin4Store.sourcererPairs
 	};
 };
 

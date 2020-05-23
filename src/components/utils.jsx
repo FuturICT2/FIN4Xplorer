@@ -123,12 +123,12 @@ const getEtherscanAddressURL = contractAddress => {
 	return 'https://' + networkName + '.etherscan.io/address/' + contractAddress;
 };
 
-const isCollateralFor = (collateralAddress, allUnderlyings) => {
-	return allUnderlyings.SwapSourcerer.pairs.filter(pair => pair.collateral === collateralAddress);
+const isCollateralFor = (collateralAddress, sourcererPairs) => {
+	return sourcererPairs.filter(pair => pair.collateral === collateralAddress);
 };
 
-const hasTheseCollaterals = (patAddress, allUnderlyings) => {
-	return allUnderlyings.SwapSourcerer.pairs.filter(pair => pair.pat === patAddress);
+const hasTheseCollaterals = (patAddress, sourcererPairs) => {
+	return sourcererPairs.filter(pair => pair.pat === patAddress);
 };
 
 export {
