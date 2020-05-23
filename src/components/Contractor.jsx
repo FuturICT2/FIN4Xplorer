@@ -415,7 +415,7 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 									beneficiary: beneficiaries[i],
 									exchangeRatio: exchangeRatios[i],
 									totalCollateralBalance: totalCollateralBalances[i],
-									totalExchangedPatAmounts: totalExchangedPatAmounts[i]
+									totalExchangedPatAmount: totalExchangedPatAmounts[i]
 								});
 							}
 						}

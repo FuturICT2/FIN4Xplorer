@@ -129,33 +129,8 @@ function TokenView(props, context) {
 	const buildCollateralInfos = () => {
 		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.sourcererPairs);
 		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.sourcererPairs);
-
 		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
 			return '';
-		}
-
-		let isCollateralForSymbols = '';
-		for (let i = 0; i < isCollateralForArr.length; i++) {
-			let symb = props.fin4Tokens[isCollateralForArr[i].pat].symbol;
-			isCollateralForSymbols = (
-				<>
-					{isCollateralForSymbols}
-					<a href={'/token/view/' + symb}>{symb}</a>
-					{i < isCollateralForArr.length - 1 ? ', ' : ''}
-				</>
-			);
-		}
-
-		let hasTheseCollateralsSymbols = '';
-		for (let i = 0; i < hasTheseCollateralsArr.length; i++) {
-			let symb = props.fin4Tokens[hasTheseCollateralsArr[i].collateral].symbol;
-			hasTheseCollateralsSymbols = (
-				<>
-					{hasTheseCollateralsSymbols}
-					<a href={'/token/view/' + symb}>{symb}</a>
-					{i < hasTheseCollateralsArr.length - 1 ? ', ' : ''}
-				</>
-			);
 		}
 
 		return (
@@ -163,7 +138,7 @@ function TokenView(props, context) {
 				{isCollateralForArr.length > 0 && (
 					<>
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						Is collateral for: <small>{isCollateralForSymbols}</small>
+						Is collateral for:
 						{isCollateralForArr.map((pair, index) => {
 							return <SourcererPairInfoComponent key={'is-collateral-for_' + index} pair={pair} />;
 						})}
@@ -172,7 +147,7 @@ function TokenView(props, context) {
 				{hasTheseCollateralsArr.length > 0 && (
 					<>
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						Has these collaterals: <small>{hasTheseCollateralsSymbols}</small>
+						Has these collaterals:
 						{hasTheseCollateralsArr.map((pair, index) => {
 							return <SourcererPairInfoComponent key={'has-these-collaterals_' + index} pair={pair} />;
 						})}
