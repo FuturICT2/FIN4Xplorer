@@ -220,8 +220,8 @@ function TokenView(props, context) {
 							<span style={{ fontFamily: 'arial' }}>
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Created at', details.tokenCreationTime)}
-								{buildInfoLine('Proof types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
+								{buildInfoLine('Created', details.tokenCreationTime)}
+								{buildInfoLine('Verifier types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
 								{buildInfoLine('Total number of claims', details.claimsCount)}
 								{buildInfoLine('Total supply', details.totalSupply)}
 
