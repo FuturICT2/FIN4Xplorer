@@ -8,7 +8,12 @@ function DepositCollateral(props) {
 
 	return (
 		<Container>
-			<CollateralInteractionComponent title="Deposit collateral" matchParams={props.match.params} />
+			<CollateralInteractionComponent
+				title="Deposit collateral"
+				matchParams={props.match.params}
+				buttonLabel="Deposit"
+				submitCallback={() => {}}
+			/>
 		</Container>
 	);
 }

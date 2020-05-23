@@ -1,43 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Box from '../../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { findTokenBySymbol } from '../../components/Contractor.jsx';
+import { findTokenBySymbol, isValidPublicAddress, addContract } from '../../components/Contractor.jsx';
+import Button from '../../components/Button';
+import { TextField } from '@material-ui/core';
 
 function CollateralInteractionComponent(props, context) {
 	const { t } = useTranslation();
 
 	const [data, setData] = useState({
-		patToken: null, // formatted for Dropdown
-		collateral: null, // formatted for Dropdown
-		amount: null
+		patAddress: '',
+		collateralAddress: '',
+		amount: ''
 	});
 
-	const addTokenIfExists = (type, symbOrAddr) => {
-		// try symbol first, then address - if still undefined it wasn't a valid URL param for a token
-		// or the token is not a Fin4 token, but has to be supported nonetheless (e.g. a pTokens or tBTC token)
-		let token = findTokenBySymbol(props, symbOrAddr) || props.fin4Tokens[symbOrAddr];
+	const addTokenAddress = (type, symbOrAddr) => {
+		// try symbol first to see if it exists, then convert to address
+		let token = findTokenBySymbol(props, symbOrAddr);
 		if (token) {
-			updateData(type, {
-				value: token.address,
-				label: token.name,
-				symbol: token.symbol
-			});
+			updateData(type, token.address);
+		}
+		if (isValidPublicAddress(symbOrAddr, false)) {
+			updateData(type, symbOrAddr);
 		}
 	};
 
 	useEffect(() => {
-		let patToken = props.matchParams.patToken;
-		let collateralToken = props.matchParams.collateralToken;
+		let patToken = props.matchParams.patToken; // Fin4-token-symbol or address
+		let collateralToken = props.matchParams.collateralToken; // Fin4-token-symbol or address
 		let amount = props.matchParams.amount;
 
-		if (patToken && !data.patToken) {
-			addTokenIfExists('patToken', patToken);
+		if (patToken && !data.patAddress) {
+			addTokenAddress('patAddress', patToken);
 		}
 
-		if (collateralToken && !data.collateralToken) {
-			addTokenIfExists('patToken', collateralToken);
+		if (collateralToken && !data.collateralAddress) {
+			addTokenAddress('collateralAddress', collateralToken);
 		}
 
 		if (amount && !data.amount) {
@@ -52,8 +52,46 @@ function CollateralInteractionComponent(props, context) {
 		});
 	};
 
-	return <Box title={props.title}></Box>;
+	// TODO use https://sanusart.github.io/react-dropdown-select/ for making a dropdown with the possibility to add new options?
+	return (
+		<Box title={props.title}>
+			<center>
+				<TextField
+					key="pat-address-field"
+					type="text"
+					label="PAT address"
+					onChange={e => updateData('patAddress', e.target.value)}
+					style={inputFieldStyle}
+					value={data.patAddress}
+				/>
+				<TextField
+					key="collateral-address-field"
+					type="text"
+					label="Collateral address"
+					onChange={e => updateData('collateralAddress', e.target.value)}
+					style={inputFieldStyle}
+					value={data.collateralAddress}
+				/>
+				<TextField
+					key="amount-field"
+					type="number"
+					label="Amount"
+					onChange={e => updateData('amount', e.target.value)}
+					style={inputFieldStyle}
+					value={data.amount}
+				/>
+				<br />
+				<br />
+				<Button onClick={props.submitCallback}>{props.buttonLabel}</Button>
+			</center>
+		</Box>
+	);
 }
+
+const inputFieldStyle = {
+	width: '100%',
+	marginBottom: '15px'
+};
 
 CollateralInteractionComponent.contextTypes = {
 	drizzle: PropTypes.object
