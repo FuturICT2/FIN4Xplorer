@@ -43,7 +43,7 @@ function SourcererPairInfoComponent(props) {
 
 	return (
 		<>
-			<div style={styles.pairDiv}>
+			<div style={styles.mainDiv}>
 				<div style={styles.pairHeadline}>{props.pair.sourcererName} pair</div>
 				<br />
 				<table>
@@ -145,7 +145,7 @@ const styles = {
 		fontWeight: 'bold',
 		textTransform: 'uppercase'
 	},
-	pairDiv: {
+	mainDiv: {
 		fontFamily: 'arial',
 		borderRadius: '25px',
 		border: '2px solid silver',
