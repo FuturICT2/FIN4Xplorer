@@ -122,12 +122,14 @@ const findTokenBySymbol = (props, symb) => {
 	return null;
 };
 
-const isValidPublicAddress = addr => {
+const isValidPublicAddress = (addr, verbose = true) => {
 	try {
 		let address = web3.utils.toChecksumAddress(addr);
 		return true;
 	} catch (e) {
-		console.error(e.message);
+		if (verbose) {
+			console.error(e.message);
+		}
 		return false;
 	}
 };
