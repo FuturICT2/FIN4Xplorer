@@ -16,6 +16,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import SendIcon from '@material-ui/icons/Send';
 import ConvertIcon from '@material-ui/icons/SwapHoriz';
 import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
@@ -149,6 +150,7 @@ function Home(props, context) {
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
 				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
+				{buildIconLabelLink('/user/transfer', <SendIcon />, 'Transfer token')}
 				{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
 				{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
 			</Box>
