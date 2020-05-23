@@ -21,7 +21,7 @@ function AddressDisplayWithCopy(props) {
 				</Tooltip>
 			</CopyToClipboard>
 			<a
-				style={{ fontSize: 'small' }}
+				style={{ fontSize: props.fontSize ? props.fontSize : 'small' }}
 				href={props.txHash ? getEtherscanTxURL(props.txHash) : getEtherscanAddressURL(props.address)}
 				target="_blank">
 				{props.address}

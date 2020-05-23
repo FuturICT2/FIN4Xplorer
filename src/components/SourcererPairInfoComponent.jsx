@@ -4,12 +4,13 @@ import { zeroAddress } from './Contractor';
 import { drizzleConnect } from 'drizzle-react';
 import { Fin4Colors } from './utils';
 import Tooltip from '@material-ui/core/Tooltip';
+import AddressDisplayWithCopy from './AddressDisplayWithCopy';
 
 function SourcererPairInfoComponent(props) {
 	const { t } = useTranslation();
 
 	const displayAddress = address => {
-		return <span style={styles.address}>{address}</span>;
+		return <AddressDisplayWithCopy address={address} fontSize="xx-small" />;
 	};
 
 	const getTokenAddressOrSymbol = address => {
@@ -21,7 +22,7 @@ function SourcererPairInfoComponent(props) {
 				</a>
 			);
 		}
-		return address;
+		return displayAddress(address);
 	};
 
 	const displayBeneficiary = address => {
@@ -36,41 +37,54 @@ function SourcererPairInfoComponent(props) {
 			<div style={styles.pairDiv}>
 				<div style={styles.pairHeadline}>{props.pair.sourcererName} pair</div>
 				<br />
-
 				<table>
 					<tbody>
 						<tr>
-							<td>PAT:</td>
+							<td>
+								<Tooltip title="Positive Action Token that can be used to convert the collateral" arrow>
+									<span style={styles.leftColumn}>PAT</span>
+								</Tooltip>
+							</td>
 							<td>{getTokenAddressOrSymbol(props.pair.pat)}</td>
 						</tr>
 						<tr>
-							<td>Collateral:</td>
+							<td>
+								<Tooltip title="Collateral token" arrow>
+									<span style={styles.leftColumn}>Collateral</span>
+								</Tooltip>
+							</td>
 							<td>{getTokenAddressOrSymbol(props.pair.collateral)}</td>
 						</tr>
 						<tr>
-							<td>Collateral:</td>
-							<td>{getTokenAddressOrSymbol(props.pair.collateral)}</td>
-						</tr>
-						<tr>
-							<td>Beneficiary:</td>
+							<td>
+								<Tooltip title="The beneficiary of the collateral upon converting it via PAT" arrow>
+									<span style={styles.leftColumn}>Beneficiary</span>
+								</Tooltip>
+							</td>
 							<td>{displayBeneficiary(props.pair.beneficiary)}</td>
 						</tr>
 						<tr>
-							<td>Exchange ratio:</td>
+							<td>
+								<Tooltip
+									title="The ratio by which conversion happens: transfer x PAT and x * n COLL get converted"
+									arrow>
+									<span style={styles.leftColumn}>Ratio</span>
+								</Tooltip>
+							</td>
 							<td>{props.pair.exchangeRatio}</td>
 						</tr>
 						<tr>
 							<td>
-								<Tooltip title="Total collateral balance on this pair" arrow>
-									<span>Collateral balance:</span>
+								<Tooltip title="Total collateral balance on this pair that is available for conversion" arrow>
+									<span style={styles.leftColumn}>Coll. balance</span>
 								</Tooltip>
 							</td>
 							<td>{props.pair.totalCollateralBalance}</td>
 						</tr>
 						<tr>
 							<td>
-								<Tooltip title="Total amount of PAT that was exchanged on this pair" arrow>
-									<span>PAT balance:</span>
+								<Tooltip title="Total amount of PAT that was exchanged on this pair via conversion" arrow>
+									<span style={styles.leftColumn}>PAT balance</span>
 								</Tooltip>
 							</td>
 							<td>{props.pair.totalExchangedPatAmount}</td>
@@ -83,9 +97,10 @@ function SourcererPairInfoComponent(props) {
 }
 
 const styles = {
-	address: {
-		fontSize: 'x-small',
-		color: Fin4Colors.darkGrey
+	leftColumn: {
+		fontSize: 'small',
+		color: 'gray',
+		marginRight: '8px'
 	},
 	pairHeadline: {
 		fontSize: 'small',
@@ -96,10 +111,10 @@ const styles = {
 	pairDiv: {
 		fontFamily: 'arial',
 		borderRadius: '25px',
-		border: '2px solid #cc1c6e',
-		padding: '20px',
+		border: '2px solid silver',
+		padding: '15px',
 		position: 'relative',
-		margin: '10px 0 10px 0'
+		margin: '15px 0 15px 0'
 	}
 };
 

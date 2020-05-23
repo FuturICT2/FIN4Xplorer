@@ -138,7 +138,7 @@ function TokenView(props, context) {
 				{isCollateralForArr.length > 0 && (
 					<>
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						Is collateral for:
+						<span style={{ color: 'gray' }}>Is collateral for:</span>
 						{isCollateralForArr.map((pair, index) => {
 							return <SourcererPairInfoComponent key={'is-collateral-for_' + index} pair={pair} />;
 						})}
