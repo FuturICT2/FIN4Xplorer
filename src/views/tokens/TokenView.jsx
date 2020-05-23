@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import Currency from '../../components/Currency';
 import { getContractData, findTokenBySymbol, addContract } from '../../components/Contractor';
+import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
 import PropTypes from 'prop-types';
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
@@ -159,10 +160,24 @@ function TokenView(props, context) {
 
 		return (
 			<>
-				<Divider style={{ margin: '10px 0' }} variant="middle" />
-				{isCollateralForSymbols && buildInfoLine('Is collateral for', <small>{isCollateralForSymbols}</small>)}
-				{hasTheseCollateralsSymbols &&
-					buildInfoLine('Has these collaterals', <small>{hasTheseCollateralsSymbols}</small>)}
+				{isCollateralForArr.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						Is collateral for: <small>{isCollateralForSymbols}</small>
+						{isCollateralForArr.map((pair, index) => {
+							return <SourcererPairInfoComponent key={'is-collateral-for_' + index} pair={pair} />;
+						})}
+					</>
+				)}
+				{hasTheseCollateralsArr.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						Has these collaterals: <small>{hasTheseCollateralsSymbols}</small>
+						{hasTheseCollateralsArr.map((pair, index) => {
+							return <SourcererPairInfoComponent key={'has-these-collaterals_' + index} pair={pair} />;
+						})}
+					</>
+				)}
 			</>
 		);
 	};
