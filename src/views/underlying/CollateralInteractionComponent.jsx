@@ -11,6 +11,7 @@ function CollateralInteractionComponent(props, context) {
 	const { t } = useTranslation();
 
 	const [data, setData] = useState({
+		sourcererType: '',
 		patAddress: '',
 		collateralAddress: '',
 		amount: ''
@@ -28,9 +29,14 @@ function CollateralInteractionComponent(props, context) {
 	};
 
 	useEffect(() => {
+		let sourcererType = props.matchParams.sourcererType; // must be the exact contract name
 		let patToken = props.matchParams.patToken; // Fin4-token-symbol or address
 		let collateralToken = props.matchParams.collateralToken; // Fin4-token-symbol or address
 		let amount = props.matchParams.amount;
+
+		if (sourcererType && !data.sourcererType) {
+			updateData('sourcererType', sourcererType);
+		}
 
 		if (patToken && !data.patAddress) {
 			addTokenAddress('patAddress', patToken);
@@ -56,6 +62,14 @@ function CollateralInteractionComponent(props, context) {
 	return (
 		<Box title={props.title}>
 			<center>
+				<TextField
+					key="sourcerer-type-field"
+					type="text"
+					label="Sourcerer Type"
+					onChange={e => updateData('sourcererType', e.target.value)}
+					style={inputFieldStyle}
+					value={data.sourcererType}
+				/>
 				<TextField
 					key="pat-address-field"
 					type="text"
@@ -83,6 +97,8 @@ function CollateralInteractionComponent(props, context) {
 				<br />
 				<br />
 				<Button onClick={props.submitCallback}>{props.buttonLabel}</Button>
+				<br />
+				<br />
 			</center>
 		</Box>
 	);
