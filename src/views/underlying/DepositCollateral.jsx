@@ -38,7 +38,8 @@ function DepositCollateral(props, context) {
 						'Deposit collateral on ' + data.sourcererName,
 						{
 							transactionCompleted: () => {
-								setDone(true);
+								// TODO causes Error: You may not unsubscribe from a store listener while the reducer is executing
+								// setDone(true);
 							}
 						}
 					);
