@@ -191,12 +191,12 @@ const menu = [
 	// ------------------ UNDERLYING ------------------
 	{
 		component: DepositCollateral,
-		path: '/underlying/deposit/:patToken/:collateralToken', // symbol or address
+		path: '/underlying/deposit/:patToken/:collateralToken/:amount', // token: symbol or address
 		showInNavBar: false
 	},
 	{
 		component: ConvertToCollateral,
-		path: '/underlying/convert/:patToken/:collateralToken', // symbol or address
+		path: '/underlying/convert/:patToken/:collateralToken/:amount', // token: symbol or address
 		showInNavBar: false
 	}
 ];

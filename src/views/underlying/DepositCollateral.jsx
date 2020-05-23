@@ -11,6 +11,7 @@ function DepositCollateral(props, context) {
 	useEffect(() => {
 		let patToken = props.match.params.patToken;
 		let collateralToken = props.match.params.collateralToken;
+		let amount = props.match.params.amount;
 		// TODO
 	});
 
