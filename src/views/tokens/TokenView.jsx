@@ -160,8 +160,9 @@ function TokenView(props, context) {
 		return (
 			<>
 				<Divider style={{ margin: '10px 0' }} variant="middle" />
-				{isCollateralForSymbols && buildInfoLine('Is collateral for', isCollateralForSymbols)}
-				{hasTheseCollateralsSymbols && buildInfoLine('Has these collaterals', hasTheseCollateralsSymbols)}
+				{isCollateralForSymbols && buildInfoLine('Is collateral for', <small>{isCollateralForSymbols}</small>)}
+				{hasTheseCollateralsSymbols &&
+					buildInfoLine('Has these collaterals', <small>{hasTheseCollateralsSymbols}</small>)}
 			</>
 		);
 	};
