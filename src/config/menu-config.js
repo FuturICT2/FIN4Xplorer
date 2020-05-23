@@ -23,6 +23,8 @@ import TokenCreationProcess from '../views/tokens/TokenCreationProcess';
 import TokenTextSubmissions from '../views/tokens/TokenTextSubmissions';
 import TokenPictureSubmissions from '../views/tokens/TokenPictureSubmissions';
 import TransactionLog from '../views/TransactionLog';
+import DepositCollateral from '../views/underlying/DepositCollateral';
+import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
 
 const menu = [
 	{
@@ -184,6 +186,17 @@ const menu = [
 	{
 		component: TransactionLog,
 		path: '/transactions',
+		showInNavBar: false
+	},
+	// ------------------ UNDERLYING ------------------
+	{
+		component: DepositCollateral,
+		path: '/underlying/deposit/:patToken/:collateralToken', // symbol or address
+		showInNavBar: false
+	},
+	{
+		component: ConvertToCollateral,
+		path: '/underlying/convert/:patToken/:collateralToken', // symbol or address
 		showInNavBar: false
 	}
 ];
