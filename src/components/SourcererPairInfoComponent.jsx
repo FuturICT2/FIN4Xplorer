@@ -101,18 +101,22 @@ function SourcererPairInfoComponent(props) {
 					</tbody>
 				</table>
 				<br />
-				<Link
-					to={
-						'/underlying/deposit/' +
-						props.pair.sourcererName +
-						'/' +
-						getTokenAddressOrSymbol(props.pair.pat) +
-						'/' +
-						getTokenAddressOrSymbol(props.pair.collateral)
-					}>
-					Deposit
-				</Link>
-				{', '}
+				{props.pair.sourcererName !== 'MintingSourcerer' && (
+					<>
+						<Link
+							to={
+								'/underlying/deposit/' +
+								props.pair.sourcererName +
+								'/' +
+								getTokenAddressOrSymbol(props.pair.pat) +
+								'/' +
+								getTokenAddressOrSymbol(props.pair.collateral)
+							}>
+							Deposit
+						</Link>
+						,&nbsp;
+					</>
+				)}
 				<Link
 					to={
 						'/underlying/convert/' +

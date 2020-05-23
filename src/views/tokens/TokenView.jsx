@@ -147,7 +147,7 @@ function TokenView(props, context) {
 				{hasTheseCollateralsArr.length > 0 && (
 					<>
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						Has these collaterals:
+						<span style={{ color: 'gray' }}>Has these collaterals:</span>
 						{hasTheseCollateralsArr.map((pair, index) => {
 							return <SourcererPairInfoComponent key={'has-these-collaterals_' + index} pair={pair} />;
 						})}
