@@ -8,7 +8,7 @@ function ConvertToCollateral(props) {
 
 	return (
 		<Container>
-			<CollateralInteractionComponent title="Convert to collateral" />
+			<CollateralInteractionComponent title="Convert to collateral" matchParams={props.match.params} />
 		</Container>
 	);
 }

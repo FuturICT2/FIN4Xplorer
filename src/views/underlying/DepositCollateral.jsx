@@ -8,7 +8,7 @@ function DepositCollateral(props) {
 
 	return (
 		<Container>
-			<CollateralInteractionComponent title="Deposit collateral" />
+			<CollateralInteractionComponent title="Deposit collateral" matchParams={props.match.params} />
 		</Container>
 	);
 }
