@@ -16,6 +16,8 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import ConvertIcon from '@material-ui/icons/SwapHoriz';
+import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
@@ -146,7 +148,9 @@ function Home(props, context) {
 			</Box>
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
+				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
+				{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
+				{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
 			</Box>
 			<Box title="Token curation" width="250px">
 				{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
