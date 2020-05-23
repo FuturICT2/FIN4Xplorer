@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import CollateralInteractionComponent from './CollateralInteractionComponent';
 import PropTypes from 'prop-types';
 import { drizzleConnect } from 'drizzle-react';
 import { contractCall } from '../../components/Contractor';
+import CheckIcon from '@material-ui/icons/CheckCircle';
+import { IconButton } from '@material-ui/core';
 
 function DepositCollateral(props, context) {
 	const { t } = useTranslation();
+
+	const [done, setDone] = useState(false);
 
 	// Even these methods could be done in CollateralInteractionComponent with some more props to pass in.
 	// I like the logic to be done here though, will see if merging makes more sense at some point.
@@ -45,16 +49,23 @@ function DepositCollateral(props, context) {
 
 	return (
 		<Container>
-			<CollateralInteractionComponent
-				title="Deposit collateral"
-				matchParams={props.match.params}
-				buttonLabel="Deposit"
-				contractToGetReady="collateralAddress"
-				buttonClickedAndContractReadyCallback={(data, collateralContractDrizzleName) =>
-					deposit(data, collateralContractDrizzleName)
-				}
-			/>
-			/> }
+			{done ? (
+				<center>
+					<IconButton style={{ color: 'green', transform: 'scale(2.4)' }}>
+						<CheckIcon />
+					</IconButton>
+				</center>
+			) : (
+				<CollateralInteractionComponent
+					title="Deposit collateral"
+					matchParams={props.match.params}
+					buttonLabel="Deposit"
+					contractToGetReady="collateralAddress"
+					buttonClickedAndContractReadyCallback={(data, collateralContractDrizzleName) =>
+						deposit(data, collateralContractDrizzleName)
+					}
+				/>
+			)}
 		</Container>
 	);
 }

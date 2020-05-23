@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import CollateralInteractionComponent from './CollateralInteractionComponent';
 import PropTypes from 'prop-types';
 import { drizzleConnect } from 'drizzle-react';
 import { contractCall } from '../../components/Contractor';
+import CheckIcon from '@material-ui/icons/CheckCircle';
+import { IconButton } from '@material-ui/core';
 
 function ConvertToCollateral(props, context) {
 	const { t } = useTranslation();
+
+	const [done, setDone] = useState(false);
 
 	const convert = (data, patContractDrizzleName) => {
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
@@ -43,13 +47,23 @@ function ConvertToCollateral(props, context) {
 
 	return (
 		<Container>
-			<CollateralInteractionComponent
-				title="Convert to collateral"
-				matchParams={props.match.params}
-				buttonLabel="Convert"
-				contractToGetReady="patAddress"
-				buttonClickedAndContractReadyCallback={(data, patContractDrizzleName) => convert(data, patContractDrizzleName)}
-			/>
+			{done ? (
+				<center>
+					<IconButton style={{ color: 'green', transform: 'scale(2.4)' }}>
+						<CheckIcon />
+					</IconButton>
+				</center>
+			) : (
+				<CollateralInteractionComponent
+					title="Convert to collateral"
+					matchParams={props.match.params}
+					buttonLabel="Convert"
+					contractToGetReady="patAddress"
+					buttonClickedAndContractReadyCallback={(data, patContractDrizzleName) =>
+						convert(data, patContractDrizzleName)
+					}
+				/>
+			)}
 		</Container>
 	);
 }
