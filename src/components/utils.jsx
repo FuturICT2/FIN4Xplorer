@@ -6,6 +6,13 @@ const nanoid = require('nanoid');
 
 const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
 
+const Fin4Colors = {
+	blue: '#00a3ef',
+	darkViolet: '#695ead',
+	darkPink: '#cc1c6e',
+	darkGrey: '#3d363f'
+};
+
 const BNstr = numb => {
 	return web3.utils.toBN(numb).toString();
 };
@@ -150,5 +157,6 @@ export {
 	getEtherscanTxURL,
 	getEtherscanAddressURL,
 	isCollateralFor,
-	hasTheseCollaterals
+	hasTheseCollaterals,
+	Fin4Colors
 };
