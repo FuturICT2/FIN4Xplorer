@@ -17,7 +17,7 @@
 	"unit-of-measurement": "Einheit der Mengenangabe (z.B. \"Zeit in Minuten\")",
 
 	"claim-tokens": "Fordere Tokens ein",
-	"token-type": "Token Typ",
+	"token-type": "Token",
 	"quantity": "Quantität",
 	"date": "Datum",
 	"comment": "Kommentar",
