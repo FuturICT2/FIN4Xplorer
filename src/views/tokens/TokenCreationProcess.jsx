@@ -193,7 +193,7 @@ function TokenCreationProcess(props, context) {
 
 		// EXTERNAL UNDERLYINGS
 
-		let existingExternalUnderlyings = [];
+		let externalUnderlyings = [];
 		let newExternalUnderlyings = {
 			names: [],
 			contractAddresses: [],
@@ -204,6 +204,7 @@ function TokenCreationProcess(props, context) {
 			let name = draft.externalUnderlyings[i];
 			let underlyingObj = props.allUnderlyings[name];
 			let nameBytes32 = stringToBytes32(underlyingObj.name);
+			externalUnderlyings.push(nameBytes32);
 			if (underlyingObj.hasOwnProperty('usableForAll')) {
 				newExternalUnderlyings.names.push(nameBytes32);
 				newExternalUnderlyings.contractAddresses.push(
@@ -211,8 +212,6 @@ function TokenCreationProcess(props, context) {
 				);
 				newExternalUnderlyings.attachments.push(stringToBytes32(underlyingObj.attachment));
 				newExternalUnderlyings.usableForAlls.push(underlyingObj.usableForAll);
-			} else {
-				existingExternalUnderlyings.push(nameBytes32);
 			}
 		}
 
@@ -228,7 +227,7 @@ function TokenCreationProcess(props, context) {
 			draft.actions.text,
 			draft.minting.fixedAmount,
 			draft.minting.unit,
-			existingExternalUnderlyings
+			externalUnderlyings
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
