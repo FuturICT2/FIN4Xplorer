@@ -6,12 +6,13 @@ import Container from '../../components/Container';
 import Currency from '../../components/Currency';
 import { getContractData, findTokenBySymbol, addContract } from '../../components/Contractor';
 import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
+import UnderlyingInfoComponent from '../../components/UnderlyingInfoComponent';
 import PropTypes from 'prop-types';
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { getEtherscanAddressURL, isCollateralFor, hasTheseCollaterals } from '../../components/utils';
+import { isCollateralFor, hasTheseCollaterals } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 
 function TokenView(props, context) {
@@ -157,6 +158,26 @@ function TokenView(props, context) {
 		);
 	};
 
+	const buildExternalUnderlyingsInfos = () => {
+		// map from objects to array and filter out sourcerer underlyings
+		let underlyings = Object.keys(props.allUnderlyings)
+			.filter(name => !props.allUnderlyings[name].isSourcerer)
+			.map(name => props.allUnderlyings[name]);
+		return (
+			<>
+				{underlyings.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						<span style={{ color: 'gray' }}>Has these external sources of values:</span>
+						{underlyings.map((underlying, index) => {
+							return <UnderlyingInfoComponent key={'external-underlying_' + index} underlying={underlying} />;
+						})}
+					</>
+				)}
+			</>
+		);
+	};
+
 	return (
 		<Container>
 			<Box>
@@ -241,6 +262,7 @@ function TokenView(props, context) {
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>
 						{buildSourcererInfos()}
+						{buildExternalUnderlyingsInfos()}
 					</span>
 				)}
 			</Box>
@@ -259,7 +281,8 @@ const mapStateToProps = state => {
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		submissions: state.fin4Store.submissions,
 		verifierTypes: state.fin4Store.verifierTypes,
-		sourcererPairs: state.fin4Store.sourcererPairs
+		sourcererPairs: state.fin4Store.sourcererPairs,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 
