@@ -17,6 +17,8 @@ function CollateralInteractionComponent(props, context) {
 		amount: ''
 	});
 
+	const waitingForContract = useRef(null);
+
 	const addTokenAddress = (type, symbOrAddr) => {
 		// try symbol first to see if it exists, then convert to address
 		let token = findTokenBySymbol(props, symbOrAddr);
@@ -49,7 +51,28 @@ function CollateralInteractionComponent(props, context) {
 		if (amount && !data.amount) {
 			updateData('amount', amount);
 		}
+
+		if (waitingForContract.current && contractReady(waitingForContract.current)) {
+			props.buttonClickedAndContractReadyCallback(data, waitingForContract.current);
+			waitingForContract.current = null;
+		}
 	});
+
+	const contractReady = name => {
+		return props.contracts[name] && props.contracts[name].initialized;
+	};
+
+	const buttonClicked = () => {
+		let contractAddressToGetReady = data[props.contractToGetReady];
+		let token = props.fin4Tokens[contractAddressToGetReady]; // if this exists, its a Fin4 token, otherwise its external
+		let tokenNameSuffixed = 'ERC20Token_' + (token ? token.symbol : contractAddressToGetReady);
+		if (contractReady(tokenNameSuffixed)) {
+			props.buttonClickedAndContractReadyCallback(data, waitingForContract.current);
+		} else {
+			waitingForContract.current = tokenNameSuffixed;
+			addContract(props, context.drizzle, 'ERC20', contractAddressToGetReady, [], tokenNameSuffixed);
+		}
+	};
 
 	const updateData = (name, value) => {
 		setData({
@@ -96,7 +119,7 @@ function CollateralInteractionComponent(props, context) {
 				/>
 				<br />
 				<br />
-				<Button onClick={props.submitCallback}>{props.buttonLabel}</Button>
+				<Button onClick={buttonClicked}>{props.buttonLabel}</Button>
 				<br />
 				<br />
 			</center>
@@ -116,8 +139,7 @@ CollateralInteractionComponent.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		fin4Tokens: state.fin4Store.fin4Tokens,
-		allUnderlyings: state.fin4Store.allUnderlyings
+		fin4Tokens: state.fin4Store.fin4Tokens
 	};
 };
 
