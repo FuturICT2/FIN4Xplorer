@@ -11,7 +11,17 @@ const web3 = new Web3(window.ethereum);
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
-
+/*
+// --> npmjs.com/package/ethereum-ens#ens
+// try the truffle integration? trufflesuite.com/blog/using-the-ens-integration trufflesuite.com/docs/truffle/advanced/ethereum-name-service
+const ENS = require('ethereum-ens');
+const ensLookup = (ensStr, callback) => {
+	var ens = new ENS(web3.currentProvider);
+	ens.resolver(ensStr).addr().then(addr => {
+		callback(addr);
+	});
+};
+*/
 const contractCall = (
 	context,
 	props,
