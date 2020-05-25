@@ -3,6 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import { findTokenBySymbol } from '../../components/Contractor';
 import moment from 'moment';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function TokenTextSubmissions(props) {
 	const { t } = useTranslation();
@@ -54,16 +55,19 @@ function TokenTextSubmissions(props) {
 		<div style={{ fontFamily: 'arial', padding: '0 50px 0 50px' }}>
 			{getSubmissionsOnToken().map((sub, idx) => {
 				let date = moment.unix(sub.timestamp).calendar();
-				return (
-					<span key={'content_' + idx}>
-						<span
-							style={{ color: getRandomFin4Color(), fontSize: getRandomFontSize() }}
-							title={'By ' + sub.user + ', ' + date} // TODO add more fields here?
-						>
-							{sub.content}
-						</span>
-						&nbsp;&nbsp;
+				let tooltipText = (
+					<span>
+						{'By ' + sub.user}
+						<br />
+						{date}
 					</span>
+				); // TODO add more fields here?
+				return (
+					<Tooltip key={'content_' + idx} title={tooltipText} arrow>
+						<span style={{ color: getRandomFin4Color(), fontSize: getRandomFontSize() }}>
+							{sub.content}&nbsp;&nbsp;
+						</span>
+					</Tooltip>
 				);
 			})}
 		</div>
