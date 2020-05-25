@@ -10,7 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 // put these somewhere central? #ConceptualDecision
 const PROPERTY_DEFAULT = {
 	isTransferable: true,
-	isBurnable: false,
+	// 25.5.2020, changed isBurnable from false to true to enable sourcerers by default, makes sense? #ConceptualDecision
+	isBurnable: true,
 	isCapped: false,
 	cap: 0,
 	decimals: 0,
