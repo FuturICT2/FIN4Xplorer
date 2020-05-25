@@ -6,6 +6,13 @@ const nanoid = require('nanoid');
 
 const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
 
+const Fin4Colors = {
+	blue: '#00a3ef',
+	darkViolet: '#695ead',
+	darkPink: '#cc1c6e',
+	darkGrey: '#3d363f'
+};
+
 const BNstr = numb => {
 	return web3.utils.toBN(numb).toString();
 };
@@ -64,7 +71,11 @@ const getFormattedSelectOptions = tokens => {
 const getRandomTokenCreationDraftID = () => {
 	// let allCookies = Cookies.get();
 	// let nextIndex = Object.keys(allCookies).filter(key => key.startsWith('TokenCreationDraft')).length;
-	return nanoid(5);
+	return getRandomStringOfLength(5);
+};
+
+const getRandomStringOfLength = len => {
+	return nanoid(len);
 };
 
 const findVerifierTypeAddressByName = (verifierTypes, name) => {
@@ -119,10 +130,19 @@ const getEtherscanAddressURL = contractAddress => {
 	return 'https://' + networkName + '.etherscan.io/address/' + contractAddress;
 };
 
+const isCollateralFor = (collateralAddress, sourcererPairs) => {
+	return sourcererPairs.filter(pair => pair.collateral === collateralAddress);
+};
+
+const hasTheseCollaterals = (patAddress, sourcererPairs) => {
+	return sourcererPairs.filter(pair => pair.pat === patAddress);
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
 	getFormattedSelectOptions,
+	getRandomStringOfLength,
 	getRandomTokenCreationDraftID,
 	findVerifierTypeAddressByName,
 	TCRactive,
@@ -135,5 +155,8 @@ export {
 	ProofAndVerifierStatusEnum,
 	getNetworkName,
 	getEtherscanTxURL,
-	getEtherscanAddressURL
+	getEtherscanAddressURL,
+	isCollateralFor,
+	hasTheseCollaterals,
+	Fin4Colors
 };

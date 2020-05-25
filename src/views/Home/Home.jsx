@@ -16,8 +16,12 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import SendIcon from '@material-ui/icons/Send';
+import ConvertIcon from '@material-ui/icons/SwapHoriz';
+import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { contractCall } from '../../components/Contractor';
@@ -99,10 +103,7 @@ function Home(props, context) {
 							t('info-not-yet-available')
 						) : (
 							<>
-								{/* TODO make network-generic */}
-								<a href={getEtherscanAddressURL(props.defaultAccount)} target="_blank">
-									{props.defaultAccount}
-								</a>
+								<AddressDisplayWithCopy address={props.defaultAccount} />
 								<FontAwesomeIcon
 									style={iconIsHovered ? styles.QRiconHover : styles.QRicon}
 									icon={faQrcode}
@@ -148,7 +149,10 @@ function Home(props, context) {
 			</Box>
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
+				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
+				{buildIconLabelLink('/user/transfer', <SendIcon />, 'Transfer token')}
+				{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
+				{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
 			</Box>
 			<Box title="Token curation" width="250px">
 				{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}

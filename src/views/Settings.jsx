@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
-import { getEtherscanAddressURL } from '../components/utils';
+import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -71,11 +71,7 @@ function Settings(props, context) {
 					Address of the Fin4Main smart contract:
 					<br />
 					{props.contracts.Fin4Main && props.contracts.Fin4Main.initialized && context.drizzle.contracts.Fin4Main ? (
-						<small>
-							<a href={getEtherscanAddressURL(context.drizzle.contracts.Fin4Main.address)} target="_blank">
-								{context.drizzle.contracts.Fin4Main.address}
-							</a>
-						</small>
+						<AddressDisplayWithCopy address={context.drizzle.contracts.Fin4Main.address} />
 					) : (
 						'Loading...'
 					)}
@@ -91,9 +87,7 @@ function Settings(props, context) {
 							<span key={'verifier_' + index}>
 								{name}
 								<br />
-								<a style={{ fontSize: 'small' }} href={getEtherscanAddressURL(address)} target="_blank">
-									{address}
-								</a>
+								<AddressDisplayWithCopy address={address} />
 								<br />
 								{verifierType.paramsEncoded && (
 									<small style={{ color: 'gray' }}>
@@ -114,6 +108,35 @@ function Settings(props, context) {
 					})}
 				</div>
 			</Box>
+			<Box title="Fin4 Sourcerer">
+				<div style={{ fontFamily: 'arial' }}>
+					{Object.keys(props.allUnderlyings)
+						.filter(name => props.allUnderlyings[name].isSourcerer)
+						.map((name, index) => {
+							let underlyingObj = props.allUnderlyings[name];
+							return (
+								<span key={'underlying_' + index}>
+									{underlyingObj.name}
+									<br />
+									{underlyingObj.contractAddress && (
+										<>
+											<AddressDisplayWithCopy address={underlyingObj.contractAddress} />
+											<br />
+										</>
+									)}
+									{underlyingObj.paramsEncoded && (
+										<small style={{ color: 'gray' }}>
+											<b>Parameters</b>: {underlyingObj.paramsEncoded}
+										</small>
+									)}
+									{index < Object.keys(props.allUnderlyings).length - 1 && (
+										<Divider style={{ margin: '10px 0' }} variant="middle" />
+									)}
+								</span>
+							);
+						})}
+				</div>
+			</Box>
 		</Container>
 	);
 }
@@ -125,7 +148,8 @@ Settings.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		verifierTypes: state.fin4Store.verifierTypes
+		verifierTypes: state.fin4Store.verifierTypes,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 

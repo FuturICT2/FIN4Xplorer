@@ -254,6 +254,7 @@ const Dropdown = props => {
 						}}
 						formatOptionLabel={formatOptionLabel}
 						options={props.options}
+						// noOptionsMessage={() => props.chooseThisCallback ? <span onClick={() => {}}>Choose this</span> : 'No options'}
 						components={components}
 						onChange={props.onChange}
 						isMulti={props.multipleChoice}

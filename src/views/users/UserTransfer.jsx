@@ -81,12 +81,12 @@ function UserTransfer(props, context) {
 
 	const sendTransfer = () => {
 		let token = props.fin4Tokens[data.current.tokenAddress];
-		let tokenNameSuffixed = 'Fin4Token_' + token.symbol;
+		let tokenNameSuffixed = 'ERC20Token_' + token.symbol;
 		if (contractReady(tokenNameSuffixed)) {
 			doSendTransfer(tokenNameSuffixed);
 		} else {
 			waitingForContract.current = tokenNameSuffixed;
-			addContract(props, context.drizzle, 'Fin4Token', data.current.tokenAddress, [], tokenNameSuffixed);
+			addContract(props, context.drizzle, 'ERC20', data.current.tokenAddress, [], tokenNameSuffixed);
 		}
 	};
 

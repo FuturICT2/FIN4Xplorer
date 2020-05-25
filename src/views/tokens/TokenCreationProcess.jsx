@@ -16,12 +16,13 @@ import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
 import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
 import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
-import StepUnderlying from './creationProcess/Step7Underlying';
+import StepSourcerers from './creationProcess/Step7Sourcerers';
+import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
 import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
-import { findTokenBySymbol, contractCall } from '../../components/Contractor';
+import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
@@ -161,6 +162,63 @@ function TokenCreationProcess(props, context) {
 			...draft.interactiveVerifiers
 		};
 
+		// SOURCERERS
+
+		let sourcerersToParameterize = [];
+
+		transactionsRequired.current += draft.sourcererPairs.length;
+
+		for (let i = 0; i < draft.sourcererPairs.length; i++) {
+			let pair = draft.sourcererPairs[i];
+			let underlyingsObj = props.allUnderlyings[pair.sourcererName];
+
+			// use the split-string again to ensure the right oder of values
+			let values = underlyingsObj.paramsEncoded.split(',').map(paramStr => {
+				let pName = paramStr.split(':')[1];
+				let val = pair.parameters[pName];
+				if (pName === 'beneficiary' && !val) {
+					return zeroAddress;
+				}
+				return val;
+			});
+			if (pair.sourcererName === 'BurnSourcerer') {
+				// hacking it in here to be able to use the same setParameters() method in all sourcerers
+				values.splice(1, 0, zeroAddress);
+			}
+			sourcerersToParameterize.push({
+				name: pair.sourcererName,
+				values: values
+			});
+		}
+
+		// EXTERNAL UNDERLYINGS
+
+		let externalUnderlyings = [];
+		let newExternalUnderlyings = {
+			names: [],
+			contractAddresses: [],
+			attachments: [],
+			usableForAlls: []
+		};
+		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
+			let name = draft.externalUnderlyings[i];
+			let underlyingObj = props.allUnderlyings[name];
+			let nameBytes32 = stringToBytes32(underlyingObj.name);
+			externalUnderlyings.push(nameBytes32);
+			if (underlyingObj.hasOwnProperty('usableForAll')) {
+				newExternalUnderlyings.names.push(nameBytes32);
+				newExternalUnderlyings.contractAddresses.push(
+					underlyingObj.contractAddress ? underlyingObj.contractAddress : zeroAddress
+				);
+				newExternalUnderlyings.attachments.push(stringToBytes32(underlyingObj.attachment));
+				newExternalUnderlyings.usableForAlls.push(underlyingObj.usableForAll);
+			}
+		}
+
+		if (newExternalUnderlyings.names.length > 0) {
+			transactionsRequired.current += 1;
+		}
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
@@ -169,7 +227,7 @@ function TokenCreationProcess(props, context) {
 			draft.actions.text,
 			draft.minting.fixedAmount,
 			draft.minting.unit,
-			draft.underlyings.map(el => stringToBytes32(el.title))
+			externalUnderlyings
 		];
 
 		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
@@ -208,22 +266,46 @@ function TokenCreationProcess(props, context) {
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
-					if (verifiersToParameterize.length === 0) {
+					if (
+						verifiersToParameterize.length === 0 &&
+						sourcerersToParameterize.length === 0 &&
+						newExternalUnderlyings.names.length === 0
+					) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
 					}
 
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					// verifiers and underlyings done
+					let callbackOthersDone = () => {
+						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+					};
+
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
 					verifiersToParameterize.map(verifier => {
-						setParamsOnVerifierContract(
+						setParamsOnOtherContract(
+							'verifier',
 							defaultAccount,
 							verifier.name,
 							newTokenAddress,
 							verifier.values,
-							tokenCreatorContract,
-							postCreationStepsArgs
+							callbackOthersDone
 						);
 					});
+
+					sourcerersToParameterize.map(sourcerer => {
+						setParamsOnOtherContract(
+							'sourcerer',
+							defaultAccount,
+							sourcerer.name,
+							newTokenAddress,
+							sourcerer.values,
+							callbackOthersDone
+						);
+					});
+
+					if (newExternalUnderlyings.names.length > 0) {
+						addNewExternalUnderlyingsOnContract(defaultAccount, newExternalUnderlyings, callbackOthersDone);
+					}
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage('Token creation failed with reason: ' + reason);
@@ -253,16 +335,9 @@ function TokenCreationProcess(props, context) {
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
-	const setParamsOnVerifierContract = (
-		defaultAccount,
-		contractName,
-		tokenAddr,
-		values,
-		tokenCreatorContract,
-		postCreationStepsArgs
-	) => {
+	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? TODO
-		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+		if (type === 'verifier' && (contractName === 'Whitelisting' || contractName === 'Blacklisting')) {
 			let userList = values[0];
 			let groupsList = values[1];
 			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
@@ -274,14 +349,42 @@ function TokenCreationProcess(props, context) {
 			contractName,
 			'setParameters',
 			[tokenAddr, ...values],
-			'Set parameter on verifier type: ' + contractName,
+			'Set parameter on ' + type + ': ' + contractName,
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
 
 					if (transactionCounter.current == transactionsRequired.current - 1) {
-						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+						callbackOthersDone();
+					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage('Token creation failed with reason: ' + reason);
+				}
+			}
+		);
+	};
+
+	const addNewExternalUnderlyingsOnContract = (defaultAccount, valueArrays, callbackOthersDone) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Underlyings',
+			'addUnderlyings',
+			[valueArrays.names, valueArrays.contractAddresses, valueArrays.attachments, valueArrays.usableForAlls],
+			'Adding new external underlying sources of value',
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						callbackOthersDone();
 					}
 				},
 				transactionFailed: reason => {
@@ -308,7 +411,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for verifier contracts to receive parameters.');
+					updateTokenCreationStage('');
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage('Token creation failed with reason: ' + reason);
@@ -360,7 +463,8 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 3 && buildStepComponent(StepMinting)}
 							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
 							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
-							{activeStep === 6 && buildStepComponent(StepUnderlying)}
+							{activeStep === 6 && buildStepComponent(StepSourcerers)}
+							{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>
@@ -458,7 +562,8 @@ const mapStateToProps = state => {
 		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
 		verifierTypes: state.fin4Store.verifierTypes,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		defaultAccount: state.fin4Store.defaultAccount
+		defaultAccount: state.fin4Store.defaultAccount,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 

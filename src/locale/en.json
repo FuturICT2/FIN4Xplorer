@@ -17,7 +17,7 @@
 	"unit-of-measurement": "Unit of measurement (e.g. \"time in min\")",
 
 	"claim-tokens": "Claim Tokens",
-	"token-type": "Token Type",
+	"token-type": "Token",
 	"quantity": "Quantity",
 	"date": "Date",
 	"comment": "Comment",

@@ -5,12 +5,15 @@ import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import Currency from '../../components/Currency';
 import { getContractData, findTokenBySymbol, addContract } from '../../components/Contractor';
+import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
+import UnderlyingInfoComponent from '../../components/UnderlyingInfoComponent';
 import PropTypes from 'prop-types';
 import { Divider } from '@material-ui/core';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { getEtherscanAddressURL } from '../../components/utils';
+import { isCollateralFor, hasTheseCollaterals } from '../../components/utils';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 
 function TokenView(props, context) {
 	const { t } = useTranslation();
@@ -98,8 +101,7 @@ function TokenView(props, context) {
 		return (
 			<p>
 				<span style={{ color: 'gray' }}>
-					{label}
-					{value ? ':' : ''}
+					{label}:{value ? '' : ' -'}
 				</span>{' '}
 				{value}
 			</p>
@@ -125,6 +127,57 @@ function TokenView(props, context) {
 			.filter(sub => sub.token === tokenViaURL.address);
 	};
 
+	const buildSourcererInfos = () => {
+		let isCollateralForArr = isCollateralFor(tokenViaURL.address, props.sourcererPairs);
+		let hasTheseCollateralsArr = hasTheseCollaterals(tokenViaURL.address, props.sourcererPairs);
+		if (isCollateralForArr.length === 0 && hasTheseCollateralsArr === 0) {
+			return '';
+		}
+
+		return (
+			<>
+				{isCollateralForArr.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						<span style={{ color: 'gray' }}>Is collateral for:</span>
+						{isCollateralForArr.map((pair, index) => {
+							return <SourcererPairInfoComponent key={'is-collateral-for_' + index} pair={pair} />;
+						})}
+					</>
+				)}
+				{hasTheseCollateralsArr.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						<span style={{ color: 'gray' }}>Has these collaterals:</span>
+						{hasTheseCollateralsArr.map((pair, index) => {
+							return <SourcererPairInfoComponent key={'has-these-collaterals_' + index} pair={pair} />;
+						})}
+					</>
+				)}
+			</>
+		);
+	};
+
+	const buildExternalUnderlyingsInfos = () => {
+		// map from objects to array and filter out sourcerer underlyings
+		let underlyings = Object.keys(props.allUnderlyings)
+			.filter(name => !props.allUnderlyings[name].isSourcerer)
+			.map(name => props.allUnderlyings[name]);
+		return (
+			<>
+				{underlyings.length > 0 && (
+					<>
+						<Divider style={{ margin: '10px 0' }} variant="middle" />
+						<span style={{ color: 'gray' }}>Has these external sources of values:</span>
+						{underlyings.map((underlying, index) => {
+							return <UnderlyingInfoComponent key={'external-underlying_' + index} underlying={underlying} />;
+						})}
+					</>
+				)}
+			</>
+		);
+	};
+
 	return (
 		<Container>
 			<Box>
@@ -141,11 +194,7 @@ function TokenView(props, context) {
 						<center>
 							<Currency symbol={tokenViaURL.symbol} name={<b>{tokenViaURL.name}</b>} />
 							<br />
-							<span style={{ fontSize: 'x-small' }}>
-								<a href={getEtherscanAddressURL(tokenViaURL.address)} target="_blank">
-									{tokenViaURL.address}
-								</a>
-							</span>
+							<AddressDisplayWithCopy address={tokenViaURL.address} />
 						</center>
 						<br />
 						{getSubmissionsOnToken().length > 0 && (
@@ -171,8 +220,8 @@ function TokenView(props, context) {
 							<span style={{ fontFamily: 'arial' }}>
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Created at', details.tokenCreationTime)}
-								{buildInfoLine('Proof types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
+								{buildInfoLine('Created', details.tokenCreationTime)}
+								{buildInfoLine('Verifier types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
 								{buildInfoLine('Total number of claims', details.claimsCount)}
 								{buildInfoLine('Total supply', details.totalSupply)}
 
@@ -212,6 +261,8 @@ function TokenView(props, context) {
 						<Link to={'/claim/' + tokenViaURL.symbol}>Claim</Link>
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>
+						{buildSourcererInfos()}
+						{buildExternalUnderlyingsInfos()}
 					</span>
 				)}
 			</Box>
@@ -229,7 +280,9 @@ const mapStateToProps = state => {
 		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		submissions: state.fin4Store.submissions,
-		verifierTypes: state.fin4Store.verifierTypes
+		verifierTypes: state.fin4Store.verifierTypes,
+		sourcererPairs: state.fin4Store.sourcererPairs,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 

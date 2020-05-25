@@ -1,7 +1,7 @@
 import React from 'react';
 
-//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Underlying']; // Disbursement/Valuation instead of Value?
-const steps = ['', '', '', '', '', '', ''];
+//const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']; // Disbursement/Valuation instead of Value?
+const steps = ['', '', '', '', '', '', '', ''];
 
 const getStepContent = stepIndex => {
 	switch (stepIndex) {
@@ -18,7 +18,9 @@ const getStepContent = stepIndex => {
 		case 5:
 			return 'Interactive Verifiers';
 		case 6:
-			return 'Source of Value';
+			return 'Sourcerers';
+		case 7:
+			return 'External Source of Value';
 		default:
 			return '';
 	}
@@ -217,7 +219,9 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					})}
 				</>
 			);
-		case 6: // Underlying
+		case 6: // Sourcerers
+			return <center>TODO</center>;
+		case 7: // External source of value
 			return <center>TODO</center>;
 		default:
 			return <center>TODO</center>;

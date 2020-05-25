@@ -45,8 +45,7 @@ const contractEventNotifier = store => next => action => {
 				totalSupply: 0,
 				creationTime: token.creationTime,
 				hasFixedMintingQuantity: token.hasFixedMintingQuantity,
-				isOPAT: null,
-				underlyings: token.underlyings
+				isOPAT: null
 			}
 		});
 	}
@@ -369,7 +368,8 @@ const initialState = {
 	tokenCreationDrafts: {},
 	submissions: {},
 	transactions: [],
-	allUnderlyings: []
+	allUnderlyings: {},
+	sourcererPairs: []
 };
 
 function fin4StoreReducer(state = initialState, action) {
@@ -770,9 +770,17 @@ function fin4StoreReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				allUnderlyings: action.allUnderlyings
 			});
-		case 'ADD_UNDERLYINGS':
+		case 'ADD_UNDERLYING':
+			return {
+				...state,
+				allUnderlyings: {
+					...state.allUnderlyings,
+					[action.underlying.name]: action.underlying
+				}
+			};
+		case 'SET_SOURCERER_PAIRS':
 			return Object.assign({}, state, {
-				allUnderlyings: [...state.allUnderlyings, ...action.underlyings]
+				sourcererPairs: action.sourcererPairs
 			});
 		default:
 			return state;

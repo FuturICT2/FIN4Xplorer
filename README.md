@@ -81,6 +81,9 @@ This starts the React app on port 5000:
 ```sh
 npm run build # if this fails with memory errors, try running this before: export NODE_OPTIONS=--max_old_space_size=1500
               # where the value should be a bit less then what you have available (check with the 'free' command)
+              # other commands to try to go around the out of memory error
+              # node --max_old_space_size=1000 node_modules/react-scripts/scripts/build.js
+              # node --max_old_space_size=1000 $(which npm) run build
 npm install -g serve
 serve -s build # -l 3000 to use that port e.g.
 ```

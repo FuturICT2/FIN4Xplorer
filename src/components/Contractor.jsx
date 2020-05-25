@@ -11,7 +11,17 @@ const web3 = new Web3(window.ethereum);
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
-
+/*
+// --> npmjs.com/package/ethereum-ens#ens
+// try the truffle integration? trufflesuite.com/blog/using-the-ens-integration trufflesuite.com/docs/truffle/advanced/ethereum-name-service
+const ENS = require('ethereum-ens');
+const ensLookup = (ensStr, callback) => {
+	var ens = new ENS(web3.currentProvider);
+	ens.resolver(ensStr).addr().then(addr => {
+		callback(addr);
+	});
+};
+*/
 const contractCall = (
 	context,
 	props,
@@ -122,12 +132,14 @@ const findTokenBySymbol = (props, symb) => {
 	return null;
 };
 
-const isValidPublicAddress = addr => {
+const isValidPublicAddress = (addr, verbose = true) => {
 	try {
 		let address = web3.utils.toChecksumAddress(addr);
 		return true;
 	} catch (e) {
-		console.error(e.message);
+		if (verbose) {
+			console.error(e.message);
+		}
 		return false;
 	}
 };
@@ -225,7 +237,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			5: Fin4MessagingAddress,
 			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
-			8: Fin4SystemParametersAddress
+			8: Fin4SystemParametersAddress,
+			9: Fin4UnderlyingsAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -243,6 +256,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4Verifying', Fin4VerifyingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
+			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
 		}
 	);
 };
@@ -318,8 +332,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 						4: unit,
 						5: totalSupply,
 						6: creationTime,
-						7: hasFixedMintingQuantity,
-						8: underlyings
+						7: hasFixedMintingQuantity
 					}) => {
 						return {
 							userIsCreator: userIsCreator,
@@ -331,8 +344,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 							totalSupply: new BN(totalSupply).toNumber(),
 							creationTime: creationTime,
 							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null,
-							underlyings: underlyings
+							isOPAT: null
 						};
 					}
 				);
@@ -364,18 +376,74 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchUnderlyings = (props, Fin4TokenManagementContract) => {
+const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getUnderlyings').then(underlyingsBytes32Arr => {
-		props.dispatch({
-			type: 'SET_UNDERLYINGS',
-			allUnderlyings: underlyingsBytes32Arr.map(b32 => {
-				return {
-					title: bytes32ToString(b32)
+	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
+		({ 0: names, 1: isSourcerers, 2: contractAddresses, 3: attachments }) => {
+			let underlyingsObj = {};
+			let sourcererPairs = [];
+			let promises = [];
+			for (let i = 0; i < names.length; i++) {
+				let name = bytes32ToString(names[i]);
+				let contractAddress = contractAddresses[i];
+				let isSourcerer = isSourcerers[i];
+				underlyingsObj[name] = {
+					name: name,
+					isSourcerer: isSourcerer,
+					contractAddress: contractAddress,
+					attachment: bytes32ToString(attachments[i]),
+					paramsEncoded: ''
 				};
-			})
-		});
-	});
+
+				if (!isSourcerer) {
+					continue;
+				}
+
+				addContract(props, drizzle, name, contractAddress, []);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererParams', contractAddress).then(
+						paramsEncoded => {
+							underlyingsObj[name].paramsEncoded = paramsEncoded;
+						}
+					)
+				);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererPairs', contractAddress).then(
+						({
+							0: pats,
+							1: collaterals,
+							2: beneficiaries,
+							3: exchangeRatios,
+							4: totalCollateralBalances,
+							5: totalExchangedPatAmounts
+						}) => {
+							for (let i = 0; i < pats.length; i++) {
+								sourcererPairs.push({
+									sourcererName: name,
+									pat: pats[i],
+									collateral: collaterals[i],
+									beneficiary: beneficiaries[i],
+									exchangeRatio: exchangeRatios[i],
+									totalCollateralBalance: totalCollateralBalances[i],
+									totalExchangedPatAmount: totalExchangedPatAmounts[i]
+								});
+							}
+						}
+					)
+				);
+			}
+			Promise.all(promises).then(() => {
+				props.dispatch({
+					type: 'SET_UNDERLYINGS',
+					allUnderlyings: underlyingsObj
+				});
+				props.dispatch({
+					type: 'SET_SOURCERER_PAIRS',
+					sourcererPairs: sourcererPairs
+				});
+			});
+		}
+	);
 };
 
 const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
@@ -626,5 +694,5 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchUnderlyings
+	fetchAndAddAllUnderlyings
 };
