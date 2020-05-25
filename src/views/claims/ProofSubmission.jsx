@@ -12,6 +12,7 @@ import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
 import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
+import VoteProof from './proofs/VoteProof';
 
 function ProofSubmission(props, context) {
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
@@ -121,6 +122,22 @@ function ProofSubmission(props, context) {
 				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'HappyMoment':
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
+			case 'Vote':
+				return (
+					<VoteProof
+						key={'vote_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						callbacks={{
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
+							}
+						}}
+					/>
+				);
 			default:
 				const abi = require('../../build/contracts/' + verifierTypeName).abi;
 				let contractMethod = 'submitProof_' + verifierTypeName;
