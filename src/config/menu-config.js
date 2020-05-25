@@ -22,6 +22,7 @@ import Messages from '../views/Messages';
 import TokenCreationProcess from '../views/tokens/TokenCreationProcess';
 import TokenTextSubmissions from '../views/tokens/TokenTextSubmissions';
 import TokenPictureSubmissions from '../views/tokens/TokenPictureSubmissions';
+import TokenVoteSubmissions from '../views/tokens/TokenVoteSubmissions';
 import TransactionLog from '../views/TransactionLog';
 import DepositCollateral from '../views/underlying/DepositCollateral';
 import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
@@ -72,6 +73,11 @@ const menu = [
 	{
 		component: TokenPictureSubmissions,
 		path: '/token/submissions/:tokenSymbol/picture',
+		showInNavBar: false
+	},
+	{
+		component: TokenVoteSubmissions,
+		path: '/token/submissions/:tokenSymbol/vote',
 		showInNavBar: false
 	},
 	// ------------------ CLAIMS ------------------

@@ -600,7 +600,7 @@ const fetchAllSubmissions = (props, Fin4Verifying) => {
 								token: token,
 								user: user,
 								timestamp: timestamp,
-								contentType: contentType,
+								contentType: contentType, // 0 = text, 1 = picture, 2 = vote
 								content: content
 							};
 						}

@@ -178,6 +178,21 @@ function TokenView(props, context) {
 		);
 	};
 
+	const getSubmissionPageKeyword = contentType => {
+		if (tokenViaURL.name.toLowerCase().includes('vote')) {
+			// TODO remove hack
+			return 'vote';
+		}
+		switch (Number(contentType)) {
+			case 0:
+				return 'text';
+			case 1:
+				return 'picture';
+			case 2:
+				return 'vote';
+		}
+	};
+
 	return (
 		<Container>
 			<Box>
@@ -206,9 +221,10 @@ function TokenView(props, context) {
 									to={
 										'/token/submissions/' +
 										tokenViaURL.symbol + // weird to just look at [0]
-										(getSubmissionsOnToken()[0].contentType === '0' ? '/text' : '/picture')
+										'/' +
+										getSubmissionPageKeyword(getSubmissionsOnToken()[0].contentType)
 									}>
-									open {getSubmissionsOnToken()[0].contentType === '0' ? 'text' : 'picture'} collage
+									open {getSubmissionPageKeyword(getSubmissionsOnToken()[0].contentType)} collage
 								</Link>
 							</p>
 						)}
