@@ -179,10 +179,6 @@ function TokenView(props, context) {
 	};
 
 	const getSubmissionPageKeyword = contentType => {
-		if (tokenViaURL.name.toLowerCase().includes('vote')) {
-			// TODO remove hack
-			return 'vote';
-		}
 		switch (Number(contentType)) {
 			case 0:
 				return 'text';
