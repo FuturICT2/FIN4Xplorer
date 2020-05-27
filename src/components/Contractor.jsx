@@ -248,6 +248,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 				'ClaimSubmitted',
 				'ClaimApproved',
 				'ClaimRejected',
+				'VerifierPending',
 				'VerifierApproved',
 				'VerifierRejected',
 				'UpdatedTotalSupply'

@@ -165,6 +165,43 @@ const contractEventNotifier = store => next => action => {
 		});
 	}
 
+	// ------------------------------ VerifierPending ------------------------------
+
+	// TODO share with VerifierApproved and VerifierRejected ?
+
+	if (contractEvent === 'VerifierPending') {
+		let pendingVerifier = action.event.returnValues;
+		let belongsToCurrentUsersClaim = pendingVerifier.claimer === defaultAccount;
+		let pseudoClaimId = pendingVerifier.tokenAddrToReceiveVerifierNotice + '_' + pendingVerifier.claimId;
+
+		let usersClaims = store.getState().fin4Store.usersClaims;
+		if (!usersClaims[pseudoClaimId]) {
+			console.log('Dev: this should not happen! Investigate why');
+			return next(action);
+		}
+
+		let claim = usersClaims[pseudoClaimId];
+		// block: proof-approval belongs to claim not of current user / duplicate events / proof on claim is already approved
+		if (
+			!belongsToCurrentUsersClaim ||
+			claim.verifierStatuses[pendingVerifier.verifierTypeAddress].status === ProofAndVerifierStatusEnum.PENDING
+		) {
+			return next(action);
+		}
+
+		display = 'One verifier of your claim is in pending state'; // TODO show more info
+
+		store.dispatch({
+			type: 'SET_VERIFIER_STATUS',
+			pseudoClaimId: pseudoClaimId,
+			verifierTypeAddress: pendingVerifier.verifierTypeAddress,
+			statusObj: {
+				status: ProofAndVerifierStatusEnum.PENDING,
+				message: pendingVerifier.message
+			}
+		});
+	}
+
 	// ------------------------------ VerifierApproved ------------------------------
 
 	if (contractEvent === 'VerifierApproved') {
