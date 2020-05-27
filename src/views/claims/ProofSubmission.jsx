@@ -69,21 +69,7 @@ function ProofSubmission(props, context) {
 	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
 		switch (verifierTypeName) {
 			case 'Location':
-				return (
-					<LocationProof
-						key={'loc_' + index}
-						tokenAddr={tokenAddrToReceiveVerifierNotice}
-						claimId={claimId}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
-								};
-							}
-						}}
-					/>
-				);
+				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'SelfieTogether':
 				return (
 					<PictureUploadProof
@@ -91,14 +77,6 @@ function ProofSubmission(props, context) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'SelfieTogether'}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
-								};
-							}
-						}}
 					/>
 				);
 			case 'Picture':
@@ -108,14 +86,6 @@ function ProofSubmission(props, context) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'Picture'}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
-								};
-							}
-						}}
 					/>
 				);
 			/*case 'Networking':
@@ -123,21 +93,7 @@ function ProofSubmission(props, context) {
 			case 'HappyMoment':
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
 			case 'Vote':
-				return (
-					<VoteProof
-						key={'vote_' + index}
-						tokenAddr={tokenAddrToReceiveVerifierNotice}
-						claimId={claimId}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
-								};
-							}
-						}}
-					/>
-				);
+				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			default:
 				const abi = require('../../build/contracts/' + verifierTypeName).abi;
 				let contractMethod = 'submitProof_' + verifierTypeName;
@@ -154,14 +110,6 @@ function ProofSubmission(props, context) {
 						fixValues={{
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
 							ClaimId: claimId + ''
-						}}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
-								};
-							}
 						}}
 					/>
 				);

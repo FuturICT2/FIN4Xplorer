@@ -742,29 +742,7 @@ function fin4StoreReducer(state = initialState, action) {
 		case 'TX_BROADCASTED':
 			let pendingTx_broadcasted = state.transactions.filter(tx => tx.stackId === action.stackId)[0];
 			let index_broadcasted = state.transactions.indexOf(pendingTx_broadcasted);
-			if (pendingTx_broadcasted.callbacks.markVerifierPendingUponBroadcastedTransaction) {
-				let infoObj = pendingTx_broadcasted.callbacks.markVerifierPendingUponBroadcastedTransaction();
-				let verifierTypeAddress = findVerifierTypeAddressByName(state.verifierTypes, infoObj.verifierTypeName);
-				let pendingStatusObj = {
-					status: ProofAndVerifierStatusEnum.PENDING,
-					message: ''
-				};
-				// outsource the following as method to be used in SET_VERIFIER_STATUS also?
-				state = {
-					...state,
-					usersClaims: {
-						...state.usersClaims,
-						[infoObj.pseudoClaimId]: {
-							...state.usersClaims[infoObj.pseudoClaimId],
-							verifierStatuses: {
-								...state.usersClaims[infoObj.pseudoClaimId].verifierStatuses,
-								[verifierTypeAddress]: pendingStatusObj
-							}
-						}
-					}
-				};
-			}
-			state = update(state, {
+			return update(state, {
 				transactions: {
 					[index_broadcasted]: {
 						txHash: { $set: action.txHash },
@@ -773,7 +751,6 @@ function fin4StoreReducer(state = initialState, action) {
 					}
 				}
 			});
-			return state;
 		case 'TX_SUCCESSFUL':
 			// TODO shield against transactions that don't go through our controlled lifecycle?
 			let pendingTx_successful = state.transactions.filter(tx => tx.txHash === action.txHash)[0];
