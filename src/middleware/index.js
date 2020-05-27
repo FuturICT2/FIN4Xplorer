@@ -432,15 +432,20 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			};
 		case 'ADD_MULTIPLE_FIN4_TOKENS':
-			for (i = 0; i < action.tokenArr.length; i++) {
-				let token = action.tokenArr[i];
-				state = {
-					...state,
-					fin4Tokens: {
-						...state.fin4Tokens,
-						[token.address]: token
-					}
-				};
+			// could probably also just set fin4Tokens to action.tokensObj?
+			// it would only not work if a new-token event comes in BEFORE this
+			// here gets called, then the new token would be overwritten
+			// ... playing it safe and adding it one by one instead
+			for (var tokenAddress in action.tokensObj) {
+				if (action.tokensObj.hasOwnProperty(tokenAddress)) {
+					state = {
+						...state,
+						fin4Tokens: {
+							...state.fin4Tokens,
+							[tokenAddress]: action.tokensObj[tokenAddress]
+						}
+					};
+				}
 			}
 			return update(state, {
 				fin4TokensInitiallyFetched: { $set: true }

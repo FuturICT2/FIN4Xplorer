@@ -94,7 +94,9 @@ function LoadInitialData(props, context) {
 		) {
 			isInit.current.Fin4TokenManagement = true;
 			let Fin4TokenManagementContract = context.drizzle.contracts.Fin4TokenManagement;
-			fetchAllTokens(props, Fin4TokenManagementContract, () => {
+			let Fin4UnderlyingsContract = context.drizzle.contracts.Fin4Underlyings;
+			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, () => {
+				// TODO also do these in fetchAllTokens or in parallel to it? Like Fin4Underlyings was added in via promises
 				if (TCRactive) {
 					fetchOPATs(props, context.drizzle.contracts.Registry);
 				}

@@ -319,12 +319,15 @@ const fetchMessages = (props, Fin4MessagingContract) => {
 		});
 };
 
-const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
+const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, callback) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens')
-		.then(tokens => {
-			return tokens.map(tokenAddr => {
-				return getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
+	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
+		let promises = [];
+		let tokensObj = {};
+		tokens.map(tokenAddr => {
+			tokensObj[tokenAddr] = {};
+			promises.push(
+				getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
 					({
 						0: userIsCreator,
 						1: name,
@@ -335,30 +338,37 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
 						6: creationTime,
 						7: hasFixedMintingQuantity
 					}) => {
-						return {
-							userIsCreator: userIsCreator,
-							address: tokenAddr,
-							name: name,
-							symbol: symbol,
-							description: description,
-							unit: unit,
-							totalSupply: new BN(totalSupply).toNumber(),
-							creationTime: creationTime,
-							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null
-						};
+						tokensObj[tokenAddr].userIsCreator = userIsCreator;
+						tokensObj[tokenAddr].address = tokenAddr;
+						tokensObj[tokenAddr].name = name;
+						tokensObj[tokenAddr].symbol = symbol;
+						tokensObj[tokenAddr].description = description;
+						tokensObj[tokenAddr].unit = unit;
+						tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
+						tokensObj[tokenAddr].creationTime = creationTime;
+						tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
+						tokensObj[tokenAddr].isOPAT = null;
 					}
-				);
-			});
-		})
-		.then(promises => Promise.all(promises))
-		.then(tokenArr => {
+				)
+			);
+			promises.push(
+				getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
+					underlyingNamesBytes32 => {
+						tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
+					}
+				)
+			);
+		});
+		Promise.all(promises).then(() => {
+			console.log('dispatch');
+			console.log(tokensObj);
 			props.dispatch({
 				type: 'ADD_MULTIPLE_FIN4_TOKENS',
-				tokenArr: tokenArr
+				tokensObj: tokensObj
 			});
 			callback();
 		});
+	});
 };
 
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
