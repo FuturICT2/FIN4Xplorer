@@ -162,6 +162,7 @@ function TokenView(props, context) {
 		// map from objects to array and filter out sourcerer underlyings
 		let underlyings = Object.keys(props.allUnderlyings)
 			.filter(name => !props.allUnderlyings[name].isSourcerer)
+			.filter(name => tokenViaURL.underlyings.includes(name))
 			.map(name => props.allUnderlyings[name]);
 		return (
 			<>
