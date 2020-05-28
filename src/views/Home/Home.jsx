@@ -5,6 +5,7 @@ import Box from '../../components/Box';
 import { useTranslation } from 'react-i18next';
 import UsersIcon from '@material-ui/icons/Group';
 import CollectionsIcon from '@material-ui/icons/CollectionsBookmark';
+import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import MessageIcon from '@material-ui/icons/Message';
 import EmailIcon from '@material-ui/icons/Email';
 import StarIcon from '@material-ui/icons/Star';
@@ -144,7 +145,8 @@ function Home(props, context) {
 				{buildIconLabelLink('/about', <InfoIcon />, 'About')}
 				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections', true, false)}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections')}
+				{buildIconLabelLink('/registervoter', <HowToVoteIcon />, 'Become a voter', true, false)}
 			</Box>
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
