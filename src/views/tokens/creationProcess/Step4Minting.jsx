@@ -129,8 +129,9 @@ function StepMinting(props, context) {
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
 						To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this
-						option is not checked you have to take care of implementing your own minting policy (by handling the
-						ClaimApproved event from the Fin4Claiming contract).
+						option is not checked you have to take care of implementing your own minting policy: by handling the
+						ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the
+						SuccessfulClaimNotifierInterface.
 					</center>
 					<br />
 				</>
