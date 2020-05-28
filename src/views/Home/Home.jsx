@@ -86,6 +86,29 @@ function Home(props, context) {
 		);
 	};
 
+	const isEligibleToBeVoter = () => {
+		return true;
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Voting',
+			'isVoter',
+			[],
+			'I want to be a voter',
+			{
+				transactionCompleted: receipt => {
+					console.log('user is a voter');
+					return true;
+				},
+				transactionFailed: reason => {
+					console.log('there was an error: ' + reason);
+					return false;
+				}
+			}
+		);
+	};
+
 	return (
 		<Container>
 			<TokenBalances />
@@ -146,7 +169,8 @@ function Home(props, context) {
 				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
 				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections')}
-				{buildIconLabelLink('/registervoter', <HowToVoteIcon />, 'Become a voter', true, false)}
+				{isEligibleToBeVoter() &&
+					buildIconLabelLink('/registervoter', <HowToVoteIcon />, 'Become a voter', true, false)}
 			</Box>
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
