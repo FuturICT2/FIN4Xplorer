@@ -58,7 +58,7 @@ function Home(props, context) {
 			})
 			.catch(error => {
 				console.log('Error calling faucet server', error);
-				alert('Failed to request Ether');
+				alert(t('ether-request-failed'));
 			})
 			.finally(() => {});
 	};
@@ -92,15 +92,15 @@ function Home(props, context) {
 	return (
 		<Container>
 			<TokenBalances />
-			<Box title="On the blockchain">
+			<Box title={t('home.on-the-blockchain.box-title')}>
 				{' '}
 				{/*t('about-you')*/}
 				<p style={{ fontFamily: 'arial' }}>
-					{t('your-public-address')}
+					{t('home.on-the-blockchain.your-public-address')}:
 					<br />
 					<span style={{ fontSize: 'x-small' }}>
 						{!window.web3 ? (
-							t('info-not-yet-available')
+							t('home.on-the-blockchain.info-not-yet-available')
 						) : (
 							<>
 								<AddressDisplayWithCopy address={props.defaultAccount} />

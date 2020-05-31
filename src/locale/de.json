@@ -1,9 +1,12 @@
 {
+	"home.on-the-blockchain.ether-request-failed": "Ether-Anfrage ist fehlgeschlagen",
+	"home.on-the-blockchain.box-title": "Auf der Blockchain",
+	"home.on-the-blockchain.your-public-address": "Deine öffentliche Adresse",
+	"home.on-the-blockchain.info-not-yet-available": "Info nicht verfügbar",
+
 	"no-tokens-yet": "Du hast noch keine Tokens erfolgreich eingefordert.",
 	"token-name": "Name",
 	"token-balance": "Guthaben",
-	"info-not-yet-available": "Info nicht verfügbar",
-	"your-public-address": "Deine öffentliche Adresse:",
 	"about-you": "Über dich",
 	"request-ether": "Fordere Ether an",
 	"your-token-balances": "Deine Token Guthaben",
