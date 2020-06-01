@@ -360,8 +360,6 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 			);
 		});
 		Promise.all(promises).then(() => {
-			console.log('dispatch');
-			console.log(tokensObj);
 			props.dispatch({
 				type: 'ADD_MULTIPLE_FIN4_TOKENS',
 				tokensObj: tokensObj
