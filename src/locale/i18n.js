@@ -36,7 +36,7 @@ i18n.use(initReactI18next).init({
 	debug: false,
 	resources,
 	lng: language,
-	keySeparator: false,
+	// keySeparator: false, // nested keys don't work if this is true
 	fallbackLng: 'en',
 	interpolation: {
 		escapeValue: false

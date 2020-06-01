@@ -1,8 +1,12 @@
 {
-	"home.on-the-blockchain.ether-request-failed": "Failed to request Ether",
-	"home.on-the-blockchain.box-title": "On the blockchain",
-	"home.on-the-blockchain.your-public-address": "Your public address:",
-	"home.on-the-blockchain.info-not-yet-available": "Info not available",
+	"home": {
+		"on-the-blockchain": {
+			"box-title": "On the blockchain",
+			"ether-request-failed": "Failed to request Ether",
+			"your-public-address": "Your public address",
+			"info-not-yet-available": "Info not available"
+		}
+	},
 
 	"no-tokens-yet": "You haven't sucessfully claimed any tokens yet.",
 	"token-name": "Name",
