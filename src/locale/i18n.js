@@ -32,11 +32,13 @@ if (!(language == 'en' || language == 'de')) {
 	);
 }
 
+// TODO consider using i18next-scanner for updating translation files automatically with new keys
+
 i18n.use(initReactI18next).init({
 	debug: false,
 	resources,
 	lng: language,
-	// keySeparator: false, // nested keys don't work if this is true
+	// keySeparator: false, // nested keys don't work if this is not commented out
 	fallbackLng: 'en',
 	interpolation: {
 		escapeValue: false
