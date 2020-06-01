@@ -33,6 +33,7 @@ if (!(language == 'en' || language == 'de')) {
 }
 
 i18n.use(initReactI18next).init({
+	debug: false,
 	resources,
 	lng: language,
 	keySeparator: false,
