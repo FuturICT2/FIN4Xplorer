@@ -30,13 +30,13 @@ if (!(language == 'en' || language == 'de')) {
 		'Language setting in cookie or preferred browser language are not English or German. ' +
 			'Falling back to English. More languages are coming! You are welcome to help translating :)'
 	);
-	language = 'en';
 }
 
 i18n.use(initReactI18next).init({
 	resources,
 	lng: language,
 	keySeparator: false,
+	fallbackLng: 'en',
 	interpolation: {
 		escapeValue: false
 	}
