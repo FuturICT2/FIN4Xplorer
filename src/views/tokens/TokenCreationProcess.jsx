@@ -21,7 +21,7 @@ import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
-import { findVerifierTypeAddressByName, BNstr, stringToBytes32 } from '../../components/utils';
+import { findVerifierTypeAddressByName, BNstr, stringToBytes32, UnderlyingsActive } from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -463,8 +463,12 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 3 && buildStepComponent(StepMinting)}
 							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
 							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
-							{activeStep === 6 && buildStepComponent(StepSourcerers)}
-							{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
+							{UnderlyingsActive && (
+								<>
+									{activeStep === 6 && buildStepComponent(StepSourcerers)}
+									{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
+								</>
+							)}
 							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>All steps completed</Typography>

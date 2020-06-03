@@ -1,7 +1,12 @@
 import React from 'react';
+import { UnderlyingsActive } from '../../../components/utils';
 
 //const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']; // Disbursement/Valuation instead of Value?
-const steps = ['', '', '', '', '', '', '', ''];
+const steps = [];
+const numbOfSteps = UnderlyingsActive ? 8 : 6;
+for (let i = 0; i < numbOfSteps; i++) {
+	steps.push('');
+}
 
 const getStepContent = stepIndex => {
 	switch (stepIndex) {
@@ -18,7 +23,7 @@ const getStepContent = stepIndex => {
 		case 5:
 			return 'Interactive Verifiers';
 		case 6:
-			return 'Sourcerers';
+			return UnderlyingsActive ? 'Sourcerers' : '';
 		case 7:
 			return 'External Source of Value';
 		default:
