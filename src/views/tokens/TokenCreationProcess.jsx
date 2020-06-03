@@ -27,6 +27,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Step1Identity from './creationProcess/Step1Identity';
 
 const useStyles = makeStyles(theme => ({
 	// from https://material-ui.com/components/steppers/
@@ -82,27 +83,35 @@ function TokenCreationProcess(props, context) {
 		}
 	};
 
+	const buildInfoContent = (stepName, fieldNames) => {
+		let items = [];
+		items.push(
+			<div key={stepName + '_info'}>
+				{t('token-creator.' + stepName + '.info')}
+				<br />
+				<br />
+				<br />
+			</div>
+		);
+		fieldNames.map((field, index) => {
+			let translationKey = 'token-creator.' + stepName + '.fields.' + field;
+			items.push(
+				<div key={stepName + '_' + field}>
+					<b>{t(translationKey + '.label')}</b>
+					<br />
+					{t(translationKey + '.info')}
+					<br />
+					<br />
+				</div>
+			);
+		});
+		return <>{items}</>;
+	};
+
 	const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 		switch (stepIndex) {
-			case 0: // Basics
-				return (
-					<>
-						<b>Name</b>
-						<br />
-						Give the new token, you want to create, a descriptive/telling name.
-						<br />
-						<br />
-						<b>Symbol</b>
-						<br />
-						Choose a short symbol of 3-5 letters (numbers are allowd, too) for your new token. Please note, that the
-						system rejects symbols that are already in use.
-						<br />
-						<br />
-						<b>Short and long description</b>
-						<br />
-						Describe the purpose/idea of your new token in two understandable versions.
-					</>
-				);
+			case 0:
+				return buildInfoContent('step1-identity', ['name', 'symbol', 'short-description', 'long-description']);
 			case 1: // Traits (= Properties)
 				return (
 					<>
