@@ -100,7 +100,40 @@
 			"info": "For what positive actions should users be able to obtain your new token? Take your time to think about this question. It very important for the future success for your token idea in the system. Also, it is important that users are able to prove they did the actions using the different proving methods (c.f. last section)."
 		},
 		"step4-minting": {
-			"title": "Minting policy"
+			"title": "Minting policy",
+			"fields": {
+				"is-mintable": {
+					"label": "Token is mintable",
+					"info": "Eligible users or smart contracts can \"mint\" any amount to a public address of their choosing. The total supply of this token gets increased by that amount.",
+					"hint": "You set your token to not be mintable."
+				},
+				"fin4-has-minter-role": {
+					"label": "Fin4 has the minter role",
+					"info": "To award succesfull claimers with a balance on this token, the Finance 4.0 system needs the minter role.",
+					"hint": "To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this option is not checked you have to take care of implementing your own minting policy: by handling the ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the SuccessfulClaimNotifierInterface."
+				},
+				"additional-minter-roles": {
+					"label": "Additional minter roles",
+					"info": "Additional user accounts or smart contracts that are allowed to mint this token. Be aware that your tokens claiming process might loose credibility by seeing that someone can mint the token without having to claim."
+				},
+				"fixed-amount": {
+					"label": "Fixed amount",
+					"info": "Once the claim is successful, this fixed amount of tokens will be minted to the user. Default is 1 token per action."
+				},
+				"per-claim": {
+					"label": "per claim"
+				},
+				"variable-amount": {
+					"label": "Variable amount",
+					"info": "The user chooses the amount in the moment of making a claim."
+				},
+				"unit": {
+					"label": "Unit of measurement",
+					"info": "The unit of a claim, e.g. trees or minutes.",
+					"default-value": "quantity"
+				}
+			},
+			"info": "Minting is the default way users earn balances on positive action tokens by submitting and prooving claims."
 		},
 		"step5-verifiers1": {
 			"title": "Noninteractive verifiers"

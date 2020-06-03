@@ -125,28 +125,15 @@ function TokenCreationProcess(props, context) {
 				]);
 			case 2:
 				return buildInfoContent('step3-actions', []);
-			case 3: // Minting Policy
-				return <center>TODO</center>;
-			/*(
-					<>
-						<b>Token is mintable</b>
-						<br />
-						Eligible users or smart contracts can "mint" any amount to a public address of their choosing. The total
-						supply of this token gets increased by that amount.
-	
-						<b>Fixed amount</b>
-						<br />
-						Once the claim is successful, this fixed amount of tokens will be minted to the user. Default is 1 token per
-						action.
-						<br />
-						<br />
-						<b>Fixed factor</b>
-						<br />
-						The user can put a quantity as part of their claim (e.g., "I claim 3 tokens for that action"). Once the claim
-						is successful, the amount minted to the user is that quantity multiplied with the fixed factor you set here.
-						Default is a fixed factor of 1.
-					</>
-				);*/
+			case 3:
+				return buildInfoContent('step4-minting', [
+					'is-mintable',
+					'fin4-has-minter-role',
+					'additional-minter-roles',
+					'fixed-amount',
+					'variable-amount',
+					'unit'
+				]);
 			case 4: // Noninteractive verifiers
 				return (
 					<>

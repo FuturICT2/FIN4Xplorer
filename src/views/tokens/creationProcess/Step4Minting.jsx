@@ -38,7 +38,9 @@ function StepMinting(props, context) {
 			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
 			additionalMinterRoles: getValue(draft, 'additionalMinterRoles'),
 			fixedAmount: fixed,
-			unit: getValue(draft, 'unit')
+			unit: draft.minting.hasOwnProperty('unit')
+				? draft.minting.unit
+				: t('token-creator.step4-minting.fields.unit.default-value')
 		});
 
 		if (fixed === 0) {
@@ -98,12 +100,15 @@ function StepMinting(props, context) {
 
 	return (
 		<>
-			{buildCheckboxWithLabel('Token is mintable', 'isMintable')}
+			{buildCheckboxWithLabel(t('token-creator.step4-minting.fields.is-mintable.label'), 'isMintable')}
 			{minting.isMintable && (
 				<>
-					{buildCheckboxWithLabel('Fin4 has the minter role', 'Fin4ClaimingHasMinterRole')}
+					{buildCheckboxWithLabel(
+						t('token-creator.step4-minting.fields.fin4-has-minter-role.label'),
+						'Fin4ClaimingHasMinterRole'
+					)}
 					<TextField
-						label="Additional minter roles" // TODO add to info text on the right side
+						label={t('token-creator.step4-minting.fields.additional-minter-roles.label')}
 						style={{ margin: '10px 0 10px 0' }}
 						inputProps={{
 							style: { fontSize: 'small' }
@@ -120,7 +125,9 @@ function StepMinting(props, context) {
 			{!minting.isMintable && (
 				<>
 					<br />
-					<center style={{ fontFamily: 'arial', color: 'orange' }}>You set your token to not be mintable.</center>
+					<center style={{ fontFamily: 'arial', color: 'orange' }}>
+						{t('token-creator.step4-minting.fields.is-mintable.hint')}
+					</center>
 					<br />
 				</>
 			)}
@@ -128,10 +135,7 @@ function StepMinting(props, context) {
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
-						To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this
-						option is not checked you have to take care of implementing your own minting policy: by handling the
-						ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the
-						SuccessfulClaimNotifierInterface.
+						{t('token-creator.step4-minting.fields.fin4-has-minter-role.hint')}
 					</center>
 					<br />
 				</>
@@ -145,7 +149,7 @@ function StepMinting(props, context) {
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'fixedAmount'}
 									control={<Radio />}
-									label="Fixed amount"
+									label={t('token-creator.step4-minting.fields.fixed-amount.label')}
 									onChange={e => {
 										setChoice('fixedAmount');
 										setMinting({
@@ -159,7 +163,7 @@ function StepMinting(props, context) {
 								<TextField
 									disabled={choice !== 'fixedAmount'}
 									type="number"
-									label="per claim"
+									label={t('token-creator.step4-minting.fields.per-claim.label')}
 									value={minting.fixedAmount}
 									onChange={e => updateVal('fixedAmount', Number(e.target.value))}
 								/>
@@ -175,7 +179,7 @@ function StepMinting(props, context) {
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'variableAmount'}
 									control={<Radio />}
-									label="Variable amount"
+									label={t('token-creator.step4-minting.fields.variable-amount.label')}
 									onChange={e => {
 										setChoice('variableAmount');
 										setMinting({
@@ -192,7 +196,7 @@ function StepMinting(props, context) {
 								<TextField
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									type="text"
-									label="Unit of measurement"
+									label={t('token-creator.step4-minting.fields.unit.label')}
 									value={minting.unit}
 									onChange={e => updateVal('unit', e.target.value)}
 									style={{ width: '100%' }}
