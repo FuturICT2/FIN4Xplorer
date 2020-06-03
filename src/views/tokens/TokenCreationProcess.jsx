@@ -83,7 +83,7 @@ function TokenCreationProcess(props, context) {
 		}
 	};
 
-	const buildInfoContent = (stepName, fieldNames) => {
+	const buildInfoContent = (stepName, fieldNames = []) => {
 		let items = [];
 		items.push(
 			<div key={stepName + '_info'}>
@@ -124,7 +124,7 @@ function TokenCreationProcess(props, context) {
 					'decimals'
 				]);
 			case 2:
-				return buildInfoContent('step3-actions', []);
+				return buildInfoContent('step3-actions');
 			case 3:
 				return buildInfoContent('step4-minting', [
 					'is-mintable',
@@ -134,19 +134,13 @@ function TokenCreationProcess(props, context) {
 					'variable-amount',
 					'unit'
 				]);
-			case 4: // Noninteractive verifiers
+			case 4:
 				return (
 					<>
-						<b>Verifying actions</b>
+						{t('token-creator.step5-verifiers1.info')}
 						<br />
-						To obtain tokens, users need to prove to the system that they actually performed the action required. You
-						can choose any combination of verifiers from the list. Please take your time to think precisely about any
-						combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical
-						for the users trying to obtain them, and practical for the token creators. The harder the proving is, the
-						less users will try to obtain your token; the easier the proving is, the less perceived quality users will
-						see in the token. In complex cases, you may want to experiment with different token designs at the same
-						time. Finally, proving actions is a complex matter and we constantly work to improve the verifiying
-						mechanisms.
+						<br />
+						{t('token-creator.step5-verifiers1.listing-header')}
 						<br />
 						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
@@ -164,63 +158,17 @@ function TokenCreationProcess(props, context) {
 								</span>
 							);
 						})}
-						{/*
-						<b>Proof type: picture</b>
-						<br />
-						The claimer submits a picture, based on which the approver will decide on the claim.
-						<br />
-						<br />
-						<b>Proof type: location</b>
-						<br />
-						The claimer has to be located within a radius of a location you as token creator define.
-						<br />
-						<br />
-						<b>Proof type: selfie-together</b>
-						<br />
-						The claimer submits a picture, based on which another approver and a member of a group of users appointed by
-						the token creator decide to approve. Put simpler: If the token requires another person to be involved (e.g.
-						for a service), they need to approve, too.
-						<br />
-						<br />
-						<b>Proof type: specific address</b>
-						<br />
-						The claimer has to specify an address, which has to approve.
-						<br />
-						<br />
-						<b>Proof type: token creator</b>
-						<br />
-						The token creator has to approve. (Short cut for specific address = token creator address.)
-						<br />
-						<br />
-						<b>Proof type: password</b>
-						<br />
-						The claimer has to provide a numeric password (PIN) you as token creator define. Handle with care!
-						<br />
-						<br />
-						<b>Proof type: self</b>
-						<br />
-						The claimer can approve their own claims. Handle with care!
-						<br />
-						<br />
-						<b>Proof type: minimum interval</b>
-						<br />
-						Defines a minimum time that has to pass between claims by same user. Handle with care!
-						<br />
-						<br />
-						<b>Proof type: maximum quantity per interval</b>
-						<br />
-						Defines the maximum quantity a user can claim within a specified time interval. Handle with care!
-						<br />
-						<br />
-						<b>Proof type: group member approval</b>
-						<br />
-						The token creator specifies one or more user groups, of which one member has to approve. Handle with care!
-						*/}
 					</>
 				);
-			case 5: // Interactive verifiers
+			case 5:
 				return (
 					<>
+						{t('token-creator.step5-verifiers1.info')}
+						<br />
+						<br />
+						{t('token-creator.step6-verifiers2.listing-header')}
+						<br />
+						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
 							let verifier = verifierTypes[verifierAddr];
 							if (verifier.isNoninteractive) {
