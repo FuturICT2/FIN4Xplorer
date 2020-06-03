@@ -82,8 +82,12 @@ function StepIdentity(props) {
 				onChange={e => updateVal('shortDescription', e.target.value)}
 				style={inputFieldStyle}
 			/>
+			<div style={{ marginTop: '18px' }} />
 			<TextField
 				key="long-description-field"
+				multiline
+				rows="3"
+				variant="outlined"
 				type="text"
 				label="Long description"
 				value={basics.longDescription}
