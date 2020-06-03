@@ -576,7 +576,7 @@ function TokenCreationProcess(props, context) {
 		<>
 			{draftId ? (
 				<Container>
-					<Box title="Token creation">
+					<Box title={t('token-creator.box-title')}>
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} alternativeLabel>
 								{getSteps().map((label, index) => (
@@ -620,7 +620,9 @@ function TokenCreationProcess(props, context) {
 							)}
 							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (
 								<center>
-									<Typography className={classes.instructions}>All steps completed</Typography>
+									<Typography className={classes.instructions}>
+										{t('token-creator.navigation.all-steps-completed')}
+									</Typography>
 									{/*countProofsWithParams() > 0 && (
 										<small style={{ color: 'gray', fontFamily: 'arial' }}>
 											You added {countProofsWithParams()} proofs with parameters. Each requires a separate transaction.
@@ -632,10 +634,10 @@ function TokenCreationProcess(props, context) {
 									)*/}
 									<div style={{ paddingTop: '20px' }}>
 										<Button onClick={handleReset} className={classes.backButton}>
-											Restart
+											{t('token-creator.navigation.restart-button')}
 										</Button>
 										<Button variant="contained" color="primary" onClick={createToken}>
-											Create token
+											{t('token-creator.navigation.create-token-button')}
 										</Button>
 									</div>
 								</center>
@@ -680,7 +682,7 @@ function TokenCreationProcess(props, context) {
 							<div style={{ fontFamily: 'arial' }}>
 								<center>
 									<small style={{ color: 'gray' }} onClick={() => setShowInfoBox(false)}>
-										CLOSE
+										{t('token-creator.navigation.info-box-close-button')}
 									</small>
 								</center>
 								<br />
@@ -691,7 +693,7 @@ function TokenCreationProcess(props, context) {
 				</Container>
 			) : (
 				<center style={{ fontFamily: 'arial' }}>
-					No token creation draft found with ID {props.match.params.draftId}
+					{t('token-creator.navigation.no-token-creation-draft-found', { Id: props.match.params.draftId })}
 				</center>
 			)}
 		</>

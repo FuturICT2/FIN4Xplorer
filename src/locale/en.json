@@ -35,6 +35,17 @@
 	"submit-proof-long": "Submit Proof",
 
 	"token-creator": {
+		"box-title": "Token creation",
+		"navigation": {
+			"back-button": "Back",
+			"next-button": "Next",
+			"finish-button": "Finish",
+			"restart-button": "Restart",
+			"create-token-button": "Create token",
+			"info-box-close-button": "CLOSE",
+			"no-token-creation-draft-found": "No token creation draft found with ID {{Id}}",
+			"all-steps-completed": "All steps completed"
+		},
 		"step1-identity": {
 			"title": "Token identity",
 			"fields": {
