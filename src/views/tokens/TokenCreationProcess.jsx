@@ -62,21 +62,21 @@ function TokenCreationProcess(props, context) {
 	const getStepContent = stepIndex => {
 		switch (stepIndex) {
 			case 0:
-				return 'Token identity'; // Formerly: Basic infos
+				return t('token-creator.step1-identity.title');
 			case 1:
-				return 'Token design'; // Formerly: Fundamental properties
+				return t('token-creator.step2-design.title');
 			case 2:
-				return 'Action policy'; // Formerly: For what action(s) can people claim this token?
+				return t('token-creator.step3-actions.title');
 			case 3:
-				return 'Minting policy'; // Formerly: What quantity can be obtained per claim?
+				return t('token-creator.step4-minting.title');
 			case 4:
-				return 'Noninteractive Verifiers'; // Formerly: Add proof types that users will have to provide
+				return t('token-creator.step5-verifiers1.title');
 			case 5:
-				return 'Interactive Verifiers';
+				return t('token-creator.step6-verifiers2.title');
 			case 6:
-				return UnderlyingsActive ? 'Sourcerers' : '';
+				return UnderlyingsActive ? t('token-creator.step7-sourcerers.title') : '';
 			case 7:
-				return 'External Source of Value';
+				return t('token-creator.step8-underlyings.title');
 			default:
 				return '';
 		}

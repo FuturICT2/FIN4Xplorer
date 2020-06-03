@@ -32,5 +32,32 @@
 	"my-previous-claims": "My previous claims",
 	"approved": "Approved",
 	"submit-proof-short": "Submit Proof",
-	"submit-proof-long": "Submit Proof"
+	"submit-proof-long": "Submit Proof",
+
+	"token-creator": {
+		"step1-identity": {
+			"title": "Token identity"
+		},
+		"step2-design": {
+			"title": "Token design"
+		},
+		"step3-actions": {
+			"title": "Action policy"
+		},
+		"step4-minting": {
+			"title": "Minting policy"
+		},
+		"step5-verifiers1": {
+			"title": "Noninteractive verifiers"
+		},
+		"step6-verifiers2": {
+			"title": "Interactive verifiers"
+		},
+		"step7-sourcerers": {
+			"title": "Sourcerers"
+		},
+		"step8-underlyings": {
+			"title": "External sources of value"
+		}
+	}
 }
