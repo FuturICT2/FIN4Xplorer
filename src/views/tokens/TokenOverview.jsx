@@ -12,7 +12,7 @@ function TokenOverview(props) {
 			<Box title={t('all-tokens')}>
 				<SortableTokenList
 					tokens={Object.keys(props.fin4Tokens).map(addr => props.fin4Tokens[addr])}
-					showFilterAndSortOptions={true}
+					showFilterAndSortOptions={false}
 				/>
 			</Box>
 		</>
