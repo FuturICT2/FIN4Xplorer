@@ -20,7 +20,13 @@ import SendIcon from '@material-ui/icons/Send';
 import ConvertIcon from '@material-ui/icons/SwapHoriz';
 import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
-import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
+import {
+	buildIconLabelLink,
+	buildIconLabelCallback,
+	getEtherscanAddressURL,
+	TCRactive,
+	UnderlyingsActive
+} from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
@@ -151,14 +157,20 @@ function Home(props, context) {
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
 				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
 				{buildIconLabelLink('/user/transfer', <SendIcon />, 'Transfer token')}
-				{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
-				{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
+				{UnderlyingsActive && (
+					<>
+						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
+						{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
+					</>
+				)}
 			</Box>
-			<Box title="Token curation" width="250px">
-				{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
-				{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
-				{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
-			</Box>
+			{TCRactive && (
+				<Box title="Token curation" width="250px">
+					{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
+					{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
+					{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
+				</Box>
+			)}
 			{showDevButton && (
 				<Box width="250px">
 					<center>
