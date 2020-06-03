@@ -58,7 +58,42 @@
 			"info": "The basic infos about this tokens identity."
 		},
 		"step2-design": {
-			"title": "Token design"
+			"title": "Token design",
+			"fields": {
+				"is-capped": {
+					"label": "is capped",
+					"info": "Once the total supply of this token reaches the cap, nobody (incl. the token creator) can mint this token anymore."
+				},
+				"cap": {
+					"label": "Cap",
+					"info": "If the token is capped, this is the value of the cap."
+				},
+				"initial-supply": {
+					"label": "Initial supply",
+					"info": "The initial amount of this token that does not have to be earned via the claiming process. Counts into the total supply of this token. If a value bigger than 0 is set, an owner has to be chosen."
+				},
+				"token-creator-owns-initial-supply": {
+					"label": "Token creator owns",
+					"info": "If an initial supply is set, the token creator owns it."
+				},
+				"other-initial-supply-owner": {
+					"label": "Owner address",
+					"info": "If an initial supply is set, this address owns it."
+				},
+				"is-transferable": {
+					"label": "is transferable",
+					"info": "Users who have a balance on this token, can transfer some or all of it to other users. In most cases users want to be able to transfer positive action tokens (e.g. for trading)."
+				},
+				"is-burnable": {
+					"label": "is burnable",
+					"info": "Users can burn some or all of their balance on this token. The burned amount gets deducted from their balance and the total supply of the token shrinks by that amount."
+				},
+				"decimals": {
+					"label": "Decimals",
+					"info": "The digits by which your token is divisible. Zero means that users can only have natural numbers (0,1,2,3,4...) as balance on your token and only amounts in natural numbers can be transferred. Other number indicate the decimal places, e.g., \"3\" means the token is divisible with 0.001 being the smallest unit."
+				}
+			},
+			"info": "The fundamental properties of this token. Defines the economic cornerstornes around this token."
 		},
 		"step3-actions": {
 			"title": "Action policy"

@@ -112,43 +112,17 @@ function TokenCreationProcess(props, context) {
 		switch (stepIndex) {
 			case 0:
 				return buildInfoContent('step1-identity', ['name', 'symbol', 'short-description', 'long-description']);
-			case 1: // Traits (= Properties)
-				return (
-					<>
-						<b>Token supply is capped</b>
-						<br />
-						Once the cap is reached, nobody (incl. the token creator) can mint this token anymore.
-						<br />
-						<br />
-						<b>Cap</b>
-						<br />
-						If the token is capped, this is the value of the cap.
-						<br />
-						<br />
-						<b>Initial token supply</b>
-						<br />
-						As the token creator, you can give yourself an initial amount of your new token. The total supply (above)
-						will adjust to this amount. <br />
-						<br />
-						<b>Token is transferable</b>
-						<br />
-						Users who have a balance on this token, can transfer some or all of it to other users. In most cases users
-						want to be able to transfer positive action tokens (e.g. for trading).
-						<br />
-						<br />
-						<b>Token is burnable</b>
-						<br />
-						Users can burn some or all of their balance on this token. The burned amount gets deducted from their
-						balance and the total supply of the token shrinks by that amount.
-						<br />
-						<br />
-						<b>Decimals</b>
-						<br />
-						The digits by which your token is divisible. Zero means that users can only have natural numbers
-						(0,1,2,3,4..) as balance on your token and only amounts in natural numbers can be transferred. Other number
-						indicate the decimal places, e.g., "3" means the token is divisible with 0.001 being the smallest unit.
-					</>
-				);
+			case 1:
+				return buildInfoContent('step2-design', [
+					'is-capped',
+					'cap',
+					'initial-supply',
+					'token-creator-owns-initial-supply',
+					'other-initial-supply-owner',
+					'is-transferable',
+					'is-burnable',
+					'decimals'
+				]);
 			case 2: // Actions
 				return (
 					<>
