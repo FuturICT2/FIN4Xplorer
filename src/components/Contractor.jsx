@@ -348,16 +348,20 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 						tokensObj[tokenAddr].creationTime = creationTime;
 						tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
 						tokensObj[tokenAddr].isOPAT = null;
+						// empty underlyings array required?
 					}
 				)
 			);
-			promises.push(
-				getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
-					underlyingNamesBytes32 => {
-						tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
-					}
-				)
-			);
+			if (Fin4UnderlyingsContract) {
+				// if its null that means UnderlyingsActive is false
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
+						underlyingNamesBytes32 => {
+							tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
+						}
+					)
+				);
+			}
 		});
 		Promise.all(promises).then(() => {
 			props.dispatch({

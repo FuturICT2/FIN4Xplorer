@@ -19,7 +19,7 @@ import {
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
-import { TCRactive } from './components/utils';
+import { TCRactive, UnderlyingsActive } from './components/utils';
 
 function LoadInitialData(props, context) {
 	const isInit = useRef({
@@ -90,11 +90,12 @@ function LoadInitialData(props, context) {
 			!isInit.current.Fin4TokenManagement &&
 			props.contracts.Fin4TokenManagement &&
 			props.contracts.Fin4TokenManagement.initialized &&
-			(isInit.current.Registry || !TCRactive)
+			(isInit.current.Registry || !TCRactive) &&
+			(isInit.current.Fin4Underlyings || !UnderlyingsActive)
 		) {
 			isInit.current.Fin4TokenManagement = true;
 			let Fin4TokenManagementContract = context.drizzle.contracts.Fin4TokenManagement;
-			let Fin4UnderlyingsContract = context.drizzle.contracts.Fin4Underlyings;
+			let Fin4UnderlyingsContract = UnderlyingsActive ? context.drizzle.contracts.Fin4Underlyings : null;
 			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, () => {
 				// TODO also do these in fetchAllTokens or in parallel to it? Like Fin4Underlyings was added in via promises
 				if (TCRactive) {
@@ -130,6 +131,7 @@ function LoadInitialData(props, context) {
 		}
 
 		if (
+			UnderlyingsActive &&
 			!isInit.current.Fin4Underlyings &&
 			props.contracts.Fin4Underlyings &&
 			props.contracts.Fin4Underlyings.initialized
