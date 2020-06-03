@@ -96,7 +96,8 @@
 			"info": "The fundamental properties of this token. Defines the economic cornerstornes around this token."
 		},
 		"step3-actions": {
-			"title": "Action policy"
+			"title": "Action policy",
+			"info": "For what positive actions should users be able to obtain your new token? Take your time to think about this question. It very important for the future success for your token idea in the system. Also, it is important that users are able to prove they did the actions using the different proving methods (c.f. last section)."
 		},
 		"step4-minting": {
 			"title": "Minting policy"

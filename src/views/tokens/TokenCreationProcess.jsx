@@ -123,16 +123,8 @@ function TokenCreationProcess(props, context) {
 					'is-burnable',
 					'decimals'
 				]);
-			case 2: // Actions
-				return (
-					<>
-						<b>Positive actions</b>
-						<br />
-						For what positive actions should users be able to obtain your new token? Take your time to think about this
-						question. It very important for the future success for your token idea in the system. Also, it is important
-						that users are able to prove they did the actions using the different proving methods (c.f. last section).
-					</>
-				);
+			case 2:
+				return buildInfoContent('step3-actions', []);
 			case 3: // Minting Policy
 				return <center>TODO</center>;
 			/*(
