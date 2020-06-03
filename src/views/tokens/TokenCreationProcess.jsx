@@ -187,11 +187,11 @@ function TokenCreationProcess(props, context) {
 					</>
 				);
 			case 6: // Sourcerers
-				return <center>TODO</center>;
+				return '';
 			case 7: // External source of value
-				return <center>TODO</center>;
+				return '';
 			default:
-				return <center>TODO</center>;
+				return '';
 		}
 	};
 
@@ -676,7 +676,7 @@ function TokenCreationProcess(props, context) {
 						</div>
 					</Box>
 					{showInfoBox && (
-						<Box title={getSteps()[activeStep] + ' info'}>
+						<Box>
 							<div style={{ fontFamily: 'arial' }}>
 								<center>
 									<small style={{ color: 'gray' }} onClick={() => setShowInfoBox(false)}>
