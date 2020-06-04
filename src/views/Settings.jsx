@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
 import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -44,6 +45,7 @@ function Settings(props, context) {
 								console.log('Language changed: from ' + lng + ' to en');
 								Cookies.set('language', 'en', { expires: 7 });
 								// TODO is 7 a good expiry date for cookies? #ConceptualDecision
+								moment.locale('en');
 							});
 						}}>
 						EN
@@ -57,6 +59,7 @@ function Settings(props, context) {
 							i18n.changeLanguage('de', () => {
 								console.log('Language changed: from ' + lng + ' to de');
 								Cookies.set('language', 'de', { expires: 7 });
+								moment.locale('de');
 							});
 						}}>
 						DE

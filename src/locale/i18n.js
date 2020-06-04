@@ -3,6 +3,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Cookies from 'js-cookie';
+import moment from 'moment';
+import 'moment/locale/de';
 const en = require('./en.json');
 const de = require('./de.json');
 
@@ -31,6 +33,8 @@ if (!(language == 'en' || language == 'de')) {
 			'Falling back to English. More languages are coming! You are welcome to help translating :)'
 	);
 }
+
+moment.locale(language);
 
 // TODO consider using i18next-scanner for updating translation files automatically with new keys
 
