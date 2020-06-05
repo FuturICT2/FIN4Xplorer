@@ -221,5 +221,53 @@
 		"step8-underlyings": {
 			"title": "External sources of value"
 		}
+	},
+
+	"groups": {
+		"create-new": {
+			"box-title": "Create a group",
+			"group-name-field": "Group name",
+			"add-yourself-checkbox": "Add yourself as member",
+			"submit-button": "Submit",
+			"reload-hint": "Reload the page to see your new group."
+		},
+		"created-by-user": {
+			"box-title": "Groups you created"
+		},
+		"user-is-member": {
+			"box-title": "My groups",
+			"user-is-owner": "You are owner",
+			"message-owner": "Message owner",
+			"remove-yourself-hint": "Removing yourself as member does not change your ownership of this group"
+		},
+		"columns": {
+			"group-name": "Group name",
+			"group-id": "Id",
+			"action": "Action",
+			"member": "Member"
+		},
+		"edit": {
+			"group": {
+				"box-title": "Edit groups",
+				"user-is-creator": "You are the creator of this group",
+				"no-edit-rights": "You have no editing rights for this group"
+			},
+			"members": {
+				"box-title": "Edit members",
+				"remove-user": "Remove {{user}}",
+				"yourself": "yourself",
+				"add-one": "Add a member",
+				"add-multiple": "Add multiple members",
+				"new-member-address": "Public address of new member",
+				"new-members-addresses": "Public addresses, comma separated",
+				"add-button": "Add"
+			},
+			"ownership": {
+				"box-title": "Transfer ownership",
+				"new-owner-address": "Public address of new group owner",
+				"no-edit-hint": "You won't be able to edit this group anymore",
+				"transfer-button": "Transfer ownership"
+			}
+		}
 	}
 }
