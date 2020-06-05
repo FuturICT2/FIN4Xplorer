@@ -140,7 +140,7 @@ function TokenCreationProcess(props, context) {
 						{t('token-creator.step5-verifiers1.info')}
 						<br />
 						<br />
-						{t('token-creator.step5-verifiers1.listing-header')}
+						{t('token-creator.step5-verifiers1.listing-header') + ':'}
 						<br />
 						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
@@ -166,7 +166,7 @@ function TokenCreationProcess(props, context) {
 						{t('token-creator.step5-verifiers1.info')}
 						<br />
 						<br />
-						{t('token-creator.step6-verifiers2.listing-header')}
+						{t('token-creator.step6-verifiers2.listing-header') + ':'}
 						<br />
 						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
