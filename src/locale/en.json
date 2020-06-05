@@ -328,6 +328,44 @@
 		}
 	},
 
+	"messages": {
+		"box-title": "Messages",
+		"no-messages": "No messages",
+		"requested-by": "Requested by {{user}}",
+		"click-to-see-image": "Click to see the image",
+		"attach-message-optional": "Optional: attach a message",
+		"approve-button": "Approve",
+		"reject-button": "Reject",
+		"mark-as-read-button": "MARK AS READ",
+		"reply-button": "REPLY",
+		"types": {
+			"info": "Info",
+			"approval-request": "Approval request",
+			"from-user": "From user"
+		}
+	},
+
+	"user-to-user": {
+		"messages": {
+			"box-title": "Send message to user",
+			"fields": {
+				"receiver-address": "Public address of message-receiver",
+				"message-text-field": "Message text"
+			},
+			"non-encryption-hint": "Note that messages are not encrypted. With some effort they can be retrieved in plain text from the blockchain.",
+			"send-button": "Send"
+		},
+		"transfer": {
+			"box-title": "Transfer tokens to user",
+			"fields": {
+				"receiver-address": "Public address of token-receiver",
+				"token-dropdown": "Token",
+				"amount": "Amount"
+			},
+			"send-button": "Send"
+		}
+	},
+
 	"about": {
 		"box-title": "About FIN4Xplorer",
 		"intro-text": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.",

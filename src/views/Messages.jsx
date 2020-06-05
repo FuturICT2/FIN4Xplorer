@@ -76,19 +76,19 @@ function Messages(props, context) {
 	const getIntroText = messageType => {
 		switch (messageType) {
 			case '0':
-				return 'Info';
+				return t('messages.types.info');
 			case '1':
-				return 'Approval Request';
+				return t('messages.types.approval-request');
 			case '2':
-				return 'From User';
+				return t('messages.types.from-user');
 		}
 	};
 
 	return (
 		<Container>
-			<Box title="Messages">
+			<Box title={t('messages.box-title')}>
 				{props.messages.filter(msg => !msg.hasBeenActedUpon && msg.messageType).length == 0 ? (
-					<center style={{ fontFamily: 'arial' }}>No messages</center>
+					<center style={{ fontFamily: 'arial' }}>{t('messages.no-messages')}</center>
 				) : (
 					<>
 						{props.messages
@@ -109,7 +109,7 @@ function Messages(props, context) {
 											<>
 												<Divider style={{ margin: '10px 0' }} variant="middle" />
 												<Typography color="textSecondary" variant="body2">
-													Requested by {msg.sender}
+													{t('messages.requested-by', { user: msg.sender })}
 												</Typography>
 												<br />
 												{msg.attachment &&
@@ -120,7 +120,7 @@ function Messages(props, context) {
 																center="true"
 																icon={Photo}
 																onClick={() => window.open('https://gateway.ipfs.io/ipfs/' + msg.attachment, '_blank')}>
-																Click to see the image
+																{t('messages.click-to-see-image')}
 															</Button>
 															<br />
 														</>
@@ -128,7 +128,7 @@ function Messages(props, context) {
 												<TextField
 													key="approve-reject-message"
 													type="text"
-													label="Optional: attach a message"
+													label={t('messages.attach-message-optional')}
 													value={attachedMessage}
 													onChange={e => setAttachedMessage(e.target.value)}
 													style={inputFieldStyle}
@@ -139,7 +139,7 @@ function Messages(props, context) {
 															color="inherit"
 															icon={ThumbUpIcon}
 															onClick={() => approveRequest(msg.verifierTypeName, msg.pendingApprovalId)}>
-															Approve
+															{t('messages.approve-button')}
 														</Button>
 													</span>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -148,7 +148,7 @@ function Messages(props, context) {
 															color="inherit"
 															icon={ThumbDownIcon}
 															onClick={() => rejectRequest(msg.verifierTypeName, msg.pendingApprovalId)}>
-															Reject
+															{t('messages.reject-button')}
 														</Button>
 													</span>
 												</center>
@@ -157,7 +157,9 @@ function Messages(props, context) {
 										)}
 										<Divider style={{ margin: '10px 0' }} variant="middle" />
 										<center>
-											<MsgResponseLink onClick={() => markAsRead(msg.messageId)}>MARK AS READ</MsgResponseLink>
+											<MsgResponseLink onClick={() => markAsRead(msg.messageId)}>
+												{t('messages.mark-as-read-button')}
+											</MsgResponseLink>
 											{msg.messageType !== '0' && (
 												<>
 													&nbsp;&nbsp;&nbsp;
@@ -165,7 +167,7 @@ function Messages(props, context) {
 														onClick={() => {
 															history.push('/user/message/' + msg.sender);
 														}}>
-														REPLY
+														{t('messages.reply-button')}
 													</MsgResponseLink>
 												</>
 											)}
