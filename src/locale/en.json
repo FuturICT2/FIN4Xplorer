@@ -15,7 +15,23 @@
 	"request-ether": "Request Ether",
 	"your-token-balances": "Your token balances",
 
-	"create-new-token": "Create a new token",
+	"tokens-site": {
+		"create-new-token": "Create a new token",
+		"start-token-creation": "Start token creation wizard",
+		"upload-token-draft": "Upload token draft (JSON)",
+		"copy-existing-token": "Copy an existing token",
+		"import-button": "Import",
+		"drafts": {
+			"title": "Your token creation drafts",
+			"last-modified": "Last modified",
+			"continue-editing-button": "Continue editing",
+			"download-button": "Download",
+			"delete-button": "Delete",
+			"delete-all-button": "Delete all",
+			"modal-title": "Token creation draft"
+		}
+	},
+
 	"all-tokens": "All tokens",
 	"proof-name": "Name",
 	"description": "Description",
