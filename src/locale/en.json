@@ -269,5 +269,62 @@
 				"transfer-button": "Transfer ownership"
 			}
 		}
+	},
+
+	"collections": {
+		"create-new": {
+			"box-title": "Create token collection",
+			"fields": {
+				"name": "Collection-Name",
+				"short-name": "Short-name (e.g. \"ethz\" for \"ETH Zürich\")",
+				"description": "Description"
+			},
+			"reload-hint": "Reload the page to see newly created collections."
+		},
+		"list-existing": {
+			"box-title": "Token collections",
+			"name-column": "Name",
+			"actions-column": "Actions",
+			"name-tooltip": "Short-name: {{shortName}}, Description: {{description}}, Tokens: {{tokensCount}}",
+			"view-button": "View",
+			"edit-button": "Edit"
+		},
+		"view": {
+			"box-title": "Collection details",
+			"description": "Description",
+			"tokens-count": "Number of tokens",
+			"edit-button": "Edit collection",
+			"tokens-list-box-title": "Tokens in collection"
+		},
+		"edit": {
+			"box-title": "Edit collection",
+			"view-button": "View collection",
+			"no-edit-rights": "You don't have editing rights on this collection",
+			"user-is-creator": "You are the creator of this collection",
+			"user-is-admin": "You are an admin of this collection via your membership in group {{groupId}}",
+			"tokens": {
+				"box-title": "Manage tokens",
+				"token-column": "Token",
+				"action-column": "Action",
+				"remove-button": "Remove",
+				"add-button": "Add tokens"
+			},
+			"admins": {
+				"box-title": "Manage admins",
+				"modal-title": "Set admin group",
+				"group-id-field": "Group Id (see overview of groups)",
+				"submit-button": "Submit",
+				"group-id": "Admin group Id",
+				"change-button": "Change admin group",
+				"remove-button": "Remove admin group",
+				"select-group-button": "Select user group"
+			},
+			"ownership": {
+				"box-title": "Transfer ownership",
+				"new-owner-address": "Public address of new collection owner",
+				"no-edit-hint": "You won't be able to edit this collection anymore",
+				"transfer-button": "Transfer ownership"
+			}
+		}
 	}
 }

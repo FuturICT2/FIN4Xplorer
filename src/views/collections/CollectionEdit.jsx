@@ -143,26 +143,28 @@ function CollectionEdit(props, context) {
 		<>
 			{collection && (
 				<Container>
-					<Box title="Edit Collection">
+					<Box title={t('collections.edit.box-title')}>
 						<center style={{ fontFamily: 'arial' }}>
-							Edit <b style={{ fontSize: 'large' }}>{collection.name}</b>
+							<b style={{ fontSize: 'large' }}>{collection.name}</b>
 							<br />
 							<br />
-							<Link to={'/collection/' + collection.identifier}>View collection</Link>
+							<Link to={'/collection/' + collection.identifier}>{t('collections.edit.view-button')}</Link>
 							<br />
 							<br />
 							{!(collection.userIsCreator || collection.userIsAdmin) && (
-								<span style={{ color: 'red' }}>You don't have editing rights on this collection</span>
+								<span style={{ color: 'red' }}>{t('collections.edit.no-edit-rights')}</span>
 							)}
-							{collection.userIsCreator && <span>You are the creator of this collection</span>}
+							{collection.userIsCreator && <span>{t('collections.edit.user-is-creator')}</span>}
 							{!collection.userIsCreator && collection.userIsAdmin && (
-								<span>You are an admin of this collection via your membership in group {collection.adminGroupId}</span>
+								<span>{t('collections.edit.user-is-admin', { groupId: collection.adminGroupId })}</span>
 							)}
 						</center>
 					</Box>
 					{collection.userIsAdmin && (
-						<Box title="Manage tokens">
-							<Table headers={['Token', 'Action']} colWidths={[85, 15]}>
+						<Box title={t('collections.edit.tokens.box-title')}>
+							<Table
+								headers={[t('collections.edit.tokens.token-column'), t('collections.edit.tokens.action-column')]}
+								colWidths={[85, 15]}>
 								{collection.tokens.map((tokenAddress, index) => {
 									let token = props.fin4Tokens[tokenAddress];
 									if (!token) {
@@ -177,7 +179,7 @@ function CollectionEdit(props, context) {
 													<small
 														onClick={() => removeToken(tokenAddress)}
 														style={{ color: 'blue', textDecoration: 'underline' }}>
-														Remove
+														{t('collections.edit.tokens.remove-button')}
 													</small>
 												)
 											}}
@@ -196,7 +198,7 @@ function CollectionEdit(props, context) {
 									options={getFormattedTokensNotYetInCollection()}
 								/>
 								<Button icon={AddIcon} onClick={() => addTokens()}>
-									Add tokens
+									{t('collections.edit.tokens.add-button')}
 								</Button>
 								<br />
 								<br />
@@ -205,41 +207,45 @@ function CollectionEdit(props, context) {
 					)}
 					{collection.userIsCreator && (
 						<>
-							<Box title="Manage admins">
+							<Box title={t('collections.edit.admins.box-title')}>
 								<center style={{ fontFamily: 'arial' }}>
 									<br />
-									<Modal isOpen={isModalOpen} handleClose={toggleModal} title="Set admin group" width="350px">
+									<Modal
+										isOpen={isModalOpen}
+										handleClose={toggleModal}
+										title={t('collections.edit.admins.modal-title')}
+										width="350px">
 										<center>
 											<TextField
 												key="groupId-field"
 												type="number"
-												label="Group ID (see overview of groups)"
+												label={t('collections.edit.admins.group-id-field')}
 												onChange={e => (groupIdViaModal.current = e.target.value)}
 												style={inputFieldStyle}
 											/>
 											<br />
-											<Button onClick={setAdminGroup}>Submit</Button>
+											<Button onClick={setAdminGroup}>{t('collections.edit.admins.submit-button')}</Button>
 											<br />
 										</center>
 									</Modal>
 									{collection.adminGroupIsSet ? (
 										<>
-											Admin group ID: <b>{collection.adminGroupId}</b>
+											{t('collections.edit.admins.group-id')}: <b>{collection.adminGroupId}</b>
 											<br />
 											<br />
 											<Button icon={EditIcon} onClick={toggleModal}>
-												Change admin group
+												{t('collections.edit.admins.change-button')}
 											</Button>
 											<br />
 											<br />
 											<Button icon={DeleteIcon} onClick={removeAdminGroup}>
-												Remove admin group
+												{t('collections.edit.admins.remove-button')}
 											</Button>
 										</>
 									) : (
 										<>
 											<Button icon={AddIcon} onClick={toggleModal}>
-												Select user group
+												{t('collections.edit.admins.select-group-button')}
 											</Button>
 										</>
 									)}
@@ -247,22 +253,22 @@ function CollectionEdit(props, context) {
 									<br />
 								</center>
 							</Box>
-							<Box title="Transfer ownership">
+							<Box title={t('collections.edit.ownership.box-title')}>
 								<br />
 								<center style={{ fontFamily: 'arial' }}>
 									{ownershipExpanded && (
 										<>
 											<AddressQRreader
 												onChange={val => (newOwnerAddress.current = val)}
-												label="Public address of new collection owner"
+												label={t('collections.edit.ownership.new-owner-address')}
 											/>
 											<br />
-											<span style={{ color: 'red' }}>You won't be able to edit this collection anymore</span>
+											<span style={{ color: 'red' }}>{t('collections.edit.ownership.no-edit-hint')}</span>
 											<br />
 											<br />
 										</>
 									)}
-									<Button onClick={() => transferOwnership()}>Transfer ownership</Button>
+									<Button onClick={() => transferOwnership()}>{t('collections.edit.ownership.transfer-button')}</Button>
 								</center>
 								<br />
 							</Box>
