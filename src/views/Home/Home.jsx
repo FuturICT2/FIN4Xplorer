@@ -100,7 +100,6 @@ function Home(props, context) {
 			<TokenBalances />
 			<Box title={t('home.on-the-blockchain.box-title')}>
 				{' '}
-				{/*t('about-you')*/}
 				<p style={{ fontFamily: 'arial' }}>
 					{t('home.on-the-blockchain.your-public-address')}:
 					<br />
@@ -131,18 +130,23 @@ function Home(props, context) {
 				</div>
 				{window.web3 && props.usersEthBalance === 0 && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Without Ether you are limited to read-only interactions.</small>
+						<small>{t('home.on-the-blockchain.no-ether-warning')}</small>
 					</div>
 				)}
 				{(props.usersEthBalance === null || props.usersEthBalance === 0) && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Are you connected to the correct network?</small>
+						<small>{t('home.on-the-blockchain.right-network-warning')}</small>
 					</div>
 				)}
 				{faucetConfig && faucetConfig.FAUCET_URL && (
 					<>
 						<br />
-						{buildIconLabelCallback(requestEther, <SaveAltIcon />, t('request-ether'), false)}
+						{buildIconLabelCallback(
+							requestEther,
+							<SaveAltIcon />,
+							t('home.on-the-blockchain.request-ether-button'),
+							false
+						)}
 					</>
 				)}
 			</Box>
