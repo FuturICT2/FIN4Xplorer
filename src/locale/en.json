@@ -338,5 +338,23 @@
 		"documentation-link-keyword": "here",
 		"more-info": "More info on",
 		"contact": "Contact"
+	},
+
+	"settings": {
+		"box-title": "Settings",
+		"language": "Language",
+		"cookie-info": "We use cookies to store language preferences and token creation drafts.",
+		"system-parameters": {
+			"box-title": "System parameters",
+			"main-smart-contract-address": "Address of the Fin4Main smart contract"
+		},
+		"verifiers": {
+			"box-title": "Verifier type addresses",
+			"parameters": "Parameters",
+			"is-non-interactive": "is non-interactive"
+		},
+		"sourcerer": {
+			"box-title": "Fin4 Sourcerer"
+		}
 	}
 }
