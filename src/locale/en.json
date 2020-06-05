@@ -56,12 +56,6 @@
 		}
 	},
 
-	"proof-name": "Name",
-	"description": "Description",
-	"token-symbol": "Symbol",
-	"proof-types": "Proof Types",
-	"unit-of-measurement": "Unit of measurement (e.g. \"time in min\")",
-
 	"token-creator": {
 		"box-title": "Token creation",
 		"navigation": {
