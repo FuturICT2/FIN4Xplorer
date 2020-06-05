@@ -57,7 +57,7 @@ function Claim(props, context) {
 	const updateSelectedOption = tokenAddr => {
 		updateVal('tokenAddress', tokenAddr);
 		let unit = props.fin4Tokens[tokenAddr].unit;
-		setUnit(unit.length > 0 ? unit : t('quantity'));
+		setUnit(unit.length > 0 ? unit : t('claims.default-unit'));
 	};
 
 	const updateVal = (key, val) => {
@@ -70,12 +70,12 @@ function Claim(props, context) {
 	return (
 		<Container>
 			<div>
-				<Box title={t('claim-tokens')}>
+				<Box title={t('claims.claim-tokens-box-title')}>
 					<Dropdown
 						key="token-dropdown"
 						onChange={e => updateSelectedOption(e.value)}
 						options={getFormattedSelectOptions(props.fin4Tokens)}
-						label={t('token-type')}
+						label={t('claims.tokens-dropdown')}
 						defaultValue={
 							tokenViaURL
 								? {
@@ -99,13 +99,13 @@ function Claim(props, context) {
 					<TextField
 						key="comment-field"
 						type="text"
-						label={t('comment')}
+						label={t('claims.comment')}
 						value={values.comment}
 						onChange={e => updateVal('comment', e.target.value)}
 						style={inputFieldStyle}
 					/>
 					<Button icon={AddIcon} onClick={submitClaim} center="true">
-						Submit
+						{t('claims.submit-button')}
 					</Button>
 				</Box>
 			</div>

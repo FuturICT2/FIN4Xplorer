@@ -42,22 +42,25 @@
 		"claim-button": "Claim"
 	},
 
+	"claims": {
+		"default-unit": "Quantity",
+		"claim-tokens-box-title": "Claim Tokens",
+		"tokens-dropdown": "Token",
+		"comment": "Comment",
+		"submit-button": "Submit",
+		"previous-claims": {
+			"box-title": "My previous claims",
+			"rejected-label": "REJECTED",
+			"approved-label": "Approved",
+			"submit-proof-button": "Submit Proof"
+		}
+	},
+
 	"proof-name": "Name",
 	"description": "Description",
 	"token-symbol": "Symbol",
 	"proof-types": "Proof Types",
 	"unit-of-measurement": "Unit of measurement (e.g. \"time in min\")",
-
-	"claim-tokens": "Claim Tokens",
-	"token-type": "Token",
-	"quantity": "Quantity",
-	"date": "Date",
-	"comment": "Comment",
-
-	"my-previous-claims": "My previous claims",
-	"approved": "Approved",
-	"submit-proof-short": "Submit Proof",
-	"submit-proof-long": "Submit Proof",
 
 	"token-creator": {
 		"box-title": "Token creation",
