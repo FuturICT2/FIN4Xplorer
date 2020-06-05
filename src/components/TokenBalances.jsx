@@ -90,13 +90,10 @@ function TokenBalances(props, context) {
 								data={{
 									name: (
 										<Tooltip
-											title={
-												t('tokens-list.short-description-tooltip') +
-												': ' +
-												token.description.split('||')[0] +
-												'\nUnit: ' +
-												token.unit
-											}
+											title={t('tokens-list.token-tooltip', {
+												shortDescription: token.description.split('||')[0],
+												unit: token.unit
+											})}
 											arrow>
 											<span>
 												<Currency symbol={token.symbol} name={token.name} linkTo={'/token/view/' + token.symbol} />

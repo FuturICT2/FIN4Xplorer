@@ -60,7 +60,7 @@
 		"token-name": "Name",
 		"total-supply": "Supply",
 		"actions": "Actions",
-		"short-description-tooltip": "Short description",
+		"token-tooltip": "Short description: {{shortDescription}}, Unit: {{unit}}",
 		"token-is-opat": "This token is on the list of curated tokens",
 		"view-button": "View",
 		"claim-button": "Claim"
