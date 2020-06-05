@@ -9,7 +9,6 @@
 	},
 
 	"no-tokens-yet": "You haven't sucessfully claimed any tokens yet.",
-	"token-name": "Name",
 	"token-balance": "Balance",
 	"about-you": "About you",
 	"request-ether": "Request Ether",
@@ -32,7 +31,17 @@
 		}
 	},
 
-	"all-tokens": "All tokens",
+	"tokens-list": {
+		"all-tokens-box-title": "All tokens",
+		"token-name": "Name",
+		"total-supply": "Supply",
+		"actions": "Actions",
+		"short-description-tooltip": "Short description",
+		"token-is-opat": "This token is on the list of curated tokens",
+		"view-button": "View",
+		"claim-button": "Claim"
+	},
+
 	"proof-name": "Name",
 	"description": "Description",
 	"token-symbol": "Symbol",
