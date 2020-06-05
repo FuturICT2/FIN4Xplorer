@@ -20,13 +20,7 @@ import SendIcon from '@material-ui/icons/Send';
 import ConvertIcon from '@material-ui/icons/SwapHoriz';
 import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
-import {
-	buildIconLabelLink,
-	buildIconLabelCallback,
-	getEtherscanAddressURL,
-	TCRactive,
-	UnderlyingsActive
-} from '../../components/utils';
+import { buildIconLabelLink, buildIconLabelCallback, TCRactive, UnderlyingsActive } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
@@ -150,29 +144,40 @@ function Home(props, context) {
 					</>
 				)}
 			</Box>
-			<Box title="Settings" width="250px">
-				{/* TODO better title */}
-				{buildIconLabelLink('/about', <InfoIcon />, 'About')}
-				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
-				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections', true, false)}
+			<Box title={t('home.settings.box-title')} width="250px">
+				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
+				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
+				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'), true, false)}
 			</Box>
-			<Box title="Inbox" width="250px">
-				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
-				{buildIconLabelLink('/user/transfer', <SendIcon />, 'Transfer token')}
+			<Box title={t('home.inbox.box-title')} width="250px">
+				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
+				{buildIconLabelLink('/user/message', <MessageIcon />, t('home.inbox.message-user-button'))}
+				{buildIconLabelLink('/user/transfer', <SendIcon />, t('home.inbox.transfer-token-button'))}
 				{UnderlyingsActive && (
 					<>
-						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
-						{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
+						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, t('home.inbox.deposit-collateral-button'))}
+						{buildIconLabelLink(
+							'/underlying/convert',
+							<ConvertIcon />,
+							t('home.inbox.convert-collateral-button'),
+							true,
+							false
+						)}
 					</>
 				)}
 			</Box>
 			{TCRactive && (
-				<Box title="Token curation" width="250px">
-					{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
-					{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
-					{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
+				<Box title={t('home.token-curation.box-title')} width="250px">
+					{buildIconLabelLink('/governance/listing', <StarIcon />, t('home.token-curation.listing-button'))}
+					{buildIconLabelLink('/governance/management', <AssignmentIcon />, t('home.token-curation.management-button'))}
+					{buildIconLabelLink(
+						'/governance/parameters',
+						<BuildIcon />,
+						t('home.token-curation.parameters-button'),
+						true,
+						false
+					)}
 				</Box>
 			)}
 			{showDevButton && (

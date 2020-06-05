@@ -14,6 +14,27 @@
 			"no-tokens-yet": "You haven't sucessfully claimed any tokens yet.",
 			"token-balance": "Balance",
 			"transfer-token": "Transfer"
+		},
+		"settings": {
+			"box-title": "Settings",
+			"about-button": "About",
+			"settings-button": "System settings",
+			"user-groups-button": "User groups",
+			"collections-button": "Token collections"
+		},
+		"inbox": {
+			"box-title": "Inbox",
+			"your-messages-button": "Your messages",
+			"message-user-button": "Message user",
+			"transfer-token-button": "Tarnsfer token",
+			"deposit-collateral-button": "Deposit collateral",
+			"convert-collateral-button": "Convert collateral"
+		},
+		"token-curation": {
+			"box-title": "Token curation",
+			"listing-button": "Listing",
+			"management-button": "Management",
+			"parameters-button": "Parameters"
 		}
 	},
 
