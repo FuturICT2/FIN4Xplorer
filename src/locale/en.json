@@ -326,5 +326,17 @@
 				"transfer-button": "Transfer ownership"
 			}
 		}
+	},
+
+	"about": {
+		"box-title": "About FIN4Xplorer",
+		"intro-text": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.",
+		"support-start": "The research project is supported by",
+		"powered-by": "and powered by",
+		"open-source": "The project is open source and welcomes contributors",
+		"documentation": "The documentation can be found",
+		"documentation-link-keyword": "here",
+		"more-info": "More info on",
+		"contact": "Contact"
 	}
 }
