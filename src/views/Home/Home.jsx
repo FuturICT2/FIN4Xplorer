@@ -116,9 +116,9 @@ function Home(props, context) {
 				</p>
 				<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 				<div style={{ fontFamily: 'arial' }}>
-					Your balance:{' '}
+					{t('home.on-the-blockchain.users-balance') + ': '}
 					{props.usersEthBalance === null
-						? t('info-not-yet-available')
+						? t('home.on-the-blockchain.info-not-yet-available')
 						: // TODO dynamic rounding / unit?
 						  `${Math.round(props.usersEthBalance * 1000) / 1000} ETH`}
 				</div>

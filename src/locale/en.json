@@ -5,9 +5,10 @@
 			"ether-request-failed": "Failed to request Ether",
 			"your-public-address": "Your public address",
 			"info-not-yet-available": "Info not available",
+			"users-balance": "Your balance",
 			"request-ether-button": "Request Ether",
 			"no-ether-warning": "Without Ether you are limited to read-only interactions.",
-			"right-networking-warning": "Are you connected to the correct network?"
+			"right-network-warning": "Are you connected to the correct network?"
 		},
 		"wallet": {
 			"box-title": "Wallet",
