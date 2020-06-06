@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
 import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
+import { Trans } from 'react-i18next';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
 
@@ -467,8 +468,8 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
 				return getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypeInfo', verifierTypeAddress).then(
 					({
 						0: contractName,
-						1: name,
-						2: description,
+						1: nameTransKey,
+						2: descriptionTransKey,
 						3: parameterForTokenCreatorToSetEncoded,
 						4: isNoninteractive
 					}) => {
@@ -476,8 +477,8 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
 						addContract(props, drizzle, contractName, verifierTypeAddress, []);
 						return {
 							value: verifierTypeAddress,
-							label: name,
-							description: description,
+							label: <Trans i18nKey={nameTransKey} />,
+							description: <Trans i18nKey={descriptionTransKey} />,
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
 							isNoninteractive: isNoninteractive
 						};

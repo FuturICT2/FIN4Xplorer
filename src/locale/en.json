@@ -460,5 +460,92 @@
 		"new-message": "You got a new message",
 		"message-marked-as-read": "Message marked as read",
 		"submission-added": "Submission added to token {{symbol}}"
+	},
+
+	"sc": {
+		"verifier": {
+			"approval-by-group-member": {
+				"name": "Approval by group member",
+				"description": "The token creator specifies one or more user groups, of which one member has to approve."
+			},
+			"location": {
+				"name": "Location",
+				"description": "A location, which is within a radius of a location the token creator defines, needs to be provided."
+			},
+			"maximum-quantity-per-interval": {
+				"name": "Maximum quantity per interval",
+				"description": "Defines the maximum quantity a user can claim within a specified time interval."
+			},
+			"minimum-interval": {
+				"name": "Minimum interval",
+				"description": "Defines a minimum time that has to pass between claims."
+			},
+			"password": {
+				"name": "Password",
+				"description": "Approval if the user provides the password matching the one the token creator set."
+			},
+			"picture": {
+				"name": "Picture",
+				"description": "The claimer has to supply a picture, based on which the approver will decide to approve."
+			},
+			"self-approve": {
+				"name": "Self-approve",
+				"description": "Claimers approve their own claim."
+			},
+			"selfie-together": {
+				"name": "Selfie together",
+				"description": "The claimer supplies a picture, based on which a self-chosen approver and a member of a group of users appointed by the token creator decide to approve."
+			},
+			"sensor-one-time-signal": {
+				"name": "Sensor one-time signal",
+				"description": "Approval via a sensor that sends a signal. The token creator specifies the sensor via its ID."
+			},
+			"specific-address": {
+				"name": "Specific address",
+				"description": "The claimer specifies an address, which has to approve."
+			},
+			"token-creator-approval": {
+				"name": "Token creator approval",
+				"description": "The token creator has to approve."
+			},
+
+			"happy-moment": {
+				"name": "Happy moment",
+				"description": "Submit a picture of a happy moment."
+			},
+			"idea": {
+				"name": "Idea",
+				"description": "Submit an idea."
+			},
+			"networking": {
+				"name": "Networking",
+				"description": "Submit content of your networking activity and your counterpart has to approve your claim."
+			},
+			"statement": {
+				"name": "Statement",
+				"description": "Submit a statement."
+			},
+			"vote": {
+				"name": "Vote",
+				"description": "Submit a vote on one of the given option."
+			},
+
+			"blacklisting": {
+				"name": "Blacklisting",
+				"description": "The token creator defines group(s) and/or individual accounts that can not claim a token"
+			},
+			"blocker": {
+				"name": "Blocker",
+				"description": "Reject any claim on this token immediately."
+			},
+			"claimable-only-n-times-per-user": {
+				"name": "Claimable only N times per user",
+				"description": "The token creator sets a cap how many times a token can be successfully claimed."
+			},
+			"whitelisting": {
+				"name": "Whitelisting",
+				"description": "The token creator defines group(s) and/or individual accounts that can claim a token while everyone else can not"
+			}
+		}
 	}
 }
