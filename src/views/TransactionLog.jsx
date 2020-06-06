@@ -13,9 +13,9 @@ function TransactionLog(props, context) {
 
 	return (
 		<Container>
-			<Box title="Transaction log">
+			<Box title={t('transaction-log.box-title')}>
 				<div style={{ fontFamily: 'arial' }}>
-					<center style={{ color: 'gray' }}>Log entries are cleared upon reloading the page.</center>
+					<center style={{ color: 'gray' }}>{t('transaction-log.reload-hint')}</center>
 					<br />
 					<br />
 					{props.transactions.reverse().map((tx, index) => {

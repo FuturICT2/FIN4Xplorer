@@ -397,5 +397,17 @@
 			"none": "No pending transactions",
 			"see-log": "See log"
 		}
+	},
+
+	"qr-code-modal": {
+		"box-title": "Your QR code",
+		"click-to-copy": "Click to copy to clipboard",
+		"copied": "Copied!",
+		"users-address": "Your public address"
+	},
+
+	"transaction-log": {
+		"box-title": "Transaction log",
+		"reload-hint": "Log entries are cleared upon reloading the page."
 	}
 }
