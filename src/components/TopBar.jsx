@@ -178,10 +178,9 @@ function TopBar(props) {
 				</table>
 				{!(window.web3 && props.defaultAccount) && (
 					<center className={classes.noWeb3Warning}>
-						<div className={classes.activeLng}>
-							{'Not connected to the ' + getNetworkName() + ' Ethereum network. Is MetaMask installed and connected?'}
-						</div>
 						<div>
+							{'Not connected to the ' + getNetworkName() + ' Ethereum network. Is MetaMask installed and connected?'}
+							<br />
 							Get the{' '}
 							<a className={classes.noWeb3Warning} href="https://metamask.io/">
 								MetaMask extension
