@@ -310,7 +310,7 @@ const contractEventNotifier = store => next => action => {
 				messageId: messageId,
 				messageType: null,
 				sender: null,
-				verifierTypeName: null,
+				verifierContractName: null,
 				message: null,
 				hasBeenActedUpon: null,
 				attachment: null,
@@ -597,7 +597,7 @@ function fin4StoreReducer(state = initialState, action) {
 					[msg.messageId]: {
 						messageType: { $set: msg.messageType },
 						sender: { $set: msg.sender },
-						verifierTypeName: { $set: msg.verifierTypeName },
+						verifierContractName: { $set: msg.verifierContractName },
 						message: { $set: msg.message },
 						hasBeenActedUpon: { $set: msg.hasBeenActedUpon },
 						attachment: { $set: msg.attachment },

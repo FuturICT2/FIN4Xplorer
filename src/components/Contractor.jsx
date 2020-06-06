@@ -171,7 +171,7 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 				messageId: messageId.toString(),
 				messageType: messageType.toString(),
 				sender: sender,
-				verifierTypeName: senderStr,
+				verifierContractName: senderStr,
 				message: message,
 				hasBeenActedUpon: hasBeenActedUpon,
 				attachment: attachment,
