@@ -475,6 +475,7 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle, t) => {
 						// add Contract objects to drizzle
 						addContract(props, drizzle, contractName, verifierTypeAddress, []);
 						return {
+							contractName: contractName,
 							value: verifierTypeAddress,
 							label: t(nameTransKey),
 							description: t(descriptionTransKey),

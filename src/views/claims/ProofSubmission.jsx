@@ -74,8 +74,8 @@ function ProofSubmission(props, context) {
 		});
 	};
 
-	const buildProofSubmissionForm = (verifierTypeName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
-		switch (verifierTypeName) {
+	const buildProofSubmissionForm = (verifierContractName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
+		switch (verifierContractName) {
 			case 'Location':
 				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'SelfieTogether':
@@ -103,17 +103,17 @@ function ProofSubmission(props, context) {
 			case 'Vote':
 				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			default:
-				const abi = require('../../build/contracts/' + verifierTypeName).abi;
-				let contractMethod = 'submitProof_' + verifierTypeName;
+				const abi = require('../../build/contracts/' + verifierContractName).abi;
+				let contractMethod = 'submitProof_' + verifierContractName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
 				}); // I don't remember why I capitalized the first letter...
 				return (
 					<ContractFormSimple
-						contractName={verifierTypeName}
-						contractMethod={'submitProof_' + verifierTypeName}
-						pendingTxStr={'Submit proof ' + verifierTypeName}
+						contractName={verifierContractName}
+						contractMethod={'submitProof_' + verifierContractName}
+						pendingTxStr={'Submit proof ' + verifierContractName}
 						fields={fields}
 						fixValues={{
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
@@ -149,7 +149,7 @@ function ProofSubmission(props, context) {
 							status,
 							t('proof-submission.verifier.unsubmitted', { description: generalVerifierObj.description })
 						)}
-						{buildProofSubmissionForm(generalVerifierObj.label, claimObj.token, claimObj.claimId, index)}
+						{buildProofSubmissionForm(generalVerifierObj.contractName, claimObj.token, claimObj.claimId, index)}
 					</>
 				);
 			case ProofAndVerifierStatusEnum.PENDING:
