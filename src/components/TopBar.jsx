@@ -86,7 +86,11 @@ function TopBar(props) {
 	return (
 		<>
 			<ReactInterval timeout={1000} enabled={true} callback={() => setTimeNow(Date.now())} />
-			<Modal isOpen={isPendingTxOpen} handleClose={togglePendingTxModal} title="Pending transactions" width="300px">
+			<Modal
+				isOpen={isPendingTxOpen}
+				handleClose={togglePendingTxModal}
+				title={t('top-bar.pending-transactions')}
+				width="300px">
 				<div style={{ fontFamily: 'arial' }}>
 					{getPendingTransactions().map((tx, index) => {
 						return (
@@ -119,7 +123,9 @@ function TopBar(props) {
 							</div>
 						);
 					})}
-					{getPendingTransactions().length === 0 && <center style={{ color: 'gray' }}>No pending transactions</center>}
+					{getPendingTransactions().length === 0 && (
+						<center style={{ color: 'gray' }}>{t('top-bar.no-pending-transactions')}</center>
+					)}
 					<br />
 					<Link to={'/transactions'} onClick={togglePendingTxModal}>
 						<center>

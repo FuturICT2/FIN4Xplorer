@@ -395,5 +395,10 @@
 		"sourcerer": {
 			"box-title": "Fin4 Sourcerer"
 		}
+	},
+
+	"top-bar": {
+		"pending-transactions": "Pending transactions",
+		"no-pending-transactions": "No pending transactions"
 	}
 }
