@@ -465,9 +465,15 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
 		.then(verifierTypeAddresses => {
 			return verifierTypeAddresses.map(verifierTypeAddress => {
 				return getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypeInfo', verifierTypeAddress).then(
-					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isNoninteractive }) => {
+					({
+						0: contractName,
+						1: name,
+						2: description,
+						3: parameterForTokenCreatorToSetEncoded,
+						4: isNoninteractive
+					}) => {
 						// add Contract objects to drizzle
-						addContract(props, drizzle, name, verifierTypeAddress, []);
+						addContract(props, drizzle, contractName, verifierTypeAddress, []);
 						return {
 							value: verifierTypeAddress,
 							label: name,
