@@ -17,7 +17,7 @@ import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
 import Modal from './Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReactInterval from 'react-interval';
-import { getEtherscanTxURL, getNetworkName } from './utils';
+import { getEtherscanTxURL, getNetworkName, translationMarkdown } from './utils';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -185,33 +185,44 @@ function TopBar(props) {
 				{!(window.web3 && props.defaultAccount) && (
 					<center className={classes.noWeb3Warning}>
 						<div>
-							{'Not connected to the ' + getNetworkName() + ' Ethereum network. Is MetaMask installed and connected?'}
-							<br />
-							Get the{' '}
-							<a className={classes.noWeb3Warning} href="https://metamask.io/">
-								MetaMask extension
-							</a>{' '}
-							for your desktop browser or try
-							<br />{' '}
-							<a className={classes.noWeb3Warning} href="https://link.medium.com/zdWtIl7Pq0">
-								MetaMask Mobile
-							</a>{' '}
-							or{' '}
-							<a className={classes.noWeb3Warning} href="https://status.im/get/">
-								Status
-							</a>{' '}
-							on your mobile phone. Need help{' '}
-							<a
-								className={classes.noWeb3Warning}
-								href={
-									i18n.language === 'en'
-										? 'https://fin4xplorer.readthedocs.io/en/latest'
-										: 'https://fin4xplorer.readthedocs.io/de/latest/'
+							{translationMarkdown(t('top-bar.not-connected-warning', { networkName: getNetworkName() }), {
+								'metamask-extension-link': label => {
+									return (
+										<a key="mm-ext-link" className={classes.noWeb3Warning} href="https://metamask.io/download.html">
+											{label}
+										</a>
+									);
+								},
+								'metamask-mobile-link': label => {
+									return (
+										<a key="mm-mob-link" className={classes.noWeb3Warning} href="https://metamask.io/download.html">
+											{label}
+										</a>
+									);
+								},
+								'status-link': label => {
+									return (
+										<a key="status-link" className={classes.noWeb3Warning} href="https://status.im/get/">
+											{label}
+										</a>
+									);
+								},
+								'getting-started-link': label => {
+									return (
+										<a
+											key="start-link"
+											className={classes.noWeb3Warning}
+											href={
+												i18n.language === 'en'
+													? 'https://fin4xplorer.readthedocs.io/en/latest'
+													: 'https://fin4xplorer.readthedocs.io/de/latest/'
+											}
+											target="_blank">
+											{label}
+										</a>
+									);
 								}
-								target="_blank">
-								getting started
-							</a>
-							?
+							})}
 						</div>
 					</center>
 				)}

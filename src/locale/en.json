@@ -399,6 +399,7 @@
 
 	"top-bar": {
 		"pending-transactions": "Pending transactions",
-		"no-pending-transactions": "No pending transactions"
+		"no-pending-transactions": "No pending transactions",
+		"not-connected-warning": "Not connected to the {{networkName}} Ethereum network. Is MetaMask installed and connected?<br>Get the [MetaMask extension](metamask-extension-link) for your desktop browser or try<br>[MetaMask Mobile](metamask-mobile-link) or [Status](status-link) on your mobile phone. Need help [getting started](getting-started-link)?"
 	}
 }
