@@ -8,6 +8,8 @@ import Button from './Button';
 import AddIcon from '@material-ui/icons/Add';
 import update from 'react-addons-update';
 
+// this is called like that in historical reference to the ContractForm that we (DLT4PI 2019)
+// copied from some truffle/drizzle repo and bend it to our needs for way too long :)
 function ContractFormSimple(props, context) {
 	const { t } = useTranslation();
 

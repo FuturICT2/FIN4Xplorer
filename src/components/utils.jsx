@@ -141,6 +141,7 @@ const hasTheseCollaterals = (patAddress, sourcererPairs) => {
 
 // This can be improved: a regex that handles both markdown-links as well as <br>s
 //						 it currently breaks if the exact [label](key) occurs twice
+//						 support also <Link>
 const translationMarkdown = (i18nextReturnValue, replacingObjects) => {
 	// via https://stackoverflow.com/q/32381742/2474159
 	const regexToExtractMarkdownLinks = /(\[.*?\]\()(.+?)(\))/g;
