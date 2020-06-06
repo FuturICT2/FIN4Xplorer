@@ -447,5 +447,18 @@
 	"transaction-log": {
 		"box-title": "Transaction log",
 		"reload-hint": "Log entries are cleared upon reloading the page."
+	},
+
+	"notification": {
+		"token-created": "New Fin4 token created: {{name}} [{{symbol}}]",
+		"claim-submitted": "You are claiming {{quantity}} {{name}} [{{symbol}}] tokens",
+		"claim-approved": "Claim approved: you got {{quantity}} {{name}} [{{symbol}}] tokens",
+		"claim-rejected": "Claim on token {{name}} rejected",
+		"verifier-pending": "One verifier of your claim is in pending state",
+		"verifier-approved": "One verifier of your claim got approved",
+		"verifier-rejected": "One verifier of your claim got rejected",
+		"new-message": "You got a new message",
+		"message-marked-as-read": "Message marked as read",
+		"submission-added": "Submission added to token {{symbol}}"
 	}
 }

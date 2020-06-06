@@ -1,10 +1,12 @@
 // originally from www.trufflesuite.com/tutorials/drizzle-and-contract-events
+import React from 'react';
 import { generateStore, EventActions } from 'drizzle';
 import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
 import { doCallback, ProofAndVerifierStatusEnum, findVerifierTypeAddressByName } from '../components/utils';
+import { Trans } from 'react-i18next';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -31,7 +33,8 @@ const contractEventNotifier = store => next => action => {
 
 		let name = token.name;
 		let symbol = token.symbol;
-		display = 'New Fin4 token created: ' + name + ' [' + symbol + ']';
+		// Have to use <Trans> here because the t()-hook doesn't work here
+		display = <Trans i18nKey="notification.token-created" values={{ name: name, symbol: symbol }} />;
 
 		store.dispatch({
 			type: 'ADD_FIN4_TOKEN',
@@ -64,7 +67,12 @@ const contractEventNotifier = store => next => action => {
 
 		let quantity = new BN(claim.quantity).toNumber();
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
-		display = 'You are claiming ' + quantity + ' ' + token.name + ' [' + token.symbol + '] tokens';
+		display = (
+			<Trans
+				i18nKey="notification.claim-submitted"
+				values={{ quantity: quantity, name: token.name, symbol: token.symbol }}
+			/>
+		);
 
 		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
@@ -108,7 +116,12 @@ const contractEventNotifier = store => next => action => {
 		}
 
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
-		display = 'Claim approved: you got ' + claim.mintedQuantity + ' ' + token.name + ' [' + token.symbol + '] tokens';
+		display = (
+			<Trans
+				i18nKey="notification.claim-approved"
+				values={{ quantity: claim.mintedQuantity, name: token.name, symbol: token.symbol }}
+			/>
+		);
 
 		store.dispatch({
 			type: 'APPROVE_CLAIM',
@@ -136,7 +149,7 @@ const contractEventNotifier = store => next => action => {
 		}
 
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
-		display = 'Claim on token ' + token.name + ' rejected';
+		display = <Trans i18nKey="notification.claim-rejected" values={{ name: token.name }} />;
 
 		store.dispatch({
 			type: 'REJECT_CLAIM',
@@ -189,7 +202,7 @@ const contractEventNotifier = store => next => action => {
 			return next(action);
 		}
 
-		display = 'One verifier of your claim is in pending state'; // TODO show more info
+		display = <Trans i18nKey="notification.verifier-pending" />; // TODO show more info
 
 		store.dispatch({
 			type: 'SET_VERIFIER_STATUS',
@@ -224,7 +237,7 @@ const contractEventNotifier = store => next => action => {
 			return next(action);
 		}
 
-		display = 'One proof of your claim got approved'; // TODO show more info
+		display = <Trans i18nKey="notification.verifier-approved" />; // TODO show more info
 
 		store.dispatch({
 			type: 'SET_VERIFIER_STATUS',
@@ -261,7 +274,7 @@ const contractEventNotifier = store => next => action => {
 			return next(action);
 		}
 
-		display = 'One proof of your claim got rejected';
+		display = <Trans i18nKey="notification.verifier-rejected" />;
 
 		store.dispatch({
 			type: 'SET_VERIFIER_STATUS',
@@ -289,7 +302,7 @@ const contractEventNotifier = store => next => action => {
 			return next(action);
 		}
 
-		display = 'You got a new message';
+		display = <Trans i18nKey="notification.new-message" />;
 
 		store.dispatch({
 			type: 'ADD_MESSAGE_STUB',
@@ -320,7 +333,7 @@ const contractEventNotifier = store => next => action => {
 			return next(action);
 		}
 
-		display = 'Message marked as read';
+		display = <Trans i18nKey="notification.message-marked-as-read" />;
 
 		store.dispatch({
 			type: 'MESSAGE_MARKED_AS_READ',
@@ -339,7 +352,7 @@ const contractEventNotifier = store => next => action => {
 		}
 
 		let tokenObj = store.getState().fin4Store.fin4Tokens[submission.token];
-		display = 'Submission added to token ' + tokenObj.symbol;
+		display = <Trans i18nKey="notification.submission-added" values={{ symbol: tokenObj.symbol }} />;
 
 		store.dispatch({
 			type: 'ADD_SUBMISSION',
