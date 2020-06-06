@@ -369,14 +369,7 @@
 
 	"about": {
 		"box-title": "About FIN4Xplorer",
-		"intro-text": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.",
-		"support-start": "The research project is supported by",
-		"powered-by": "and powered by",
-		"open-source": "The project is open source and welcomes contributors",
-		"documentation": "The documentation can be found",
-		"documentation-link-keyword": "here",
-		"more-info": "More info on",
-		"contact": "Contact"
+		"content": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.<br><br>The research project is supported by [SNF](snf-link), [Climate-KIC](ckic-link) and powered by [COSS](coss-link).<br><br>The project is open source and welcomes contributors: [github.com/FuturICT2](github-orga-link)<br><br>The documentation can be found [here](docs-link).<br><br>More info on [finfour.net](finfour-link).<br><br>Contact: {{email}}"
 	},
 
 	"settings": {

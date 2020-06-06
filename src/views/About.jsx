@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Container from '../components/Container';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { translationMarkdown } from '../components/utils';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -20,51 +21,57 @@ function About(props, context) {
 		<Container>
 			<Box title={t('about.box-title')}>
 				<div className={classes.font}>
-					{t('about.intro-text')}
-					<br />
-					<br />
-					{t('about.support-start') + ' '}
-					<a href="http://www.snf.ch/" target="_blank">
-						SNF
-					</a>
-					,{' '}
-					<a href="http://www.climate-kic.org/" target="_blank">
-						Climate-KIC
-					</a>
-					{' ' + t('about.powered-by') + ' '}
-					<a href="https://coss.ethz.ch/" target="_blank">
-						COSS
-					</a>
-					.
-					<br />
-					<br />
-					{t('about.open-source') + ': '}
-					<a href="https://github.com/FuturICT2/" target="_blank">
-						github.com/FuturICT2
-					</a>
-					<br />
-					<br />
-					{t('about.documentation') + ' '}
-					<a
-						href={
-							i18n.language === 'en'
-								? 'https://fin4xplorer.readthedocs.io/en/latest/'
-								: 'https://fin4xplorer.readthedocs.io/de/latest/'
+					{translationMarkdown(t('about.content', { email: 'finfour@gmx.net' }), {
+						'snf-link': label => {
+							return (
+								<a key="snf-link" href="http://www.snf.ch/" target="_blank">
+									{label}
+								</a>
+							);
+						},
+						'ckic-link': label => {
+							return (
+								<a key="ckic-link" href="http://www.climate-kic.org/" target="_blank">
+									{label}
+								</a>
+							);
+						},
+						'coss-link': label => {
+							return (
+								<a key="coss-link" href="https://coss.ethz.ch/" target="_blank">
+									{label}
+								</a>
+							);
+						},
+						'github-orga-link': label => {
+							return (
+								<a key="github-orga-link" href="https://github.com/FuturICT2/" target="_blank">
+									{label}
+								</a>
+							);
+						},
+						'docs-link': label => {
+							return (
+								<a
+									key="docs-link"
+									href={
+										i18n.language === 'en'
+											? 'https://fin4xplorer.readthedocs.io/en/latest/'
+											: 'https://fin4xplorer.readthedocs.io/de/latest/'
+									}
+									target="_blank">
+									{label}
+								</a>
+							);
+						},
+						'finfour-link': label => {
+							return (
+								<a key="finfour-link" href="http://finfour.net/" target="_blank">
+									{label}
+								</a>
+							);
 						}
-						target="_blank">
-						{t('about.documentation-link-keyword')}
-					</a>
-					.
-					<br />
-					<br />
-					{t('about.more-info') + ' '}
-					<a href="http://finfour.net/" target="_blank">
-						finfour.net
-					</a>
-					.
-					<br />
-					<br />
-					{t('about.contact')}: finfour@gmx.net
+					})}
 				</div>
 			</Box>
 		</Container>
