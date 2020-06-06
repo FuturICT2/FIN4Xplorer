@@ -44,21 +44,25 @@ function PictureUploadComponent(props, context) {
 
 	return (
 		<>
-			<AddressQRreader onChange={val => (addressValue.current = val)} label="Public address of picture approver" />
+			<AddressQRreader
+				onChange={val => (addressValue.current = val)}
+				label={t('proof-submission.custom-component.picture-upload.qr-reader-label')}
+			/>
 			<br />
 			<br />
 			<center style={{ fontFamily: 'arial' }}>
 				{uploadInProgress ? (
 					<>
 						<CircularProgress />
-						&nbsp;&nbsp;&nbsp;<span style={{ color: 'gray' }}>Uploading...</span>
+						&nbsp;&nbsp;&nbsp;
+						<span style={{ color: 'gray' }}>{t('proof-submission.custom-component.picture-upload.uploading')}</span>
 					</>
 				) : ipfsHash.current ? (
 					<>
 						<CheckIcon />{' '}
 						<span style={{ color: 'gray' }}>
 							<a href={'https://gateway.ipfs.io/ipfs/' + ipfsHash.current} target="_blank">
-								Upload complete
+								{t('proof-submission.custom-component.picture-upload.upload-complete')}
 							</a>
 						</span>
 					</>
@@ -81,7 +85,7 @@ function PictureUploadComponent(props, context) {
 					props.onSubmit(addressValue.current, ipfsHash.current);
 				}}
 				center="true">
-				Submit
+				{t('proof-submission.custom-component.picture-upload.submit-button')}
 			</Button>
 		</>
 	);

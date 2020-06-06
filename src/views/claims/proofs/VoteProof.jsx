@@ -60,11 +60,11 @@ function VoteProof(props, context) {
 					})
 				}
 				options={voteOptions}
-				label="Vote options"
+				label={t('proof-submission.custom-component.vote.dropdown-label')}
 				value={selectedVoteOption}
 			/>
 			<Button icon={AddIcon} onClick={submit} center="true">
-				Submit
+				{t('proof-submission.custom-component.vote.submit-button')}
 			</Button>
 		</span>
 	);

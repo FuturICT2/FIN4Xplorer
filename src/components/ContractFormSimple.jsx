@@ -76,7 +76,7 @@ function ContractFormSimple(props, context) {
 						);
 					})}
 					<Button icon={AddIcon} onClick={doContractCall} center="true">
-						Submit
+						{t('contract-form-simple.submit-button')}
 					</Button>
 				</>
 			) : (

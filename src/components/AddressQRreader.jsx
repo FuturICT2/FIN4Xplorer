@@ -56,7 +56,7 @@ function AddressQRreader(props) {
 		<>
 			<TextField
 				type="text"
-				label={props.label ? props.label : 'Public address'}
+				label={props.label ? props.label : t('address-qr-reader-component.default-public-address')}
 				style={styles.inputField}
 				variant="outlined"
 				value={addressValue ? addressValue : ''}
@@ -83,7 +83,7 @@ function AddressQRreader(props) {
 					<video id="qr_vid" width="300" height="200"></video>
 					<br />
 					<a style={styles.cancelLink} onClick={() => stopScanning()}>
-						Cancel
+						{t('address-qr-reader-component.cancel-button')}
 					</a>
 				</center>
 			)}

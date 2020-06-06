@@ -81,6 +81,39 @@
 		}
 	},
 
+	"proof-submission": {
+		"box-title": "Proof submission",
+		"claim-rejected": "Your claim got rejected",
+		"reason-hint": "See the reason(s) in your [messages](msgs-link)",
+		"submit-new-claim": "If you want, you can submit [a new claim](new-claim-link)",
+		"verifier": {
+			"unsubmitted": "Your claim requires you to provide the following proof: {{description}}",
+			"pending": "The proof {{name}} is in pending state",
+			"approved": "The proof {{name}} got verified successfully",
+			"rejected": "The proof {{name}} got rejected"
+		},
+		"custom-component": {
+			"location": {
+				"submit-button": "Submit location",
+				"not-supported-alert": "Location requests are not supported by this browser"
+			},
+			"picture-upload": {
+				"submit-button": "Submit",
+				"qr-reader-label": "Public address of picture approver",
+				"uploading": "Uploading...",
+				"upload-complete": "Upload complete"
+			},
+			"vote": {
+				"submit-button": "Submit",
+				"dropdown-label": "Vote options"
+			}
+		}
+	},
+
+	"contract-form-simple": {
+		"submit-button": "Submit"
+	},
+
 	"token-creator": {
 		"box-title": "Token creation",
 		"navigation": {
@@ -404,6 +437,11 @@
 		"click-to-copy": "Click to copy to clipboard",
 		"copied": "Copied!",
 		"users-address": "Your public address"
+	},
+
+	"address-qr-reader-component": {
+		"default-public-address": "Public address",
+		"cancel-button": "Cancel"
 	},
 
 	"transaction-log": {
