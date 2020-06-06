@@ -89,7 +89,7 @@ function TopBar(props) {
 			<Modal
 				isOpen={isPendingTxOpen}
 				handleClose={togglePendingTxModal}
-				title={t('top-bar.pending-transactions')}
+				title={t('top-bar.pending-transactions-modal.box-title')}
 				width="300px">
 				<div style={{ fontFamily: 'arial' }}>
 					{getPendingTransactions().map((tx, index) => {
@@ -124,12 +124,14 @@ function TopBar(props) {
 						);
 					})}
 					{getPendingTransactions().length === 0 && (
-						<center style={{ color: 'gray' }}>{t('top-bar.no-pending-transactions')}</center>
+						<center style={{ color: 'gray' }}>{t('top-bar.pending-transactions-modal.none')}</center>
 					)}
 					<br />
 					<Link to={'/transactions'} onClick={togglePendingTxModal}>
 						<center>
-							<small style={{ color: 'gray', textDecoration: 'none' }}>See log</small>
+							<small style={{ color: 'gray', textDecoration: 'none' }}>
+								{t('top-bar.pending-transactions-modal.see-log')}
+							</small>
 						</center>
 					</Link>
 				</div>
