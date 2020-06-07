@@ -38,7 +38,6 @@
 			"parameters-button": "Parameters"
 		}
 	},
-
 	"tokens-site": {
 		"create-new-token": "Create a new token",
 		"start-token-creation": "Start token creation wizard",
@@ -55,7 +54,6 @@
 			"modal-title": "Token creation draft"
 		}
 	},
-
 	"tokens-list": {
 		"all-tokens-box-title": "All tokens",
 		"token-name": "Name",
@@ -66,7 +64,6 @@
 		"view-button": "View",
 		"claim-button": "Claim"
 	},
-
 	"claims": {
 		"default-unit": "Quantity",
 		"claim-tokens-box-title": "Claim Tokens",
@@ -80,7 +77,6 @@
 			"submit-proof-button": "Submit Proof"
 		}
 	},
-
 	"proof-submission": {
 		"box-title": "Proof submission",
 		"claim-rejected": "Your claim got rejected",
@@ -109,11 +105,9 @@
 			}
 		}
 	},
-
 	"contract-form-simple": {
 		"submit-button": "Submit"
 	},
-
 	"token-creator": {
 		"box-title": "Token creation",
 		"navigation": {
@@ -256,7 +250,6 @@
 			"title": "External sources of value"
 		}
 	},
-
 	"groups": {
 		"create-new": {
 			"box-title": "Create a group",
@@ -304,7 +297,6 @@
 			}
 		}
 	},
-
 	"collections": {
 		"create-new": {
 			"box-title": "Create token collection",
@@ -361,7 +353,6 @@
 			}
 		}
 	},
-
 	"messages": {
 		"box-title": "Messages",
 		"no-messages": "No messages",
@@ -378,7 +369,6 @@
 			"from-user": "From user"
 		}
 	},
-
 	"user-to-user": {
 		"messages": {
 			"box-title": "Send message to user",
@@ -399,12 +389,10 @@
 			"send-button": "Send"
 		}
 	},
-
 	"about": {
 		"box-title": "About FIN4Xplorer",
 		"content": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.<br><br>The research project is supported by [SNF](snf-link), [Climate-KIC](ckic-link) and powered by [COSS](coss-link).<br><br>The project is open source and welcomes contributors: [github.com/FuturICT2](github-orga-link)<br><br>The documentation can be found [here](docs-link).<br><br>More info on [finfour.net](finfour-link).<br><br>Contact: {{email}}"
 	},
-
 	"settings": {
 		"box-title": "Settings",
 		"language": "Language",
@@ -422,7 +410,6 @@
 			"box-title": "Fin4 Sourcerer"
 		}
 	},
-
 	"top-bar": {
 		"not-connected-warning": "Not connected to the {{networkName}} Ethereum network. Is MetaMask installed and connected?<br>Get the [MetaMask extension](metamask-extension-link) for your desktop browser or try<br>[MetaMask Mobile](metamask-mobile-link) or [Status](status-link) on your mobile phone. Need help [getting started](getting-started-link)?",
 		"pending-transactions-modal": {
@@ -431,24 +418,20 @@
 			"see-log": "See log"
 		}
 	},
-
 	"qr-code-modal": {
 		"box-title": "Your QR code",
 		"click-to-copy": "Click to copy to clipboard",
 		"copied": "Copied!",
 		"users-address": "Your public address"
 	},
-
 	"address-qr-reader-component": {
 		"default-public-address": "Public address",
 		"cancel-button": "Cancel"
 	},
-
 	"transaction-log": {
 		"box-title": "Transaction log",
 		"reload-hint": "Log entries are cleared upon reloading the page."
 	},
-
 	"notification": {
 		"token-created": "New Fin4 token created: {{name}} [{{symbol}}]",
 		"claim-submitted": "You are claiming {{quantity}} {{name}} [{{symbol}}] tokens",
@@ -461,7 +444,6 @@
 		"message-marked-as-read": "Message marked as read",
 		"submission-added": "Submission added to token {{symbol}}"
 	},
-
 	"sc": {
 		"verifier": {
 			"approval-by-group-member": {
