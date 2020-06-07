@@ -18,7 +18,7 @@ function PreviousClaims(props) {
 
 	return (
 		<>
-			<Box title={t('my-previous-claims')}>
+			<Box title={t('claims.previous-claims.box-title')}>
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];
@@ -56,7 +56,7 @@ function PreviousClaims(props) {
 									<span
 										style={{ fontFamily: 'arial', color: 'gray', fontSize: 'small', marginLeft: '20px' }}
 										onClick={() => history.push(proofSite)}>
-										REJECTED
+										{t('claims.previous-claims.rejected-label')}
 									</span>
 								)}
 								{status !== 'gotRejected' && (
@@ -66,7 +66,9 @@ function PreviousClaims(props) {
 											onClick={() => history.push(proofSite)}
 											color={claim.isApproved ? 'primary' : 'secondary'}
 											style={{ margin: '0 7px 7px 0' }}>
-											{claim.isApproved ? t('approved') : t('submit-proof-short')}
+											{claim.isApproved
+												? t('claims.previous-claims.approved-label')
+												: t('claims.previous-claims.submit-proof-button')}
 										</Button>
 									</ThemeProvider>
 								)}

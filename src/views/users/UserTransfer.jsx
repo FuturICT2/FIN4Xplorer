@@ -104,24 +104,24 @@ function UserTransfer(props, context) {
 
 	return (
 		<Container>
-			<Box title="Transfer tokens to user">
+			<Box title={t('user-to-user.transfer.box-title')}>
 				<center>
 					<AddressQRreader
 						initialValue={dataViaURL.userAddress}
 						onChange={val => (data.current.userAddress = val)}
-						label="Public address of token-receiver"
+						label={t('user-to-user.transfer.fields.receiver-address')}
 					/>
 					<Dropdown
 						key="token-dropdown"
 						onChange={e => (data.current.tokenAddress = e.value)}
 						options={getFin4TokensFormattedForSelectOptions(props.fin4Tokens)}
-						label={t('token-type')}
+						label={t('user-to-user.transfer.fields.token-dropdown')}
 						defaultValue={dataViaURL.tokenTriple}
 					/>
 					<TextField
 						key="amount-field"
 						type="number"
-						label="Amount"
+						label={t('user-to-user.transfer.fields.amount')}
 						onChange={e => (data.current.amount = e.target.value)}
 						style={inputFieldStyle}
 						defaultValue={dataViaURL.amount}
@@ -147,7 +147,7 @@ function UserTransfer(props, context) {
 
 							sendTransfer();
 						}}>
-						Send
+						{t('user-to-user.transfer.send-button')}
 					</Button>
 				</center>
 			</Box>

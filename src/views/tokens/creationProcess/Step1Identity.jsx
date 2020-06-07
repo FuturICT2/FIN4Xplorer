@@ -61,7 +61,7 @@ function StepIdentity(props) {
 			<TextField
 				key="name-field"
 				type="text"
-				label="Name"
+				label={t('token-creator.step1-identity.fields.name.label')}
 				value={basics.name}
 				onChange={e => updateVal('name', e.target.value)}
 				style={inputFieldStyle}
@@ -69,7 +69,7 @@ function StepIdentity(props) {
 			<TextField
 				key="symbol-field"
 				type="text"
-				label="Symbol"
+				label={t('token-creator.step1-identity.fields.symbol.label')}
 				value={basics.symbol}
 				onChange={e => updateVal('symbol', e.target.value)}
 				style={inputFieldStyle}
@@ -77,15 +77,19 @@ function StepIdentity(props) {
 			<TextField
 				key="short-description-field"
 				type="text"
-				label="Short description"
+				label={t('token-creator.step1-identity.fields.short-description.label')}
 				value={basics.shortDescription}
 				onChange={e => updateVal('shortDescription', e.target.value)}
 				style={inputFieldStyle}
 			/>
+			<div style={{ marginTop: '18px' }} />
 			<TextField
 				key="long-description-field"
+				multiline
+				rows="3"
+				variant="outlined"
 				type="text"
-				label="Long description"
+				label={t('token-creator.step1-identity.fields.long-description.label')}
 				value={basics.longDescription}
 				onChange={e => updateVal('longDescription', e.target.value)}
 				style={inputFieldStyle}

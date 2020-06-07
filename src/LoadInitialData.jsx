@@ -20,8 +20,11 @@ import {
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 import { TCRactive, UnderlyingsActive } from './components/utils';
+import { useTranslation } from 'react-i18next';
 
 function LoadInitialData(props, context) {
+	const { t } = useTranslation();
+
 	const isInit = useRef({
 		// "once" flags
 		Fin4Main: false,
@@ -126,7 +129,7 @@ function LoadInitialData(props, context) {
 
 		if (!isInit.current.Fin4Verifying && props.contracts.Fin4Verifying && props.contracts.Fin4Verifying.initialized) {
 			isInit.current.Fin4Verifying = true;
-			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle);
+			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle, t);
 			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Verifying);
 		}
 

@@ -24,7 +24,7 @@ function CollectionView(props, drizzle) {
 
 	return (
 		<Container>
-			<Box title="Collection details">
+			<Box title={t('collections.view.box-title')}>
 				{collection && (
 					<span style={{ fontFamily: 'arial' }}>
 						<center>
@@ -32,14 +32,14 @@ function CollectionView(props, drizzle) {
 						</center>
 						<br />
 						<br />
-						<span style={{ color: 'gray' }}>Description:</span> {collection.description}
+						<span style={{ color: 'gray' }}>{t('collections.view.description')}:</span> {collection.description}
 						<br />
 						<br />
-						<span style={{ color: 'gray' }}>Number of tokens:</span> {collection.tokens.length}
+						<span style={{ color: 'gray' }}>{t('collections.view.tokens-count')}:</span> {collection.tokens.length}
 						{(collection.userIsCreator || collection.userIsAdmin) && (
 							<center>
 								<br />
-								<Link to={'/collection/edit/' + collection.identifier}>Edit collection</Link>
+								<Link to={'/collection/edit/' + collection.identifier}>{t('collections.view.edit-button')}</Link>
 								<br />
 							</center>
 						)}
@@ -47,7 +47,7 @@ function CollectionView(props, drizzle) {
 				)}
 			</Box>
 			{collection && (
-				<Box title="Tokens in collection">
+				<Box title={t('collections.view.tokens-list-box-title')}>
 					<SortableTokenList
 						tokens={collection.tokens.map(tokenAddr => props.fin4Tokens[tokenAddr])}
 						showFilterAndSortOptions={false}

@@ -99,11 +99,11 @@ function StepDesign(props, context) {
 	return (
 		<>
 			<div style={{ padding: '10px 0 0 85px' }}>
-				{buildCheckboxWithLabel('is capped', 'isCapped')}
+				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-capped.label'), 'isCapped')}
 				<TextField
 					disabled={!properties['isCapped']}
 					type="number"
-					label="Cap"
+					label={t('token-creator.step2-design.fields.cap.label')}
 					style={styles.numberField}
 					value={properties.cap}
 					onChange={e => updateVal('cap', Number(e.target.value))}
@@ -112,7 +112,7 @@ function StepDesign(props, context) {
 				<div style={properties.initialSupply > 0 ? styles.divOutline : null}>
 					<TextField
 						type="number"
-						label="Initial supply"
+						label={t('token-creator.step2-design.fields.initial-supply.label')}
 						style={styles.numberField}
 						value={properties.initialSupply}
 						onChange={e => updateVal('initialSupply', Number(e.target.value))}
@@ -122,7 +122,7 @@ function StepDesign(props, context) {
 							<FormControlLabel
 								checked={properties.initialSupplyUserIsOwner}
 								control={<Radio />}
-								label="Token creator owns"
+								label={t('token-creator.step2-design.fields.token-creator-owns-initial-supply.label')}
 								classes={{
 									label: classes.label
 								}}
@@ -141,7 +141,7 @@ function StepDesign(props, context) {
 									<TextField
 										disabled={properties.initialSupplyUserIsOwner}
 										type="text"
-										label="Owner address"
+										label={t('token-creator.step2-design.fields.other-initial-supply-owner.label')}
 										inputProps={{
 											style: { fontSize: 'small' }
 										}}
@@ -156,12 +156,12 @@ function StepDesign(props, context) {
 						</>
 					)}
 				</div>
-				{buildCheckboxWithLabel('is transferable', 'isTransferable')}
-				{buildCheckboxWithLabel('is burnable', 'isBurnable')}
+				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-transferable.label'), 'isTransferable')}
+				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-burnable.label'), 'isBurnable')}
 				<br />
 				<TextField
 					type="number"
-					label="Decimals"
+					label={t('token-creator.step2-design.fields.decimals.label')}
 					style={styles.numberField}
 					value={properties.decimals}
 					onChange={e => updateVal('decimals', Number(e.target.value))}

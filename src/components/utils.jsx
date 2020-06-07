@@ -139,6 +139,46 @@ const hasTheseCollaterals = (patAddress, sourcererPairs) => {
 	return sourcererPairs.filter(pair => pair.pat === patAddress);
 };
 
+// This can be improved: a regex that handles both markdown-links as well as <br>s
+//						 it currently breaks if the exact [label](key) occurs twice
+//						 support also <Link>
+const translationMarkdown = (i18nextReturnValue, replacingObjects) => {
+	// via https://stackoverflow.com/q/32381742/2474159
+	const regexToExtractMarkdownLinks = /(\[.*?\]\()(.+?)(\))/g;
+	// we rely on them being extracted in order, that seems to be the case
+	const mdLinksOrdered = i18nextReturnValue.match(regexToExtractMarkdownLinks); // format: [label](key)
+	if (!mdLinksOrdered) {
+		return '';
+	}
+	let items = [];
+	let remaining = i18nextReturnValue;
+
+	for (let i = 0; i < mdLinksOrdered.length + 1; i++) {
+		let mdLink = mdLinksOrdered[i];
+		let before = remaining.split(mdLink)[0];
+		let after = remaining.split(mdLink)[1];
+		remaining = after;
+		let beforeParts = before.split('<br>');
+		for (let j = 0; j < beforeParts.length; j++) {
+			let part = beforeParts[j];
+			items.push(part);
+			if (j < beforeParts.length - 1) {
+				items.push(<br key={'br_' + i + '_' + j} />);
+			}
+		}
+		if (i == mdLinksOrdered.length) {
+			continue;
+		}
+		let label = mdLink.match(/\[(.*?)\]/)[1]; // via https://stackoverflow.com/a/2403159/2474159
+		let key = mdLink.match(/\(([^)]+)\)/)[1]; // via https://stackoverflow.com/a/12059321/2474159
+		if (replacingObjects[key]) {
+			items.push(replacingObjects[key](label));
+		}
+	}
+
+	return <>{items}</>;
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -160,5 +200,6 @@ export {
 	getEtherscanAddressURL,
 	isCollateralFor,
 	hasTheseCollaterals,
-	Fin4Colors
+	Fin4Colors,
+	translationMarkdown
 };

@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
 import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -32,9 +33,9 @@ function Settings(props, context) {
 
 	return (
 		<Container>
-			<Box title="Settings">
+			<Box title={t('settings.box-title')}>
 				<div className={classes.font}>
-					Language:{' '}
+					{t('settings.box-title') + ': '}
 					<a
 						className={`${classes.lngLink} ${langIsEN() ? classes.activeLng : ''}`}
 						href="#"
@@ -44,6 +45,7 @@ function Settings(props, context) {
 								console.log('Language changed: from ' + lng + ' to en');
 								Cookies.set('language', 'en', { expires: 7 });
 								// TODO is 7 a good expiry date for cookies? #ConceptualDecision
+								moment.locale('en');
 							});
 						}}>
 						EN
@@ -57,18 +59,19 @@ function Settings(props, context) {
 							i18n.changeLanguage('de', () => {
 								console.log('Language changed: from ' + lng + ' to de');
 								Cookies.set('language', 'de', { expires: 7 });
+								moment.locale('de');
 							});
 						}}>
 						DE
 					</a>
 					<br />
 					<br />
-					<small>We use cookies to store language preferences and token creation drafts.</small>
+					<small>{t('settings.cookie-info')}</small>
 				</div>
 			</Box>
-			<Box title="System parameters">
+			<Box title={t('settings.system-parameters.box-title')}>
 				<div className={classes.font}>
-					Address of the Fin4Main smart contract:
+					{t('settings.system-parameters.main-smart-contract-address') + ': '}
 					<br />
 					{props.contracts.Fin4Main && props.contracts.Fin4Main.initialized && context.drizzle.contracts.Fin4Main ? (
 						<AddressDisplayWithCopy address={context.drizzle.contracts.Fin4Main.address} />
@@ -77,7 +80,7 @@ function Settings(props, context) {
 					)}
 				</div>
 			</Box>
-			<Box title="Verifier type addresses">
+			<Box title={t('settings.verifiers.box-title')}>
 				<div style={{ fontFamily: 'arial' }}>
 					{Object.keys(props.verifierTypes).map((addr, index) => {
 						let verifierType = props.verifierTypes[addr];
@@ -91,13 +94,13 @@ function Settings(props, context) {
 								<br />
 								{verifierType.paramsEncoded && (
 									<small style={{ color: 'gray' }}>
-										<b>Parameters</b>: {verifierType.paramsEncoded}
+										<b>{t('settings.verifiers.parameters')}</b>: {verifierType.paramsEncoded}
 									</small>
 								)}
 								{verifierType.isNoninteractive && (
-									<small style={{ color: 'orange' }}>
+									<small>
 										<br />
-										<b>is constraint</b>
+										{t('settings.verifiers.is-non-interactive')}
 									</small>
 								)}
 								{index < Object.keys(props.verifierTypes).length - 1 && (
@@ -108,7 +111,7 @@ function Settings(props, context) {
 					})}
 				</div>
 			</Box>
-			<Box title="Fin4 Sourcerer">
+			<Box title={t('settings.sourcerer.box-title')}>
 				<div style={{ fontFamily: 'arial' }}>
 					{Object.keys(props.allUnderlyings)
 						.filter(name => props.allUnderlyings[name].isSourcerer)
@@ -126,7 +129,7 @@ function Settings(props, context) {
 									)}
 									{underlyingObj.paramsEncoded && (
 										<small style={{ color: 'gray' }}>
-											<b>Parameters</b>: {underlyingObj.paramsEncoded}
+											<b>{t('settings.verifiers.parameters')}</b>: {underlyingObj.paramsEncoded}
 										</small>
 									)}
 									{index < Object.keys(props.allUnderlyings).length - 1 && (

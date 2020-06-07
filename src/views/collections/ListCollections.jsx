@@ -6,13 +6,16 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function ListCollections(props) {
 	const { t } = useTranslation();
 
 	return (
-		<Box title="Token collections">
-			<Table headers={['Name', 'Actions']} colWidths={[85, 15]}>
+		<Box title={t('collections.list-existing.box-title')}>
+			<Table
+				headers={[t('collections.list-existing.name-column'), t('collections.list-existing.actions-column')]}
+				colWidths={[85, 15]}>
 				{Object.keys(props.collections).map((identifier, index) => {
 					let collection = props.collections[identifier];
 					return (
@@ -20,25 +23,23 @@ function ListCollections(props) {
 							key={'collection_' + index}
 							data={{
 								name: (
-									<span
-										title={
-											'Short-name: ' +
-											identifier +
-											'\nDescription: ' +
-											collection.description +
-											'\nTokens: ' +
-											collection.tokens.length
-										}>
-										{collection.name}
-									</span>
+									<Tooltip
+										title={t('collections.list-existing.name-tooltip', {
+											shortName: identifier,
+											description: collection.description,
+											tokensCount: collection.tokens.length
+										})}
+										arrow>
+										<span>{collection.name}</span>
+									</Tooltip>
 								),
 								actions: (
 									<small style={{ color: 'blue', textDecoration: 'underline' }}>
-										<Link to={'/collection/' + identifier}>View</Link>
+										<Link to={'/collection/' + identifier}>{t('collections.list-existing.view-button')}</Link>
 										{(collection.userIsCreator || collection.userIsAdmin) && (
 											<>
 												<br />
-												<Link to={'/collection/edit/' + identifier}>Edit</Link>
+												<Link to={'/collection/edit/' + identifier}>{t('collections.list-existing.edit-button')}</Link>
 											</>
 										)}
 									</small>

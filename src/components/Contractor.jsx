@@ -171,7 +171,7 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 				messageId: messageId.toString(),
 				messageType: messageType.toString(),
 				sender: sender,
-				verifierTypeName: senderStr,
+				verifierContractName: senderStr,
 				message: message,
 				hasBeenActedUpon: hasBeenActedUpon,
 				attachment: attachment,
@@ -459,19 +459,26 @@ const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	);
 };
 
-const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle) => {
+const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle, t) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypes')
 		.then(verifierTypeAddresses => {
 			return verifierTypeAddresses.map(verifierTypeAddress => {
 				return getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypeInfo', verifierTypeAddress).then(
-					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded, 3: isNoninteractive }) => {
+					({
+						0: contractName,
+						1: nameTransKey,
+						2: descriptionTransKey,
+						3: parameterForTokenCreatorToSetEncoded,
+						4: isNoninteractive
+					}) => {
 						// add Contract objects to drizzle
-						addContract(props, drizzle, name, verifierTypeAddress, []);
+						addContract(props, drizzle, contractName, verifierTypeAddress, []);
 						return {
+							contractName: contractName,
 							value: verifierTypeAddress,
-							label: name,
-							description: description,
+							label: t(nameTransKey),
+							description: t(descriptionTransKey),
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
 							isNoninteractive: isNoninteractive
 						};

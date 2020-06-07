@@ -11,7 +11,7 @@ function LocationProof(props, context) {
 
 	const onSubmitLocation = () => {
 		if (!navigator.geolocation) {
-			alert('Location requests are not supported by this browser');
+			alert(t('proof-submission.custom-component.location.not-supported-alert'));
 			return;
 		}
 
@@ -54,7 +54,7 @@ function LocationProof(props, context) {
 
 	return (
 		<Button icon={AddLocation} onClick={onSubmitLocation} center="true">
-			Submit location
+			{t('proof-submission.custom-component.location.submit-button')}
 		</Button>
 	);
 }

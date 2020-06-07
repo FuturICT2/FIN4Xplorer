@@ -4,33 +4,548 @@
 			"box-title": "On the blockchain",
 			"ether-request-failed": "Failed to request Ether",
 			"your-public-address": "Your public address",
-			"info-not-yet-available": "Info not available"
+			"info-not-yet-available": "Info not available",
+			"users-balance": "Your balance",
+			"request-ether-button": "Request Ether",
+			"no-ether-warning": "Without Ether you are limited to read-only interactions.",
+			"right-network-warning": "Are you connected to the correct network?"
+		},
+		"wallet": {
+			"box-title": "Wallet",
+			"no-tokens-yet": "You haven't sucessfully claimed any tokens yet.",
+			"token-balance": "Balance",
+			"transfer-token": "Transfer"
+		},
+		"settings": {
+			"box-title": "Settings",
+			"about-button": "About",
+			"settings-button": "System settings",
+			"user-groups-button": "User groups",
+			"collections-button": "Token collections"
+		},
+		"inbox": {
+			"box-title": "Inbox",
+			"your-messages-button": "Your messages",
+			"message-user-button": "Message user",
+			"transfer-token-button": "Transfer token",
+			"deposit-collateral-button": "Deposit collateral",
+			"convert-collateral-button": "Convert collateral"
+		},
+		"token-curation": {
+			"box-title": "Token curation",
+			"listing-button": "Listing",
+			"management-button": "Management",
+			"parameters-button": "Parameters"
 		}
 	},
 
-	"no-tokens-yet": "You haven't sucessfully claimed any tokens yet.",
-	"token-name": "Name",
-	"token-balance": "Balance",
-	"about-you": "About you",
-	"request-ether": "Request Ether",
-	"your-token-balances": "Your token balances",
+	"tokens-site": {
+		"create-new-token": "Create a new token",
+		"start-token-creation": "Start token creation wizard",
+		"upload-token-draft": "Upload token draft (JSON)",
+		"copy-existing-token": "Copy an existing token",
+		"import-button": "Import",
+		"drafts": {
+			"title": "Your token creation drafts",
+			"last-modified": "Last modified",
+			"continue-editing-button": "Continue editing",
+			"download-button": "Download",
+			"delete-button": "Delete",
+			"delete-all-button": "Delete all",
+			"modal-title": "Token creation draft"
+		}
+	},
 
-	"create-new-token": "Create a new token",
-	"all-tokens": "All tokens",
-	"proof-name": "Name",
-	"description": "Description",
-	"token-symbol": "Symbol",
-	"proof-types": "Proof Types",
-	"unit-of-measurement": "Unit of measurement (e.g. \"time in min\")",
+	"tokens-list": {
+		"all-tokens-box-title": "All tokens",
+		"token-name": "Name",
+		"total-supply": "Supply",
+		"actions": "Actions",
+		"token-tooltip": "Short description: {{shortDescription}}, Unit: {{unit}}",
+		"token-is-opat": "This token is on the list of curated tokens",
+		"view-button": "View",
+		"claim-button": "Claim"
+	},
 
-	"claim-tokens": "Claim Tokens",
-	"token-type": "Token",
-	"quantity": "Quantity",
-	"date": "Date",
-	"comment": "Comment",
+	"claims": {
+		"default-unit": "Quantity",
+		"claim-tokens-box-title": "Claim Tokens",
+		"tokens-dropdown": "Token",
+		"comment": "Comment",
+		"submit-button": "Submit",
+		"previous-claims": {
+			"box-title": "My previous claims",
+			"rejected-label": "REJECTED",
+			"approved-label": "Approved",
+			"submit-proof-button": "Submit Proof"
+		}
+	},
 
-	"my-previous-claims": "My previous claims",
-	"approved": "Approved",
-	"submit-proof-short": "Submit Proof",
-	"submit-proof-long": "Submit Proof"
+	"proof-submission": {
+		"box-title": "Proof submission",
+		"claim-rejected": "Your claim got rejected",
+		"reason-hint": "See the reason(s) in your [messages](msgs-link)",
+		"submit-new-claim": "If you want, you can submit [a new claim](new-claim-link)",
+		"verifier": {
+			"unsubmitted": "Your claim requires you to provide the following proof: {{description}}",
+			"pending": "The proof {{name}} is in pending state",
+			"approved": "The proof {{name}} got verified successfully",
+			"rejected": "The proof {{name}} got rejected"
+		},
+		"custom-component": {
+			"location": {
+				"submit-button": "Submit location",
+				"not-supported-alert": "Location requests are not supported by this browser"
+			},
+			"picture-upload": {
+				"submit-button": "Submit",
+				"qr-reader-label": "Public address of picture approver",
+				"uploading": "Uploading...",
+				"upload-complete": "Upload complete"
+			},
+			"vote": {
+				"submit-button": "Submit",
+				"dropdown-label": "Vote options"
+			}
+		}
+	},
+
+	"contract-form-simple": {
+		"submit-button": "Submit"
+	},
+
+	"token-creator": {
+		"box-title": "Token creation",
+		"navigation": {
+			"back-button": "Back",
+			"next-button": "Next",
+			"finish-button": "Finish",
+			"restart-button": "Restart",
+			"create-token-button": "Create token",
+			"info-box-close-button": "CLOSE",
+			"no-token-creation-draft-found": "No token creation draft found with ID {{Id}}",
+			"all-steps-completed": "All steps completed"
+		},
+		"step1-identity": {
+			"title": "Token identity",
+			"fields": {
+				"name": {
+					"label": "Name",
+					"info": "Give the new token, you want to create, a descriptive/telling name."
+				},
+				"symbol": {
+					"label": "Symbol",
+					"info": "Choose a short symbol of 3-5 letters (numbers are allowed, too) for your new token. Please note, that the system rejects symbols that are already in use."
+				},
+				"short-description": {
+					"label": "Short description",
+					"info": "Describe the purpose/idea of your new token in a short version."
+				},
+				"long-description": {
+					"label": "Long description",
+					"info": "Describe the purpose/idea of your new token in a longer version."
+				}
+			},
+			"info": "The basic infos about this tokens identity."
+		},
+		"step2-design": {
+			"title": "Token design",
+			"fields": {
+				"is-capped": {
+					"label": "is capped",
+					"info": "Once the total supply of this token reaches the cap, nobody (incl. the token creator) can mint this token anymore."
+				},
+				"cap": {
+					"label": "Cap",
+					"info": "If the token is capped, this is the value of the cap."
+				},
+				"initial-supply": {
+					"label": "Initial supply",
+					"info": "The initial amount of this token that does not have to be earned via the claiming process. Counts into the total supply of this token. If a value bigger than 0 is set, an owner has to be chosen."
+				},
+				"token-creator-owns-initial-supply": {
+					"label": "Token creator owns",
+					"info": "If an initial supply is set, the token creator owns it."
+				},
+				"other-initial-supply-owner": {
+					"label": "Owner address",
+					"info": "If an initial supply is set, this address owns it."
+				},
+				"is-transferable": {
+					"label": "is transferable",
+					"info": "Users who have a balance on this token, can transfer some or all of it to other users. In most cases users want to be able to transfer positive action tokens (e.g. for trading)."
+				},
+				"is-burnable": {
+					"label": "is burnable",
+					"info": "Users can burn some or all of their balance on this token. The burned amount gets deducted from their balance and the total supply of the token shrinks by that amount."
+				},
+				"decimals": {
+					"label": "Decimals",
+					"info": "The digits by which your token is divisible. Zero means that users can only have natural numbers (0,1,2,3,4...) as balance on your token and only amounts in natural numbers can be transferred. Other number indicate the decimal places, e.g., \"3\" means the token is divisible with 0.001 being the smallest unit."
+				}
+			},
+			"info": "The fundamental properties of this token. Defines the economic cornerstornes around this token."
+		},
+		"step3-actions": {
+			"title": "Action policy",
+			"info": "For what positive actions should users be able to obtain your new token? Take your time to think about this question. It very important for the future success for your token idea in the system. Also, it is important that users are able to prove they did the actions using the different proving methods (c.f. last section)."
+		},
+		"step4-minting": {
+			"title": "Minting policy",
+			"fields": {
+				"is-mintable": {
+					"label": "Token is mintable",
+					"info": "Eligible users or smart contracts can \"mint\" any amount to a public address of their choosing. The total supply of this token gets increased by that amount.",
+					"hint": "You set your token to not be mintable."
+				},
+				"fin4-has-minter-role": {
+					"label": "Fin4 has the minter role",
+					"info": "To award succesfull claimers with a balance on this token, the Finance 4.0 system needs the minter role.",
+					"hint": "To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this option is not checked you have to take care of implementing your own minting policy: by handling the ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the SuccessfulClaimNotifierInterface."
+				},
+				"additional-minter-roles": {
+					"label": "Additional minter roles",
+					"info": "Additional user accounts or smart contracts that are allowed to mint this token. Be aware that your tokens claiming process might loose credibility by seeing that someone can mint the token without having to claim."
+				},
+				"fixed-amount": {
+					"label": "Fixed amount",
+					"info": "Once the claim is successful, this fixed amount of tokens will be minted to the user. Default is 1 token per action."
+				},
+				"per-claim": {
+					"label": "per claim"
+				},
+				"variable-amount": {
+					"label": "Variable amount",
+					"info": "The user chooses the amount in the moment of making a claim."
+				},
+				"unit": {
+					"label": "Unit of measurement",
+					"info": "The unit of a claim, e.g. trees or minutes.",
+					"default-value": "quantity"
+				}
+			},
+			"info": "Minting is the default way users earn balances on positive action tokens by submitting and prooving claims."
+		},
+		"step5-verifiers1": {
+			"title": "Noninteractive verifiers",
+			"fields": {
+				"add-token-verifier": {
+					"label": "Add token verifier"
+				},
+				"add-button": {
+					"label": "Add"
+				},
+				"remove-verifier-tooltip": {
+					"label": "Remove verifier"
+				},
+				"verifier-to-parameterize-tooltip": {
+					"label": "Since this verifier has parameters to set, it will require an extra transaction when creating the token"
+				}
+			},
+			"info": "To obtain tokens, users need to prove to the system that they actually performed the action required. You can choose any combination of verifiers from the list. Please take your time to think precisely about any combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical for the users trying to obtain them, and practical for the token creators. The harder the proving is, the less users will try to obtain your token; the easier the proving is, the less perceived quality users will see in the token. In complex cases, you may want to experiment with different token designs at the same time. Finally, proving actions is a complex matter and we constantly work to improve the verifiying mechanisms.",
+			"listing-header": "In the following all available noninteractive verifiers are listed"
+		},
+		"step6-verifiers2": {
+			"title": "Interactive verifiers",
+			"listing-header": "In the following all available interactive verifiers are listed"
+		},
+		"step7-sourcerers": {
+			"title": "Sourcerers"
+		},
+		"step8-underlyings": {
+			"title": "External sources of value"
+		}
+	},
+
+	"groups": {
+		"create-new": {
+			"box-title": "Create a group",
+			"group-name-field": "Group name",
+			"add-yourself-checkbox": "Add yourself as member",
+			"submit-button": "Submit",
+			"reload-hint": "Reload the page to see your new group."
+		},
+		"created-by-user": {
+			"box-title": "Groups you created"
+		},
+		"user-is-member": {
+			"box-title": "My groups",
+			"user-is-owner": "You are owner",
+			"message-owner": "Message owner",
+			"remove-yourself-hint": "Removing yourself as member does not change your ownership of this group"
+		},
+		"columns": {
+			"group-name": "Group name",
+			"group-id": "Id",
+			"action": "Action",
+			"member": "Member"
+		},
+		"edit": {
+			"group": {
+				"box-title": "Edit groups",
+				"user-is-creator": "You are the creator of this group",
+				"no-edit-rights": "You have no editing rights for this group"
+			},
+			"members": {
+				"box-title": "Edit members",
+				"remove-user": "Remove {{user}}",
+				"yourself": "yourself",
+				"add-one": "Add a member",
+				"add-multiple": "Add multiple members",
+				"new-member-address": "Public address of new member",
+				"new-members-addresses": "Public addresses, comma separated",
+				"add-button": "Add"
+			},
+			"ownership": {
+				"box-title": "Transfer ownership",
+				"new-owner-address": "Public address of new group owner",
+				"no-edit-hint": "You won't be able to edit this group anymore",
+				"transfer-button": "Transfer ownership"
+			}
+		}
+	},
+
+	"collections": {
+		"create-new": {
+			"box-title": "Create token collection",
+			"fields": {
+				"name": "Collection-Name",
+				"short-name": "Short-name (e.g. \"ethz\" for \"ETH Zürich\")",
+				"description": "Description"
+			},
+			"reload-hint": "Reload the page to see newly created collections."
+		},
+		"list-existing": {
+			"box-title": "Token collections",
+			"name-column": "Name",
+			"actions-column": "Actions",
+			"name-tooltip": "Short-name: {{shortName}}, Description: {{description}}, Tokens: {{tokensCount}}",
+			"view-button": "View",
+			"edit-button": "Edit"
+		},
+		"view": {
+			"box-title": "Collection details",
+			"description": "Description",
+			"tokens-count": "Number of tokens",
+			"edit-button": "Edit collection",
+			"tokens-list-box-title": "Tokens in collection"
+		},
+		"edit": {
+			"box-title": "Edit collection",
+			"view-button": "View collection",
+			"no-edit-rights": "You don't have editing rights on this collection",
+			"user-is-creator": "You are the creator of this collection",
+			"user-is-admin": "You are an admin of this collection via your membership in group {{groupId}}",
+			"tokens": {
+				"box-title": "Manage tokens",
+				"token-column": "Token",
+				"action-column": "Action",
+				"remove-button": "Remove",
+				"add-button": "Add tokens"
+			},
+			"admins": {
+				"box-title": "Manage admins",
+				"modal-title": "Set admin group",
+				"group-id-field": "Group Id (see overview of groups)",
+				"submit-button": "Submit",
+				"group-id": "Admin group Id",
+				"change-button": "Change admin group",
+				"remove-button": "Remove admin group",
+				"select-group-button": "Select user group"
+			},
+			"ownership": {
+				"box-title": "Transfer ownership",
+				"new-owner-address": "Public address of new collection owner",
+				"no-edit-hint": "You won't be able to edit this collection anymore",
+				"transfer-button": "Transfer ownership"
+			}
+		}
+	},
+
+	"messages": {
+		"box-title": "Messages",
+		"no-messages": "No messages",
+		"requested-by": "Requested by {{user}}",
+		"click-to-see-image": "Click to see the image",
+		"attach-message-optional": "Optional: attach a message",
+		"approve-button": "Approve",
+		"reject-button": "Reject",
+		"mark-as-read-button": "MARK AS READ",
+		"reply-button": "REPLY",
+		"types": {
+			"info": "Info",
+			"approval-request": "Approval request",
+			"from-user": "From user"
+		}
+	},
+
+	"user-to-user": {
+		"messages": {
+			"box-title": "Send message to user",
+			"fields": {
+				"receiver-address": "Public address of message-receiver",
+				"message-text-field": "Message text"
+			},
+			"non-encryption-hint": "Note that messages are not encrypted. With some effort they can be retrieved in plain text from the blockchain.",
+			"send-button": "Send"
+		},
+		"transfer": {
+			"box-title": "Transfer tokens to user",
+			"fields": {
+				"receiver-address": "Public address of token-receiver",
+				"token-dropdown": "Token",
+				"amount": "Amount"
+			},
+			"send-button": "Send"
+		}
+	},
+
+	"about": {
+		"box-title": "About FIN4Xplorer",
+		"content": "The Finance4.0 platform (Fin4) aspires to be a socio-technical artifact spanning a design space for a socio-ecological financial system and for post-monetary concepts and experiments.<br><br>The research project is supported by [SNF](snf-link), [Climate-KIC](ckic-link) and powered by [COSS](coss-link).<br><br>The project is open source and welcomes contributors: [github.com/FuturICT2](github-orga-link)<br><br>The documentation can be found [here](docs-link).<br><br>More info on [finfour.net](finfour-link).<br><br>Contact: {{email}}"
+	},
+
+	"settings": {
+		"box-title": "Settings",
+		"language": "Language",
+		"cookie-info": "We use cookies to store language preferences and token creation drafts.",
+		"system-parameters": {
+			"box-title": "System parameters",
+			"main-smart-contract-address": "Address of the Fin4Main smart contract"
+		},
+		"verifiers": {
+			"box-title": "Verifier type addresses",
+			"parameters": "Parameters",
+			"is-non-interactive": "is non-interactive"
+		},
+		"sourcerer": {
+			"box-title": "Fin4 Sourcerer"
+		}
+	},
+
+	"top-bar": {
+		"not-connected-warning": "Not connected to the {{networkName}} Ethereum network. Is MetaMask installed and connected?<br>Get the [MetaMask extension](metamask-extension-link) for your desktop browser or try<br>[MetaMask Mobile](metamask-mobile-link) or [Status](status-link) on your mobile phone. Need help [getting started](getting-started-link)?",
+		"pending-transactions-modal": {
+			"box-title": "Pending transactions",
+			"none": "No pending transactions",
+			"see-log": "See log"
+		}
+	},
+
+	"qr-code-modal": {
+		"box-title": "Your QR code",
+		"click-to-copy": "Click to copy to clipboard",
+		"copied": "Copied!",
+		"users-address": "Your public address"
+	},
+
+	"address-qr-reader-component": {
+		"default-public-address": "Public address",
+		"cancel-button": "Cancel"
+	},
+
+	"transaction-log": {
+		"box-title": "Transaction log",
+		"reload-hint": "Log entries are cleared upon reloading the page."
+	},
+
+	"notification": {
+		"token-created": "New Fin4 token created: {{name}} [{{symbol}}]",
+		"claim-submitted": "You are claiming {{quantity}} {{name}} [{{symbol}}] tokens",
+		"claim-approved": "Claim approved: you got {{quantity}} {{name}} [{{symbol}}] tokens",
+		"claim-rejected": "Claim on token {{name}} rejected",
+		"verifier-pending": "One verifier of your claim is in pending state",
+		"verifier-approved": "One verifier of your claim got approved",
+		"verifier-rejected": "One verifier of your claim got rejected",
+		"new-message": "You got a new message",
+		"message-marked-as-read": "Message marked as read",
+		"submission-added": "Submission added to token {{symbol}}"
+	},
+
+	"sc": {
+		"verifier": {
+			"approval-by-group-member": {
+				"name": "Approval by group member",
+				"description": "The token creator specifies one or more user groups, of which one member has to approve."
+			},
+			"location": {
+				"name": "Location",
+				"description": "A location, which is within a radius of a location the token creator defines, needs to be provided."
+			},
+			"maximum-quantity-per-interval": {
+				"name": "Maximum quantity per interval",
+				"description": "Defines the maximum quantity a user can claim within a specified time interval."
+			},
+			"minimum-interval": {
+				"name": "Minimum interval",
+				"description": "Defines a minimum time that has to pass between claims."
+			},
+			"password": {
+				"name": "Password",
+				"description": "Approval if the user provides the password matching the one the token creator set."
+			},
+			"picture": {
+				"name": "Picture",
+				"description": "The claimer has to supply a picture, based on which the approver will decide to approve."
+			},
+			"self-approve": {
+				"name": "Self-approve",
+				"description": "Claimers approve their own claim."
+			},
+			"selfie-together": {
+				"name": "Selfie together",
+				"description": "The claimer supplies a picture, based on which a self-chosen approver and a member of a group of users appointed by the token creator decide to approve."
+			},
+			"sensor-one-time-signal": {
+				"name": "Sensor one-time signal",
+				"description": "Approval via a sensor that sends a signal. The token creator specifies the sensor via its ID."
+			},
+			"specific-address": {
+				"name": "Specific address",
+				"description": "The claimer specifies an address, which has to approve."
+			},
+			"token-creator-approval": {
+				"name": "Token creator approval",
+				"description": "The token creator has to approve."
+			},
+
+			"happy-moment": {
+				"name": "Happy moment",
+				"description": "Submit a picture of a happy moment."
+			},
+			"idea": {
+				"name": "Idea",
+				"description": "Submit an idea."
+			},
+			"networking": {
+				"name": "Networking",
+				"description": "Submit content of your networking activity and your counterpart has to approve your claim."
+			},
+			"statement": {
+				"name": "Statement",
+				"description": "Submit a statement."
+			},
+			"vote": {
+				"name": "Vote",
+				"description": "Submit a vote on one of the given option."
+			},
+
+			"blacklisting": {
+				"name": "Blacklisting",
+				"description": "The token creator defines group(s) and/or individual accounts that can not claim a token"
+			},
+			"blocker": {
+				"name": "Blocker",
+				"description": "Reject any claim on this token immediately."
+			},
+			"claimable-only-n-times-per-user": {
+				"name": "Claimable only N times per user",
+				"description": "The token creator sets a cap how many times a token can be successfully claimed."
+			},
+			"whitelisting": {
+				"name": "Whitelisting",
+				"description": "The token creator defines group(s) and/or individual accounts that can claim a token while everyone else can not"
+			}
+		}
+	}
 }

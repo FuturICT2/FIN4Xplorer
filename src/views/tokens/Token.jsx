@@ -160,9 +160,9 @@ function Token(props) {
 
 	return (
 		<Container>
-			<Box title={t('create-new-token')}>
-				{buildIconLabelCallback(createNewTokenDraft, <AddIcon />, 'Start token creation wizard')}
-				{buildIconLabelCallback(toggleUploadFileVisible, <ImportIcon />, 'Upload token draft (JSON)')}
+			<Box title={t('tokens-site.create-new-token')}>
+				{buildIconLabelCallback(createNewTokenDraft, <AddIcon />, t('tokens-site.start-token-creation'))}
+				{buildIconLabelCallback(toggleUploadFileVisible, <ImportIcon />, t('tokens-site.upload-token-draft'))}
 				{uploadFileVisible && (
 					<>
 						<input
@@ -175,7 +175,7 @@ function Token(props) {
 						<br />
 					</>
 				)}
-				{buildIconLabelCallback(toggleTokenChooserVisible, <CopyIcon />, 'Copy an existing token')}
+				{buildIconLabelCallback(toggleTokenChooserVisible, <CopyIcon />, t('tokens-site.copy-existing-token'))}
 				{tokenChooserVisible && (
 					<>
 						{' '}
@@ -188,12 +188,11 @@ function Token(props) {
 											key="token-chooser"
 											onChange={e => (chosenTokenAddress.current = e.value)}
 											options={getFormattedSelectOptions(props.fin4Tokens)}
-											label={t('token-type')}
 										/>
 									</td>
 									<td>
 										<Button style={{ paddingLeft: '20px' }} onClick={importTokenAsDraft}>
-											Import
+											{t('tokens-site.import-button')}
 										</Button>
 									</td>
 								</tr>
@@ -206,11 +205,11 @@ function Token(props) {
 					<>
 						<br />
 						<div style={{ fontFamily: 'arial' }}>
-							<b>Your token creation drafts</b>
+							<b>{t('tokens-site.drafts.title')}</b>
 							{Object.keys(props.tokenCreationDrafts).length > 1 && (
 								<>
 									<small style={{ color: 'green', paddingLeft: '110px' }} onClick={() => deleteAllDrafts()}>
-										Delete all
+										{t('tokens-site.drafts.delete-all-button')}
 									</small>
 								</>
 							)}
@@ -227,18 +226,18 @@ function Token(props) {
 											</span>
 											<br />
 											<small style={{ color: 'gray' }}>
-												{'Last modified: '}
+												{t('tokens-site.drafts.last-modified') + ': '}
 												{date}
 											</small>
 											<br />
 											<small style={{ color: 'green' }}>
 												<span onClick={() => continueEditing(draftId)}>
-													<b>Continue editing</b>
+													<b>{t('tokens-site.drafts.continue-editing-button')}</b>
 												</span>
 												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => exportDraft(draftId)}>Download</span>
+												<span onClick={() => exportDraft(draftId)}>{t('tokens-site.drafts.download-button')}</span>
 												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => deleteDraft(draftId)}>Delete</span>
+												<span onClick={() => deleteDraft(draftId)}>{t('tokens-site.drafts.delete-button')}</span>
 											</small>
 											<br />
 										</li>
@@ -251,7 +250,7 @@ function Token(props) {
 				<Modal
 					isOpen={isPreviewDraftModalOpen}
 					handleClose={togglePreviewDraftModalOpen}
-					title="Token creation draft"
+					title={t('tokens-site.drafts.modal-title')}
 					width="400px">
 					<SyntaxHighlighter language="json">{previewDraftStr.current}</SyntaxHighlighter>
 				</Modal>

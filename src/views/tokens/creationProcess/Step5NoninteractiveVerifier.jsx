@@ -87,14 +87,14 @@ function StepNoninteractiveVerifier(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title="Remove verifier"
+										title={t('token-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
 										onClick={() => removeVerifier(verifierAddress)}
 									/>
 									{verifier.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title="Since this verifier has parameters to set, it will require an extra transaction when creating the token"
+											title={t('token-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
 										/>
 									)}
 								</div>
@@ -142,11 +142,11 @@ function StepNoninteractiveVerifier(props) {
 						.filter(addr => props.verifierTypes[addr].isNoninteractive)
 						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
 						.map(addr => props.verifierTypes[addr])}
-					label="Add token verifier"
+					label={t('token-creator.step5-verifiers1.fields.add-token-verifier.label')}
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-					Add
+					{t('token-creator.step5-verifiers1.fields.add-button.label')}
 				</Button>
 			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />

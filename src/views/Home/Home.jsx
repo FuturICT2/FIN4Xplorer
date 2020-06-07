@@ -20,13 +20,7 @@ import SendIcon from '@material-ui/icons/Send';
 import ConvertIcon from '@material-ui/icons/SwapHoriz';
 import DepositIcon from '@material-ui/icons/SaveAlt';
 import QRModal from '../../components/QRModal';
-import {
-	buildIconLabelLink,
-	buildIconLabelCallback,
-	getEtherscanAddressURL,
-	TCRactive,
-	UnderlyingsActive
-} from '../../components/utils';
+import { buildIconLabelLink, buildIconLabelCallback, TCRactive, UnderlyingsActive } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
@@ -100,7 +94,6 @@ function Home(props, context) {
 			<TokenBalances />
 			<Box title={t('home.on-the-blockchain.box-title')}>
 				{' '}
-				{/*t('about-you')*/}
 				<p style={{ fontFamily: 'arial' }}>
 					{t('home.on-the-blockchain.your-public-address')}:
 					<br />
@@ -123,52 +116,68 @@ function Home(props, context) {
 				</p>
 				<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 				<div style={{ fontFamily: 'arial' }}>
-					Your balance:{' '}
+					{t('home.on-the-blockchain.users-balance') + ': '}
 					{props.usersEthBalance === null
-						? t('info-not-yet-available')
+						? t('home.on-the-blockchain.info-not-yet-available')
 						: // TODO dynamic rounding / unit?
 						  `${Math.round(props.usersEthBalance * 1000) / 1000} ETH`}
 				</div>
 				{window.web3 && props.usersEthBalance === 0 && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Without Ether you are limited to read-only interactions.</small>
+						<small>{t('home.on-the-blockchain.no-ether-warning')}</small>
 					</div>
 				)}
 				{(props.usersEthBalance === null || props.usersEthBalance === 0) && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Are you connected to the correct network?</small>
+						<small>{t('home.on-the-blockchain.right-network-warning')}</small>
 					</div>
 				)}
 				{faucetConfig && faucetConfig.FAUCET_URL && (
 					<>
 						<br />
-						{buildIconLabelCallback(requestEther, <SaveAltIcon />, t('request-ether'), false)}
+						{buildIconLabelCallback(
+							requestEther,
+							<SaveAltIcon />,
+							t('home.on-the-blockchain.request-ether-button'),
+							false
+						)}
 					</>
 				)}
 			</Box>
-			<Box title="Settings" width="250px">
-				{/* TODO better title */}
-				{buildIconLabelLink('/about', <InfoIcon />, 'About')}
-				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
-				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections', true, false)}
+			<Box title={t('home.settings.box-title')} width="250px">
+				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
+				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
+				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'), true, false)}
 			</Box>
-			<Box title="Inbox" width="250px">
-				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user')}
-				{buildIconLabelLink('/user/transfer', <SendIcon />, 'Transfer token')}
+			<Box title={t('home.inbox.box-title')} width="250px">
+				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
+				{buildIconLabelLink('/user/message', <MessageIcon />, t('home.inbox.message-user-button'))}
+				{buildIconLabelLink('/user/transfer', <SendIcon />, t('home.inbox.transfer-token-button'))}
 				{UnderlyingsActive && (
 					<>
-						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, 'Deposit collateral')}
-						{buildIconLabelLink('/underlying/convert', <ConvertIcon />, 'Convert collateral', true, false)}
+						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, t('home.inbox.deposit-collateral-button'))}
+						{buildIconLabelLink(
+							'/underlying/convert',
+							<ConvertIcon />,
+							t('home.inbox.convert-collateral-button'),
+							true,
+							false
+						)}
 					</>
 				)}
 			</Box>
 			{TCRactive && (
-				<Box title="Token curation" width="250px">
-					{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
-					{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
-					{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
+				<Box title={t('home.token-curation.box-title')} width="250px">
+					{buildIconLabelLink('/governance/listing', <StarIcon />, t('home.token-curation.listing-button'))}
+					{buildIconLabelLink('/governance/management', <AssignmentIcon />, t('home.token-curation.management-button'))}
+					{buildIconLabelLink(
+						'/governance/parameters',
+						<BuildIcon />,
+						t('home.token-curation.parameters-button'),
+						true,
+						false
+					)}
 				</Box>
 			)}
 			{showDevButton && (

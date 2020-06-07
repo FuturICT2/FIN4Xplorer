@@ -8,18 +8,18 @@ function CreateCollection() {
 	const { t } = useTranslation();
 
 	return (
-		<Box title="Create token collection">
+		<Box title={t('collections.create-new.box-title')}>
 			<ContractFormSimple
 				contractName="Fin4Collections"
 				contractMethod="createCollection"
 				pendingTxStr="Create collection"
 				fields={[
-					['Collection-Name', 'text'],
-					['Short-name (e.g. "ethz" for "ETH Zürich")', 'text'],
-					['Description', 'text']
+					[t('collections.create-new.fields.name'), 'text'],
+					[t('collections.create-new.fields.short-name'), 'text'],
+					[t('collections.create-new.fields.description'), 'text']
 				]}
 			/>
-			<center style={{ color: 'gray', fontFamily: 'arial' }}>Reload the page to see newly created collections.</center>
+			<center style={{ color: 'gray', fontFamily: 'arial' }}>{t('collections.create-new.reload-hint')}</center>
 		</Box>
 	);
 }
