@@ -1,32 +1,551 @@
 {
-	"home.on-the-blockchain.ether-request-failed": "Ether-Anfrage ist fehlgeschlagen",
-	"home.on-the-blockchain.box-title": "Auf der Blockchain",
-	"home.on-the-blockchain.your-public-address": "Deine öffentliche Adresse",
-	"home.on-the-blockchain.info-not-yet-available": "Info nicht verfügbar",
+	"home": {
+		"on-the-blockchain": {
+			"box-title": "",
+			"ether-request-failed": "",
+			"your-public-address": "",
+			"info-not-yet-available": "",
+			"users-balance": "",
+			"request-ether-button": "",
+			"no-ether-warning": "",
+			"right-network-warning": ""
+		},
+		"wallet": {
+			"box-title": "",
+			"no-tokens-yet": "",
+			"token-balance": "",
+			"transfer-token": ""
+		},
+		"settings": {
+			"box-title": "",
+			"about-button": "",
+			"settings-button": "",
+			"user-groups-button": "",
+			"collections-button": ""
+		},
+		"inbox": {
+			"box-title": "",
+			"your-messages-button": "",
+			"message-user-button": "",
+			"transfer-token-button": "",
+			"deposit-collateral-button": "",
+			"convert-collateral-button": ""
+		},
+		"token-curation": {
+			"box-title": "",
+			"listing-button": "",
+			"management-button": "",
+			"parameters-button": ""
+		}
+	},
 
-	"no-tokens-yet": "Du hast noch keine Tokens erfolgreich eingefordert.",
-	"token-name": "Name",
-	"token-balance": "Guthaben",
-	"about-you": "Über dich",
-	"request-ether": "Fordere Ether an",
-	"your-token-balances": "Deine Token Guthaben",
+	"tokens-site": {
+		"create-new-token": "",
+		"start-token-creation": "",
+		"upload-token-draft": "",
+		"copy-existing-token": "",
+		"import-button": "",
+		"drafts": {
+			"title": "",
+			"last-modified": "",
+			"continue-editing-button": "",
+			"download-button": "",
+			"delete-button": "",
+			"delete-all-button": "",
+			"modal-title": ""
+		}
+	},
 
-	"create-new-token": "Erstelle einen neuen Token",
-	"all-tokens": "Alle Tokens",
-	"proof-name": "Name",
-	"description": "Beschreibung",
-	"token-symbol": "Symbol",
-	"proof-types": "Beweistypen",
-	"unit-of-measurement": "Einheit der Mengenangabe (z.B. \"Zeit in Minuten\")",
+	"tokens-list": {
+		"all-tokens-box-title": "",
+		"token-name": "",
+		"total-supply": "",
+		"actions": "",
+		"token-tooltip": "",
+		"token-is-opat": "",
+		"view-button": "",
+		"claim-button": ""
+	},
 
-	"claim-tokens": "Fordere Tokens ein",
-	"token-type": "Token",
-	"quantity": "Quantität",
-	"date": "Datum",
-	"comment": "Kommentar",
+	"claims": {
+		"default-unit": "",
+		"claim-tokens-box-title": "",
+		"tokens-dropdown": "",
+		"comment": "",
+		"submit-button": "",
+		"previous-claims": {
+			"box-title": "",
+			"rejected-label": "",
+			"approved-label": "",
+			"submit-proof-button": ""
+		}
+	},
 
-	"my-previous-claims": "Meine bisherigen Forderungen",
-	"approved": "Bestätigt",
-	"submit-proof-short": "beweise",
-	"submit-proof-long": "Beweise einreichen"
+	"proof-submission": {
+		"box-title": "",
+		"claim-rejected": "",
+		"reason-hint": "",
+		"submit-new-claim": "",
+		"verifier": {
+			"unsubmitted": "",
+			"pending": "",
+			"approved": "",
+			"rejected": ""
+		},
+		"custom-component": {
+			"location": {
+				"submit-button": "",
+				"not-supported-alert": ""
+			},
+			"picture-upload": {
+				"submit-button": "",
+				"qr-reader-label": "",
+				"uploading": "",
+				"upload-complete": ""
+			},
+			"vote": {
+				"submit-button": "",
+				"dropdown-label": ""
+			}
+		}
+	},
+
+	"contract-form-simple": {
+		"submit-button": ""
+	},
+
+	"token-creator": {
+		"box-title": "",
+		"navigation": {
+			"back-button": "",
+			"next-button": "",
+			"finish-button": "",
+			"restart-button": "",
+			"create-token-button": "",
+			"info-box-close-button": "",
+			"no-token-creation-draft-found": "",
+			"all-steps-completed": ""
+		},
+		"step1-identity": {
+			"title": "",
+			"fields": {
+				"name": {
+					"label": "",
+					"info": ""
+				},
+				"symbol": {
+					"label": "",
+					"info": ""
+				},
+				"short-description": {
+					"label": "",
+					"info": ""
+				},
+				"long-description": {
+					"label": "",
+					"info": ""
+				}
+			},
+			"info": ""
+		},
+		"step2-design": {
+			"title": "",
+			"fields": {
+				"is-capped": {
+					"label": "",
+					"info": ""
+				},
+				"cap": {
+					"label": "",
+					"info": ""
+				},
+				"initial-supply": {
+					"label": "",
+					"info": ""
+				},
+				"token-creator-owns-initial-supply": {
+					"label": "",
+					"info": ""
+				},
+				"other-initial-supply-owner": {
+					"label": "",
+					"info": ""
+				},
+				"is-transferable": {
+					"label": "",
+					"info": ""
+				},
+				"is-burnable": {
+					"label": "",
+					"info": ""
+				},
+				"decimals": {
+					"label": "",
+					"info": ""
+				}
+			},
+			"info": ""
+		},
+		"step3-actions": {
+			"title": "",
+			"info": ""
+		},
+		"step4-minting": {
+			"title": "",
+			"fields": {
+				"is-mintable": {
+					"label": "",
+					"info": "",
+					"hint": ""
+				},
+				"fin4-has-minter-role": {
+					"label": "",
+					"info": "",
+					"hint": ""
+				},
+				"additional-minter-roles": {
+					"label": "",
+					"info": ""
+				},
+				"fixed-amount": {
+					"label": "",
+					"info": ""
+				},
+				"per-claim": {
+					"label": ""
+				},
+				"variable-amount": {
+					"label": "",
+					"info": ""
+				},
+				"unit": {
+					"label": "",
+					"info": "",
+					"default-value": ""
+				}
+			},
+			"info": ""
+		},
+		"step5-verifiers1": {
+			"title": "",
+			"fields": {
+				"add-token-verifier": {
+					"label": ""
+				},
+				"add-button": {
+					"label": ""
+				},
+				"remove-verifier-tooltip": {
+					"label": ""
+				},
+				"verifier-to-parameterize-tooltip": {
+					"label": ""
+				}
+			},
+			"info": "",
+			"listing-header": ""
+		},
+		"step6-verifiers2": {
+			"title": "",
+			"listing-header": ""
+		},
+		"step7-sourcerers": {
+			"title": ""
+		},
+		"step8-underlyings": {
+			"title": ""
+		}
+	},
+
+	"groups": {
+		"create-new": {
+			"box-title": "",
+			"group-name-field": "",
+			"add-yourself-checkbox": "",
+			"submit-button": "",
+			"reload-hint": ""
+		},
+		"created-by-user": {
+			"box-title": ""
+		},
+		"user-is-member": {
+			"box-title": "",
+			"user-is-owner": "",
+			"message-owner": "",
+			"remove-yourself-hint": ""
+		},
+		"columns": {
+			"group-name": "",
+			"group-id": "",
+			"action": "",
+			"member": ""
+		},
+		"edit": {
+			"group": {
+				"box-title": "",
+				"user-is-creator": "",
+				"no-edit-rights": ""
+			},
+			"members": {
+				"box-title": "",
+				"remove-user": "",
+				"yourself": "",
+				"add-one": "",
+				"add-multiple": "",
+				"new-member-address": "",
+				"new-members-addresses": "",
+				"add-button": ""
+			},
+			"ownership": {
+				"box-title": "",
+				"new-owner-address": "",
+				"no-edit-hint": "",
+				"transfer-button": ""
+			}
+		}
+	},
+
+	"collections": {
+		"create-new": {
+			"box-title": "",
+			"fields": {
+				"name": "",
+				"short-name": "",
+				"description": ""
+			},
+			"reload-hint": ""
+		},
+		"list-existing": {
+			"box-title": "",
+			"name-column": "",
+			"actions-column": "",
+			"name-tooltip": "",
+			"view-button": "",
+			"edit-button": ""
+		},
+		"view": {
+			"box-title": "",
+			"description": "",
+			"tokens-count": "",
+			"edit-button": "",
+			"tokens-list-box-title": ""
+		},
+		"edit": {
+			"box-title": "",
+			"view-button": "",
+			"no-edit-rights": "",
+			"user-is-creator": "",
+			"user-is-admin": "",
+			"tokens": {
+				"box-title": "",
+				"token-column": "",
+				"action-column": "",
+				"remove-button": "",
+				"add-button": ""
+			},
+			"admins": {
+				"box-title": "",
+				"modal-title": "",
+				"group-id-field": "",
+				"submit-button": "",
+				"group-id": "",
+				"change-button": "",
+				"remove-button": "",
+				"select-group-button": ""
+			},
+			"ownership": {
+				"box-title": "",
+				"new-owner-address": "",
+				"no-edit-hint": "",
+				"transfer-button": ""
+			}
+		}
+	},
+
+	"messages": {
+		"box-title": "",
+		"no-messages": "",
+		"requested-by": "",
+		"click-to-see-image": "",
+		"attach-message-optional": "",
+		"approve-button": "",
+		"reject-button": "",
+		"mark-as-read-button": "",
+		"reply-button": "",
+		"types": {
+			"info": "",
+			"approval-request": "",
+			"from-user": ""
+		}
+	},
+
+	"user-to-user": {
+		"messages": {
+			"box-title": "",
+			"fields": {
+				"receiver-address": "",
+				"message-text-field": ""
+			},
+			"non-encryption-hint": "",
+			"send-button": ""
+		},
+		"transfer": {
+			"box-title": "",
+			"fields": {
+				"receiver-address": "",
+				"token-dropdown": "",
+				"amount": ""
+			},
+			"send-button": ""
+		}
+	},
+
+	"about": {
+		"box-title": "",
+		"content": ""
+	},
+
+	"settings": {
+		"box-title": "",
+		"language": "",
+		"cookie-info": "",
+		"system-parameters": {
+			"box-title": "",
+			"main-smart-contract-address": ""
+		},
+		"verifiers": {
+			"box-title": "",
+			"parameters": "",
+			"is-non-interactive": ""
+		},
+		"sourcerer": {
+			"box-title": ""
+		}
+	},
+
+	"top-bar": {
+		"not-connected-warning": "",
+		"pending-transactions-modal": {
+			"box-title": "",
+			"none": "",
+			"see-log": ""
+		}
+	},
+
+	"qr-code-modal": {
+		"box-title": "",
+		"click-to-copy": "",
+		"copied": "",
+		"users-address": ""
+	},
+
+	"address-qr-reader-component": {
+		"default-public-address": "",
+		"cancel-button": ""
+	},
+
+	"transaction-log": {
+		"box-title": "",
+		"reload-hint": ""
+	},
+
+	"notification": {
+		"token-created": "",
+		"claim-submitted": "",
+		"claim-approved": "",
+		"claim-rejected": "",
+		"verifier-pending": "",
+		"verifier-approved": "",
+		"verifier-rejected": "",
+		"new-message": "",
+		"message-marked-as-read": "",
+		"submission-added": ""
+	},
+
+	"sc": {
+		"verifier": {
+			"approval-by-group-member": {
+				"name": "",
+				"description": ""
+			},
+			"location": {
+				"name": "",
+				"description": ""
+			},
+			"maximum-quantity-per-interval": {
+				"name": "",
+				"description": ""
+			},
+			"minimum-interval": {
+				"name": "",
+				"description": ""
+			},
+			"password": {
+				"name": "",
+				"description": ""
+			},
+			"picture": {
+				"name": "",
+				"description": ""
+			},
+			"self-approve": {
+				"name": "",
+				"description": ""
+			},
+			"selfie-together": {
+				"name": "",
+				"description": ""
+			},
+			"sensor-one-time-signal": {
+				"name": "",
+				"description": ""
+			},
+			"specific-address": {
+				"name": "",
+				"description": ""
+			},
+			"token-creator-approval": {
+				"name": "",
+				"description": ""
+			},
+
+			"happy-moment": {
+				"name": "",
+				"description": ""
+			},
+			"idea": {
+				"name": "",
+				"description": ""
+			},
+			"networking": {
+				"name": "",
+				"description": ""
+			},
+			"statement": {
+				"name": "",
+				"description": ""
+			},
+			"vote": {
+				"name": "",
+				"description": ""
+			},
+
+			"blacklisting": {
+				"name": "",
+				"description": ""
+			},
+			"blocker": {
+				"name": "",
+				"description": ""
+			},
+			"claimable-only-n-times-per-user": {
+				"name": "",
+				"description": ""
+			},
+			"whitelisting": {
+				"name": "",
+				"description": ""
+			}
+		}
+	}
 }
