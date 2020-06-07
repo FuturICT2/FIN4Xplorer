@@ -43,7 +43,8 @@ i18n.use(initReactI18next).init({
 	resources,
 	lng: language,
 	// keySeparator: false, // nested keys don't work if this is not commented out
-	fallbackLng: 'en',
+	returnEmptyString: false,
+	fallbackLng: false,
 	interpolation: {
 		escapeValue: false
 	}
