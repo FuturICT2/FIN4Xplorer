@@ -69,7 +69,7 @@ function Settings(props, context) {
 					<small>{t('settings.cookie-info')}</small>
 				</div>
 			</Box>
-			<Box title="System parameters">
+			<Box title={t('settings.system-parameters.box-title')}>
 				<div className={classes.font}>
 					{t('settings.system-parameters.main-smart-contract-address') + ': '}
 					<br />

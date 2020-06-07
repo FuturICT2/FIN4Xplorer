@@ -147,7 +147,9 @@ const translationMarkdown = (i18nextReturnValue, replacingObjects) => {
 	const regexToExtractMarkdownLinks = /(\[.*?\]\()(.+?)(\))/g;
 	// we rely on them being extracted in order, that seems to be the case
 	const mdLinksOrdered = i18nextReturnValue.match(regexToExtractMarkdownLinks); // format: [label](key)
-
+	if (!mdLinksOrdered) {
+		return '';
+	}
 	let items = [];
 	let remaining = i18nextReturnValue;
 
