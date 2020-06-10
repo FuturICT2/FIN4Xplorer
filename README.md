@@ -35,7 +35,7 @@ nvm use 10.0.0
 
 # on macOS: to prevent gyp related errors
 npm explore npm -g -- npm install node-gyp@latest
-# on macOS: if you get "gyp: No Xcode or CLT version detected!", try un- and then reinstalling the XCode Command Line Tools
+# on macOS: if you get "gyp: No Xcode or CLT version detected!", try un- and then reinstalling the XCode Command Line Tools:
 sudo rm -r -f /Library/Developer/CommandLineTools
 xcode-select --install
 
@@ -54,7 +54,7 @@ If you have a running faucet server (`scripts/faucet-server`), you can add the U
     "FAUCET_URL": ""
 }
 ```
-If this file is present, the box *On the blockchain* on *Home* will show the option *Request Ether*.
+If this file is present, the box *On the blockchain* on *Home* will show the option *Request Ether*. Note that the faucet URL has to be HTTPS if your deployment is also served via HTTPS.
 
 ## Required files
 
@@ -66,9 +66,9 @@ The address of the Fin4Main contract is expected to reside in `src/config/deploy
 
 ## Serving the GUI
 
-### Development mode
+Serving via React-app-default port 3000. Serving via HTTPS is recommended. If only HTTP, some features won't work. Location requests and permissions to use the webcam for QR code scanning are blocked (meaning the user doesn't even see the prompt to allow it or not) by by modern browsers on sites not using HTTPS.
 
-This starts the React app on port 3000:
+### Development mode
 
 ```sh
 npm start
@@ -76,16 +76,14 @@ npm start
 
 ### Production mode
 
-This starts the React app on port 5000:
-
 ```sh
 npm run build # if this fails with memory errors, try running this before: export NODE_OPTIONS=--max_old_space_size=1500
               # where the value should be a bit less then what you have available (check with the 'free' command)
-              # other commands to try to go around the out of memory error
-              # node --max_old_space_size=1000 node_modules/react-scripts/scripts/build.js
-              # node --max_old_space_size=1000 $(which npm) run build
+              # if this doesn't help, try an older version of react-scripts or try building locally and then scp-ing the build
+              # folder onto the host machine. Note that it will package deployment-info.js as you have it locally, make sure
+              # it has the correct Fin4Main address in it
 npm install -g serve
-serve -s build # -l 3000 to use that port e.g.
+serve -s build -l 3000 # default port would be 5000
 ```
 
 Serving the DApp in production mode instead of development mode also solves an issue with sub-sites (e.g. `/tokens`) on mobile DApp browsers (observed in MetaMask on Android) where it would only show `cannot GET /URL` on reloading.
