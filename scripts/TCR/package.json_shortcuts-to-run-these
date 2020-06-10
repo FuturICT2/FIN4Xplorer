@@ -1,0 +1,31 @@
+{
+    [...]
+
+    "config": {
+        "account": "account2"
+    },
+    "scripts": {
+
+        [...]
+
+        "start-ganache": "ganache-cli --port=7545 --networkId 5777 --allowUnlimitedContractSize --mnemonic=\"camera exclude mail month insect grab eye bubble involve burger soldier ghost\"",
+        "migrate": "rm -rf src/build && truffle migrate",
+        "acceptTokens": "truffle exec --network $npm_package_config_account ./scripts/acceptToken.js",
+        "listFin4Tokens": "truffle exec --network $npm_package_config_account ./scripts/listFin4Tokens.js",
+        "listRegistryTokens": "truffle exec --network $npm_package_config_account ./scripts/listRegistryTokens.js",
+        "approveRegistry": "truffle exec --network $npm_package_config_account ./scripts/approveRegistry.js",
+        "approvePLCR": "truffle exec --network $npm_package_config_account ./scripts/approvePLCR.js",
+        "apply": "truffle exec --network $npm_package_config_account ./scripts/apply.js",
+        "updateStatus": "truffle exec --network $npm_package_config_account ./scripts/updateStatus.js",
+        "challenge": "truffle exec --network $npm_package_config_account ./scripts/challenge.js",
+        "listChallenges": "truffle exec --network $npm_package_config_account ./scripts/listChallenges.js",
+        "commitVote": "truffle exec --network $npm_package_config_account ./scripts/commitVote.js",
+        "revealVote": "truffle exec --network $npm_package_config_account ./scripts/revealVote.js",
+        "getPoll": "truffle exec --network $npm_package_config_account ./scripts/getPoll.js",
+        "GOVdelegate": "truffle exec --network $npm_package_config_account ./scripts/GOVdelegate.js",
+        "GOVrefundDelegation": "truffle exec --network $npm_package_config_account ./scripts/GOVrefundDelegation.js"
+    }
+
+    [...]
+
+}
