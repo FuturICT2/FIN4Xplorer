@@ -81,7 +81,8 @@ npm run build # if this fails with memory errors, try running this before: expor
               # where the value should be a bit less then what you have available (check with the 'free' command)
               # if this doesn't help, try an older version of react-scripts or try building locally and then scp-ing the build
               # folder onto the host machine. Note that it will package deployment-info.js as you have it locally, make sure
-              # it has the correct Fin4Main address in it
+              # it has the correct Fin4Main address in it. If you scp a locally built build-folder, there is no need to also
+              # scp the src/build folder with the contract ABIs as that is packed already.
 npm install -g serve
 serve -s build -l 3000 # default port would be 5000
 ```
