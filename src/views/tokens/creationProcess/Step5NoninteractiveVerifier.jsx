@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from '@material-ui/core';
 import styled from 'styled-components';
-import { findVerifierTypeAddressByName } from '../../../components/utils';
+import { findVerifierTypeAddressByContractName } from '../../../components/utils';
 
 function StepNoninteractiveVerifier(props) {
 	const { t } = useTranslation();
@@ -28,7 +28,9 @@ function StepNoninteractiveVerifier(props) {
 		verifiers.current = draft.noninteractiveVerifiers;
 
 		setVerifiersAdded(
-			Object.keys(draft.noninteractiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+			Object.keys(draft.noninteractiveVerifiers).map(contractName =>
+				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
+			)
 		);
 		setDraftId(draft.id);
 	});
@@ -46,17 +48,17 @@ function StepNoninteractiveVerifier(props) {
 
 	const addVerifier = addr => {
 		let verifier = props.verifierTypes[addr];
-		let name = verifier.label;
+		let contractName = verifier.contractName;
 
-		verifiers.current[name] = {
+		verifiers.current[contractName] = {
 			parameters: {}
 		};
 
 		if (verifier.paramsEncoded) {
-			verifiers.current[name].parameters = {};
+			verifiers.current[contractName].parameters = {};
 			verifier.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
-				verifiers.current[name].parameters[paramName] = null;
+				verifiers.current[contractName].parameters[paramName] = null;
 			});
 		}
 
@@ -66,7 +68,7 @@ function StepNoninteractiveVerifier(props) {
 
 	const removeVerifier = addr => {
 		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
-		delete verifiers.current[props.verifierTypes[addr].label];
+		delete verifiers.current[props.verifierTypes[addr].contractName];
 	};
 
 	return (
@@ -76,6 +78,7 @@ function StepNoninteractiveVerifier(props) {
 					{verifiersAdded.map((verifierAddress, index) => {
 						let verifier = props.verifierTypes[verifierAddress];
 						let name = verifier.label;
+						let contractName = verifier.contractName;
 						return (
 							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
@@ -122,8 +125,8 @@ function StepNoninteractiveVerifier(props) {
 													multiline={isArray ? true : null}
 													rows={isArray ? 1 : null}
 													variant={isArray ? 'outlined' : 'standard'}
-													defaultValue={verifiers.current[name].parameters[paramName]}
-													onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
+													defaultValue={verifiers.current[contractName].parameters[paramName]}
+													onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 													style={styles.normalField}
 												/>
 											</span>

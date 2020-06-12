@@ -79,10 +79,10 @@ const getRandomStringOfLength = len => {
 	return nanoid(len);
 };
 
-const findVerifierTypeAddressByName = (verifierTypes, name) => {
+const findVerifierTypeAddressByContractName = (verifierTypes, contractName) => {
 	for (var addr in verifierTypes) {
 		if (verifierTypes.hasOwnProperty(addr)) {
-			if (verifierTypes[addr].label === name) {
+			if (verifierTypes[addr].contractName === contractName) {
 				return addr;
 			}
 		}
@@ -185,7 +185,7 @@ export {
 	getFormattedSelectOptions,
 	getRandomStringOfLength,
 	getRandomTokenCreationDraftID,
-	findVerifierTypeAddressByName,
+	findVerifierTypeAddressByContractName,
 	TCRactive,
 	UnderlyingsActive,
 	BNstr,

@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
-import { findVerifierTypeAddressByName } from '../../../components/utils';
+import { findVerifierTypeAddressByContractName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
 function StepInteractiveVerifier(props) {
@@ -30,7 +30,9 @@ function StepInteractiveVerifier(props) {
 		}
 
 		setVerifiersAdded(
-			Object.keys(draft.interactiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+			Object.keys(draft.interactiveVerifiers).map(contractName =>
+				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
+			)
 		);
 		setDraftId(draft.id);
 	});
@@ -50,19 +52,19 @@ function StepInteractiveVerifier(props) {
 	const [verifiersAdded, setVerifiersAdded] = useState([]);
 
 	const addVerifier = addr => {
-		let verifierType = props.verifierTypes[addr];
-		let name = verifierType.label;
+		let verifier = props.verifierTypes[addr];
+		let contractName = verifier.contractName;
 
-		verifiers.current[name] = {
+		verifiers.current[contractName] = {
 			// address: addr,
 			parameters: {}
 		};
 
-		if (verifierType.paramsEncoded) {
-			verifiers.current[name].parameters = {};
-			verifierType.paramsEncoded.split(',').map(paramStr => {
+		if (verifier.paramsEncoded) {
+			verifiers.current[contractName].parameters = {};
+			verifier.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
-				verifiers.current[name].parameters[paramName] = null;
+				verifiers.current[contractName].parameters[paramName] = null;
 			});
 		}
 
@@ -72,17 +74,17 @@ function StepInteractiveVerifier(props) {
 
 	const removeVerifier = addr => {
 		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
-		delete verifiers.current[props.verifierTypes[addr].label];
+		delete verifiers.current[props.verifierTypes[addr].contractName];
 	};
 
-	const requestLocation = (verifierName, paramName) => {
+	const requestLocation = (contractName, paramName) => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				let latitude = pos.coords.latitude;
 				let longitude = pos.coords.longitude;
 				let locStr = latitude + ' / ' + longitude;
 				console.log('Captured location ' + locStr);
-				verifiers.current[verifierName].parameters[paramName] = locStr;
+				verifiers.current[contractName].parameters[paramName] = locStr;
 				setLocVal(locStr);
 			});
 		} else {
@@ -100,6 +102,7 @@ function StepInteractiveVerifier(props) {
 					{verifiersAdded.map((verifierAddress, index) => {
 						let verifierType = props.verifierTypes[verifierAddress];
 						let name = verifierType.label;
+						let contractName = verifierType.contractName;
 						return (
 							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
@@ -122,7 +125,7 @@ function StepInteractiveVerifier(props) {
 										/>
 									)}
 								</div>
-								{name === 'Location' && (
+								{contractName === 'Location' && (
 									<small style={{ color: 'orange', padding: '' }}>
 										<b>Note</b>: Submitting location proof is currently not
 										<br />
@@ -152,7 +155,7 @@ function StepInteractiveVerifier(props) {
 														}
 														value={locVal}
 														onChange={e => {
-															verifiers.current[name].parameters[paramName] = e.target.value;
+															verifiers.current[contractName].parameters[paramName] = e.target.value;
 															setLocVal(e.target.value);
 														}}
 														style={styles.shortenedField}
@@ -160,7 +163,7 @@ function StepInteractiveVerifier(props) {
 													/>
 													<IconButton
 														style={{ margin: '17px 0 0 6px', transform: 'scale(1.4)' }}
-														onClick={() => requestLocation(name, paramName)}>
+														onClick={() => requestLocation(contractName, paramName)}>
 														<AddLocation />
 													</IconButton>
 												</span>
@@ -176,8 +179,8 @@ function StepInteractiveVerifier(props) {
 																{description && <small> ({description})</small>}{' '}
 															</>
 														}
-														defaultValue={verifiers.current[name].parameters[paramName]}
-														onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
+														defaultValue={verifiers.current[contractName].parameters[paramName]}
+														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
 													/>
 												</span>

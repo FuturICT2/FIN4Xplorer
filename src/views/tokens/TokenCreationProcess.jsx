@@ -20,7 +20,12 @@ import StepSourcerers from './creationProcess/Step7Sourcerers';
 import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { findVerifierTypeAddressByName, BNstr, stringToBytes32, UnderlyingsActive } from '../../components/utils';
+import {
+	findVerifierTypeAddressByContractName,
+	BNstr,
+	stringToBytes32,
+	UnderlyingsActive
+} from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -370,7 +375,9 @@ function TokenCreationProcess(props, context) {
 
 		let postCreationStepsArgs = [
 			null, // token address
-			Object.keys(verifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name)),
+			Object.keys(verifiers).map(contractName =>
+				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
+			),
 			minterRoles,
 			draft.basics.description,
 			draft.actions.text,

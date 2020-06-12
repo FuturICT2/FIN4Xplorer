@@ -5,7 +5,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
-import { doCallback, ProofAndVerifierStatusEnum, findVerifierTypeAddressByName } from '../components/utils';
+import { doCallback, ProofAndVerifierStatusEnum } from '../components/utils';
 import { Trans } from 'react-i18next';
 const BN = require('bignumber.js');
 
