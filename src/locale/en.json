@@ -512,8 +512,8 @@
 				"description": "Submit a vote on one of the given option."
 			},
 
-			"blacklisting": {
-				"name": "Blacklisting",
+			"block-these": {
+				"name": "Block addresses or groups",
 				"description": "The token creator defines group(s) and/or individual accounts that can not claim a token"
 			},
 			"blocker": {
@@ -524,8 +524,8 @@
 				"name": "Claimable only N times per user",
 				"description": "The token creator sets a cap how many times a token can be successfully claimed."
 			},
-			"whitelisting": {
-				"name": "Whitelisting",
+			"allow-only-these": {
+				"name": "Allow only certain addresses or groups",
 				"description": "The token creator defines group(s) and/or individual accounts that can claim a token while everyone else can not"
 			}
 		}
