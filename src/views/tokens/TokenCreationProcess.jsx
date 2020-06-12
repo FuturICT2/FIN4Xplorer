@@ -493,7 +493,7 @@ function TokenCreationProcess(props, context) {
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? TODO
-		if (type === 'verifier' && (contractName === 'Whitelisting' || contractName === 'Blacklisting')) {
+		if (type === 'verifier' && (contractName === 'AllowOnlyThese' || contractName === 'BlockThese')) {
 			let userList = values[0];
 			let groupsList = values[1];
 			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
