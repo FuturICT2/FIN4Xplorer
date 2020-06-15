@@ -120,7 +120,7 @@ function Messages(props, context) {
 																center="true"
 																icon={Photo}
 																onClick={() => window.open('https://gateway.ipfs.io/ipfs/' + msg.attachment, '_blank')}>
-																Click to see the image
+																Click to see proof
 															</Button>
 															<br />
 														</>
