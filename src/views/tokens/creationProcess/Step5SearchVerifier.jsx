@@ -3,9 +3,22 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import styled from 'styled-components';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
+import { verifiers as verifierDefinitions, verifierOptions } from '../../../config/verifier-info';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { TextField } from '@material-ui/core';
+import { findVerifierTypeAddressByName } from '../../../components/utils';
+
+function valuesToOptions(values) {
+	let result = [];
+	for (let value of values) {
+		result.push({ label: value, value: value });
+	}
+	return result;
+}
 
 function StepSearchVerifier(props) {
 	const { t } = useTranslation();
@@ -14,54 +27,68 @@ function StepSearchVerifier(props) {
 	const [verifierProperty, setVerifierProperty] = useState({
 		name: '',
 		verifierType: '',
-		userType: '',
 		dataType: ''
 	});
-
 	const [search, setSearch] = useState({
-		searchInitiate:false,
-		searchResult: null
+		searchInitiate: false,
+		searchResults: null
 	});
-
-
+	const [verifiersAdded, setVerifiersAdded] = useState([]);
+	const verifiers = useRef({});
 
 	useEffect(() => {
-		if (draftId || !props.draft) {
+		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
+		verifiers.current = draft.noninteractiveVerifiers;
+
+		setVerifiersAdded(
+			Object.keys(draft.noninteractiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+		);
 		setDraftId(draft.id);
 	});
 
-	// TODO: the submit function is not complete yet, you need to add selected verifier to "node"
 	const submit = () => {
 		props.dispatch({
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'searchVerifier',
-			node: {
-
-			}
+			nodeName: 'noninteractiveVerifiers',
+			node: verifiers.current
 		});
 		props.handleNext();
 	};
 
+	const addVerifier = addr => {
+		let verifier = props.verifierTypes[addr];
+		let name = verifier.label;
+
+		verifiers.current[name] = {
+			parameters: {}
+		};
+
+		if (verifier.paramsEncoded) {
+			verifiers.current[name].parameters = {};
+			verifier.paramsEncoded.split(',').map(paramStr => {
+				let paramName = paramStr.split(':')[1];
+				verifiers.current[name].parameters[paramName] = null;
+			});
+		}
+
+		setVerifiersAdded(verifiersAdded.concat(addr));
+	};
+
+	const removeVerifier = addr => {
+		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
+		delete verifiers.current[props.verifierTypes[addr].label];
+	};
 
 	const typesHandler = type => {
 		setVerifierProperty({
 			...verifierProperty,
 			verifierType: type
 		});
-		console.log(verifierProperty);
-	};
-
-	const usersHandler = user => {
-		setVerifierProperty({
-			...verifierProperty,
-			userType: user
-		});
-		console.log(verifierProperty);
 	};
 
 	const dataTypesHandler = dataType => {
@@ -69,87 +96,145 @@ function StepSearchVerifier(props) {
 			...verifierProperty,
 			dataType: dataType
 		});
-		console.log(verifierProperty);
 	};
 
-	//This is the search verifier function
-	const searchVerifiers =  ()=> {
-		console.log(verifierProperty);
-
-		//TODO Implement search functionality and get verifiers and add to search state
-
-		// TODO synchronously call following part
-		// ADD search results to search state
-		setSearch({
-			...search,
-			searchInitiate:true
-		});
-		//TODO organize the search result and render the result to screen
-		organizeSearchResult();
-
-
-	};
-
-
-	let searchResultDisplay = <p>Select parameters to Search verifiers !</p>;
-
-	const organizeSearchResult = () => {
-		if (search.searchResult !== null){
-			// TODO organize search results !!
-			searchResultDisplay = <p> Organize search results</p>
+	const searchVerifiers = () => {
+		let searchResults = [];
+		for (let [key, value] of Object.entries(verifierDefinitions)) {
+			if (
+				verifierProperty.name.toLowerCase() !== '' &&
+				!key.toLowerCase().includes(verifierProperty.name.toLowerCase())
+			)
+				continue;
+			if (verifierProperty.verifierType !== '' && value.type !== verifierProperty.verifierType) continue;
+			if (verifierProperty.dataType !== '' && value.claimerInput.inputType !== verifierProperty.dataType) continue;
+			searchResults.push({ label: key, value: value.address });
 		}
+		setSearch({
+			searchResults,
+			searchInitiate: true
+		});
 	};
 
 	return (
-
 		<>
-
-			<Dropdown
-				key={'drop_'+1}
-				//onChange={}
-				//options={}
+			<TextField
+				key={'drop_' + 1}
+				type="text"
+				value={verifierProperty.name}
+				onChange={event => setVerifierProperty({ ...verifierProperty, name: event.target.value })}
 				label="Name/ID"
+				style={{ width: '100%', marginBottom: 14 }}
 			/>
-
 			<Dropdown
-				key={'drop_'+2}
+				key={'drop_' + 2}
 				onChange={e => typesHandler(e.value)}
-				options={[
-					//TODO: Now the value is hard-coded, in the future, the value should be passed from back-end
-					{label:'Interactive', value:'inter'},
-					{label:'Non-Interactive', value:'non'},
-					{label:'Inter & Non-Inter', value:'both'}]}
+				options={valuesToOptions(verifierOptions.type.values)}
 				label="Types"
 			/>
-
 			<Dropdown
-				key={'drop_'+3}
-				onChange={e => usersHandler(e.value)}
-				options={[
-					{label:'No Users', value:'no'},
-					{label:'Self Users', value:'self'},
-					{label:'Voting users', value:'voting'}]}
-				label="Users"
-			/>
-
-			<Dropdown
-				key={'drop_'+4}
+				key={'drop_' + 4}
 				onChange={e => dataTypesHandler(e.value)}
-				options={[
-					{label:'Auto Generated', value:'auto'},
-					{label:'User Created', value:'user'}]}
-				label="Data Types"
+				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
+				label="Claimer Input Data"
 			/>
-
-			<Button onClick={() => searchVerifiers(true)} center="true" color="inherit">
+			<Button onClick={() => searchVerifiers()} center="true" color="inherit">
 				Search
 			</Button>
-
-			{searchResultDisplay}
-
+			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
+				<div style={{ fontFamily: 'arial' }}>
+					{verifiersAdded.map((verifierAddress, index) => {
+						let verifier = props.verifierTypes[verifierAddress];
+						let name = verifier.label;
+						return (
+							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
+								<div
+									key={'verifierLabel_' + index}
+									title={verifier.description}
+									style={{ display: 'flex', alignItems: 'center' }}>
+									<ArrowRightIcon />
+									{name}
+									<FontAwesomeIcon
+										icon={faMinusCircle}
+										style={styles.removeIcon}
+										title="Remove verifier"
+										onClick={() => removeVerifier(verifierAddress)}
+									/>
+									{verifier.paramsEncoded.length > 0 && (
+										<FontAwesomeIcon
+											icon={faPlusSquare}
+											style={styles.plusIcon}
+											title="Since this verifier has parameters to set, it will require an extra transaction when creating the token"
+										/>
+									)}
+								</div>
+								{verifier.paramsEncoded &&
+									verifier.paramsEncoded.split(',').map((paramStr, paramIndex) => {
+										// e.g. uint:interval:days,uint:maxQuantity:quantity
+										let type = paramStr.split(':')[0];
+										let isArray = type.includes('[]');
+										let paramName = paramStr.split(':')[1];
+										let description = paramStr.split(':')[2];
+										let key = 'verifier_' + index + '_param_' + paramIndex;
+										return (
+											<span key={key}>
+												<TextField
+													type={type === 'uint' ? 'number' : 'text'}
+													label={
+														<>
+															<span>{paramName}</span>
+															{description && <small> ({description})</small>}{' '}
+														</>
+													}
+													inputProps={{
+														style: { fontSize: isArray ? 'small' : 'medium' }
+													}}
+													multiline={isArray ? true : null}
+													rows={isArray ? 1 : null}
+													variant={isArray ? 'outlined' : 'standard'}
+													defaultValue={verifiers.current[name].parameters[paramName]}
+													onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
+													style={styles.normalField}
+												/>
+											</span>
+										);
+									})}
+							</div>
+						);
+					})}
+				</div>
+			)}
+			{search.searchInitiate && (
+				<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />
+			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
 
-export default drizzleConnect(StepSearchVerifier);
+const styles = {
+	removeIcon: {
+		color: 'lightsalmon',
+		width: '14px',
+		height: '14px',
+		paddingLeft: '7px'
+	},
+	plusIcon: {
+		color: 'lightgreen',
+		width: '16px',
+		height: '16px',
+		paddingLeft: '7px'
+	},
+	normalField: {
+		width: '80%',
+		margin: '8px 0 8px 25px'
+	}
+};
+
+const mapStateToProps = state => {
+	return {
+		verifierTypes: state.fin4Store.verifierTypes
+	};
+};
+
+export default drizzleConnect(StepSearchVerifier, mapStateToProps);
