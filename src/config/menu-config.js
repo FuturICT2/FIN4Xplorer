@@ -7,7 +7,6 @@ import TokenView from '../views/tokens/TokenView';
 import Token from '../views/tokens/Token';
 import ProofSubmission from '../views/claims/ProofSubmission';
 import Collections from '../views/collections/Collections';
-import RegisterVoter from '../views/voting/RegisterVoter';
 import CollectionView from '../views/collections/CollectionView';
 import CollectionEdit from '../views/collections/CollectionEdit';
 import UserMessage from '../views/users/UserMessage';
@@ -185,12 +184,6 @@ const menu = [
 	{
 		component: TransactionLog,
 		path: '/transactions',
-		showInNavBar: false
-	},
-	// ----VOTING ----
-	{
-		component: RegisterVoter,
-		path: '/registervoter/',
 		showInNavBar: false
 	}
 ];

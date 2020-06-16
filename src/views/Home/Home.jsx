@@ -21,8 +21,10 @@ import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } from '../../components/utils';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import { contractCall } from '../../components/Contractor';
-
+import Modal from '../../components/Modal';
+import { contractCall, getContractData } from '../../components/Contractor';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { Link } from 'react-router-dom';
 let faucetConfig = null;
 try {
 	faucetConfig = require('../../config/faucet-url.json');
@@ -35,11 +37,16 @@ const showDevButton = false;
 
 function Home(props, context) {
 	const { t } = useTranslation();
-
 	const [iconIsHovered, setIconHovered] = useState(false);
 	const [isQRModalOpen, setQRModalOpen] = useState(false);
+	const [isBecomeVoterModalActive, setisBecomeVoterModalActive] = useState(false);
+	const [isBecomeVoterTabActive, setisBecomeVoterTabActive] = useState(false);
+	const style = { textDecoration: 'none' };
 	const toggleQRModal = () => {
 		setQRModalOpen(!isQRModalOpen);
+	};
+	const toggleBecomeVoterModalActive = () => {
+		setisBecomeVoterModalActive(!isBecomeVoterModalActive);
 	};
 
 	const requestEther = () => {
@@ -87,7 +94,7 @@ function Home(props, context) {
 	};
 
 	const isEligibleToBeVoter = () => {
-		return true;
+		// return true;
 		contractCall(
 			context,
 			props,
@@ -104,6 +111,26 @@ function Home(props, context) {
 				transactionFailed: reason => {
 					console.log('there was an error: ' + reason);
 					return false;
+				}
+			}
+		);
+	};
+
+	const submitClaim = () => {
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			context.drizzle.contracts.Fin4Voting,
+			'becomeVoter',
+			[],
+			'I want to be a voter',
+			{
+				transactionCompleted: receipt => {
+					console.log('You are a voter now!');
+				},
+				transactionFailed: reason => {
+					console.log("We couldn't enroll you on the list of voters because: " + reason);
 				}
 			}
 		);
@@ -169,9 +196,42 @@ function Home(props, context) {
 				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
 				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections')}
-				{isEligibleToBeVoter() &&
-					buildIconLabelLink('/registervoter', <HowToVoteIcon />, 'Become a voter', true, false)}
+				{isEligibleToBeVoter() ? (
+					<Link to={'#'} style={style}>
+						<div
+							style={{ display: 'flex', alignItems: 'center', paddingLeft: '15px', fontFamily: 'arial' }}
+							onClick={() => {
+								toggleBecomeVoterModalActive();
+							}}>
+							<HowToVoteIcon />
+							&nbsp;&nbsp;Become a voter
+						</div>
+					</Link>
+				) : null}
 			</Box>
+			<Modal
+				isOpen={isBecomeVoterModalActive}
+				handleClose={toggleBecomeVoterModalActive}
+				title="Do you want to become a voter?"
+				width="400px">
+				<Container>
+					<Button
+						onClick={() => {
+							submitClaim();
+							toggleBecomeVoterModalActive();
+						}}>
+						{' '}
+						Yes
+					</Button>
+					<Button
+						onClick={() => {
+							toggleBecomeVoterModalActive();
+						}}>
+						{' '}
+						No
+					</Button>
+				</Container>
+			</Modal>
 			<Box title="Inbox" width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
 				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
