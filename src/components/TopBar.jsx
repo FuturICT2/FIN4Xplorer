@@ -61,6 +61,9 @@ const useStyles = makeStyles(theme => ({
 		width: '22px',
 		height: '22px',
 		padding: '0 6px 14px 0'
+	},
+	placeLogoLeftOfCenterOnMobile: {
+		marginRight: '80px'
 	}
 }));
 
@@ -141,49 +144,54 @@ function TopBar(props) {
 				{/* TODO is there a better way to put the logo in the middle AND the icons at the right side at the same height?
 					The 'marginLeft' of <center> matches the 'width' of the icon-<td> to nudge the logo into the middle
 					of the page instead of the middle within its <td>*/}
-				<table style={{ width: '100%' }}>
-					<tbody>
-						<tr>
-							<td>
-								<center style={{ marginLeft: '75px' }}>
-									<Link to={'/'}>
-										{/* Logo made by @ShreshthaKriti */}
-										<img
-											src="/project-logos/fin4x_11_with_round_dots.png"
-											alt="FIN4Xplorer Logo"
-											className={classes.headerImage}
-										/>
-									</Link>
-								</center>
-							</td>
-							<td style={{ width: '120px', whiteSpace: 'nowrap' }}>
-								<Badge
-									onClick={() => {
-										setTimeNow(Date.now());
-										togglePendingTxModal();
-									}}
-									anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-									badgeContent={getPendingTransactions().length}
-									color="secondary">
-									{getPendingTransactions().length === 0 ? (
-										<HourglassEmptyIcon className={classes.transactionsIcon} />
-									) : (
-										<HourglassFullIcon className={classes.transactionsIcon} />
-									)}
-								</Badge>
-								<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
-								<RefreshIcon onClick={() => window.location.reload()} />
-								<Link to={'/messages'}>
-									{props.messages.filter(msg => !msg.hasBeenActedUpon).length > 0 ? (
-										<NewNotificationsIcon className={classes.newNotification} />
-									) : (
-										<NoNotificationsIcon className={classes.noNotification} />
-									)}
-								</Link>{' '}
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<div
+					style={{
+						// container / floating div on div from here: https://stackoverflow.com/a/45069906/2474159
+						position: 'relative',
+						display: 'inline-block',
+						width: '100%'
+					}}>
+					<center className={window.innerWidth < 400 ? classes.placeLogoLeftOfCenterOnMobile : ''}>
+						<Link to={'/'}>
+							{/* Logo made by @ShreshthaKriti */}
+							<img
+								src="/project-logos/fin4x_11_with_round_dots.png"
+								alt="FIN4Xplorer Logo"
+								className={classes.headerImage}
+							/>
+						</Link>
+					</center>
+					<div
+						style={{
+							position: 'absolute',
+							right: '5px',
+							top: '28px'
+						}}>
+						<Badge
+							onClick={() => {
+								setTimeNow(Date.now());
+								togglePendingTxModal();
+							}}
+							anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+							badgeContent={getPendingTransactions().length}
+							color="secondary">
+							{getPendingTransactions().length === 0 ? (
+								<HourglassEmptyIcon className={classes.transactionsIcon} />
+							) : (
+								<HourglassFullIcon className={classes.transactionsIcon} />
+							)}
+						</Badge>
+						<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
+						<RefreshIcon onClick={() => window.location.reload()} />
+						<Link to={'/messages'}>
+							{props.messages.filter(msg => !msg.hasBeenActedUpon).length > 0 ? (
+								<NewNotificationsIcon className={classes.newNotification} />
+							) : (
+								<NoNotificationsIcon className={classes.noNotification} />
+							)}
+						</Link>{' '}
+					</div>
+				</div>
 				{!(window.web3 && props.defaultAccount) && (
 					<center className={classes.noWeb3Warning}>
 						<div>
