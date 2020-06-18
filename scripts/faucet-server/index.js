@@ -8,7 +8,7 @@ const title = 'FIN4Xplorer Demo Faucet Server';
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const Tx = require('ethereumjs-tx'); // <-- for version 1.3.7, for version ^2.1.1 add .Transaction
 const Web3 = require('web3');
-const config = require('../../src/config/deployment-config.json');
+const config = require('./config.json');
 const dripAmount = 0.1; // unit: ether
 const networkURL = 'https://rinkeby.infura.io/v3/' + config.INFURA_API_KEY;
 const provider = new HDWalletProvider(config.MNEMONIC, networkURL);
@@ -39,7 +39,7 @@ let checkUsersBalance = async function(recipient, response, callback) {
 		}
 		let eth = web3.utils.fromWei(res, 'ether');
 		if (eth >= 1) {
-			let report = 'User has more than 1 ETH (' + eth + '), not sending Ether.';
+			let report = 'The user has already more than 1 ETH (' + eth + '), the faucet is not sending Ether.';
 			console.log(report);
 			response.send(report);
 			return;
@@ -72,13 +72,13 @@ let sendEther = async function(recipient, amount, networkID, networkURL, respons
 			console.log('Transaction count: ' + count);
 			const rawTransaction = {
 				from: address,
-				//gasLimit: web3.utils.toHex(210000),
+				// gasLimit: web3.utils.toHex(210000),
 				gas: web3.utils.toHex(100000), // 21000,
 				gasPrice: web3.utils.toHex(gasPrice * 2), // is * 2 a reasonable factor??
 				to: recipient,
 				value: web3.utils.toHex(web3.utils.toWei(amount, 'ether')), //'0x0',
 				chainId: web3.utils.toHex(networkID),
-				//data: data,
+				// data: data,
 				nonce: web3.utils.toHex(count)
 			};
 
@@ -87,10 +87,10 @@ let sendEther = async function(recipient, amount, networkID, networkURL, respons
 			console.log('Transaction is signed');
 
 			web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex')).on('receipt', receipt => {
-				let report = 'Sent ' + amount + ' ETH to ' + recipient; // + ' from ' + address;
+				let report = 'Faucet sent ' + amount + ' ETH to ' + recipient; // + ' from ' + address;
 				console.log(report);
 				response.send(report);
-				//process.exit(0);
+				// process.exit(0);
 			});
 		});
 	});
