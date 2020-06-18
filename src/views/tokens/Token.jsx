@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
@@ -19,10 +19,12 @@ import Modal from '../../components/Modal';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import history from '../../components/history';
 import Currency from '../../components/Currency';
+import { addContract, fetchTokenDetails } from '../../components/Contractor';
+import PropTypes from 'prop-types';
 const fileDownload = require('js-file-download');
 const slugify = require('slugify');
 
-function Token(props) {
+function Token(props, context) {
 	const { t } = useTranslation();
 
 	/* {
@@ -59,23 +61,36 @@ function Token(props) {
 	};
 	const chosenTokenAddress = useRef(null);
 
-	const importTokenAsDraft = () => {
-		toggleTokenChooserVisible();
-		if (chosenTokenAddress.current === null || !props.fin4Tokens[chosenTokenAddress.current]) {
-			alert('Invalid or no token selected');
-			return;
+	const contractReady = name => {
+		return props.contracts[name] && props.contracts[name].initialized;
+	};
+
+	const initiateWhenContractReady = useRef(null); // tokenNameSuffixed if not null
+
+	useEffect(() => {
+		if (initiateWhenContractReady.current && contractReady(initiateWhenContractReady.current)) {
+			initiateWhenContractReady.current = null;
+			fetchTokenDetailsAndDispatchNewDraft();
 		}
+	});
+
+	const fetchTokenDetailsAndDispatchNewDraft = () => {
 		let templateToken = props.fin4Tokens[chosenTokenAddress.current];
-		let nowTimestamp = moment().valueOf();
-		props.dispatch({
-			type: 'ADD_TOKEN_CREATION_DRAFT',
-			draft: {
+		let tokenNameSuffixed = 'Fin4Token_' + templateToken.symbol;
+
+		fetchTokenDetails(context.drizzle.contracts[tokenNameSuffixed], props.defaultAccount).then(details => {
+			let nowTimestamp = moment().valueOf();
+
+			// TODO
+
+			let draft = {
 				id: getRandomTokenCreationDraftID(),
 				created: nowTimestamp,
 				lastModified: nowTimestamp,
 				basics: {
 					name: 'Copy of ' + templateToken.name,
-					symbol: (templateToken.symbol.length < 5 ? templateToken.symbol : templateToken.symbol.substring(0, 4)) + '2',
+					symbol:
+						(templateToken.symbol.length === 5 ? templateToken.symbol.substring(0, 4) : templateToken.symbol) + '2',
 					description: templateToken.description
 				},
 				properties: {},
@@ -83,12 +98,32 @@ function Token(props) {
 				minting: {},
 				noninteractiveVerifiers: {},
 				interactiveVerifiers: {},
-				sourcererPairs: [],
-				externalUnderlyings: []
-				// TODO copy more (all) the fields...
-			},
-			addToCookies: true
+				sourcererPairs: [], // TODO
+				externalUnderlyings: [] // TODO
+			};
+
+			props.dispatch({
+				type: 'ADD_TOKEN_CREATION_DRAFT',
+				draft: draft,
+				addToCookies: true
+			});
 		});
+	};
+
+	const importTokenAsDraft = () => {
+		toggleTokenChooserVisible();
+		if (chosenTokenAddress.current === null || !props.fin4Tokens[chosenTokenAddress.current]) {
+			alert('Invalid or no token selected');
+			return;
+		}
+		let templateToken = props.fin4Tokens[chosenTokenAddress.current];
+		let tokenNameSuffixed = 'Fin4Token_' + templateToken.symbol;
+		if (contractReady(tokenNameSuffixed)) {
+			fetchTokenDetailsAndDispatchNewDraft();
+		} else {
+			addContract(props, context.drizzle, 'Fin4Token', templateToken.address, [], tokenNameSuffixed);
+			initiateWhenContractReady.current = tokenNameSuffixed;
+		}
 	};
 
 	const exportDraft = draftId => {
@@ -260,8 +295,14 @@ function Token(props) {
 	);
 }
 
+Token.contextTypes = {
+	drizzle: PropTypes.object
+};
+
 const mapStateToProps = state => {
 	return {
+		contracts: state.contracts,
+		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts
 	};
