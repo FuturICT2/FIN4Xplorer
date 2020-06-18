@@ -586,7 +586,7 @@ function TokenCreationProcess(props, context) {
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} alternativeLabel>
 								{getSteps().map((label, index) => (
-									<Step key={label}>
+									<Step key={label + '_' + index}>
 										<StepLabel
 											onClick={() => {
 												modifyURL(draftId, index + 1);
