@@ -4,7 +4,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import Currency from '../../components/Currency';
-import { getContractData, findTokenBySymbol, addContract } from '../../components/Contractor';
+import { getContractData, findTokenBySymbol, addContract, fetchTokenDetails } from '../../components/Contractor';
 import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
 import UnderlyingInfoComponent from '../../components/UnderlyingInfoComponent';
 import PropTypes from 'prop-types';
@@ -23,38 +23,8 @@ function TokenView(props, context) {
 	const [verifierTypesLoaded, setVerifierTypesLoaded] = useState(false);
 
 	const fetchDetailedTokenInfo = () => {
-		getContractData(
-			context.drizzle.contracts['Fin4Token_' + tokenViaURL.symbol],
-			props.defaultAccount,
-			'getDetailedTokenInfo'
-		).then(
-			({
-				0: requiredVerifierTypes,
-				1: claimsCount,
-				2: usersBalance,
-				3: totalSupply,
-				4: tokenCreationTime,
-				5: boolPropertiesArr,
-				6: uintValuesArr,
-				7: actionsText
-			}) => {
-				setDetails({
-					requiredVerifierTypes: requiredVerifierTypes,
-					claimsCount: claimsCount,
-					usersBalance: usersBalance,
-					totalSupply: totalSupply, // how much of this token has been minted
-					tokenCreationTime: moment.unix(tokenCreationTime).calendar(),
-					isTransferable: boolPropertiesArr[0],
-					isMintable: boolPropertiesArr[1],
-					isBurnable: boolPropertiesArr[2],
-					isCapped: boolPropertiesArr[3],
-					cap: uintValuesArr[0],
-					decimals: uintValuesArr[1],
-					fixedAmount: uintValuesArr[2],
-					initialSupply: uintValuesArr[3],
-					actionsText: actionsText
-				});
-			}
+		fetchTokenDetails(context.drizzle.contracts['Fin4Token_' + tokenViaURL.symbol], props.defaultAccount).then(obj =>
+			setDetails(obj)
 		);
 	};
 

@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
 import { doCallback, bytes32ToString } from './utils';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
 
@@ -221,6 +222,39 @@ const fetchUsersREPbalance = (props, REPcontract) => {
 			balance: new BN(balanceBN).toNumber()
 		});
 	});
+};
+
+// must have been already added to drizzle by the caller though
+const fetchTokenDetails = (tokenContract, defaultAccount) => {
+	return getContractData(tokenContract, defaultAccount, 'getDetailedTokenInfo').then(
+		({
+			0: requiredVerifierTypes,
+			1: claimsCount,
+			2: usersBalance,
+			3: totalSupply,
+			4: tokenCreationTime,
+			5: boolPropertiesArr,
+			6: uintValuesArr,
+			7: actionsText
+		}) => {
+			return {
+				requiredVerifierTypes: requiredVerifierTypes,
+				claimsCount: claimsCount,
+				usersBalance: usersBalance,
+				totalSupply: totalSupply, // how much of this token has been minted
+				tokenCreationTime: moment.unix(tokenCreationTime).calendar(),
+				isTransferable: boolPropertiesArr[0],
+				isMintable: boolPropertiesArr[1],
+				isBurnable: boolPropertiesArr[2],
+				isCapped: boolPropertiesArr[3],
+				cap: uintValuesArr[0],
+				decimals: uintValuesArr[1],
+				fixedAmount: uintValuesArr[2],
+				initialSupply: uintValuesArr[3],
+				actionsText: actionsText
+			};
+		}
+	);
 };
 
 // --------------------- LOAD INITIAL DATA ---------------------
@@ -714,5 +748,6 @@ export {
 	fetchOPATs,
 	fetchSystemParameters,
 	contractCall,
-	fetchAndAddAllUnderlyings
+	fetchAndAddAllUnderlyings,
+	fetchTokenDetails
 };
