@@ -32,7 +32,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Step1Identity from './creationProcess/Step1Identity';
 
 const useStyles = makeStyles(theme => ({
 	// from https://material-ui.com/components/steppers/
