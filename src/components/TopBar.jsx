@@ -17,7 +17,7 @@ import HourglassFullIcon from '@material-ui/icons/HourglassFull'; // TODO
 import Modal from './Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReactInterval from 'react-interval';
-import { getEtherscanTxURL, getNetworkName, translationMarkdown } from './utils';
+import { getEtherscanTxURL, getNetworkName, translationMarkdown, isMobileDevice } from './utils';
 
 const useStyles = makeStyles(theme => ({
 	bar: {
@@ -151,7 +151,7 @@ function TopBar(props) {
 						display: 'inline-block',
 						width: '100%'
 					}}>
-					<center className={window.innerWidth < 400 ? classes.placeLogoLeftOfCenterOnMobile : ''}>
+					<center className={isMobileDevice() ? classes.placeLogoLeftOfCenterOnMobile : ''}>
 						<Link to={'/'}>
 							{/* Logo made by @ShreshthaKriti */}
 							<img

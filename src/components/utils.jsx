@@ -179,6 +179,10 @@ const translationMarkdown = (i18nextReturnValue, replacingObjects) => {
 	return <>{items}</>;
 };
 
+const isMobileDevice = () => {
+	return window.innerWidth < 400;
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -201,5 +205,6 @@ export {
 	isCollateralFor,
 	hasTheseCollaterals,
 	Fin4Colors,
-	translationMarkdown
+	translationMarkdown,
+	isMobileDevice
 };
