@@ -25,6 +25,7 @@ import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { contractCall } from '../../components/Contractor';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 let faucetConfig = null;
 try {
@@ -39,6 +40,7 @@ const showDevButton = false;
 function Home(props, context) {
 	const { t } = useTranslation();
 
+	const [faucetRequestPending, setFaucetRequestPending] = useState(false);
 	const [iconIsHovered, setIconHovered] = useState(false);
 	const [isQRModalOpen, setQRModalOpen] = useState(false);
 	const toggleQRModal = () => {
@@ -50,6 +52,7 @@ function Home(props, context) {
 		let networkID = window.ethereum.networkVersion;
 		let encodedURL = faucetConfig.FAUCET_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
 		console.log('Calling faucet server: ' + encodedURL);
+		setFaucetRequestPending(true);
 		axios
 			.get(encodedURL)
 			.then(response => {
@@ -58,9 +61,11 @@ function Home(props, context) {
 			})
 			.catch(error => {
 				console.log('Error calling faucet server', error);
-				alert(t('ether-request-failed'));
+				alert(t('home.on-the-blockchain.request-ether.error'));
 			})
-			.finally(() => {});
+			.finally(() => {
+				setFaucetRequestPending(false);
+			});
 	};
 
 	const dev = () => {
@@ -135,11 +140,21 @@ function Home(props, context) {
 				{faucetConfig && faucetConfig.FAUCET_URL && (
 					<>
 						<br />
-						{buildIconLabelCallback(
-							requestEther,
-							<SaveAltIcon />,
-							t('home.on-the-blockchain.request-ether-button'),
-							false
+						{faucetRequestPending ? (
+							<>
+								<CircularProgress size={20} style={{ color: '#695EAD' }} />
+								&nbsp;&nbsp;
+								<small style={{ fontFamily: 'arial', color: 'gray' }}>
+									{t('home.on-the-blockchain.request-ether.pending')}
+								</small>
+							</>
+						) : (
+							buildIconLabelCallback(
+								requestEther,
+								<SaveAltIcon />,
+								t('home.on-the-blockchain.request-ether.button'),
+								false
+							)
 						)}
 					</>
 				)}

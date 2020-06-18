@@ -6,7 +6,12 @@
 			"your-public-address": "Your public address",
 			"info-not-yet-available": "Info not available",
 			"users-balance": "Your balance",
-			"request-ether-button": "Request Ether",
+			"request-ether": {
+				"button": "Request Ether",
+				"pending": "Ether request in progress...",
+				"success": "Request successful",
+				"error": "Request failed"
+			},
 			"no-ether-warning": "Without Ether you are limited to read-only interactions.",
 			"right-network-warning": "Are you connected to the correct network?"
 		},
