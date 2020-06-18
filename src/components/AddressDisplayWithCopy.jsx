@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getEtherscanAddressURL, getEtherscanTxURL } from './utils';
+import { getEtherscanAddressURL, getEtherscanTxURL, isMobileDevice } from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-regular-svg-icons'; // addtional package found via https://stackoverflow.com/a/56566156/2474159
 
@@ -10,6 +10,10 @@ function AddressDisplayWithCopy(props) {
 	const { t } = useTranslation();
 
 	const [tooltipText, setTooltipText] = useState('Click to copy to clipboard');
+
+	const getDefaultFontSize = () => {
+		return isMobileDevice() ? 'x-small' : 'small';
+	};
 
 	return (
 		<>
@@ -21,7 +25,7 @@ function AddressDisplayWithCopy(props) {
 				</Tooltip>
 			</CopyToClipboard>
 			<a
-				style={{ fontSize: props.fontSize ? props.fontSize : 'small' }}
+				style={{ fontSize: props.fontSize ? props.fontSize : getDefaultFontSize() }}
 				href={props.txHash ? getEtherscanTxURL(props.txHash) : getEtherscanAddressURL(props.address)}
 				target="_blank">
 				{props.address}
