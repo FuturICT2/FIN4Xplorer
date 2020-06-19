@@ -89,6 +89,13 @@ function Token(props, context) {
 				minterRoles.pop();
 			}
 
+			let verifiers = details.requiredVerifierTypes.map(addr => props.verifierTypes[addr]);
+			let emptyVerifierBody = { parameters: {} };
+			let verifiers1 = {};
+			verifiers.filter(v => v.isNoninteractive).map(v => (verifiers1[v.contractName] = emptyVerifierBody));
+			let verifiers2 = {};
+			verifiers.filter(v => !v.isNoninteractive).map(v => (verifiers2[v.contractName] = emptyVerifierBody));
+
 			let draft = {
 				id: getRandomTokenCreationDraftID(),
 				created: nowTimestamp,
@@ -119,8 +126,8 @@ function Token(props, context) {
 					fixedAmount: Number(details.fixedAmount),
 					unit: templateToken.unit
 				},
-				noninteractiveVerifiers: {}, // TODO
-				interactiveVerifiers: {}, // TODO
+				noninteractiveVerifiers: verifiers1,
+				interactiveVerifiers: verifiers2,
 				sourcererPairs: [], // TODO
 				externalUnderlyings: [] // TODO
 			};
@@ -327,7 +334,8 @@ const mapStateToProps = state => {
 		contracts: state.contracts,
 		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts
+		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 
