@@ -81,6 +81,14 @@ function Token(props, context) {
 		fetchTokenDetails(context.drizzle.contracts[tokenNameSuffixed], props.defaultAccount).then(details => {
 			let nowTimestamp = moment().valueOf();
 
+			// expects Fin4Claiming to be the last in this array if it is included, order determined in TokenCreationProcess.createToken()
+			let minterRoles = details.addressesWithMinterRoles;
+			let Fin4ClaimingHasMinterRole =
+				minterRoles[minterRoles.length - 1] === context.drizzle.contracts.Fin4Claiming.address;
+			if (Fin4ClaimingHasMinterRole) {
+				minterRoles.pop();
+			}
+
 			let draft = {
 				id: getRandomTokenCreationDraftID(),
 				created: nowTimestamp,
@@ -98,16 +106,16 @@ function Token(props, context) {
 					cap: Number(details.cap),
 					decimals: Number(details.decimals),
 					initialSupply: Number(details.initialSupply),
-					initialSupplyUserIsOwner: true, // TODO
-					initialSupplyOtherOwner: '' // TODO
+					initialSupplyOwner:
+						details.initialSupplyOwner === details.tokenCreator ? 'token-creator' : details.initialSupplyOwner
 				},
 				actions: {
 					text: details.actionsText
 				},
 				minting: {
 					isMintable: details.isMintable,
-					Fin4ClaimingHasMinterRole: true, // TODO
-					additionalMinterRoles: '', // TODO
+					Fin4ClaimingHasMinterRole: Fin4ClaimingHasMinterRole,
+					additionalMinterRoles: minterRoles,
 					fixedAmount: Number(details.fixedAmount),
 					unit: templateToken.unit
 				},
