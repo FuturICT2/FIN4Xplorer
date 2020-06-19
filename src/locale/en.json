@@ -123,7 +123,8 @@
 			"create-token-button": "Create token",
 			"info-box-close-button": "CLOSE",
 			"no-token-creation-draft-found": "No token creation draft found with ID {{Id}}",
-			"all-steps-completed": "All steps completed"
+			"all-steps-completed": "All steps completed",
+			"keep-as-draft": "Keep it as token creation draft"
 		},
 		"step1-identity": {
 			"title": "Token identity",

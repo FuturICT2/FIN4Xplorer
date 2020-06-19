@@ -32,6 +32,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
 	// from https://material-ui.com/components/steppers/
@@ -286,6 +287,13 @@ function TokenCreationProcess(props, context) {
 		if (validationResult) {
 			alert(validationResult);
 			return;
+		}
+
+		if (!keepAsDraft) {
+			props.dispatch({
+				type: 'DELETE_TOKEN_CREATION_DRAFT',
+				draftId: draftId
+			});
 		}
 
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
@@ -578,6 +586,8 @@ function TokenCreationProcess(props, context) {
 		);
 	};
 
+	const [keepAsDraft, setKeepAsDraft] = useState(false);
+
 	return (
 		<>
 			{draftId ? (
@@ -638,6 +648,12 @@ function TokenCreationProcess(props, context) {
 											disabled state until all parameterization transactions are completed.
 										</small>
 									)*/}
+									<FormControlLabel
+										control={
+											<Checkbox size="small" checked={keepAsDraft} onChange={() => setKeepAsDraft(!keepAsDraft)} />
+										}
+										label={<small style={{ color: 'gray' }}>{t('token-creator.navigation.keep-as-draft')}</small>}
+									/>
 									<div style={{ paddingTop: '20px' }}>
 										<Button onClick={handleReset} className={classes.backButton}>
 											{t('token-creator.navigation.restart-button')}
