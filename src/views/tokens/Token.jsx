@@ -81,8 +81,6 @@ function Token(props, context) {
 		fetchTokenDetails(context.drizzle.contracts[tokenNameSuffixed], props.defaultAccount).then(details => {
 			let nowTimestamp = moment().valueOf();
 
-			// TODO
-
 			let draft = {
 				id: getRandomTokenCreationDraftID(),
 				created: nowTimestamp,
@@ -93,11 +91,28 @@ function Token(props, context) {
 						(templateToken.symbol.length === 5 ? templateToken.symbol.substring(0, 4) : templateToken.symbol) + '2',
 					description: templateToken.description
 				},
-				properties: {},
-				actions: {},
-				minting: {},
-				noninteractiveVerifiers: {},
-				interactiveVerifiers: {},
+				properties: {
+					isTransferable: details.isTransferable,
+					isBurnable: details.isBurnable,
+					isCapped: details.isCapped,
+					cap: Number(details.cap),
+					decimals: Number(details.decimals),
+					initialSupply: Number(details.initialSupply),
+					initialSupplyUserIsOwner: true, // TODO
+					initialSupplyOtherOwner: '' // TODO
+				},
+				actions: {
+					text: details.actionsText
+				},
+				minting: {
+					isMintable: details.isMintable,
+					Fin4ClaimingHasMinterRole: true, // TODO
+					additionalMinterRoles: '', // TODO
+					fixedAmount: Number(details.fixedAmount),
+					unit: templateToken.unit
+				},
+				noninteractiveVerifiers: {}, // TODO
+				interactiveVerifiers: {}, // TODO
 				sourcererPairs: [], // TODO
 				externalUnderlyings: [] // TODO
 			};
