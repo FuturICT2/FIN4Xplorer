@@ -235,7 +235,8 @@ const fetchTokenDetails = (tokenContract, defaultAccount) => {
 			4: tokenCreationTime,
 			5: boolPropertiesArr,
 			6: uintValuesArr,
-			7: actionsText
+			7: actionsText,
+			8: initialSupplyOwnerAndTokenCreatorAndMinterRoles
 		}) => {
 			return {
 				requiredVerifierTypes: requiredVerifierTypes,
@@ -251,7 +252,10 @@ const fetchTokenDetails = (tokenContract, defaultAccount) => {
 				decimals: uintValuesArr[1],
 				fixedAmount: uintValuesArr[2],
 				initialSupply: uintValuesArr[3],
-				actionsText: actionsText
+				actionsText: actionsText,
+				initialSupplyOwner: initialSupplyOwnerAndTokenCreatorAndMinterRoles[0],
+				tokenCreator: initialSupplyOwnerAndTokenCreatorAndMinterRoles[1],
+				addressesWithMinterRoles: initialSupplyOwnerAndTokenCreatorAndMinterRoles.slice(2)
 			};
 		}
 	);
