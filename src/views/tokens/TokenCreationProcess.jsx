@@ -307,7 +307,7 @@ function TokenCreationProcess(props, context) {
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
 			],
-			draft.properties.initialSupplyUserIsOwner ? defaultAccount : draft.properties.initialSupplyOtherOwner
+			draft.properties.initialSupplyOwner === 'token-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
 
 		let minterRoles = [];
