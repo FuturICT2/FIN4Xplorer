@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Box from '../../components/Box';
 import Currency from '../../components/Currency';
@@ -12,13 +12,33 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import history from '../../components/history';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 function PreviousClaims(props) {
 	const { t } = useTranslation();
 
+	const [filterIconHovered, setFilterIconHovered] = useState(false);
+	const [filterSettingsOpen, setFilterSettingsOpen] = useState(false);
+
+	const toggleFilterSettings = () => {
+		setFilterSettingsOpen(!filterSettingsOpen);
+	};
+
 	return (
 		<>
 			<Box title={t('claims.previous-claims.box-title')}>
+				<TableIcons>
+					{' '}
+					{/* TODO share code with SortableTokenList by outsourcing a SortFilterMenu.jsx */}
+					<FontAwesomeIcon
+						icon={faFilter}
+						style={filterIconHovered ? styles.iconHovered : filterSettingsOpen ? styles.iconActive : styles.iconDefault}
+						onClick={toggleFilterSettings}
+						onMouseEnter={() => setFilterIconHovered(true)}
+						onMouseLeave={() => setFilterIconHovered(false)}
+					/>
+				</TableIcons>
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];
@@ -79,6 +99,29 @@ function PreviousClaims(props) {
 		</>
 	);
 }
+
+const TableIcons = styled.div`
+	text-align: right;
+	margin-top: -10px;
+`;
+
+const styles = {
+	iconDefault: {
+		color: 'gray',
+		width: '12px',
+		height: '12px'
+	},
+	iconHovered: {
+		color: 'silver',
+		width: '12px',
+		height: '12px'
+	},
+	iconActive: {
+		color: 'blue',
+		width: '12px',
+		height: '12px'
+	}
+};
 
 const chipTheme = createMuiTheme({
 	palette: {
