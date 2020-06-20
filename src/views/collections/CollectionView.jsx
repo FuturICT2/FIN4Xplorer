@@ -6,8 +6,9 @@ import Box from '../../components/Box';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import SortableTokenList from '../../components/SortableTokenList';
+import { downloadClaimHistoryOnTokensInCollection } from '../../components/Contractor';
 
-function CollectionView(props, drizzle) {
+function CollectionView(props, context) {
 	const { t } = useTranslation();
 
 	const [collection, setCollection] = useState(null);
@@ -43,6 +44,24 @@ function CollectionView(props, drizzle) {
 								<br />
 							</center>
 						)}
+						<center>
+							<br />
+							<small>
+								<Link
+									to="#"
+									onClick={() => {
+										downloadClaimHistoryOnTokensInCollection(
+											props,
+											collection.identifier,
+											collection.tokens.map(tokenAddr => props.fin4Tokens[tokenAddr].symbol),
+											context
+										);
+									}}>
+									{t('collections.view.download-claims-on-tokens')}
+								</Link>
+							</small>
+							<br />
+						</center>
 					</span>
 				)}
 			</Box>

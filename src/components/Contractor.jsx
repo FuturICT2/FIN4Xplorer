@@ -289,6 +289,10 @@ const downloadClaimHistoryOnToken = (props, symbol, context) => {
 	});
 };
 
+const downloadClaimHistoryOnTokensInCollection = (props, collectionIdentifier, symbols, context) => {
+	// TODO
+};
+
 // --------------------- LOAD INITIAL DATA ---------------------
 
 const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
@@ -791,5 +795,6 @@ export {
 	contractCall,
 	fetchAndAddAllUnderlyings,
 	fetchTokenDetails,
-	downloadClaimHistoryOnToken
+	downloadClaimHistoryOnToken,
+	downloadClaimHistoryOnTokensInCollection
 };

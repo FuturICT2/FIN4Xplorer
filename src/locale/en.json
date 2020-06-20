@@ -353,7 +353,8 @@
 			"description": "Description",
 			"tokens-count": "Number of tokens",
 			"edit-button": "Edit collection",
-			"tokens-list-box-title": "Tokens in collection"
+			"tokens-list-box-title": "Tokens in collection",
+			"download-claims-on-tokens": "Download claims on tokens in this collection"
 		},
 		"edit": {
 			"box-title": "Edit collection",
