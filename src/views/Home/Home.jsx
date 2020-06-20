@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Container from '../../components/Container';
 import Box from '../../components/Box';
@@ -42,12 +42,14 @@ function Home(props, context) {
 	const [isBecomeVoterModalActive, setisBecomeVoterModalActive] = useState(false);
 	const [isBecomeVoterTabActive, setisBecomeVoterTabActive] = useState(false);
 	const style = { textDecoration: 'none' };
+	const homeReady = useRef(false);
 	const toggleQRModal = () => {
 		setQRModalOpen(!isQRModalOpen);
 	};
 	const toggleBecomeVoterModalActive = () => {
 		setisBecomeVoterModalActive(!isBecomeVoterModalActive);
 	};
+	const [isEligibleToBeAVoter, setIsEligibleToBeAVoter] = useState(false);
 
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
@@ -93,41 +95,54 @@ function Home(props, context) {
 		);
 	};
 
-	const isEligibleToBeVoter = () => {
-		// return true;
-		contractCall(
+	const isEligible = () => {
+		return contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
 			'Fin4Voting',
-			'isVoter',
+			'isEligibleToBeAVoter',
 			[],
 			'I want to be a voter',
 			{
 				transactionCompleted: receipt => {
-					console.log('user is a voter');
-					return true;
+					console.log(receipt);
+					let promises = [];
+					promises.push(receipt.status);
+					Promise.all(promises).then(() => setIsEligibleToBeAVoter(receipt.status));
 				},
+
 				transactionFailed: reason => {
 					console.log('there was an error: ' + reason);
-					return false;
 				}
-			}
+			},
+			false,
+			false
 		);
 	};
+
+	useEffect(() => {
+		if (props.contracts.Fin4Voting && props.contracts.Fin4Voting.initialized && !homeReady.current) {
+			homeReady.current = true;
+			isEligible();
+		}
+	});
 
 	const submitClaim = () => {
 		contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
-			context.drizzle.contracts.Fin4Voting,
+			'Fin4Voting',
 			'becomeVoter',
 			[],
 			'I want to be a voter',
 			{
 				transactionCompleted: receipt => {
 					console.log('You are a voter now!');
+					let promises = [];
+					promises.push(receipt.status);
+					Promise.all(promises).then(() => setIsEligibleToBeAVoter(false));
 				},
 				transactionFailed: reason => {
 					console.log("We couldn't enroll you on the list of voters because: " + reason);
@@ -196,7 +211,7 @@ function Home(props, context) {
 				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
 				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections')}
-				{isEligibleToBeVoter() ? (
+				{isEligibleToBeAVoter ? (
 					<Link to={'#'} style={style}>
 						<div
 							style={{ display: 'flex', alignItems: 'center', paddingLeft: '15px', fontFamily: 'arial' }}
@@ -271,6 +286,7 @@ const styles = {
 
 const mapStateToProps = state => {
 	return {
+		contracts: state.contracts,
 		usersFin4TokenBalances: state.fin4Store.usersFin4TokenBalances,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		defaultAccount: state.fin4Store.defaultAccount,

@@ -21,7 +21,8 @@ const contractCall = (
 	params,
 	displayStr = '',
 	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
-	skipDryRun = false
+	skipDryRun = false,
+	showToast = true
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -52,14 +53,17 @@ const contractCall = (
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
 			console.log('Dry run failed with error: ' + errObj.reason, err);
-			toast.error(
-				<div>
-					<b>Transaction test failed</b>
-					<br />
-					{'Reson: ' + errObj.reason}
-				</div>,
-				{ position: toast.POSITION.TOP_RIGHT }
-			);
+			if (showToast) {
+				toast.error(
+					<div>
+						<b>Transaction test failed</b>
+						<br />
+						{'Reson: ' + errObj.reason}
+					</div>,
+					{ position: toast.POSITION.TOP_RIGHT }
+				);
+			}
+
 			props.dispatch({
 				type: 'DRY_RUN_FAILED',
 				methodStr: methodStr,
