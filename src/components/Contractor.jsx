@@ -263,7 +263,7 @@ const fetchTokenDetails = (tokenContract, defaultAccount) => {
 	);
 };
 
-const downloadClaimHistoryOnToken = (props, symbol, context) => {
+const fetchAllClaimsOnToken = (props, symbol, context, callback) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	let token = findTokenBySymbol(props, symbol);
 	let Fin4ClaimingContract = context.drizzle.contracts.Fin4Claiming;
@@ -275,10 +275,16 @@ const downloadClaimHistoryOnToken = (props, symbol, context) => {
 		Promise.all(
 			fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds, symbol)
 		).then(data => {
-			jsonexport(data, (err, csv) => {
-				if (err) return console.error(err);
-				fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
-			});
+			callback(data);
+		});
+	});
+};
+
+const downloadClaimHistoryOnToken = (props, symbol, context) => {
+	fetchAllClaimsOnToken(props, symbol, context, data => {
+		jsonexport(data, (err, csv) => {
+			if (err) return console.error(err);
+			fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
 		});
 	});
 };
