@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
+const jsonexport = require('jsonexport');
+const fileDownload = require('js-file-download');
 
 // --------------------- CONSTANTS ---------------------
 
@@ -270,9 +272,12 @@ const downloadClaimHistoryOnToken = (props, symbol, context) => {
 		for (let i = 0; i < count; i++) {
 			claimIds.push(i);
 		}
-		Promise.all(fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds)).then(
+		Promise.all(fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds, true)).then(
 			data => {
-				// TODO
+				jsonexport(data, (err, csv) => {
+					if (err) return console.error(err);
+					fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
+				});
 			}
 		);
 	});
@@ -550,7 +555,13 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle, t) => {
 		});
 };
 
-const fetchTheseClaimsOnThisToken = (Fin4ClaimingContract, defaultAccount, tokenAddr, claimIds) => {
+const fetchTheseClaimsOnThisToken = (
+	Fin4ClaimingContract,
+	defaultAccount,
+	tokenAddr,
+	claimIds,
+	forCSVexport = false
+) => {
 	return claimIds.map(claimId => {
 		return getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimOnThisToken', tokenAddr, claimId).then(
 			({
@@ -571,8 +582,7 @@ const fetchTheseClaimsOnThisToken = (Fin4ClaimingContract, defaultAccount, token
 						message: ''
 					};
 				}
-				return {
-					id: tokenAddr + '_' + claimId, // pseudoId
+				let claimObj = {
 					token: tokenAddr,
 					claimId: claimId,
 					claimer: claimer,
@@ -580,10 +590,14 @@ const fetchTheseClaimsOnThisToken = (Fin4ClaimingContract, defaultAccount, token
 					gotRejected: gotRejected,
 					quantity: new BN(quantityBN).toNumber(),
 					claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
-					comment: comment,
-					verifierStatuses: verifierStatusesObj,
-					verifiersWithMessages: verifiersWithMessages.filter(addr => addr !== zeroAddress)
+					comment: comment
 				};
+				if (!forCSVexport) {
+					claimObj.id = tokenAddr + '_' + claimId; // pseudoId
+					claimObj.verifierStatuses = verifierStatusesObj;
+					claimObj.verifiersWithMessages = verifiersWithMessages.filter(addr => addr !== zeroAddress);
+				}
+				return claimObj;
 			}
 		);
 	});
