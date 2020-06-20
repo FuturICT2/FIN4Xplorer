@@ -261,6 +261,10 @@ const fetchTokenDetails = (tokenContract, defaultAccount) => {
 	);
 };
 
+const downloadClaimHistoryOnToken = symbol => {
+	// TODO
+};
+
 // --------------------- LOAD INITIAL DATA ---------------------
 
 const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
@@ -753,5 +757,6 @@ export {
 	fetchSystemParameters,
 	contractCall,
 	fetchAndAddAllUnderlyings,
-	fetchTokenDetails
+	fetchTokenDetails,
+	downloadClaimHistoryOnToken
 };

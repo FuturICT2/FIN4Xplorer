@@ -4,7 +4,12 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import Currency from '../../components/Currency';
-import { findTokenBySymbol, addContract, fetchTokenDetails } from '../../components/Contractor';
+import {
+	findTokenBySymbol,
+	addContract,
+	fetchTokenDetails,
+	downloadClaimHistoryOnToken
+} from '../../components/Contractor';
 import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
 import UnderlyingInfoComponent from '../../components/UnderlyingInfoComponent';
 import PropTypes from 'prop-types';
@@ -257,6 +262,10 @@ function TokenView(props, context) {
 						<Link to={'/claim/' + tokenViaURL.symbol}>{t('tokens-list.claim-button')}</Link>
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>{t('home.wallet.transfer-token')}</Link>
+						{', '}
+						<Link to="#" onClick={() => downloadClaimHistoryOnToken(tokenViaURL.symbol)}>
+							{t('token-view.download-claims')}
+						</Link>
 						{buildSourcererInfos()}
 						{buildExternalUnderlyingsInfos()}
 					</span>

@@ -86,7 +86,8 @@
 			"text": "text",
 			"picture": "picture",
 			"vote": "vote"
-		}
+		},
+		"download-claims": "Download claims"
 	},
 	"claims": {
 		"default-unit": "Quantity",
