@@ -23,7 +23,7 @@ const OutlinedDiv = ({ children, label }) => {
 
 const inputFieldStyle = {
 	width: '100%',
-	marginBottom: '15px',
+	// marginBottom: '15px', // outcommmented it because it looks better in PreviousClaims, maybe make it a props to have this or not
 	marginTop: '15px'
 };
 

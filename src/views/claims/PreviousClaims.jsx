@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 import history from '../../components/history';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import OutlinedDiv from '../../components/OutlinedDiv';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 function PreviousClaims(props) {
 	const { t } = useTranslation();
@@ -23,6 +25,31 @@ function PreviousClaims(props) {
 
 	const toggleFilterSettings = () => {
 		setFilterSettingsOpen(!filterSettingsOpen);
+	};
+
+	const [filterModes, setFilterModes] = useState({
+		'show-pending': true,
+		'show-approved': true,
+		'show-rejected': true
+	});
+
+	const buildCheckbox = (attribute, label) => {
+		return (
+			<FormControlLabel
+				control={
+					<Checkbox
+						checked={filterModes[attribute]}
+						onChange={() => {
+							setFilterModes({
+								...filterModes,
+								[attribute]: !filterModes[attribute]
+							});
+						}}
+					/>
+				}
+				label={label}
+			/>
+		);
 	};
 
 	return (
@@ -39,6 +66,13 @@ function PreviousClaims(props) {
 						onMouseLeave={() => setFilterIconHovered(false)}
 					/>
 				</TableIcons>
+				{filterSettingsOpen && (
+					<OutlinedDiv label={t('claims.previous-claims.filter.menu-title')}>
+						{buildCheckbox('show-pending', t('claims.previous-claims.filter.pending-checkbox'))}
+						{buildCheckbox('show-approved', t('claims.previous-claims.filter.approved-checkbox'))}
+						{buildCheckbox('show-rejected', t('claims.previous-claims.filter.rejected-checkbox'))}
+					</OutlinedDiv>
+				)}
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];

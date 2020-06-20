@@ -79,7 +79,13 @@
 			"box-title": "My previous claims",
 			"rejected-label": "REJECTED",
 			"approved-label": "Approved",
-			"submit-proof-button": "Submit Proof"
+			"submit-proof-button": "Submit Proof",
+			"filter": {
+				"menu-title": "Filter options: show claims that are...",
+				"pending-checkbox": "pending",
+				"approved-checkbox": "approved",
+				"rejected-checkbox": "rejected"
+			}
 		}
 	},
 	"proof-submission": {
