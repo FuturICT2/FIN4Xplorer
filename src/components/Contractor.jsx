@@ -601,10 +601,11 @@ const fetchTheseClaimsOnThisToken = (
 				2: gotRejected,
 				3: quantityBN,
 				4: claimCreationTimeBN,
-				5: comment,
-				6: requiredVerifierTypes,
-				7: verifierStatuses, // ProofAndVerifierStatusEnum
-				8: verifiersWithMessages
+				5: claimApprovalOrRejectionTimeBN,
+				6: comment,
+				7: requiredVerifierTypes,
+				8: verifierStatuses, // ProofAndVerifierStatusEnum
+				9: verifiersWithMessages
 			}) => {
 				let verifierStatusesObj = {};
 				for (let i = 0; i < requiredVerifierTypes.length; i++) {
@@ -624,6 +625,7 @@ const fetchTheseClaimsOnThisToken = (
 				claimObj.gotRejected = gotRejected;
 				claimObj.quantity = new BN(quantityBN).toNumber();
 				claimObj.claimCreationTime = new BN(claimCreationTimeBN).toNumber();
+				claimObj.claimApprovalOrRejectionTime = new BN(claimApprovalOrRejectionTimeBN).toNumber();
 				claimObj.comment = comment;
 				if (!tokenSymbol) {
 					claimObj.id = tokenAddr + '_' + claimId; // pseudoId
