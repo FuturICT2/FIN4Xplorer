@@ -69,6 +69,25 @@
 		"view-button": "View",
 		"claim-button": "Claim"
 	},
+	"token-view": {
+		"box-title": "Token Profile",
+		"creation-time": "Creation",
+		"verifier-types": "Verifier types",
+		"total-numb-of-claims": "Total number of claims",
+		"total-supply": "Total supply",
+		"is-mintable": "is mintable",
+		"variable-minting": "Variable minting amount set by user",
+		"fixed-minting": "Fixed minting quantity per claim",
+		"claimable-actions": "Claimable actions",
+		"token-actions": "Token actions",
+		"submissions": "Submissions",
+		"collage": {
+			"link-title": "open {{collageType}} collage",
+			"text": "text",
+			"picture": "picture",
+			"vote": "vote"
+		}
+	},
 	"claims": {
 		"default-unit": "Quantity",
 		"claim-tokens-box-title": "Claim Tokens",

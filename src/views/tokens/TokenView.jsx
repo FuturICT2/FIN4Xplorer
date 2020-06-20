@@ -151,11 +151,11 @@ function TokenView(props, context) {
 	const getSubmissionPageKeyword = contentType => {
 		switch (Number(contentType)) {
 			case 0:
-				return 'text';
+				return t('token-view.collage.text');
 			case 1:
-				return 'picture';
+				return t('token-view.collage.picture');
 			case 2:
-				return 'vote';
+				return t('token-view.collage.vote');
 		}
 	};
 
@@ -182,7 +182,7 @@ function TokenView(props, context) {
 							// TODO make visible with 0 submissions too?
 							// Requires passing that info through back/frontend differently though
 							<p>
-								<span style={{ color: 'gray' }}>Submissions: </span>
+								<span style={{ color: 'gray' }}>{t('token-view.submissions') + ': '}</span>
 								<Link
 									to={
 										'/token/submissions/' +
@@ -190,59 +190,73 @@ function TokenView(props, context) {
 										'/' +
 										getSubmissionPageKeyword(getSubmissionsOnToken()[0].contentType)
 									}>
-									open {getSubmissionPageKeyword(getSubmissionsOnToken()[0].contentType)} collage
+									{t('token-view.collage.link-title', {
+										collageType: getSubmissionPageKeyword(getSubmissionsOnToken()[0].contentType)
+									})}
 								</Link>
 							</p>
 						)}
-						{buildInfoLine('Short description', tokenViaURL.description.split('||')[0])}
-						{buildInfoLine('Long description', tokenViaURL.description.split('||')[1])}
+						{buildInfoLine(
+							t('token-creator.step1-identity.fields.short-description.label'),
+							tokenViaURL.description.split('||')[0]
+						)}
+						{buildInfoLine(
+							t('token-creator.step1-identity.fields.long-description.label'),
+							tokenViaURL.description.split('||')[1]
+						)}
 						{!details ? (
 							<span style={{ fontFamily: 'arial' }}>Loading details...</span>
 						) : (
 							<span style={{ fontFamily: 'arial' }}>
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildInfoLine('Created', details.tokenCreationTime)}
-								{buildInfoLine('Verifier types', verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...')}
-								{buildInfoLine('Total number of claims', details.claimsCount)}
-								{buildInfoLine('Total supply', details.totalSupply)}
+								{buildInfoLine(t('token-view.creation-time'), details.tokenCreationTime)}
+								{buildInfoLine(
+									t('token-view.verifier-types'),
+									verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...'
+								)}
+								{buildInfoLine(t('token-view.total-numb-of-claims'), details.claimsCount)}
+								{buildInfoLine(t('token-view.total-supply'), details.totalSupply)}
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{buildCheckboxWithLabel('is transferable', details.isTransferable)}
-								{buildCheckboxWithLabel('is mintable', details.isMintable)}
-								{buildCheckboxWithLabel('is burnable', details.isBurnable)}
-								{buildCheckboxWithLabel('is capped', details.isCapped)}
+								{buildCheckboxWithLabel(
+									t('token-creator.step2-design.fields.is-transferable.label'),
+									details.isTransferable
+								)}
+								{buildCheckboxWithLabel(t('token-view.is-mintable'), details.isMintable)}
+								{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-burnable.label'), details.isBurnable)}
+								{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-capped.label'), details.isCapped)}
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
-								{details.isCapped && buildInfoLine('Cap', details.cap)}
-								{buildInfoLine('Decimals', details.decimals)}
-								{buildInfoLine('Initial supply', details.initialSupply)}
+								{details.isCapped && buildInfoLine(t('token-creator.step2-design.fields.cap.label'), details.cap)}
+								{buildInfoLine(t('token-creator.step2-design.fields.decimals.label'), details.decimals)}
+								{buildInfoLine(t('token-creator.step2-design.fields.initial-supply.label'), details.initialSupply)}
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 
 								{Number(details.fixedAmount) === 0
-									? buildInfoLine('Variable minting amount set by user')
-									: buildInfoLine('Fixed minting quantity per claim', details.fixedAmount)}
-								{buildInfoLine('Unit of measurement', tokenViaURL.unit)}
-								{buildInfoLine('Claimable actions', details.actionsText)}
+									? buildInfoLine(t('token-view.variable-minting'))
+									: buildInfoLine(t('token-view.fixed-minting'), details.fixedAmount)}
+								{buildInfoLine(t('token-creator.step4-minting.fields.unit.label'), tokenViaURL.unit)}
+								{buildInfoLine(t('token-view.claimable-actions'), details.actionsText)}
 							</span>
 						)}
 					</span>
 				)}
 			</Box>
-			<Box title="Token Profile">
+			<Box title={t('token-view.box-title')}>
 				{!details ? (
 					<span style={{ fontFamily: 'arial' }}>Loading your profile...</span>
 				) : (
 					<span style={{ fontFamily: 'arial' }}>
-						{buildInfoLine('Your balance', details.usersBalance)}
+						{buildInfoLine(t('home.on-the-blockchain.users-balance'), details.usersBalance)}
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						<span style={{ color: 'gray' }}>Token actions: </span>
-						<Link to={'/claim/' + tokenViaURL.symbol}>Claim</Link>
+						<span style={{ color: 'gray' }}>{t('token-view.token-actions') + ': '}</span>
+						<Link to={'/claim/' + tokenViaURL.symbol}>{t('tokens-list.claim-button')}</Link>
 						{', '}
-						<Link to={'/user/transfer/' + tokenViaURL.symbol}>Transfer</Link>
+						<Link to={'/user/transfer/' + tokenViaURL.symbol}>{t('home.wallet.transfer-token')}</Link>
 						{buildSourcererInfos()}
 						{buildExternalUnderlyingsInfos()}
 					</span>
