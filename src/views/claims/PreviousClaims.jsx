@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Box from '../../components/Box';
 import Currency from '../../components/Currency';
@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import OutlinedDiv from '../../components/OutlinedDiv';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
+import Cookies from 'js-cookie';
 
 function PreviousClaims(props) {
 	const { t } = useTranslation();
@@ -33,6 +34,16 @@ function PreviousClaims(props) {
 		'show-rejected': true
 	});
 
+	const checkedCookie = useRef(false);
+
+	useEffect(() => {
+		let cookieEntry = Cookies.get('claims-filter-modes');
+		if (cookieEntry && !checkedCookie.current) {
+			checkedCookie.current = true;
+			setFilterModes(JSON.parse(cookieEntry));
+		}
+	});
+
 	const buildCheckbox = (attribute, label) => {
 		return (
 			<FormControlLabel
@@ -40,10 +51,14 @@ function PreviousClaims(props) {
 					<Checkbox
 						checked={filterModes[attribute]}
 						onChange={() => {
+							let filterModesCopy = Object.assign({}, filterModes);
 							setFilterModes({
 								...filterModes,
 								[attribute]: !filterModes[attribute]
 							});
+							// state is not immediately updated, need to do it manually in parallel
+							filterModesCopy[attribute] = !filterModesCopy[attribute];
+							Cookies.set('claims-filter-modes', JSON.stringify(filterModesCopy), { expires: 7 });
 						}}
 					/>
 				}
