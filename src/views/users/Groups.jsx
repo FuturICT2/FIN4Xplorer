@@ -109,6 +109,8 @@ function Groups(props, context) {
 		);
 	};
 
+	console.log(groups.filter(group => group.userIsCreator).length > 0);
+
 	return (
 		<Container>
 			<Box title="Create a group">
@@ -167,45 +169,47 @@ function Groups(props, context) {
 						{groups
 							.filter(g => g.userIsMember)
 							.map((group, index) => {
-								return (
-									<TableRow
-										key={'groupMember_' + index}
-										// TODO leave group option, checkbox if inform group owner about you leaving or not
-										data={{
-											name: group.name,
-											id: group.groupId,
-											actions: (
-												<>
-													{group.userIsCreator ? (
-														<small>You are owner</small>
-													) : (
-														<small style={{ color: 'blue', textDecoration: 'underline' }}>
-															<Link to={'/user/message/' + group.creator}>Message owner</Link>
-														</small>
-													)}
-													<br />
-													<small
-														title={
-															group.userIsCreator
-																? 'Removing yourself as member does not change your ownership of this group'
-																: ''
-														}
-														style={{ color: 'blue', textDecoration: 'underline' }}
-														onClick={() => {
-															leaveGroupValues.current.groupId = group.groupId;
-															if (group.userIsCreator) {
-																removeUsersMembership(group.groupId);
-															} else {
-																toggleLeaveGroupModal();
+								if (group.name !== '') {
+									return (
+										<TableRow
+											key={'groupMember_' + index}
+											// TODO leave group option, checkbox if inform group owner about you leaving or not
+											data={{
+												name: group.name,
+												id: group.groupId,
+												actions: (
+													<>
+														{group.userIsCreator ? (
+															<small>You are owner</small>
+														) : (
+															<small style={{ color: 'blue', textDecoration: 'underline' }}>
+																<Link to={'/user/message/' + group.creator}>Message owner</Link>
+															</small>
+														)}
+														<br />
+														<small
+															title={
+																group.userIsCreator
+																	? 'Removing yourself as member does not change your ownership of this group'
+																	: ''
 															}
-														}}>
-														Leave group
-													</small>
-												</>
-											)
-										}}
-									/>
-								);
+															style={{ color: 'blue', textDecoration: 'underline' }}
+															onClick={() => {
+																leaveGroupValues.current.groupId = group.groupId;
+																if (group.userIsCreator) {
+																	removeUsersMembership(group.groupId);
+																} else {
+																	toggleLeaveGroupModal();
+																}
+															}}>
+															Leave group
+														</small>
+													</>
+												)
+											}}
+										/>
+									);
+								}
 							})}
 					</Table>
 				</Box>
