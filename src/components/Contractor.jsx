@@ -546,6 +546,45 @@ const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle, t) => {
 		});
 };
 
+const fetchTheseClaimsOnThisToken = (Fin4ClaimingContract, defaultAccount, tokenAddr, claimIds) => {
+	return claimIds.map(claimId => {
+		return getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimOnThisToken', tokenAddr, claimId).then(
+			({
+				0: claimer,
+				1: isApproved,
+				2: gotRejected,
+				3: quantityBN,
+				4: claimCreationTimeBN,
+				5: comment,
+				6: requiredVerifierTypes,
+				7: verifierStatuses, // ProofAndVerifierStatusEnum
+				8: verifiersWithMessages
+			}) => {
+				let verifierStatusesObj = {};
+				for (let i = 0; i < requiredVerifierTypes.length; i++) {
+					verifierStatusesObj[requiredVerifierTypes[i]] = {
+						status: Number(verifierStatuses[i]),
+						message: ''
+					};
+				}
+				return {
+					id: tokenAddr + '_' + claimId, // pseudoId
+					token: tokenAddr,
+					claimId: claimId,
+					claimer: claimer,
+					isApproved: isApproved,
+					gotRejected: gotRejected,
+					quantity: new BN(quantityBN).toNumber(),
+					claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
+					comment: comment,
+					verifierStatuses: verifierStatusesObj,
+					verifiersWithMessages: verifiersWithMessages.filter(addr => addr !== zeroAddress)
+				};
+			}
+		);
+	});
+};
+
 const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4ClaimingContract, defaultAccount, 'getTokensWhereUserHasClaims')
@@ -553,48 +592,7 @@ const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 			return tokenAddresses.map(tokenAddr => {
 				return getContractData(Fin4ClaimingContract, defaultAccount, 'getMyClaimIdsOnThisToken', tokenAddr).then(
 					claimIds => {
-						return claimIds.map(claimId => {
-							return getContractData(
-								Fin4ClaimingContract,
-								defaultAccount,
-								'getClaimOnThisToken',
-								tokenAddr,
-								claimId
-							).then(
-								({
-									0: claimer,
-									1: isApproved,
-									2: gotRejected,
-									3: quantityBN,
-									4: claimCreationTimeBN,
-									5: comment,
-									6: requiredVerifierTypes,
-									7: verifierStatuses, // ProofAndVerifierStatusEnum
-									8: verifiersWithMessages
-								}) => {
-									let verifierStatusesObj = {};
-									for (let i = 0; i < requiredVerifierTypes.length; i++) {
-										verifierStatusesObj[requiredVerifierTypes[i]] = {
-											status: Number(verifierStatuses[i]),
-											message: ''
-										};
-									}
-									return {
-										id: tokenAddr + '_' + claimId, // pseudoId
-										token: tokenAddr,
-										claimId: claimId,
-										claimer: claimer,
-										isApproved: isApproved,
-										gotRejected: gotRejected,
-										quantity: new BN(quantityBN).toNumber(),
-										claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
-										comment: comment,
-										verifierStatuses: verifierStatusesObj,
-										verifiersWithMessages: verifiersWithMessages.filter(addr => addr !== zeroAddress)
-									};
-								}
-							);
-						});
+						return fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, tokenAddr, claimIds);
 					}
 				);
 			});
