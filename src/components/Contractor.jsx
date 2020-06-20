@@ -290,7 +290,28 @@ const downloadClaimHistoryOnToken = (props, symbol, context) => {
 };
 
 const downloadClaimHistoryOnTokensInCollection = (props, collectionIdentifier, symbols, context) => {
-	// TODO
+	if (symbols.length === 0) {
+		console.log('No tokens in collection');
+		return;
+	}
+	// TODO maybe easier via promises then this recursion approach?
+	getClaimsFromNextToken(props, symbols, context, 0, [], data => {
+		jsonexport(data, (err, csv) => {
+			if (err) return console.error(err);
+			fileDownload(csv, 'AllClaimsOnAllTokensInCollection_' + collectionIdentifier + '_' + moment().valueOf() + '.csv');
+		});
+	});
+};
+
+const getClaimsFromNextToken = (props, symbols, context, index, allData, callbackDone) => {
+	fetchAllClaimsOnToken(props, symbols[index], context, data => {
+		allData = [...allData, ...data];
+		if (index === symbols.length - 1) {
+			callbackDone(allData);
+		} else {
+			getClaimsFromNextToken(props, symbols, context, index + 1, allData, callbackDone);
+		}
+	});
 };
 
 // --------------------- LOAD INITIAL DATA ---------------------
