@@ -84,7 +84,8 @@
 				"menu-title": "Filter options: show claims that are...",
 				"pending-checkbox": "pending",
 				"approved-checkbox": "approved",
-				"rejected-checkbox": "rejected"
+				"rejected-checkbox": "rejected",
+				"filter-active": "filter active"
 			}
 		}
 	},

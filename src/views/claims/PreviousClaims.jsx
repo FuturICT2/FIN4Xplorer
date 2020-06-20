@@ -17,6 +17,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import OutlinedDiv from '../../components/OutlinedDiv';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import Cookies from 'js-cookie';
+import { Fin4Colors } from '../../components/utils';
 
 function PreviousClaims(props) {
 	const { t } = useTranslation();
@@ -67,15 +68,38 @@ function PreviousClaims(props) {
 		);
 	};
 
+	const filterActive = () => {
+		return Object.keys(filterModes).filter(key => filterModes[key] === false).length > 0;
+	};
+
+	const getFilterIconStyle = () => {
+		if (filterIconHovered) {
+			return styles.iconHovered;
+		}
+		if (filterSettingsOpen) {
+			return styles.iconActive;
+		}
+		if (filterActive()) {
+			return styles.iconDefaultFiltersActive;
+		}
+		return styles.iconDefault;
+	};
+
 	return (
 		<>
 			<Box title={t('claims.previous-claims.box-title')}>
 				<TableIcons>
-					{' '}
 					{/* TODO share code with SortableTokenList by outsourcing a SortFilterMenu.jsx */}
+					{filterActive() ? (
+						<small style={{ fontFamily: 'arial', color: Fin4Colors.darkPink }}>
+							{t('claims.previous-claims.filter.filter-active') + ' '}
+						</small>
+					) : (
+						''
+					)}
 					<FontAwesomeIcon
 						icon={faFilter}
-						style={filterIconHovered ? styles.iconHovered : filterSettingsOpen ? styles.iconActive : styles.iconDefault}
+						style={getFilterIconStyle()}
 						onClick={toggleFilterSettings}
 						onMouseEnter={() => setFilterIconHovered(true)}
 						onMouseLeave={() => setFilterIconHovered(false)}
@@ -158,6 +182,11 @@ const TableIcons = styled.div`
 `;
 
 const styles = {
+	iconDefaultFiltersActive: {
+		color: Fin4Colors.darkPink,
+		width: '12px',
+		height: '12px'
+	},
 	iconDefault: {
 		color: 'gray',
 		width: '12px',
@@ -169,7 +198,7 @@ const styles = {
 		height: '12px'
 	},
 	iconActive: {
-		color: 'blue',
+		color: Fin4Colors.blue,
 		width: '12px',
 		height: '12px'
 	}
