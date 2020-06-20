@@ -263,7 +263,7 @@ function TokenView(props, context) {
 						{', '}
 						<Link to={'/user/transfer/' + tokenViaURL.symbol}>{t('home.wallet.transfer-token')}</Link>
 						{', '}
-						<Link to="#" onClick={() => downloadClaimHistoryOnToken(tokenViaURL.symbol)}>
+						<Link to="#" onClick={() => downloadClaimHistoryOnToken(props, tokenViaURL.symbol, context)}>
 							{t('token-view.download-claims')}
 						</Link>
 						{buildSourcererInfos()}

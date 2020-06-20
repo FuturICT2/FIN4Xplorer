@@ -261,8 +261,17 @@ const fetchTokenDetails = (tokenContract, defaultAccount) => {
 	);
 };
 
-const downloadClaimHistoryOnToken = symbol => {
-	// TODO
+const downloadClaimHistoryOnToken = (props, symbol, context) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	let token = findTokenBySymbol(props, symbol);
+	getContractData(
+		context.drizzle.contracts.Fin4Claiming,
+		defaultAccount,
+		'getClaimsCountOnThisToken',
+		token.address
+	).then(count => {
+		// TODO
+	});
 };
 
 // --------------------- LOAD INITIAL DATA ---------------------
