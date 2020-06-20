@@ -29,9 +29,9 @@ function PreviousClaims(props) {
 	};
 
 	const [filterModes, setFilterModes] = useState({
-		'show-pending': true,
-		'show-approved': true,
-		'show-rejected': true
+		pendingApproval: true,
+		isApproved: true,
+		gotRejected: true
 	});
 
 	const checkedCookie = useRef(false);
@@ -83,19 +83,22 @@ function PreviousClaims(props) {
 				</TableIcons>
 				{filterSettingsOpen && (
 					<OutlinedDiv label={t('claims.previous-claims.filter.menu-title')}>
-						{buildCheckbox('show-pending', t('claims.previous-claims.filter.pending-checkbox'))}
-						{buildCheckbox('show-approved', t('claims.previous-claims.filter.approved-checkbox'))}
-						{buildCheckbox('show-rejected', t('claims.previous-claims.filter.rejected-checkbox'))}
+						{buildCheckbox('pendingApproval', t('claims.previous-claims.filter.pending-checkbox'))}
+						{buildCheckbox('isApproved', t('claims.previous-claims.filter.approved-checkbox'))}
+						{buildCheckbox('gotRejected', t('claims.previous-claims.filter.rejected-checkbox'))}
 					</OutlinedDiv>
 				)}
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];
+						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pendingApproval';
+						if (!filterModes[status]) {
+							return;
+						}
 						let token = props.store.getState().fin4Store.fin4Tokens[claim.token];
 						let date = moment.unix(claim.claimCreationTime).calendar();
 						let symbol = props.fin4Tokens[claim.token].symbol; // of token that gets claimed
 						let proofSite = '/claim/' + symbol + '/proof/' + claim.claimId;
-						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pendingApproval';
 						return (
 							<Claim status={status} key={`${claim.token}${claim.claimId}`}>
 								<div>
