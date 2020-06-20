@@ -272,14 +272,14 @@ const downloadClaimHistoryOnToken = (props, symbol, context) => {
 		for (let i = 0; i < count; i++) {
 			claimIds.push(i);
 		}
-		Promise.all(fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds, true)).then(
-			data => {
-				jsonexport(data, (err, csv) => {
-					if (err) return console.error(err);
-					fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
-				});
-			}
-		);
+		Promise.all(
+			fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds, symbol)
+		).then(data => {
+			jsonexport(data, (err, csv) => {
+				if (err) return console.error(err);
+				fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
+			});
+		});
 	});
 };
 
@@ -560,7 +560,7 @@ const fetchTheseClaimsOnThisToken = (
 	defaultAccount,
 	tokenAddr,
 	claimIds,
-	forCSVexport = false
+	tokenSymbol = null // if != null, this is for CSV export
 ) => {
 	return claimIds.map(claimId => {
 		return getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimOnThisToken', tokenAddr, claimId).then(
@@ -582,17 +582,19 @@ const fetchTheseClaimsOnThisToken = (
 						message: ''
 					};
 				}
-				let claimObj = {
-					token: tokenAddr,
-					claimId: claimId,
-					claimer: claimer,
-					isApproved: isApproved,
-					gotRejected: gotRejected,
-					quantity: new BN(quantityBN).toNumber(),
-					claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
-					comment: comment
-				};
-				if (!forCSVexport) {
+				let claimObj = {};
+				if (tokenSymbol) {
+					claimObj.tokenSymbol = tokenSymbol;
+				}
+				claimObj.token = tokenAddr;
+				claimObj.claimId = claimId;
+				claimObj.claimer = claimer;
+				claimObj.isApproved = isApproved;
+				claimObj.gotRejected = gotRejected;
+				claimObj.quantity = new BN(quantityBN).toNumber();
+				claimObj.claimCreationTime = new BN(claimCreationTimeBN).toNumber();
+				claimObj.comment = comment;
+				if (!tokenSymbol) {
 					claimObj.id = tokenAddr + '_' + claimId; // pseudoId
 					claimObj.verifierStatuses = verifierStatusesObj;
 					claimObj.verifiersWithMessages = verifiersWithMessages.filter(addr => addr !== zeroAddress);
