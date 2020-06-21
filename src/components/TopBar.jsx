@@ -164,7 +164,7 @@ function TopBar(props) {
 					<div
 						style={{
 							position: 'absolute',
-							right: '5px',
+							right: '10px',
 							top: '28px'
 						}}>
 						<Badge
