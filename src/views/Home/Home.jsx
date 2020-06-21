@@ -22,7 +22,7 @@ import { buildIconLabelLink, buildIconLabelCallback, getEtherscanAddressURL } fr
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Modal from '../../components/Modal';
-import { contractCall, getContractData } from '../../components/Contractor';
+import { contractCall, getContractData, readOnlyCall } from '../../components/Contractor';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Link } from 'react-router-dom';
 let faucetConfig = null;
@@ -96,7 +96,7 @@ function Home(props, context) {
 	};
 
 	const isEligible = () => {
-		return contractCall(
+		let res = readOnlyCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
@@ -104,21 +104,14 @@ function Home(props, context) {
 			'isEligibleToBeAVoter',
 			[],
 			'I want to be a voter',
-			{
-				transactionCompleted: receipt => {
-					console.log(receipt);
-					let promises = [];
-					promises.push(receipt.status);
-					Promise.all(promises).then(() => setIsEligibleToBeAVoter(receipt.status));
-				},
-
-				transactionFailed: reason => {
-					console.log('there was an error: ' + reason);
-				}
-			},
+			{},
 			false,
 			false
 		);
+		Promise.all(res).then(result => {
+			console.log(result[0]);
+			setIsEligibleToBeAVoter(result[0]);
+		});
 	};
 
 	useEffect(() => {
