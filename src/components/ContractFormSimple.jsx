@@ -7,6 +7,7 @@ import { TextField } from '@material-ui/core';
 import Button from './Button';
 import AddIcon from '@material-ui/icons/Add';
 import update from 'react-addons-update';
+import AddressQRreader from './AddressQRreader';
 
 // this is called like that in historical reference to the ContractForm that we (DLT4PI 2019)
 // copied from some truffle/drizzle repo and bend it to our needs for way too long :)
@@ -60,14 +61,18 @@ function ContractFormSimple(props, context) {
 			{isReady ? (
 				<>
 					{props.fields.map((field, index) => {
-						let label = field[0];
+						let label = field[0]; // TODO translate
+						let type = field[1];
 						if (props.fixValues && props.fixValues[label]) {
 							return;
+						}
+						if (type === 'address') {
+							return <AddressQRreader key={index} onChange={val => updateVal(index, val)} label={label} />;
 						}
 						return (
 							<TextField
 								key={index}
-								type={field[1]}
+								type={type}
 								label={label}
 								value={data[index]}
 								onChange={e => updateVal(index, e.target.value)}
