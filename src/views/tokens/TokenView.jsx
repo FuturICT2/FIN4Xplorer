@@ -27,9 +27,9 @@ function TokenView(props, context) {
 	const [verifierTypesLoaded, setVerifierTypesLoaded] = useState(false);
 
 	const fetchDetailedTokenInfo = () => {
-		fetchTokenDetails(context.drizzle.contracts['Fin4Token_' + tokenViaURL.symbol], props.defaultAccount).then(obj =>
-			setDetails(obj)
-		);
+		fetchTokenDetails(context.drizzle.contracts['Fin4Token_' + tokenViaURL.symbol], props.defaultAccount).then(data => {
+			setDetails(data);
+		});
 	};
 
 	const getVerifierTypesStr = () => {
@@ -217,6 +217,10 @@ function TokenView(props, context) {
 
 								{buildInfoLine(t('token-view.creation-time'), details.tokenCreationTime)}
 								{buildInfoLine(
+									t('token-view.token-creator'),
+									<AddressDisplayWithCopy address={details.tokenCreator} fontSize={'x-small'} />
+								)}
+								{buildInfoLine(
 									t('token-view.verifier-types'),
 									verifierTypesLoaded ? getVerifierTypesStr() : 'Loading...'
 								)}
@@ -238,6 +242,34 @@ function TokenView(props, context) {
 								{details.isCapped && buildInfoLine(t('token-creator.step2-design.fields.cap.label'), details.cap)}
 								{buildInfoLine(t('token-creator.step2-design.fields.decimals.label'), details.decimals)}
 								{buildInfoLine(t('token-creator.step2-design.fields.initial-supply.label'), details.initialSupply)}
+								{Number(details.initialSupply) > 0 &&
+									buildInfoLine(
+										t('token-view.initial-supply-owner'),
+										<>
+											<br />
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											{details.initialSupplyOwner === details.tokenCreator ? (
+												<small>{t('token-view.token-creator')}</small>
+											) : (
+												<AddressDisplayWithCopy address={details.initialSupplyOwner} fontSize={'x-small'} />
+											)}
+										</>
+									)}
+								{details.addressesWithMinterRoles.length > 0 &&
+									buildInfoLine(
+										t('token-view.minter-role-owners'),
+										details.addressesWithMinterRoles.map((addr, index) => (
+											<span key={'minterRole_' + index}>
+												<br />
+												&nbsp;&nbsp;&nbsp;&nbsp;
+												{addr === context.drizzle.contracts.Fin4Claiming.address ? (
+													<small>Fin4Claiming contract</small>
+												) : (
+													<AddressDisplayWithCopy address={addr} fontSize={'x-small'} />
+												)}
+											</span>
+										))
+									)}
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 

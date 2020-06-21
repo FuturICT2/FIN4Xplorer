@@ -72,6 +72,9 @@
 	"token-view": {
 		"box-title": "Token Profile",
 		"creation-time": "Creation",
+		"token-creator": "Token creator",
+		"initial-supply-owner": "Initial supply owner",
+		"minter-role-owners": "Minter role owners",
 		"verifier-types": "Verifier types",
 		"total-numb-of-claims": "Total number of claims",
 		"total-supply": "Total supply",
