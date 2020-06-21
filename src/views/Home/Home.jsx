@@ -168,7 +168,13 @@ function Home(props, context) {
 			<Box title={t('home.inbox.box-title')} width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
 				{buildIconLabelLink('/user/message', <MessageIcon />, t('home.inbox.message-user-button'))}
-				{buildIconLabelLink('/user/transfer', <SendIcon />, t('home.inbox.transfer-token-button'))}
+				{buildIconLabelLink(
+					'/user/transfer',
+					<SendIcon />,
+					t('home.inbox.transfer-token-button'),
+					true,
+					UnderlyingsActive
+				)}
 				{UnderlyingsActive && (
 					<>
 						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, t('home.inbox.deposit-collateral-button'))}
