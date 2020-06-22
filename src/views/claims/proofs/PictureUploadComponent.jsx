@@ -8,6 +8,8 @@ import ipfs from '../../../config/ipfs';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/Check';
 import { isValidPublicAddress } from '../../../components/Contractor';
+import Resizer from 'react-image-file-resizer';
+import { getImageDimensions } from '../../../components/utils';
 
 function PictureUploadComponent(props, context) {
 	const { t } = useTranslation();
@@ -15,6 +17,49 @@ function PictureUploadComponent(props, context) {
 	const addressValue = useRef(null);
 	const ipfsHash = useRef(null);
 	const [uploadInProgress, setUploadInProgress] = useState(false);
+
+	const [original, setOriginal] = useState({
+		fileObject: null,
+		width: null,
+		height: null
+	});
+
+	const [processedImageData, setProcessedImageData] = useState({
+		previewBase64: null,
+		uploadBase64: null
+	});
+
+	const onImageSelected = event => {
+		let file = event.target.files[0];
+		if (!file) {
+			return;
+		}
+
+		// store preview
+		Resizer.imageFileResizer(
+			file,
+			350,
+			350,
+			'JPEG',
+			75,
+			0,
+			uri => {
+				setProcessedImageData({
+					...processedImageData,
+					previewBase64: uri
+				});
+			},
+			'base64'
+		);
+
+		getImageDimensions(file, (w, h) => {
+			setOriginal({
+				fileObject: file,
+				width: w,
+				height: h
+			});
+		});
+	};
 
 	const onSelectFile = file => {
 		setUploadInProgress(true);
@@ -67,7 +112,16 @@ function PictureUploadComponent(props, context) {
 						</span>
 					</>
 				) : (
-					<input type="file" onChange={e => onSelectFile(e.target.files[0])} accept="image/png, image/jpeg" />
+					<>
+						<input type="file" onChange={onImageSelected} accept="image/png, image/jpeg" />
+						{processedImageData.previewBase64 && (
+							<>
+								<br />
+								<br />
+								<img src={processedImageData.previewBase64} />
+							</>
+						)}
+					</>
 				)}
 			</center>
 			<br />

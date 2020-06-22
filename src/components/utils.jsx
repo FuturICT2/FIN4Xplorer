@@ -183,6 +183,17 @@ const isMobileDevice = () => {
 	return window.innerWidth < 400;
 };
 
+const getImageDimensions = (fileObject, callback) => {
+	// via https://stackoverflow.com/a/17272914/2474159
+	let url = URL.createObjectURL(fileObject);
+	let img = new Image();
+	img.onload = () => {
+		callback(img.width, img.height);
+		URL.revokeObjectURL(img.src);
+	};
+	img.src = url;
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -206,5 +217,6 @@ export {
 	hasTheseCollaterals,
 	Fin4Colors,
 	translationMarkdown,
-	isMobileDevice
+	isMobileDevice,
+	getImageDimensions
 };
