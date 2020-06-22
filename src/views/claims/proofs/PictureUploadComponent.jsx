@@ -87,24 +87,20 @@ function PictureUploadComponent(props, context) {
 	};
 
 	const saveToIpfs = async dataStream => {
-		ipfs
-			.add(dataStream, {
-				progress: length => {
-					// this seems to only print all the updates at the very end
-					// it might be working for larger files though
-					console.log('IPFS upload progress:', length);
-				}
-			})
-			.then(result => {
-				let hash = result[0].hash;
-				let sizeKB = Math.round(result[0].size / 1000);
-				setIpfsHash(hash);
-				setUploadInProgress(false);
-				console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
-				// ipfs.pin.add(hash, function (err) {
-				//	 console.log("Could not pin hash " + hash, err);
-				// });
-			});
+		ipfs.add(dataStream, (err, result) => {
+			console.log('Upload result: ', result);
+			let hash = result[0].hash;
+			let sizeKB = Math.round(result[0].size / 1000);
+			setIpfsHash(hash);
+			setUploadInProgress(false);
+			console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
+			// ipfs.pin.add(hash, function (err) {
+			//	console.log("Could not pin hash " + hash, err);
+			// });
+		});
+		// this syntax seemed more error prone with large files:
+		// ipfs.add(dataStream, { progress: length => {}})
+		// .then(result => {});
 	};
 
 	const reducedDimensions = () => {
