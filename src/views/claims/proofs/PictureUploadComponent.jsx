@@ -145,6 +145,17 @@ function PictureUploadComponent(props, context) {
 		}
 	};
 
+	const downloadUploadedImage = () => {
+		let a = document.createElement('a');
+		a.href = processedImageData.uploadBase64;
+		let fileName = original.fileObject.name;
+		// this will fail for files without extension
+		let extension = fileName.split('.')[fileName.split('.').length - 1];
+		let fileNameWithoutExtension = fileName.substring(0, fileName.length - extension.length - 1);
+		a.download = fileNameWithoutExtension + '_uploaded.' + extension;
+		a.click();
+	};
+
 	return (
 		<>
 			<AddressQRreader
@@ -161,14 +172,18 @@ function PictureUploadComponent(props, context) {
 						<span style={{ color: 'gray' }}>{t('proof-submission.custom-component.picture-upload.uploading')}</span>
 					</>
 				) : ipfsHash ? (
-					<>
-						<CheckIcon />{' '}
-						<span style={{ color: 'gray' }}>
-							<a href={'https://gateway.ipfs.io/ipfs/' + ipfsHash} target="_blank">
-								{t('proof-submission.custom-component.picture-upload.upload-complete')}
-							</a>
-						</span>
-					</>
+					<Link to="#" onClick={downloadUploadedImage} style={{ textDecoration: 'none' }}>
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<CheckIcon />
+									</td>
+									<td>{t('proof-submission.custom-component.picture-upload.upload-complete')}</td>
+								</tr>
+							</tbody>
+						</table>
+					</Link>
 				) : (
 					<>
 						<input type="file" onChange={onImageSelected} accept="image/png, image/jpeg" />
