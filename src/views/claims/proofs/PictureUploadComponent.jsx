@@ -23,7 +23,7 @@ function PictureUploadComponent(props, context) {
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
 	const maxPixels = 786432; // 1024 * 768, threshold that triggers the recommendation to reduce file size
-	const jpgQuality = 75; // compression rate, 100 would be not compressed
+	const compressionRate = 85; // JPEG compression rate, 100 would be not compressed
 
 	const [original, setOriginal] = useState({
 		fileObject: null,
@@ -51,7 +51,7 @@ function PictureUploadComponent(props, context) {
 			300,
 			300,
 			'JPEG',
-			jpgQuality,
+			compressionRate,
 			0,
 			uri => {
 				setProcessedImageData({
@@ -123,7 +123,7 @@ function PictureUploadComponent(props, context) {
 				reducedDimensions.w,
 				reducedDimensions.h,
 				'JPEG',
-				jpgQuality,
+				compressionRate,
 				0,
 				uri => {
 					setProcessedImageData({
@@ -198,7 +198,8 @@ function PictureUploadComponent(props, context) {
 												triggerDimensions: '1024x768=786432',
 												originalDimensions: original.width + 'x' + original.height + '=' + original.pixels,
 												reductionFactor: '(786432/' + original.pixels + ')^0.5=' + reducedDimensions().factor,
-												reducedDimensions: reducedDimensions().w + 'x' + reducedDimensions().h
+												reducedDimensions: reducedDimensions().w + 'x' + reducedDimensions().h,
+												compressionRate: compressionRate
 											})}>
 											<span style={{ fontSize: 'small' }}>
 												{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox')}
