@@ -132,7 +132,9 @@
 				"submit-button": "Submit",
 				"qr-reader-label": "Public address of picture approver",
 				"uploading": "Uploading...",
-				"upload-complete": "Upload complete"
+				"upload-complete": "Upload complete",
+				"reduce-image-size-checkbox": "Reduce image size from {{fromDimensions}} to {{toDimensions}}",
+				"reduce-image-size-tooltip": "The numbers of pixel for when this suggestion is triggered is {{triggerDimensions}}. Your image has {{fromDimensions}} pixels. Therefore the reduction factor is {{reductionFactor}}"
 			},
 			"vote": {
 				"submit-button": "Submit",

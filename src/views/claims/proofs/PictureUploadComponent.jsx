@@ -156,27 +156,16 @@ function PictureUploadComponent(props, context) {
 									}
 									label={
 										<Tooltip
-											title={
-												'The numbers of pixel for when this suggestion is triggered is 1024x768=786432. Your image has ' +
-												original.width +
-												'x' +
-												original.height +
-												'=' +
-												original.pixels +
-												' pixels. Therefore the reduction factor is (786432/' +
-												original.pixels +
-												')^0.5=' +
-												reducedDimensions().factor
-											}>
+											title={t('proof-submission.custom-component.picture-upload.reduce-image-size-tooltip', {
+												triggerDimensions: '1024x768=786432',
+												fromDimensions: original.width + 'x' + original.height + '=' + original.pixels,
+												reductionFactor: '(786432/' + original.pixels + ')^0.5=' + reducedDimensions().factor
+											})}>
 											<span style={{ fontSize: 'small' }}>
-												{'Reduce image size from ' +
-													original.width +
-													'x' +
-													original.height +
-													' to ' +
-													reducedDimensions().w +
-													'x' +
-													reducedDimensions().h}
+												{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox', {
+													fromDimensions: original.width + 'x' + original.height,
+													toDimensions: reducedDimensions().w + 'x' + reducedDimensions().h
+												})}
 											</span>
 										</Tooltip>
 									}
