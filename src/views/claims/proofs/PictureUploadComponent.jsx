@@ -10,6 +10,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import { isValidPublicAddress } from '../../../components/Contractor';
 import Resizer from 'react-image-file-resizer';
 import { getImageDimensions } from '../../../components/utils';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function PictureUploadComponent(props, context) {
 	const { t } = useTranslation();
@@ -18,16 +20,21 @@ function PictureUploadComponent(props, context) {
 	const ipfsHash = useRef(null);
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
+	const maxPixels = 786432; // 1024 * 768
+
 	const [original, setOriginal] = useState({
 		fileObject: null,
 		width: null,
-		height: null
+		height: null,
+		pixels: null
 	});
 
 	const [processedImageData, setProcessedImageData] = useState({
 		previewBase64: null,
 		uploadBase64: null
 	});
+
+	const [reduceImageSize, setReduceImageSize] = useState(false);
 
 	const onImageSelected = event => {
 		let file = event.target.files[0];
@@ -38,8 +45,8 @@ function PictureUploadComponent(props, context) {
 		// store preview
 		Resizer.imageFileResizer(
 			file,
-			350,
-			350,
+			300,
+			300,
 			'JPEG',
 			75,
 			0,
@@ -56,8 +63,12 @@ function PictureUploadComponent(props, context) {
 			setOriginal({
 				fileObject: file,
 				width: w,
-				height: h
+				height: h,
+				pixels: w * h
 			});
+			if (w * h > maxPixels) {
+				setReduceImageSize(true);
+			}
 		});
 	};
 
@@ -85,6 +96,15 @@ function PictureUploadComponent(props, context) {
 			//	console.log("Could not pin hash " + hash, err);
 			//});
 		});
+	};
+
+	const reducedDimensions = () => {
+		let factor = Math.sqrt(maxPixels / original.pixels);
+		return {
+			factor: Math.round(factor * 100) / 100,
+			w: Math.round(original.width * factor),
+			h: Math.round(original.height * factor)
+		};
 	};
 
 	return (
@@ -119,6 +139,48 @@ function PictureUploadComponent(props, context) {
 								<br />
 								<br />
 								<img src={processedImageData.previewBase64} />
+							</>
+						)}
+						{original.pixels > maxPixels && (
+							<>
+								<br />
+								<FormControlLabel
+									control={
+										<Checkbox
+											size={'small'}
+											checked={reduceImageSize}
+											onChange={() => {
+												setReduceImageSize(!reduceImageSize);
+											}}
+										/>
+									}
+									label={
+										<Tooltip
+											title={
+												'The numbers of pixel for when this suggestion is triggered is 1024x768=786432. Your image has ' +
+												original.width +
+												'x' +
+												original.height +
+												'=' +
+												original.pixels +
+												' pixels. Therefore the reduction factor is (786432/' +
+												original.pixels +
+												')^0.5=' +
+												reducedDimensions().factor
+											}>
+											<span style={{ fontSize: 'small' }}>
+												{'Reduce image size from ' +
+													original.width +
+													'x' +
+													original.height +
+													' to ' +
+													reducedDimensions().w +
+													'x' +
+													reducedDimensions().h}
+											</span>
+										</Tooltip>
+									}
+								/>
 							</>
 						)}
 					</>
