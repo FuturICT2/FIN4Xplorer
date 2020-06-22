@@ -9,18 +9,21 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/Check';
 import { isValidPublicAddress } from '../../../components/Contractor';
 import Resizer from 'react-image-file-resizer';
-import { getImageDimensions } from '../../../components/utils';
+import { getImageDimensions, fileToBase64 } from '../../../components/utils';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+import UploadIcon from '@material-ui/icons/CloudUpload';
+import { Link } from 'react-router-dom';
 
 function PictureUploadComponent(props, context) {
 	const { t } = useTranslation();
 
 	const addressValue = useRef(null);
-	const ipfsHash = useRef(null);
+	const [ipfsHash, setIpfsHash] = useState(null);
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
-	const maxPixels = 786432; // 1024 * 768
+	const maxPixels = 786432; // 1024 * 768, threshold that triggers the recommendation to reduce file size
+	const jpgQuality = 75; // compression rate, 100 would be not compressed
 
 	const [original, setOriginal] = useState({
 		fileObject: null,
@@ -48,7 +51,7 @@ function PictureUploadComponent(props, context) {
 			300,
 			300,
 			'JPEG',
-			75,
+			jpgQuality,
 			0,
 			uri => {
 				setProcessedImageData({
@@ -72,30 +75,36 @@ function PictureUploadComponent(props, context) {
 		});
 	};
 
-	const onSelectFile = file => {
+	const uploadToIPFS = data => {
 		setUploadInProgress(true);
 		console.log('Started upload to IPFS...');
-		let reader = new window.FileReader();
-		reader.readAsArrayBuffer(file);
-		reader.onloadend = () => convertToBuffer(reader);
+		// via https://stackoverflow.com/a/25650163/2474159
+		let Readable = require('stream').Readable;
+		var dataStream = new Readable();
+		dataStream.push(data);
+		dataStream.push(null);
+		saveToIpfs(dataStream);
 	};
 
-	const convertToBuffer = async reader => {
-		const buffer = await Buffer.from(reader.result);
-		saveToIpfs(buffer);
-	};
-
-	const saveToIpfs = async buffer => {
-		ipfs.add(buffer, (err, result) => {
-			let hash = result[0].hash;
-			let sizeKB = Math.round(result[0].size / 1000);
-			ipfsHash.current = hash;
-			setUploadInProgress(false);
-			console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
-			//ipfs.pin.add(hash, function (err) {
-			//	console.log("Could not pin hash " + hash, err);
-			//});
-		});
+	const saveToIpfs = async dataStream => {
+		ipfs
+			.add(dataStream, {
+				progress: length => {
+					// this seems to only print all the updates at the very end
+					// it might be working for larger files though
+					console.log('IPFS upload progress:', length);
+				}
+			})
+			.then(result => {
+				let hash = result[0].hash;
+				let sizeKB = Math.round(result[0].size / 1000);
+				setIpfsHash(hash);
+				setUploadInProgress(false);
+				console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
+				// ipfs.pin.add(hash, function (err) {
+				//	 console.log("Could not pin hash " + hash, err);
+				// });
+			});
 	};
 
 	const reducedDimensions = () => {
@@ -105,6 +114,35 @@ function PictureUploadComponent(props, context) {
 			w: Math.round(original.width * factor),
 			h: Math.round(original.height * factor)
 		};
+	};
+
+	const upload = () => {
+		if (reduceImageSize) {
+			Resizer.imageFileResizer(
+				original.fileObject,
+				reducedDimensions.w,
+				reducedDimensions.h,
+				'JPEG',
+				jpgQuality,
+				0,
+				uri => {
+					setProcessedImageData({
+						...processedImageData,
+						uploadBase64: uri
+					});
+					uploadToIPFS(uri);
+				},
+				'base64'
+			);
+		} else {
+			fileToBase64(original.fileObject).then(uri => {
+				setProcessedImageData({
+					...processedImageData,
+					uploadBase64: uri
+				});
+				uploadToIPFS(uri);
+			});
+		}
 	};
 
 	return (
@@ -122,11 +160,11 @@ function PictureUploadComponent(props, context) {
 						&nbsp;&nbsp;&nbsp;
 						<span style={{ color: 'gray' }}>{t('proof-submission.custom-component.picture-upload.uploading')}</span>
 					</>
-				) : ipfsHash.current ? (
+				) : ipfsHash ? (
 					<>
 						<CheckIcon />{' '}
 						<span style={{ color: 'gray' }}>
-							<a href={'https://gateway.ipfs.io/ipfs/' + ipfsHash.current} target="_blank">
+							<a href={'https://gateway.ipfs.io/ipfs/' + ipfsHash} target="_blank">
 								{t('proof-submission.custom-component.picture-upload.upload-complete')}
 							</a>
 						</span>
@@ -158,14 +196,12 @@ function PictureUploadComponent(props, context) {
 										<Tooltip
 											title={t('proof-submission.custom-component.picture-upload.reduce-image-size-tooltip', {
 												triggerDimensions: '1024x768=786432',
-												fromDimensions: original.width + 'x' + original.height + '=' + original.pixels,
-												reductionFactor: '(786432/' + original.pixels + ')^0.5=' + reducedDimensions().factor
+												originalDimensions: original.width + 'x' + original.height + '=' + original.pixels,
+												reductionFactor: '(786432/' + original.pixels + ')^0.5=' + reducedDimensions().factor,
+												reducedDimensions: reducedDimensions().w + 'x' + reducedDimensions().h
 											})}>
 											<span style={{ fontSize: 'small' }}>
-												{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox', {
-													fromDimensions: original.width + 'x' + original.height,
-													toDimensions: reducedDimensions().w + 'x' + reducedDimensions().h
-												})}
+												{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox')}
 											</span>
 										</Tooltip>
 									}
@@ -175,7 +211,24 @@ function PictureUploadComponent(props, context) {
 					</>
 				)}
 			</center>
-			<br />
+			{original.fileObject && !uploadInProgress && !ipfsHash ? (
+				<center style={{ fontFamily: 'arial' }}>
+					<Link to="#" onClick={upload} style={{ textDecoration: 'none' }}>
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<UploadIcon />
+									</td>
+									<td>{t('proof-submission.custom-component.picture-upload.upload-button')}</td>
+								</tr>
+							</tbody>
+						</table>
+					</Link>
+				</center>
+			) : (
+				<br />
+			)}
 			<Button
 				onClick={() => {
 					// sanity checks
@@ -183,11 +236,11 @@ function PictureUploadComponent(props, context) {
 						alert('Invalid Ethereum public address');
 						return;
 					}
-					if (!ipfsHash.current) {
+					if (!ipfsHash) {
 						alert('No completed upload');
 						return;
 					}
-					props.onSubmit(addressValue.current, ipfsHash.current);
+					props.onSubmit(addressValue.current, ipfsHash);
 				}}
 				center="true">
 				{t('proof-submission.custom-component.picture-upload.submit-button')}
