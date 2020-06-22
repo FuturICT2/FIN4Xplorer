@@ -397,7 +397,7 @@
 		"box-title": "Messages",
 		"no-messages": "No messages",
 		"requested-by": "Requested by {{user}}",
-		"click-to-see-image": "Click to see the image",
+		"click-to-see-image": "Download the image",
 		"attach-message-optional": "Optional: attach a message",
 		"approve-button": "Approve",
 		"reject-button": "Reject",

@@ -12,6 +12,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { fetchMessage, contractCall } from '../components/Contractor';
 import history from '../components/history';
 import Container from '../components/Container';
+import ipfs from '../config/ipfs';
 
 function Messages(props, context) {
 	const { t } = useTranslation();
@@ -84,6 +85,26 @@ function Messages(props, context) {
 		}
 	};
 
+	const downloadImage = ipfsHash => {
+		// make it work via ipfs.get() instead?
+		fetch('https://gateway.ipfs.io/ipfs/' + ipfsHash).then(response =>
+			response.text().then(base64 => {
+				let beginning = base64.substring(0, 15); // data:image/jpeg;base64,...
+				let extension = 'unknown';
+				if (beginning.includes('jpeg')) {
+					extension = 'jpeg';
+				}
+				if (beginning.includes('png')) {
+					extension = 'png';
+				}
+				let a = document.createElement('a');
+				a.href = base64;
+				a.download = ipfsHash + '.' + extension;
+				a.click();
+			})
+		);
+	};
+
 	return (
 		<Container>
 			<Box title={t('messages.box-title')}>
@@ -115,15 +136,9 @@ function Messages(props, context) {
 												{msg.attachment &&
 												msg.attachment.length > 0 &&
 												msg.verifierContractName !== 'Networking' && ( // TODO generic solution!
-														<>
-															<Button
-																center="true"
-																icon={Photo}
-																onClick={() => window.open('https://gateway.ipfs.io/ipfs/' + msg.attachment, '_blank')}>
-																{t('messages.click-to-see-image')}
-															</Button>
-															<br />
-														</>
+														<Button center="true" icon={Photo} onClick={() => downloadImage(msg.attachment)}>
+															{t('messages.click-to-see-image')}
+														</Button>
 													)}
 												<TextField
 													key="approve-reject-message"
