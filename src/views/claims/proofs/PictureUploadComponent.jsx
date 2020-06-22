@@ -70,6 +70,7 @@ function PictureUploadComponent(props, context) {
 				pixels: w * h
 			});
 			if (w * h > maxPixels) {
+				// TODO also detect by large filesize? PNGs with small dimensions could still be large
 				setReduceImageSize(true);
 			}
 		});
