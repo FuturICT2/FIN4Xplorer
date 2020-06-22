@@ -120,8 +120,8 @@ function PictureUploadComponent(props, context) {
 		if (reduceImageSize) {
 			Resizer.imageFileResizer(
 				original.fileObject,
-				reducedDimensions.w,
-				reducedDimensions.h,
+				reducedDimensions().w,
+				reducedDimensions().h,
 				'JPEG',
 				compressionRate,
 				0,
