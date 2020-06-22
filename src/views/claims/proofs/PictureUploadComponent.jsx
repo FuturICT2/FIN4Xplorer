@@ -166,11 +166,16 @@ function PictureUploadComponent(props, context) {
 			<br />
 			<center style={{ fontFamily: 'arial' }}>
 				{uploadInProgress ? (
-					<>
-						<CircularProgress />
-						&nbsp;&nbsp;&nbsp;
-						<span style={{ color: 'gray' }}>{t('proof-submission.custom-component.picture-upload.uploading')}</span>
-					</>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<CircularProgress />
+								</td>
+								<td>&nbsp;&nbsp;&nbsp;{t('proof-submission.custom-component.picture-upload.uploading')}</td>
+							</tr>
+						</tbody>
+					</table>
 				) : ipfsHash ? (
 					<Link to="#" onClick={downloadUploadedImage} style={{ textDecoration: 'none' }}>
 						<table>
