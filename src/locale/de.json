@@ -1,536 +1,571 @@
 {
-	"home": {
-		"on-the-blockchain": {
-			"box-title": "Auf der Blockchain",
-			"ether-request-failed": "Ether-Anfrage ist fehlgeschlagen",
-			"your-public-address": "Deine öffentliche Adresse",
-			"no-ether-warning": "Ohne Ether bist du auf schreibgeschützte Vorgänge beschränkt.",
-			"info-not-yet-available": "Information nicht verfügbar",
-			"users-balance": "Dein Guthaben",
-			"right-network-warning": "Bist du mit dem richtigen Netzwerk verbunden?",
-			"request-ether": {
-				"button": "Ether anfordern",
-				"pending": "Etheranfrage läuft...",
-				"success": "Anfrage erfolgreich",
-				"error": "Anfrage fehlgeschlagen"
-			}
-		},
-		"inbox": {
-			"message-user-button": "Sende Nachricht",
-			"box-title": "Posteingang",
-			"your-messages-button": "Deine Nachrichten",
-			"transfer-token-button": "Übertrag von Tokens",
-			"deposit-collateral-button": "Sicherheiten hinterlegen",
-			"convert-collateral-button": "Umwandlung von Sicherheiten"
-		},
-		"wallet": {
-			"box-title": "Geldbörse",
-			"no-tokens-yet": "Du hast bisher noch keine Token erfolgreich beansprucht.",
-			"token-balance": "Bilanz",
-			"transfer-token": "Übertragung"
-		},
-		"settings": {
-			"box-title": "Einstellungen",
-			"about-button": "Über",
-			"settings-button": "Systemeinstellungen",
-			"user-groups-button": "Nutzergruppen",
-			"collections-button": "Tokensammlungen"
-		},
-		"token-curation": {
-			"box-title": "Token Kuration",
-			"listing-button": "Auflistung",
-			"management-button": "Verwaltung",
-			"parameters-button": "Rahmenbedingungen"
-		}
-	},
-	"tokens-site": {
-		"copy-existing-token": "Kopiere einen vorhandenen Token",
-		"import-button": "Importieren",
-		"drafts": {
-			"title": "Token-Erstellungs Entwürfe",
-			"download-button": "Herunterladen",
-			"delete-button": "Löschen",
-			"delete-all-button": "Alle löschen",
-			"last-modified": "zuletzt geändert",
-			"continue-editing-button": "Bearbeitung fortsetzen",
-			"modal-title": "Entwurf zur Erstellung von Token"
-		},
-		"create-new-token": "Kreire einen neuen Token",
-		"start-token-creation": "Assistent zur Token-Erstellung starten",
-		"upload-token-draft": "Token-Entwurf hochladen (JSON)"
-	},
-	"tokens-list": {
-		"token-tooltip": "Kurze Beschreibung: {{shortDescription}}, Einheit: {{unit}}",
-		"token-name": "Name",
-		"all-tokens-box-title": "Alle Tokens",
-		"total-supply": "Angebot",
-		"actions": "Aktionen",
-		"token-is-opat": "Dieser Token ist auf der Liste der kuratierten Tokens",
-		"view-button": "Ansicht",
-		"claim-button": "Forderung"
-	},
-	"claims": {
-		"previous-claims": {
-			"rejected-label": "ABGELEHNT",
-			"approved-label": "Genehmigt",
-			"box-title": "Meine bisherigen Forderungen",
-			"submit-proof-button": "Nachweis einreichen"
-		},
-		"submit-button": "Absenden",
-		"default-unit": "Anzahl",
-		"claim-tokens-box-title": "Tokens fordern",
-		"tokens-dropdown": "Token",
-		"comment": "Kommentar"
-	},
-	"proof-submission": {
-		"reason-hint": "Sehe den Grund in deinen [Nachrichten](msgs-link)",
-		"submit-new-claim": "Wenn du willst, kannst du [eine neue Forderung](new-claim-link) einreichen",
-		"verifier": {
-			"unsubmitted": "Für den Anspruch muss der folgende Nachweis erbracht werden: {{description}}",
-			"pending": "Der Nachweis {{name}} ist in anhängigem Zustand",
-			"approved": "Der Nachweis {{name}} wurde erfolgreich verifiziert",
-			"rejected": "Der Nachweis {{name}} wurde abgelehnt"
-		},
-		"box-title": "Einreichen von Nachweisen",
-		"claim-rejected": "Deine Forderung wurde abgelehnt",
-		"custom-component": {
-			"picture-upload": {
-				"submit-button": "Absenden",
-				"uploading": "Lädt hoch...",
-				"qr-reader-label": "Öffentliche Adresse des Bildgenhmigers",
-				"upload-complete": "Hochladung komplett"
-			},
-			"vote": {
-				"submit-button": "Absenden",
-				"dropdown-label": "Wahlmöglichkeiten"
-			},
-			"location": {
-				"submit-button": "Einreichung des Standorts",
-				"not-supported-alert": "Standortanfragen werden von diesem Browser nicht unterstützt"
-			}
-		}
-	},
-	"token-creator": {
-		"navigation": {
-			"info-box-close-button": "SCHLIESSEN",
-			"back-button": "Zurück",
-			"next-button": "Weiter",
-			"finish-button": "Abschluss",
-			"restart-button": "Neustart",
-			"create-token-button": "Kreire den Token",
-			"no-token-creation-draft-found": "Kein Entwurf zur Token-Erstellung mit der ID {{Id}} gefunden",
-			"all-steps-completed": "Alle Schritte sind abgeschlossen"
-		},
-		"box-title": "Kreirung von Tokens",
-		"step1-identity": {
-			"title": "Token Identität",
-			"fields": {
-				"name": {
-					"label": "Name",
-					"info": "Gib dem neuen Token, den du kreiren willst, einen beschreibenden Namen."
-				},
-				"symbol": {
-					"label": "Symbol",
-					"info": "Wähle ein kurzes Zeichen von 3-5 Buchstaben (Nummern sind ebenfalls erlaubt) für deinen neuen Token. Bitte bedenke, dass das System bereits benutzte Zeichen ablehnt."
-				},
-				"short-description": {
-					"label": "Kurze Beschreibung",
-					"info": "Beschreibe den Nutzen/die Idee deines neu kreirten Token, in einer kurzen Version."
-				},
-				"long-description": {
-					"label": "Ausführliche Beschreibung",
-					"info": "Beschreibe den Nutzen/die Idee deines neu kreirten Token in einer ausführlichen Version."
-				}
-			},
-			"info": "Die Basisinfos über die Identität des Token."
-		},
-		"step2-design": {
-			"fields": {
-				"is-capped": {
-					"label": "ist gedeckelt",
-					"info": "Sobald der Gesamtbestand dieses Tokens die Höchstgrenze erreicht hat, kann niemand (einschließlich des Token-Erstellers) mehr von diesem Token erschaffen."
-				},
-				"cap": {
-					"label": "Obergrenze",
-					"info": "Wenn das Token begrenzt ist, ist dies der Wert der Obergrenze."
-				},
-				"initial-supply": {
-					"label": "Anfangsbestand",
-					"info": "Der Anfangsbetrag dieser Tokens, der nicht über das Antragsverfahren verdient werden muss. Zählt zum Gesamtbestand dieser Tokens. Wenn ein Wert größer als 0 festgelegt wird, muss ein Eigentümer gewählt werden."
-				},
-				"token-creator-owns-initial-supply": {
-					"label": "Der Token-Ersteller ist der Besitzer",
-					"info": "Wenn ein Anfangsbestand festgelegt ist, ist der Token-Ersteller Eigentümer dieses Bestands."
-				},
-				"other-initial-supply-owner": {
-					"label": "Besitzeradresse",
-					"info": "Wenn ein Anfangsbestand eingestellt ist, gehört er dieser Adresse."
-				},
-				"is-transferable": {
-					"label": "Ist übertragbar",
-					"info": "Benutzer, die ein Guthaben auf diesem Token haben, können dieses ganz oder teilweise auf andere Benutzer übertragen. In den meisten Fällen sollen Benutzer in der Lage sein, Token für positive Aktionen (z.B. für den Handel) zu übertragen."
-				},
-				"is-burnable": {
-					"label": "ist verbrennbar",
-					"info": "Benutzer können einen Teil oder ihr gesamtes Guthaben auf diesen Tokens verbrennen. Der verbrannte Betrag wird von ihrem Guthaben abgezogen, und der Gesamtbestand des Token schrumpft um diesen Betrag."
-				},
-				"decimals": {
-					"label": "Dezimalstellen",
-					"info": "Die Ziffern, durch die dein Token teilbar ist. Null bedeutet, dass Benutzer nur natürliche Zahlen (0,1,2,3,4...) als Guthaben auf Ihrem Token haben können und nur Beträge in natürlichen Zahlen übertragen werden können. Andere Zahlen geben die Dezimalstellen an, z.B. \"3\" bedeutet, dass das Token teilbar ist, wobei 0,001 die kleinste Einheit ist."
-				}
-			},
-			"title": "Tokendesign",
-			"info": "Die grundlegenden Eigenschaften dieses Tokens. Definiert die wirtschaftlichen Eckpfeiler von diesem Token."
-		},
-		"step3-actions": {
-			"title": "Handlungspolitik",
-			"info": "Für welche positiven Aktionen sollten Benutzer deinen neuen Token erhalten können? Nimm dir Zeit, über diese Frage nachzudenken. Sie ist sehr wichtig für den zukünftigen Erfolg Ihrer Token-Idee im System. Es ist auch wichtig, dass die Benutzer in der Lage sind, ihre Aktionen mit den verschiedenen Nachweismethoden nachzuweisen (siehe letzter Abschnitt)."
-		},
-		"step4-minting": {
-			"title": "Erschaffungsregeln",
-			"fields": {
-				"is-mintable": {
-					"label": "Token ist prägbar",
-					"info": "Berechtigte Benutzer oder \"smart contracts\" können einen beliebigen Betrag auf eine öffentliche Adresse deiner Wahl \"prägen\". Das Gesamtguthaben dieses Tokens wird um diesen Betrag erhöht.",
-					"hint": "Dein Token ist so eingestellt, dass kein Guthaben darauf erschaffen werden kann."
-				},
-				"fin4-has-minter-role": {
-					"label": "Fin4 hat die Präger-Rolle",
-					"info": "Um erfolgreiche Antragsteller mit einem Restbetrag auf diese Tokens auszurüsten, benötigt das System Finance 4.0 die Rolle des Prägers.",
-					"hint": "Um die Erschaffungsregeln durchsetzen zu können, muss das Finance 4.0-System den Prägungsprozess kontrollieren. Wenn diese Option nicht angekreuzt ist, muss man sich um die Umsetzung seiner eigenen Erschaffungsregeln kümmern: durch die Behandlung des Ereignisses \"ClaimApproved\" aus dem Fin4Claiming-Vertrag oder durch das Hinzufügen einer Erweiterung, die der Implementierung der Schnittstelle \"SuccessfulClaimNotifier\" zugrunde liegt."
-				},
-				"additional-minter-roles": {
-					"label": "Zusätzliche Präge-Rollen",
-					"info": "Zusätzliche Nutzerkonten oder \"smart contracts\", die dieses Token prägen dürfen. Seien Sie sich bewusst, dass dein Verfahren zur Beanspruchung des Tokens an Glaubwürdigkeit verlieren kann, wenn jemand den Token prägen kann, ohne den Forderungsprozess zu durchlaufen."
-				},
-				"fixed-amount": {
-					"label": "Fixer Betrag",
-					"info": "Sobald die Forderung erfolgreich ist, wird diese festgelegte Mengen an Tokens für den Nutzer geprägt. Der Standardwert ist 1 Token pro Aktion."
-				},
-				"per-claim": {
-					"label": "pro Antrag"
-				},
-				"variable-amount": {
-					"label": "Variierender Betrag",
-					"info": "Der Nutzer wählt den Betrag zum Zeitpunkt der Antragstellung aus."
-				},
-				"unit": {
-					"label": "Messeinheit",
-					"info": "Die Einheit des Anspruchs, z.B. Bäume oder Minuten.",
-					"default-value": "Anzahl"
-				}
-			},
-			"info": "Die Münzprägung ist die Standardmethode, mit der, Nutzer durch das Einreichen und Prüfen von Anträgen Guthaben auf Positive Aktionen-Tokens verdienen."
-		},
-		"step5-verifiers1": {
-			"title": "Nicht interaktive Verifizierer",
-			"fields": {
-				"add-token-verifier": {
-					"label": "Token-Verifizierer hinzufügen"
-				},
-				"add-button": {
-					"label": "Hinzufügen"
-				},
-				"remove-verifier-tooltip": {
-					"label": "Verifizierer entfernen"
-				},
-				"verifier-to-parameterize-tooltip": {
-					"label": "Weil dieser Verifizierer Parameter zu setzen hat, wird er beim Erstellen des Tokens eine zusätzliche Transaktion verursachen"
-				}
-			},
-			"info": "Um Tokens zu erhalten, müssen die Nutzer dem System nachweisen, dass sie die erforderliche Aktion tatsächlich durchgeführt haben. Du kannst eine beliebige Kombination von Nachweisen aus der Liste auswählen. Bitte nimm dir die Zeit, über jede beliebige Kombination genau nachzudenken. Gute Verifizierer sind auf die Art des Tokens abgestimmt, geeignet und praktisch für die Benutzer, die versuchen, sie zu erhalten, und praktisch für die Hersteller der Token. Je schwieriger die Prüfung ist, desto weniger Benutzer werden versuchen, den Token zu erhalten; je einfacher die Prüfung ist, desto weniger werden die Benutzer die Qualität des Tokens erkennen. In komplexen Fällen möchtet ihr vielleicht mit verschiedenen Token-Designs zur gleichen Zeit experimentieren. Schließlich ist der Nachweis von Aktionen eine komplexe Angelegenheit, und wir arbeiten ständig daran, die Überprüfungsmechanismen zu verbessern.",
-			"listing-header": "Im Folgenden sind alle verfügbaren nicht-interaktiven Verifizierer aufgelistet"
-		},
-		"step6-verifiers2": {
-			"title": "Interaktive Verifizierer",
-			"listing-header": "Im Folgenden werden alle verfügbaren interaktiven Verifizierer aufgelistet"
-		},
-		"step7-sourcerers": {
-			"title": "Bezugsquellenfinder"
-		},
-		"step8-underlyings": {
-			"title": "Externe Wertquellen"
-		}
-	},
-	"groups": {
-		"edit": {
-			"members": {
-				"remove-user": "Entferne {{user}}",
-				"box-title": "Mitglieder ändern",
-				"yourself": "selbst",
-				"add-one": "Füge ein Mitglied hinzu",
-				"add-multiple": "Füge mehrere Mitglieder hinzu",
-				"new-member-address": "Öffentliche Adresse des neuen Mitglieds",
-				"new-members-addresses": "Öffentliche Adressen, Komma getrennt",
-				"add-button": "Hinzufügen"
-			},
-			"group": {
-				"box-title": "Bearbeiten von Gruppen",
-				"user-is-creator": "Du bist der Ersteller der Gruppe",
-				"no-edit-rights": "Du hast keine Bearbeitungsrechte für diese Gruppe"
-			},
-			"ownership": {
-				"box-title": "Eigentum übertragen",
-				"new-owner-address": "Öffentliche Adresse des neuen Gruppenbesitzer",
-				"no-edit-hint": "Es wird für dich nicht mehr möglich sein, die Gruppe zu bearbeiten",
-				"transfer-button": "Eigentum übertragen"
-			}
-		},
-		"create-new": {
-			"box-title": "Kreire eine Gruppe",
-			"group-name-field": "Name der Gruppe",
-			"add-yourself-checkbox": "Füge dich selber als Mitglied hinzu",
-			"submit-button": "Absenden",
-			"reload-hint": "Lade die Seite neu, um deine neue Gruppe zu sehen."
-		},
-		"columns": {
-			"group-id": "ID",
-			"group-name": "Name der Gruppe",
-			"action": "Aktion",
-			"member": "Mitglied"
-		},
-		"created-by-user": {
-			"box-title": "Gruppen, die du kreirt hast"
-		},
-		"user-is-member": {
-			"box-title": "Meine Gruppen",
-			"user-is-owner": "Du bist der Eigentümer",
-			"message-owner": "Inhaber der Nachricht",
-			"remove-yourself-hint": "Wenn du dich selbst als Mitglied entfernst, ändert sich dein Eigentum an dieser Gruppe nicht"
-		}
-	},
-	"collections": {
-		"list-existing": {
-			"name-tooltip": "Kurzname: {{shortName}}, Beschreibung: {{description}}, Tokens: {{tokensCount}}",
-			"view-button": "Ansicht",
-			"box-title": "Token Sammlungen",
-			"name-column": "Name",
-			"actions-column": "Aktionen",
-			"edit-button": "Bearbeiten"
-		},
-		"edit": {
-			"user-is-admin": "Du bist Administrator dieser Sammlung über deine Mitgliedschaft in der Gruppe {{groupId}}",
-			"box-title": "Sammlung bearbeiten",
-			"view-button": "Sammlung ansehen",
-			"no-edit-rights": "Sie haben keine Bearbeitungsrechte für diese Sammlung",
-			"user-is-creator": "Sie sind der Ersteller dieser Sammlung",
-			"tokens": {
-				"box-title": "Tokens verwalten",
-				"token-column": "Token",
-				"action-column": "Aktion",
-				"remove-button": "Entfernen",
-				"add-button": "Tokens hinzufügen"
-			},
-			"admins": {
-				"box-title": "Verwalten von Admins",
-				"modal-title": "Admin-Gruppe festlegen",
-				"group-id-field": "Gruppen ID (siehe Übersicht der Gruppen)",
-				"submit-button": "Absenden",
-				"group-id": "Admin Gruppen ID",
-				"change-button": "Admin-Gruppe ändern",
-				"remove-button": "Admin-Gruppe entfernen",
-				"select-group-button": "Benutzergruppe auswählen"
-			},
-			"ownership": {
-				"box-title": "Eigentum übertragen",
-				"new-owner-address": "Öffentliche Adresse des neuen Sammlungsinhabers",
-				"no-edit-hint": "Du wirst diese Sammlung nicht mehr bearbeiten können",
-				"transfer-button": "Eigentum übertragen"
-			}
-		},
-		"create-new": {
-			"box-title": "Kreire eine neue Token-Sammlung",
-			"fields": {
-				"name": "Name der Sammlung",
-				"short-name": "Kurzname (z.B. ethz\" for \"ETH Zürich\")",
-				"description": "Beschreibung"
-			},
-			"reload-hint": "Lade die Seite neu, um neu erstelle Sammlungen zu sehen."
-		},
-		"view": {
-			"tokens-count": "Anzahl an Tokens",
-			"box-title": "Details zur Sammlung",
-			"description": "Beschreibung",
-			"edit-button": "Sammlung bearbeiten",
-			"tokens-list-box-title": "Tokens in der Sammlung"
-		}
-	},
-	"messages": {
-		"requested-by": "Angefordert von {{user}}",
-		"mark-as-read-button": "ALS GELESEN MARKIEREN",
-		"reply-button": "ANTWORTE",
-		"box-title": "Nachrichten",
-		"no-messages": "Keine Nachrichten",
-		"click-to-see-image": "Bild herunterladen",
-		"attach-message-optional": "Optional: eine Nachricht anhängen",
-		"approve-button": "Genehmigen",
-		"reject-button": "Ablehnen",
-		"types": {
-			"info": "Info",
-			"approval-request": "Antrag auf Genehmigung",
-			"from-user": "Von Benutzer"
-		}
-	},
-	"about": {
-		"content": "Die Finance4.0-Plattform (Fin4) hat den Anspruch, ein sozio-technisches Artefakt zu sein, das einen Designraum für ein sozial-ökologisches Finanzsystem und für postmonetäre Konzepte und Experimente abdeckt.<br><br>Das Forschungsprojekt wird unterstützt von [SNF](snf-link), [Climate-KIC](ckic-link) und angetrieben von [COSS](coss-link).<br><br>Das Projekt ist Open Source und heißt alle Mitwirkenden sind willkommen: [github.com/FuturICT2](github-orga-link)<br><br>Die Dokumentation kann [hier](docs-link) gefunden werden.<br><br>Weitere Informationen auf [finfour.net](finfour-link).<br><br>Kontakt: {{email}}",
-		"box-title": "Über FIN4Xplorer"
-	},
-	"top-bar": {
-		"not-connected-warning": "Nicht mit dem {{networkName}} Ethereum-Netzwerk verbunden. Ist MetaMask installiert und angeschlossen?<br> Besorg dir die [MetaMask-Erweiterung](metamask-extension-link) für deinen Desktop-Browser oder versuch es mit<br>[MetaMask Mobile](metamask-mobile-link) oder [Status](status-link) auf deinem Mobiltelefon. Benötigst du Hilfe [Erste Schritte](getting-started-link)?",
-		"pending-transactions-modal": {
-			"box-title": "Ausstehende Transaktionen",
-			"none": "Keine ausstehenden Transaktionen",
-			"see-log": "Siehe Protokoll"
-		}
-	},
-	"notification": {
-		"token-created": "Neuer Fin4-Token erstellt: {{name}} [{{symbol}}]",
-		"claim-submitted": "Sie beanspruchen {{quantity}} {{name}} [{{symbol}}] Tokens",
-		"claim-approved": "Anspruch genehmigt: Sie haben {{quantity}} {{name}}} [{{symbol}}] Tokens",
-		"claim-rejected": "Anspruch auf Tokens {{name}} abgelehnt",
-		"submission-added": "Einreichung zum Token {{symbol}} hinzugefügt",
-		"verifier-pending": "Ein Verifizierer Ihrer Forderung ist noch anhängig",
-		"verifier-approved": "Ein Nachweis deiner Forderung wurde genehmigt",
-		"verifier-rejected": "Ein Nachweis deiner Forderung wurde abgelehnt",
-		"new-message": "Du hast eine neue Nachricht",
-		"message-marked-as-read": "Nachricht als gelesen markiert"
-	},
-	"contract-form-simple": {
-		"submit-button": "Absenden"
-	},
-	"user-to-user": {
-		"messages": {
-			"box-title": "Sende dem Nutzer eine Nachricht",
-			"fields": {
-				"receiver-address": "Öffentliche Adresse des Nachrichtenempfängers",
-				"message-text-field": "Nachrichtentext"
-			},
-			"non-encryption-hint": "Zu beachten ist, dass Nachrichten nicht verschlüsselt werden. Mit etwas Aufwand können sie im Klartext auf der Blockchain abgerufen werden.",
-			"send-button": "Senden"
-		},
-		"transfer": {
-			"box-title": "Transferiere Tokens zu Nutzer",
-			"fields": {
-				"receiver-address": "Öffentliche Adresse des Token-Empfängers",
-				"token-dropdown": "Token",
-				"amount": "Betrag"
-			},
-			"send-button": "Senden"
-		}
-	},
-	"settings": {
-		"box-title": "Einstellungen",
-		"language": "Sprache",
-		"cookie-info": "Wir verwenden Cookies, um Sprachpräferenzen und Entwürfe zur Erstellung von Token zu speichern.",
-		"system-parameters": {
-			"box-title": "Systemparameter",
-			"main-smart-contract-address": "Adresse des Fin4Main smart contracts"
-		},
-		"verifiers": {
-			"box-title": "Adressen der Verifizierer",
-			"parameters": "Parameter",
-			"is-non-interactive": "ist nicht interaktiv"
-		},
-		"sourcerer": {
-			"box-title": "Fin4 Beschaffer"
-		}
-	},
-	"qr-code-modal": {
-		"box-title": "Dein QR-Code",
-		"click-to-copy": "Zum Kopieren in die Zwischenablage klicken",
-		"copied": "Kopiert!",
-		"users-address": "Deine öffentliche Adresse"
-	},
-	"address-qr-reader-component": {
-		"default-public-address": "Öffentliche Adresse",
-		"cancel-button": "Abbrechen"
-	},
-	"transaction-log": {
-		"box-title": "Transaktionsprotokoll",
-		"reload-hint": "Log-Einträge werden beim Neuladen der Seite gelöscht."
-	},
-	"sc": {
-		"verifier": {
-			"approval-by-group-member": {
-				"name": "Genehmigung durch Gruppenmitglied",
-				"description": "Der Token-Ersteller gibt eine oder mehrere Anwendergruppen an, die von einem Mitglied genehmigt werden müssen."
-			},
-			"location": {
-				"name": "Standort",
-				"description": "Es muss ein Ort angegeben werden, der innerhalb eines Radius von einem vom Token-Ersteller definierten Ort liegt."
-			},
-			"maximum-quantity-per-interval": {
-				"name": "Maximalmenge pro Intervall",
-				"description": "Definiert die maximale Menge, die ein Benutzer innerhalb eines bestimmten Zeitintervalls beanspruchen kann."
-			},
-			"minimum-interval": {
-				"name": "Mindestintervall",
-				"description": "Definiert eine Mindestzeit, die zwischen den einzelnen Ansprüchen liegen muss."
-			},
-			"password": {
-				"name": "Passwort",
-				"description": "Genehmigung, wenn der Benutzer das Passwort angibt, das mit dem vom Tokenersteller festgelegten, übereinstimmt."
-			},
-			"picture": {
-				"name": "Bild",
-				"description": "Der Antragsteller muss ein Bild vorlegen, auf dessen Grundlage der Genehmigende über die Genehmigung entscheidet."
-			},
-			"self-approve": {
-				"name": "Selbstgenehmigung",
-				"description": "Die Antragsteller genehmigen ihre eigene Forderung."
-			},
-			"selfie-together": {
-				"name": "Gemeinsames Selfie",
-				"description": "Der Antragsteller liefert ein Bild, auf dessen Grundlage ein selbstgewählter Genehmigender und ein Mitglied einer vom Tokenersteller benannten Benutzergruppe über die Genehmigung entscheiden."
-			},
-			"sensor-one-time-signal": {
-				"name": "Einmaliges Sensorsignal",
-				"description": "Genehmigung über ein Signal sendenden Sensor. Der Token-Ersteller gibt den jeweiligen Sensor über seine ID an."
-			},
-			"specific-address": {
-				"name": "Spezifische Adresse",
-				"description": "Der Antragsteller gibt eine Adresse an, die er genehmigen muss."
-			},
-			"token-creator-approval": {
-				"name": "Genehmigung durch Token-Ersteller",
-				"description": "Der Ersteller des Tokens muss zustimmen."
-			},
-			"happy-moment": {
-				"name": "Glücklicher Moment",
-				"description": "Reiche ein Bild von einem glücklichen Moment ein."
-			},
-			"idea": {
-				"name": "Idee",
-				"description": "Reiche eine Idee ein."
-			},
-			"networking": {
-				"name": "Vernetzung",
-				"description": "Reiche den Inhalt deiner Netzwerkaktivität ein und dein Gegenüber muss deine Forderung genehmigen."
-			},
-			"statement": {
-				"name": "Aussage",
-				"description": "Eine Aussage einreichen."
-			},
-			"vote": {
-				"name": "Abstimmung",
-				"description": "Reiche eine Abstimmung über eine der vorgegebenen Optionen ein."
-			},
-			"block-these": {
-				"name": "Blockieren von Adressen oder Gruppen",
-				"description": "Der Tokenersteller definiert Gruppe(n) und/oder einzelne Konten, die kein Token beanspruchen können"
-			},
-			"blocker": {
-				"name": "Sperrer",
-				"description": "Weise jede Forderung auf diesem Token sofort zurück."
-			},
-			"claimable-only-n-times-per-user": {
-				"name": "Nur N-mal pro Benutzer beanspruchbar",
-				"description": "Der Ersteller des Tokens legt eine Obergrenze fest, wie oft ein Token erfolgreich beansprucht werden kann."
-			},
-			"allow-only-these": {
-				"name": "Nur bestimmte Adressen oder Gruppen zulassen",
-				"description": "Der Tokenersteller definiert Gruppe(n) und/oder individuelle Konten, die ein Token beanspruchen können, während alle anderen es nicht können"
-			}
-		}
-	}
+    "home": {
+        "on-the-blockchain": {
+            "box-title": "Auf der Blockchain",
+            "ether-request-failed": "Ether-Anfrage ist fehlgeschlagen",
+            "your-public-address": "Deine öffentliche Adresse",
+            "no-ether-warning": "Ohne Ether bist du auf schreibgeschützte Vorgänge beschränkt.",
+            "info-not-yet-available": "Information nicht verfügbar",
+            "users-balance": "Dein Guthaben",
+            "right-network-warning": "Bist du mit dem richtigen Netzwerk verbunden?",
+            "request-ether": {
+                "button": "Ether anfordern",
+                "pending": "Etheranfrage läuft...",
+                "success": "Anfrage erfolgreich",
+                "error": "Anfrage fehlgeschlagen"
+            }
+        },
+        "inbox": {
+            "message-user-button": "Sende Nachricht",
+            "box-title": "Posteingang",
+            "your-messages-button": "Deine Nachrichten",
+            "transfer-token-button": "Übertrag von Tokens",
+            "deposit-collateral-button": "Sicherheiten hinterlegen",
+            "convert-collateral-button": "Umwandlung von Sicherheiten"
+        },
+        "wallet": {
+            "box-title": "Geldbörse",
+            "no-tokens-yet": "Du hast bisher noch keine Token erfolgreich beansprucht.",
+            "token-balance": "Bilanz",
+            "transfer-token": "Übertragung"
+        },
+        "settings": {
+            "box-title": "Einstellungen",
+            "about-button": "Über",
+            "settings-button": "Systemeinstellungen",
+            "user-groups-button": "Nutzergruppen",
+            "collections-button": "Tokensammlungen"
+        },
+        "token-curation": {
+            "box-title": "Token Kuration",
+            "listing-button": "Auflistung",
+            "management-button": "Verwaltung",
+            "parameters-button": "Rahmenbedingungen"
+        }
+    },
+    "tokens-site": {
+        "copy-existing-token": "Kopiere einen vorhandenen Token",
+        "import-button": "Importieren",
+        "drafts": {
+            "title": "Token-Erstellungs Entwürfe",
+            "download-button": "Herunterladen",
+            "delete-button": "Löschen",
+            "delete-all-button": "Alle löschen",
+            "last-modified": "zuletzt geändert",
+            "continue-editing-button": "Bearbeitung fortsetzen",
+            "modal-title": "Entwurf zur Erstellung von Token"
+        },
+        "create-new-token": "Kreire einen neuen Token",
+        "start-token-creation": "Assistent zur Token-Erstellung starten",
+        "upload-token-draft": "Token-Entwurf hochladen (JSON)"
+    },
+    "tokens-list": {
+        "token-tooltip": "Kurze Beschreibung: {{shortDescription}}, Einheit: {{unit}}",
+        "token-name": "Name",
+        "all-tokens-box-title": "Alle Tokens",
+        "total-supply": "Angebot",
+        "actions": "Aktionen",
+        "token-is-opat": "Dieser Token ist auf der Liste der kuratierten Tokens",
+        "view-button": "Ansicht",
+        "claim-button": "Forderung"
+    },
+    "claims": {
+        "previous-claims": {
+            "rejected-label": "ABGELEHNT",
+            "approved-label": "Genehmigt",
+            "box-title": "Meine bisherigen Forderungen",
+            "submit-proof-button": "Nachweis einreichen",
+            "filter": {
+                "menu-title": "Filter Möglichkeiten: zeige Forderungen die...",
+                "pending-checkbox": "Ausstehend",
+                "approved-checkbox": "Genehmigt",
+                "rejected-checkbox": "Abgelehnt",
+                "filter-active": "Filterung aktiv"
+            }
+        },
+        "submit-button": "Absenden",
+        "default-unit": "Anzahl",
+        "claim-tokens-box-title": "Tokens fordern",
+        "tokens-dropdown": "Token",
+        "comment": "Kommentar"
+    },
+    "proof-submission": {
+        "reason-hint": "Sehe den Grund in deinen [Nachrichten](msgs-link)",
+        "submit-new-claim": "Wenn du willst, kannst du [eine neue Forderung](new-claim-link) einreichen",
+        "verifier": {
+            "unsubmitted": "Für den Anspruch muss der folgende Nachweis erbracht werden: {{description}}",
+            "pending": "Der Nachweis {{name}} ist in anhängigem Zustand",
+            "approved": "Der Nachweis {{name}} wurde erfolgreich verifiziert",
+            "rejected": "Der Nachweis {{name}} wurde abgelehnt"
+        },
+        "box-title": "Einreichen von Nachweisen",
+        "claim-rejected": "Deine Forderung wurde abgelehnt",
+        "custom-component": {
+            "picture-upload": {
+                "submit-button": "Absenden",
+                "uploading": "Lädt hoch...",
+                "qr-reader-label": "Öffentliche Adresse des Bildgenhmigers",
+                "upload-complete": "Hochladung komplett",
+                "reduce-image-size-checkbox": "Reduziere die Bildgröße",
+                "reduce-image-size-tooltip": "Die Anzahl Pixel aber dieser Vorschlag ausgelöst wird is {{triggerDimensions}}. Dein Bild hat {{originalDimensions}} Pixel. Daraus ergibt sich ein Reduktionsfaktor von {{reductionFactor}} mit neuen Dimensionen von {{reducedDimensions}}. Die JPG Komprimierungsrate ist {{compressionRate}}.",
+                "upload-button": "Hochladen"
+            },
+            "vote": {
+                "submit-button": "Absenden",
+                "dropdown-label": "Wahlmöglichkeiten"
+            },
+            "location": {
+                "submit-button": "Einreichung des Standorts",
+                "not-supported-alert": "Standortanfragen werden von diesem Browser nicht unterstützt"
+            }
+        }
+    },
+    "token-creator": {
+        "navigation": {
+            "info-box-close-button": "SCHLIESSEN",
+            "back-button": "Zurück",
+            "next-button": "Weiter",
+            "finish-button": "Abschluss",
+            "restart-button": "Neustart",
+            "create-token-button": "Kreire den Token",
+            "no-token-creation-draft-found": "Kein Entwurf zur Token-Erstellung mit der ID {{Id}} gefunden",
+            "all-steps-completed": "Alle Schritte sind abgeschlossen",
+            "keep-as-draft": "Den Token Entwurf behalten"
+        },
+        "box-title": "Kreirung von Tokens",
+        "step1-identity": {
+            "title": "Token Identität",
+            "fields": {
+                "name": {
+                    "label": "Name",
+                    "info": "Gib dem neuen Token, den du kreiren willst, einen beschreibenden Namen."
+                },
+                "symbol": {
+                    "label": "Symbol",
+                    "info": "Wähle ein kurzes Zeichen von 3-5 Buchstaben (Nummern sind ebenfalls erlaubt) für deinen neuen Token. Bitte bedenke, dass das System bereits benutzte Zeichen ablehnt."
+                },
+                "short-description": {
+                    "label": "Kurze Beschreibung",
+                    "info": "Beschreibe den Nutzen/die Idee deines neu kreirten Token, in einer kurzen Version."
+                },
+                "long-description": {
+                    "label": "Ausführliche Beschreibung",
+                    "info": "Beschreibe den Nutzen/die Idee deines neu kreirten Token in einer ausführlichen Version."
+                }
+            },
+            "info": "Die Basisinfos über die Identität des Token."
+        },
+        "step2-design": {
+            "fields": {
+                "is-capped": {
+                    "label": "ist gedeckelt",
+                    "info": "Sobald der Gesamtbestand dieses Tokens die Höchstgrenze erreicht hat, kann niemand (einschließlich des Token-Erstellers) mehr von diesem Token erschaffen."
+                },
+                "cap": {
+                    "label": "Obergrenze",
+                    "info": "Wenn das Token begrenzt ist, ist dies der Wert der Obergrenze."
+                },
+                "initial-supply": {
+                    "label": "Anfangsbestand",
+                    "info": "Der Anfangsbetrag dieser Tokens, der nicht über das Antragsverfahren verdient werden muss. Zählt zum Gesamtbestand dieser Tokens. Wenn ein Wert größer als 0 festgelegt wird, muss ein Eigentümer gewählt werden."
+                },
+                "token-creator-owns-initial-supply": {
+                    "label": "Der Token-Ersteller ist der Besitzer",
+                    "info": "Wenn ein Anfangsbestand festgelegt ist, ist der Token-Ersteller Eigentümer dieses Bestands."
+                },
+                "other-initial-supply-owner": {
+                    "label": "Besitzeradresse",
+                    "info": "Wenn ein Anfangsbestand eingestellt ist, gehört er dieser Adresse."
+                },
+                "is-transferable": {
+                    "label": "Ist übertragbar",
+                    "info": "Benutzer, die ein Guthaben auf diesem Token haben, können dieses ganz oder teilweise auf andere Benutzer übertragen. In den meisten Fällen sollen Benutzer in der Lage sein, Token für positive Aktionen (z.B. für den Handel) zu übertragen."
+                },
+                "is-burnable": {
+                    "label": "ist verbrennbar",
+                    "info": "Benutzer können einen Teil oder ihr gesamtes Guthaben auf diesen Tokens verbrennen. Der verbrannte Betrag wird von ihrem Guthaben abgezogen, und der Gesamtbestand des Token schrumpft um diesen Betrag."
+                },
+                "decimals": {
+                    "label": "Dezimalstellen",
+                    "info": "Die Ziffern, durch die dein Token teilbar ist. Null bedeutet, dass Benutzer nur natürliche Zahlen (0,1,2,3,4...) als Guthaben auf Ihrem Token haben können und nur Beträge in natürlichen Zahlen übertragen werden können. Andere Zahlen geben die Dezimalstellen an, z.B. \"3\" bedeutet, dass das Token teilbar ist, wobei 0,001 die kleinste Einheit ist."
+                }
+            },
+            "title": "Tokendesign",
+            "info": "Die grundlegenden Eigenschaften dieses Tokens. Definiert die wirtschaftlichen Eckpfeiler von diesem Token."
+        },
+        "step3-actions": {
+            "title": "Handlungspolitik",
+            "info": "Für welche positiven Aktionen sollten Benutzer deinen neuen Token erhalten können? Nimm dir Zeit, über diese Frage nachzudenken. Sie ist sehr wichtig für den zukünftigen Erfolg Ihrer Token-Idee im System. Es ist auch wichtig, dass die Benutzer in der Lage sind, ihre Aktionen mit den verschiedenen Nachweismethoden nachzuweisen (siehe letzter Abschnitt)."
+        },
+        "step4-minting": {
+            "title": "Erschaffungsregeln",
+            "fields": {
+                "is-mintable": {
+                    "label": "Token ist prägbar",
+                    "info": "Berechtigte Benutzer oder \"smart contracts\" können einen beliebigen Betrag auf eine öffentliche Adresse deiner Wahl \"prägen\". Das Gesamtguthaben dieses Tokens wird um diesen Betrag erhöht.",
+                    "hint": "Dein Token ist so eingestellt, dass kein Guthaben darauf erschaffen werden kann."
+                },
+                "fin4-has-minter-role": {
+                    "label": "Fin4 hat die Präger-Rolle",
+                    "info": "Um erfolgreiche Antragsteller mit einem Restbetrag auf diese Tokens auszurüsten, benötigt das System Finance 4.0 die Rolle des Prägers.",
+                    "hint": "Um die Erschaffungsregeln durchsetzen zu können, muss das Finance 4.0-System den Prägungsprozess kontrollieren. Wenn diese Option nicht angekreuzt ist, muss man sich um die Umsetzung seiner eigenen Erschaffungsregeln kümmern: durch die Behandlung des Ereignisses \"ClaimApproved\" aus dem Fin4Claiming-Vertrag oder durch das Hinzufügen einer Erweiterung, die der Implementierung der Schnittstelle \"SuccessfulClaimNotifier\" zugrunde liegt."
+                },
+                "additional-minter-roles": {
+                    "label": "Zusätzliche Präge-Rollen",
+                    "info": "Zusätzliche Nutzerkonten oder \"smart contracts\", die dieses Token prägen dürfen. Seien Sie sich bewusst, dass dein Verfahren zur Beanspruchung des Tokens an Glaubwürdigkeit verlieren kann, wenn jemand den Token prägen kann, ohne den Forderungsprozess zu durchlaufen."
+                },
+                "fixed-amount": {
+                    "label": "Fixer Betrag",
+                    "info": "Sobald die Forderung erfolgreich ist, wird diese festgelegte Mengen an Tokens für den Nutzer geprägt. Der Standardwert ist 1 Token pro Aktion."
+                },
+                "per-claim": {
+                    "label": "pro Antrag"
+                },
+                "variable-amount": {
+                    "label": "Variierender Betrag",
+                    "info": "Der Nutzer wählt den Betrag zum Zeitpunkt der Antragstellung aus."
+                },
+                "unit": {
+                    "label": "Messeinheit",
+                    "info": "Die Einheit des Anspruchs, z.B. Bäume oder Minuten.",
+                    "default-value": "Anzahl"
+                }
+            },
+            "info": "Die Münzprägung ist die Standardmethode, mit der, Nutzer durch das Einreichen und Prüfen von Anträgen Guthaben auf Positive Aktionen-Tokens verdienen."
+        },
+        "step5-verifiers1": {
+            "title": "Nicht interaktive Verifizierer",
+            "fields": {
+                "add-token-verifier": {
+                    "label": "Token-Verifizierer hinzufügen"
+                },
+                "add-button": {
+                    "label": "Hinzufügen"
+                },
+                "remove-verifier-tooltip": {
+                    "label": "Verifizierer entfernen"
+                },
+                "verifier-to-parameterize-tooltip": {
+                    "label": "Weil dieser Verifizierer Parameter zu setzen hat, wird er beim Erstellen des Tokens eine zusätzliche Transaktion verursachen"
+                }
+            },
+            "info": "Um Tokens zu erhalten, müssen die Nutzer dem System nachweisen, dass sie die erforderliche Aktion tatsächlich durchgeführt haben. Du kannst eine beliebige Kombination von Nachweisen aus der Liste auswählen. Bitte nimm dir die Zeit, über jede beliebige Kombination genau nachzudenken. Gute Verifizierer sind auf die Art des Tokens abgestimmt, geeignet und praktisch für die Benutzer, die versuchen, sie zu erhalten, und praktisch für die Hersteller der Token. Je schwieriger die Prüfung ist, desto weniger Benutzer werden versuchen, den Token zu erhalten; je einfacher die Prüfung ist, desto weniger werden die Benutzer die Qualität des Tokens erkennen. In komplexen Fällen möchtet ihr vielleicht mit verschiedenen Token-Designs zur gleichen Zeit experimentieren. Schließlich ist der Nachweis von Aktionen eine komplexe Angelegenheit, und wir arbeiten ständig daran, die Überprüfungsmechanismen zu verbessern.",
+            "listing-header": "Im Folgenden sind alle verfügbaren nicht-interaktiven Verifizierer aufgelistet"
+        },
+        "step6-verifiers2": {
+            "title": "Interaktive Verifizierer",
+            "listing-header": "Im Folgenden werden alle verfügbaren interaktiven Verifizierer aufgelistet"
+        },
+        "step7-sourcerers": {
+            "title": "Bezugsquellenfinder"
+        },
+        "step8-underlyings": {
+            "title": "Externe Wertquellen"
+        }
+    },
+    "groups": {
+        "edit": {
+            "members": {
+                "remove-user": "Entferne {{user}}",
+                "box-title": "Mitglieder ändern",
+                "yourself": "selbst",
+                "add-one": "Füge ein Mitglied hinzu",
+                "add-multiple": "Füge mehrere Mitglieder hinzu",
+                "new-member-address": "Öffentliche Adresse des neuen Mitglieds",
+                "new-members-addresses": "Öffentliche Adressen, Komma getrennt",
+                "add-button": "Hinzufügen"
+            },
+            "group": {
+                "box-title": "Bearbeiten von Gruppen",
+                "user-is-creator": "Du bist der Ersteller der Gruppe",
+                "no-edit-rights": "Du hast keine Bearbeitungsrechte für diese Gruppe"
+            },
+            "ownership": {
+                "box-title": "Eigentum übertragen",
+                "new-owner-address": "Öffentliche Adresse des neuen Gruppenbesitzer",
+                "no-edit-hint": "Es wird für dich nicht mehr möglich sein, die Gruppe zu bearbeiten",
+                "transfer-button": "Eigentum übertragen"
+            }
+        },
+        "create-new": {
+            "box-title": "Kreire eine Gruppe",
+            "group-name-field": "Name der Gruppe",
+            "add-yourself-checkbox": "Füge dich selber als Mitglied hinzu",
+            "submit-button": "Absenden",
+            "reload-hint": "Lade die Seite neu, um deine neue Gruppe zu sehen."
+        },
+        "columns": {
+            "group-id": "ID",
+            "group-name": "Name der Gruppe",
+            "action": "Aktion",
+            "member": "Mitglied"
+        },
+        "created-by-user": {
+            "box-title": "Gruppen, die du kreirt hast"
+        },
+        "user-is-member": {
+            "box-title": "Meine Gruppen",
+            "user-is-owner": "Du bist der Eigentümer",
+            "message-owner": "Inhaber der Nachricht",
+            "remove-yourself-hint": "Wenn du dich selbst als Mitglied entfernst, ändert sich dein Eigentum an dieser Gruppe nicht"
+        }
+    },
+    "collections": {
+        "list-existing": {
+            "name-tooltip": "Kurzname: {{shortName}}, Beschreibung: {{description}}, Tokens: {{tokensCount}}",
+            "view-button": "Ansicht",
+            "box-title": "Token Sammlungen",
+            "name-column": "Name",
+            "actions-column": "Aktionen",
+            "edit-button": "Bearbeiten"
+        },
+        "edit": {
+            "user-is-admin": "Du bist Administrator dieser Sammlung über deine Mitgliedschaft in der Gruppe {{groupId}}",
+            "box-title": "Sammlung bearbeiten",
+            "view-button": "Sammlung ansehen",
+            "no-edit-rights": "Sie haben keine Bearbeitungsrechte für diese Sammlung",
+            "user-is-creator": "Sie sind der Ersteller dieser Sammlung",
+            "tokens": {
+                "box-title": "Tokens verwalten",
+                "token-column": "Token",
+                "action-column": "Aktion",
+                "remove-button": "Entfernen",
+                "add-button": "Tokens hinzufügen"
+            },
+            "admins": {
+                "box-title": "Verwalten von Admins",
+                "modal-title": "Admin-Gruppe festlegen",
+                "group-id-field": "Gruppen ID (siehe Übersicht der Gruppen)",
+                "submit-button": "Absenden",
+                "group-id": "Admin Gruppen ID",
+                "change-button": "Admin-Gruppe ändern",
+                "remove-button": "Admin-Gruppe entfernen",
+                "select-group-button": "Benutzergruppe auswählen"
+            },
+            "ownership": {
+                "box-title": "Eigentum übertragen",
+                "new-owner-address": "Öffentliche Adresse des neuen Sammlungsinhabers",
+                "no-edit-hint": "Du wirst diese Sammlung nicht mehr bearbeiten können",
+                "transfer-button": "Eigentum übertragen"
+            }
+        },
+        "create-new": {
+            "box-title": "Kreire eine neue Token-Sammlung",
+            "fields": {
+                "name": "Name der Sammlung",
+                "short-name": "Kurzname (z.B. ethz\" for \"ETH Zürich\")",
+                "description": "Beschreibung"
+            },
+            "reload-hint": "Lade die Seite neu, um neu erstelle Sammlungen zu sehen."
+        },
+        "view": {
+            "tokens-count": "Anzahl an Tokens",
+            "box-title": "Details zur Sammlung",
+            "description": "Beschreibung",
+            "edit-button": "Sammlung bearbeiten",
+            "tokens-list-box-title": "Tokens in der Sammlung",
+            "download-claims-on-tokens": "Lade die Forderungen auf den Tokens in dieser Sammlung herunter"
+        }
+    },
+    "messages": {
+        "requested-by": "Angefordert von {{user}}",
+        "mark-as-read-button": "ALS GELESEN MARKIEREN",
+        "reply-button": "ANTWORTE",
+        "box-title": "Nachrichten",
+        "no-messages": "Keine Nachrichten",
+        "click-to-see-image": "Bild herunterladen",
+        "attach-message-optional": "Optional: eine Nachricht anhängen",
+        "approve-button": "Genehmigen",
+        "reject-button": "Ablehnen",
+        "types": {
+            "info": "Info",
+            "approval-request": "Antrag auf Genehmigung",
+            "from-user": "Von Benutzer"
+        }
+    },
+    "about": {
+        "content": "Die Finance4.0-Plattform (Fin4) hat den Anspruch, ein sozio-technisches Artefakt zu sein, das einen Designraum für ein sozial-ökologisches Finanzsystem und für postmonetäre Konzepte und Experimente abdeckt.<br><br>Das Forschungsprojekt wird unterstützt von [SNF](snf-link), [Climate-KIC](ckic-link) und angetrieben von [COSS](coss-link).<br><br>Das Projekt ist Open Source und heißt alle Mitwirkenden sind willkommen: [github.com/FuturICT2](github-orga-link)<br><br>Die Dokumentation kann [hier](docs-link) gefunden werden.<br><br>Weitere Informationen auf [finfour.net](finfour-link).<br><br>Kontakt: {{email}}",
+        "box-title": "Über FIN4Xplorer"
+    },
+    "top-bar": {
+        "not-connected-warning": "Nicht mit dem {{networkName}} Ethereum-Netzwerk verbunden. Ist MetaMask installiert und angeschlossen?<br> Besorg dir die [MetaMask-Erweiterung](metamask-extension-link) für deinen Desktop-Browser oder versuch es mit<br>[MetaMask Mobile](metamask-mobile-link) oder [Status](status-link) auf deinem Mobiltelefon. Benötigst du Hilfe [Erste Schritte](getting-started-link)?",
+        "pending-transactions-modal": {
+            "box-title": "Ausstehende Transaktionen",
+            "none": "Keine ausstehenden Transaktionen",
+            "see-log": "Siehe Protokoll"
+        }
+    },
+    "notification": {
+        "token-created": "Neuer Fin4-Token erstellt: {{name}} [{{symbol}}]",
+        "claim-submitted": "Sie beanspruchen {{quantity}} {{name}} [{{symbol}}] Tokens",
+        "claim-approved": "Anspruch genehmigt: Sie haben {{quantity}} {{name}}} [{{symbol}}] Tokens",
+        "claim-rejected": "Anspruch auf Tokens {{name}} abgelehnt",
+        "submission-added": "Einreichung zum Token {{symbol}} hinzugefügt",
+        "verifier-pending": "Ein Verifizierer Ihrer Forderung ist noch anhängig",
+        "verifier-approved": "Ein Nachweis deiner Forderung wurde genehmigt",
+        "verifier-rejected": "Ein Nachweis deiner Forderung wurde abgelehnt",
+        "new-message": "Du hast eine neue Nachricht",
+        "message-marked-as-read": "Nachricht als gelesen markiert"
+    },
+    "contract-form-simple": {
+        "submit-button": "Absenden"
+    },
+    "user-to-user": {
+        "messages": {
+            "box-title": "Sende dem Nutzer eine Nachricht",
+            "fields": {
+                "receiver-address": "Öffentliche Adresse des Nachrichtenempfängers",
+                "message-text-field": "Nachrichtentext"
+            },
+            "non-encryption-hint": "Zu beachten ist, dass Nachrichten nicht verschlüsselt werden. Mit etwas Aufwand können sie im Klartext auf der Blockchain abgerufen werden.",
+            "send-button": "Senden"
+        },
+        "transfer": {
+            "box-title": "Transferiere Tokens zu Nutzer",
+            "fields": {
+                "receiver-address": "Öffentliche Adresse des Token-Empfängers",
+                "token-dropdown": "Token",
+                "amount": "Betrag"
+            },
+            "send-button": "Senden"
+        }
+    },
+    "settings": {
+        "box-title": "Einstellungen",
+        "language": "Sprache",
+        "cookie-info": "Wir verwenden Cookies, um Sprachpräferenzen und Entwürfe zur Erstellung von Token zu speichern.",
+        "system-parameters": {
+            "box-title": "Systemparameter",
+            "main-smart-contract-address": "Adresse des Fin4Main smart contracts"
+        },
+        "verifiers": {
+            "box-title": "Adressen der Verifizierer",
+            "parameters": "Parameter",
+            "is-non-interactive": "ist nicht interaktiv"
+        },
+        "sourcerer": {
+            "box-title": "Fin4 Beschaffer"
+        }
+    },
+    "qr-code-modal": {
+        "box-title": "Dein QR-Code",
+        "click-to-copy": "Zum Kopieren in die Zwischenablage klicken",
+        "copied": "Kopiert!",
+        "users-address": "Deine öffentliche Adresse"
+    },
+    "address-qr-reader-component": {
+        "default-public-address": "Öffentliche Adresse",
+        "cancel-button": "Abbrechen"
+    },
+    "transaction-log": {
+        "box-title": "Transaktionsprotokoll",
+        "reload-hint": "Log-Einträge werden beim Neuladen der Seite gelöscht."
+    },
+    "sc": {
+        "verifier": {
+            "approval-by-group-member": {
+                "name": "Genehmigung durch Gruppenmitglied",
+                "description": "Der Token-Ersteller gibt eine oder mehrere Anwendergruppen an, die von einem Mitglied genehmigt werden müssen."
+            },
+            "location": {
+                "name": "Standort",
+                "description": "Es muss ein Ort angegeben werden, der innerhalb eines Radius von einem vom Token-Ersteller definierten Ort liegt."
+            },
+            "maximum-quantity-per-interval": {
+                "name": "Maximalmenge pro Intervall",
+                "description": "Definiert die maximale Menge, die ein Benutzer innerhalb eines bestimmten Zeitintervalls beanspruchen kann."
+            },
+            "minimum-interval": {
+                "name": "Mindestintervall",
+                "description": "Definiert eine Mindestzeit, die zwischen den einzelnen Ansprüchen liegen muss."
+            },
+            "password": {
+                "name": "Passwort",
+                "description": "Genehmigung, wenn der Benutzer das Passwort angibt, das mit dem vom Tokenersteller festgelegten, übereinstimmt."
+            },
+            "picture": {
+                "name": "Bild",
+                "description": "Der Antragsteller muss ein Bild vorlegen, auf dessen Grundlage der Genehmigende über die Genehmigung entscheidet."
+            },
+            "self-approve": {
+                "name": "Selbstgenehmigung",
+                "description": "Die Antragsteller genehmigen ihre eigene Forderung."
+            },
+            "selfie-together": {
+                "name": "Gemeinsames Selfie",
+                "description": "Der Antragsteller liefert ein Bild, auf dessen Grundlage ein selbstgewählter Genehmigender und ein Mitglied einer vom Tokenersteller benannten Benutzergruppe über die Genehmigung entscheiden."
+            },
+            "sensor-one-time-signal": {
+                "name": "Einmaliges Sensorsignal",
+                "description": "Genehmigung über ein Signal sendenden Sensor. Der Token-Ersteller gibt den jeweiligen Sensor über seine ID an."
+            },
+            "specific-address": {
+                "name": "Spezifische Adresse",
+                "description": "Der Antragsteller gibt eine Adresse an, die er genehmigen muss."
+            },
+            "token-creator-approval": {
+                "name": "Genehmigung durch Token-Ersteller",
+                "description": "Der Ersteller des Tokens muss zustimmen."
+            },
+            "happy-moment": {
+                "name": "Glücklicher Moment",
+                "description": "Reiche ein Bild von einem glücklichen Moment ein."
+            },
+            "idea": {
+                "name": "Idee",
+                "description": "Reiche eine Idee ein."
+            },
+            "networking": {
+                "name": "Vernetzung",
+                "description": "Reiche den Inhalt deiner Netzwerkaktivität ein und dein Gegenüber muss deine Forderung genehmigen."
+            },
+            "statement": {
+                "name": "Aussage",
+                "description": "Eine Aussage einreichen."
+            },
+            "vote": {
+                "name": "Abstimmung",
+                "description": "Reiche eine Abstimmung über eine der vorgegebenen Optionen ein."
+            },
+            "block-these": {
+                "name": "Blockieren von Adressen oder Gruppen",
+                "description": "Der Tokenersteller definiert Gruppe(n) und/oder einzelne Konten, die kein Token beanspruchen können"
+            },
+            "blocker": {
+                "name": "Sperrer",
+                "description": "Weise jede Forderung auf diesem Token sofort zurück."
+            },
+            "claimable-only-n-times-per-user": {
+                "name": "Nur N-mal pro Benutzer beanspruchbar",
+                "description": "Der Ersteller des Tokens legt eine Obergrenze fest, wie oft ein Token erfolgreich beansprucht werden kann."
+            },
+            "allow-only-these": {
+                "name": "Nur bestimmte Adressen oder Gruppen zulassen",
+                "description": "Der Tokenersteller definiert Gruppe(n) und/oder individuelle Konten, die ein Token beanspruchen können, während alle anderen es nicht können"
+            }
+        }
+    },
+    "token-view": {
+        "box-title": "Token Profil",
+        "creation-time": "Erstellungszeit",
+        "token-creator": "Ersteller des Tokens",
+        "initial-supply-owner": "Besitzer des Anfangsbestands",
+        "minter-role-owners": "Inhaber der Präge-Rolle",
+        "verifier-types": "Verwendete Verifizierer",
+        "total-numb-of-claims": "Gesamtzahl der Forderungen",
+        "total-supply": "Gesamtbestand",
+        "is-mintable": "ist prägbar",
+        "variable-minting": "Variabler Betrag pro Forderung, vom Benutzer gesetzt",
+        "fixed-minting": "Festgelegter Betrag pro Forderung",
+        "claimable-actions": "Einforderbare Aktionen",
+        "token-actions": "Token Aktionen",
+        "submissions": "Einreichungen",
+        "collage": {
+            "link-title": "Öffne {{collageType}} Zusammenstellung",
+            "text": "Text",
+            "picture": "Bild",
+            "vote": "Abstimmung"
+        },
+        "download-claims": "Forderungen herunterladen"
+    }
 }
