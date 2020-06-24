@@ -256,7 +256,7 @@ function TokenCreationProcess(props, context) {
 	const validateDraft = draft => {
 		// TODO do a proper validation with warning-signs in the respective steps
 
-		if (draft.basics.name.trim().length === 0) {
+		if (!draft.basics.name || draft.basics.name.trim().length === 0) {
 			// check for letters only too?
 			return t('token-creator.validation.name-empty');
 		}
