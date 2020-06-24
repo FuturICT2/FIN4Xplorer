@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
-import { doCallback, bytes32ToString } from './utils';
+import { doCallback, bytes32ToString, txErrorAugmentation } from './utils';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 const BN = require('bignumber.js');
@@ -79,7 +79,7 @@ const contractCall = (
 				displayStr: displayStr,
 				errorReason: errObj.reason
 			});
-			doCallback(callbacks, 'dryRunFailed', errObj.reason);
+			doCallback(callbacks, 'dryRunFailed', txErrorAugmentation(errObj.reason));
 			return;
 		}
 		console.log('Dry run succeeded, initiating transaction', res);

@@ -5,7 +5,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
-import { doCallback, ProofAndVerifierStatusEnum } from '../components/utils';
+import { doCallback, ProofAndVerifierStatusEnum, txErrorAugmentation } from '../components/utils';
 import { Trans } from 'react-i18next';
 const BN = require('bignumber.js');
 
@@ -788,7 +788,7 @@ function fin4StoreReducer(state = initialState, action) {
 			let pendingTx_error = state.transactions.filter(tx => tx.stackTempKey === action.stackTempKey)[0];
 			let index_error = state.transactions.indexOf(pendingTx_error);
 			toast.error('Transaction failed', { position: toast.POSITION.TOP_RIGHT });
-			doCallback(pendingTx_error.callbacks, 'transactionFailed', action.error.message);
+			doCallback(pendingTx_error.callbacks, 'transactionFailed', txErrorAugmentation(action.error.message));
 			return update(state, {
 				transactions: {
 					[index_error]: {

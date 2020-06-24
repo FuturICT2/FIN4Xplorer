@@ -203,6 +203,15 @@ const fileToBase64 = file =>
 		reader.onerror = error => reject(error);
 	});
 
+// adds info to the error if known workarounds/fixes exist
+const txErrorAugmentation = reason => {
+	if (reason.includes('No keyring found for the requested account')) {
+		reason += ' (try removing and reinstalling MetaMask)';
+	}
+	// TODO more?
+	return reason;
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
@@ -228,5 +237,6 @@ export {
 	translationMarkdown,
 	isMobileDevice,
 	getImageDimensions,
-	fileToBase64
+	fileToBase64,
+	txErrorAugmentation
 };
