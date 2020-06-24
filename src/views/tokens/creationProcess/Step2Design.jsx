@@ -109,7 +109,6 @@ function StepDesign(props, context) {
 					style={styles.numberField}
 					value={properties.cap}
 					onChange={e => updateVal('cap', Number(e.target.value))}
-					title="Not supported yet"
 				/>
 				<div style={properties.initialSupply > 0 ? styles.divOutline : null}>
 					<TextField
