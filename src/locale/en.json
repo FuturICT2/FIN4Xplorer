@@ -148,6 +148,11 @@
 	},
 	"token-creator": {
 		"box-title": "Token creation",
+		"validation": {
+			"name-empty": "Name can't be empty",
+			"symbol-length-wrong": "Symbol must have between 3 and 5 characters",
+			"symbol-duplicate": "Symbol is already in use"
+		},
 		"navigation": {
 			"back-button": "Back",
 			"next-button": "Next",
@@ -159,7 +164,10 @@
 			"all-steps-completed": "All steps completed",
 			"keep-as-draft": "Keep it as token creation draft",
 			"transaction-failed": "Token creation transaction failed with reason",
-			"dry-run-failed": "Token creation dry-run failed with reason"
+			"dry-run-failed": "Token creation dry-run failed with reason",
+			"waiting-for-other-contracts": "Waiting for other contracts to receive parameters.",
+			"waiting-for-new-token": "Waiting for the new token to receive further parameters.",
+			"waiting-for-completion": "Waiting for the token creation to complete."
 		},
 		"step1-identity": {
 			"title": "Token identity",

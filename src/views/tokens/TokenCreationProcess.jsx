@@ -258,16 +258,16 @@ function TokenCreationProcess(props, context) {
 
 		if (draft.basics.name.trim().length === 0) {
 			// check for letters only too?
-			return "Name can't be empty";
+			return t('token-creator.validation.name-empty');
 		}
 
-		if (draft.basics.symbol.length < 3 || draft.basics.symbol.length > 5) {
-			return 'Symbol must have between 3 and 5 characters';
+		if (!draft.basics.symbol || draft.basics.symbol.length < 3 || draft.basics.symbol.length > 5) {
+			return t('token-creator.validation.symbol-length-wrong');
 		}
 
 		// do a call to check on the contract here instead?
 		if (findTokenBySymbol(props, draft.basics.symbol) !== null) {
-			return 'Symbol is already in use';
+			return t('token-creator.validation.symbol-duplicate');
 		}
 
 		if (draft.interactiveVerifiers.Location) {
@@ -414,7 +414,7 @@ function TokenCreationProcess(props, context) {
 			}
 		}
 
-		updateTokenCreationStage('Waiting for the token creation to complete.');
+		updateTokenCreationStage(t('token-creator.navigation.waiting-for-completion'));
 		contractCall(
 			context,
 			props,
@@ -444,7 +444,7 @@ function TokenCreationProcess(props, context) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 					};
 
-					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
+					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
 					verifiersToParameterize.map(verifier => {
 						setParamsOnOtherContract(
 							'verifier',
@@ -517,7 +517,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
+					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
 
 					if (transactionCounter.current == transactionsRequired.current - 1) {
 						callbackOthersDone();
@@ -545,7 +545,7 @@ function TokenCreationProcess(props, context) {
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
-					updateTokenCreationStage('Waiting for other contracts to receive parameters.');
+					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
 
 					if (transactionCounter.current == transactionsRequired.current - 1) {
 						callbackOthersDone();
@@ -562,7 +562,7 @@ function TokenCreationProcess(props, context) {
 	};
 
 	const tokenParameterization = (defaultAccount, tokenCreatorContract, postCreationStepsArgs) => {
-		updateTokenCreationStage('Waiting for the new token to receive further parameters.');
+		updateTokenCreationStage(t('token-creator.navigation.waiting-for-new-token'));
 
 		contractCall(
 			context,
