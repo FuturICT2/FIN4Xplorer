@@ -471,10 +471,10 @@ function TokenCreationProcess(props, context) {
 					}
 				},
 				transactionFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
 				}
 			}
 		);
@@ -523,10 +523,10 @@ function TokenCreationProcess(props, context) {
 					}
 				},
 				transactionFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
 				}
 			}
 		);
@@ -551,10 +551,10 @@ function TokenCreationProcess(props, context) {
 					}
 				},
 				transactionFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
 				}
 			}
 		);
@@ -577,10 +577,10 @@ function TokenCreationProcess(props, context) {
 					updateTokenCreationStage('');
 				},
 				transactionFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {
-					setTokenCreationStage('Token creation failed with reason: ' + reason);
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
 				}
 			}
 		);
