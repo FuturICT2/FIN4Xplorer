@@ -24,7 +24,8 @@ import {
 	findVerifierTypeAddressByContractName,
 	BNstr,
 	stringToBytes32,
-	UnderlyingsActive
+	UnderlyingsActive,
+	Fin4Colors
 } from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
@@ -724,7 +725,7 @@ function TokenCreationProcess(props, context) {
 
 const styles = {
 	infoIcon: {
-		color: 'silver',
+		color: Fin4Colors.blue,
 		width: '20px',
 		height: '20px'
 	}
