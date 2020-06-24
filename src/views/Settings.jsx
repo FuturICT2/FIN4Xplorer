@@ -46,6 +46,7 @@ function Settings(props, context) {
 								Cookies.set('language', 'en', { expires: 7 });
 								// TODO is 7 a good expiry date for cookies? #ConceptualDecision
 								moment.locale('en');
+								window.location.reload();
 							});
 						}}>
 						EN
@@ -60,6 +61,7 @@ function Settings(props, context) {
 								console.log('Language changed: from ' + lng + ' to de');
 								Cookies.set('language', 'de', { expires: 7 });
 								moment.locale('de');
+								window.location.reload();
 							});
 						}}>
 						DE
