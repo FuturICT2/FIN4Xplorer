@@ -130,7 +130,12 @@
             "create-token-button": "Kreire den Token",
             "no-token-creation-draft-found": "Kein Entwurf zur Token-Erstellung mit der ID {{Id}} gefunden",
             "all-steps-completed": "Alle Schritte sind abgeschlossen",
-            "keep-as-draft": "Den Token Entwurf behalten"
+            "keep-as-draft": "Den Token Entwurf behalten",
+            "transaction-failed": "Die Transaktion zur Token-Erstellung ist mit folgendem Grund fehlgeschlagen",
+            "dry-run-failed": "Die Test-Transaktion zur Token-Erstellung ist mit folgendem Grund fehlgeschlagen",
+            "waiting-for-other-contracts": "Warte darauf, dass andere smart contracts Parameter erhalten.",
+            "waiting-for-new-token": "Warte darauf, dass dein neuer Token weitere Parameter erhält.",
+            "waiting-for-completion": "Warte darauf, dass die Token-Erstellung abgeschlossen ist."
         },
         "box-title": "Kreirung von Tokens",
         "step1-identity": {
@@ -261,6 +266,11 @@
         },
         "step8-underlyings": {
             "title": "Externe Wertquellen"
+        },
+        "validation": {
+            "name-empty": "Name darf nicht leer sein",
+            "symbol-length-wrong": "Das Symbol muss zwischen 3 und 5 Zeichen lang sein",
+            "symbol-duplicate": "Das Symbol ist bereits in Benutzung"
         }
     },
     "groups": {
