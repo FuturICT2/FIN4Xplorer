@@ -21,12 +21,14 @@ import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 import { TCRactive, UnderlyingsActive } from './components/utils';
 import { useTranslation } from 'react-i18next';
+import { subscribeToContractEvents } from './middleware/ContractEventReceiver';
 
 function LoadInitialData(props, context) {
 	const { t } = useTranslation();
 
 	const isInit = useRef({
 		// "once" flags
+		subscribedToContractEvents: false,
 		Fin4Main: false,
 		Fin4TokenManagement: false,
 		Fin4Messaging: false,
@@ -45,6 +47,11 @@ function LoadInitialData(props, context) {
 	useEffect(() => {
 		if (!props.drizzleInitialized || !window.web3) {
 			return; // we don't move a muscle until that is done
+		}
+
+		if (!isInit.current.subscribedToContractEvents) {
+			isInit.current.subscribedToContractEvents = true;
+			subscribeToContractEvents(props.store.getState().fin4Store.defaultAccount);
 		}
 
 		if (!isInit.current.Fin4Main && props.contracts.Fin4Main.initialized) {
