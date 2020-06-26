@@ -12,7 +12,10 @@ const subscribeToContractEvents = defaultAccount => {
 		return;
 	}
 
-	const socket = io(serverConfig.NOTIFICATION_SERVER_URL);
+	// { transports: ['websocket'] }} removes polling which would otherwise be a default
+	// it causes disconnect-errors only on mobile every second if this is not active
+	// via https://github.com/socketio/socket.io-client/issues/1097#issuecomment-301301030
+	const socket = io(serverConfig.NOTIFICATION_SERVER_URL, { transports: ['websocket'] });
 	socket.on('connect', () => {
 		console.log(
 			'Connected to notification server at ' +
