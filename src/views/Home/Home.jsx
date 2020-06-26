@@ -27,11 +27,11 @@ import PropTypes from 'prop-types';
 import { contractCall } from '../../components/Contractor';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-let faucetConfig = null;
+let serverConfig = null;
 try {
-	faucetConfig = require('../../config/faucet-url.json');
+	serverConfig = require('../../config/server-urls.json');
 } catch (err) {
-	console.log('faucet-url.json not found');
+	console.log('server-urls.json not found');
 }
 
 const axios = require('axios');
@@ -50,7 +50,7 @@ function Home(props, context) {
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
 		let networkID = window.ethereum.networkVersion;
-		let encodedURL = faucetConfig.FAUCET_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
+		let encodedURL = serverConfig.FAUCET_SERVER_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
 		console.log('Calling faucet server: ' + encodedURL);
 		setFaucetRequestPending(true);
 		axios
@@ -137,7 +137,7 @@ function Home(props, context) {
 						<small>{t('home.on-the-blockchain.right-network-warning')}</small>
 					</div>
 				)}
-				{faucetConfig && faucetConfig.FAUCET_URL && (
+				{serverConfig && serverConfig.FAUCET_SERVER_URL && (
 					<>
 						<br />
 						{faucetRequestPending ? (
