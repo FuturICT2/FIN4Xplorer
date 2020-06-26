@@ -47,12 +47,12 @@ Install the [MetaMask](https://metamask.io/) browser extension.
 
 ## Servers
 
-If you have additional servers running, you can add their URLs to `src/config/server-urls.json`:
+If you have additional servers running, add their URLs to `src/config/server-urls.json`:
 
 ```json
 {
     "FAUCET_SERVER_URL": "",
-    "NOTIFICATION_URL": ""
+    "NOTIFICATION_SERVER_URL": ""
 }
 ```
 
