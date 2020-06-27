@@ -109,10 +109,13 @@ const readOnlyCall = (
 		})
 		.join(',');
 	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
-	let res = contract.methods[methodName]().call();
+	let res;
+	if (Object.keys(params).length === 0)
+		res = contract.methods[methodName]().call({ from: defaultAccount, to: contract.address, data: data });
+	else res = contract.methods[methodName](params).call();
 	let promises = [];
 	promises.push(res);
-	console.log(promises);
+	// console.log(promises);
 	return promises;
 };
 
