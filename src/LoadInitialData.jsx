@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 import { TCRactive, UnderlyingsActive } from './components/utils';
 import { useTranslation } from 'react-i18next';
-import { subscribeToContractEvents } from './middleware/NotificationServerClient';
+import { subscribeToContractEvents } from './middleware/ContractEventHandler';
 
 function LoadInitialData(props, context) {
 	const { t } = useTranslation();

@@ -7,11 +7,12 @@ try {
 	console.log('server-urls.json not found');
 }
 
-const subscribeToContractEvents = defaultAccount => {
-	if (!(serverConfig && serverConfig.NOTIFICATION_SERVER_URL)) {
-		return;
-	}
+const notificationServerIsActive = () => {
+	// TODO also check that its alive?
+	return serverConfig && serverConfig.NOTIFICATION_SERVER_URL;
+};
 
+const subscribeToContractEventsViaNotificationServer = defaultAccount => {
 	// { transports: ['websocket'] }} removes polling which would otherwise be a default
 	// it causes disconnect-errors only on mobile every second if this is not active
 	// via https://github.com/socketio/socket.io-client/issues/1097#issuecomment-301301030
@@ -61,4 +62,4 @@ const subscribeToContractEvents = defaultAccount => {
 	});
 };
 
-export { subscribeToContractEvents };
+export { notificationServerIsActive, subscribeToContractEventsViaNotificationServer };
