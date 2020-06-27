@@ -18,7 +18,7 @@ const contractEventNotifier = store => next => action => {
 	const values = action.event.returnValues;
 
 	if (contractEventList.includes(eventName)) {
-		handleContractEvent(eventName, values);
+		handleContractEvent(false, eventName, values);
 	}
 
 	return next(action);

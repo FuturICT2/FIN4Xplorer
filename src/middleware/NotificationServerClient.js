@@ -29,7 +29,7 @@ const subscribeToContractEventsViaNotificationServer = defaultAccount => {
 	});
 	contractEventList.map(eventName => {
 		socket.on(eventName, values => {
-			handleContractEvent(eventName, values);
+			handleContractEvent(true, eventName, values);
 		});
 	});
 };

@@ -36,7 +36,10 @@ const subscribeToContractEvents = _store => {
 	}
 };
 
-const handleContractEvent = (eventName, values) => {
+const handleContractEvent = (viaNotificationServer, eventName, values) => {
+	let eventSource = viaNotificationServer ? 'notification server' : 'drizzle store subscription';
+	console.log('Received ' + eventName + ' contract event via ' + eventSource, values);
+
 	// let display = `${contractName}: ${eventName}`;
 	let display = contractEventHandlers[eventName](values);
 	if (display) {
