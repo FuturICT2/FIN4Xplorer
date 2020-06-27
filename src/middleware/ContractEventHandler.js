@@ -5,6 +5,20 @@ import { toast } from 'react-toastify';
 import { ProofAndVerifierStatusEnum } from '../components/utils';
 const BN = require('bignumber.js');
 
+let contractEventList = [
+	'Fin4TokenCreated',
+	'ClaimSubmitted',
+	'ClaimApproved',
+	'ClaimRejected',
+	'UpdatedTotalSupply',
+	'VerifierPending',
+	'VerifierApproved',
+	'VerifierRejected',
+	'NewMessage',
+	'MessageMarkedAsRead',
+	'SubmissionAdded'
+];
+
 let defaultAccount;
 let store;
 
@@ -309,4 +323,4 @@ const messageHasBeenActedUpon = (store, messageId) => {
 	return false;
 };
 
-export { subscribeToContractEvents, handleContractEvent };
+export { contractEventList, subscribeToContractEvents, handleContractEvent };

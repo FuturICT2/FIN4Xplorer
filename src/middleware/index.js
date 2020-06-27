@@ -1,28 +1,12 @@
 // originally from www.trufflesuite.com/tutorials/drizzle-and-contract-events
-import React from 'react';
 import { generateStore, EventActions } from 'drizzle';
 import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
-import { doCallback, ProofAndVerifierStatusEnum, txErrorAugmentation } from '../components/utils';
-import { Trans } from 'react-i18next';
-import { handleContractEvent } from './ContractEventHandler';
+import { doCallback, txErrorAugmentation } from '../components/utils';
+import { contractEventList, handleContractEvent } from './ContractEventHandler';
 const BN = require('bignumber.js');
-
-let contractEvents = [
-	'Fin4TokenCreated',
-	'ClaimSubmitted',
-	'ClaimApproved',
-	'ClaimRejected',
-	'UpdatedTotalSupply',
-	'VerifierPending',
-	'VerifierApproved',
-	'VerifierRejected',
-	'NewMessage',
-	'MessageMarkedAsRead',
-	'SubmissionAdded'
-];
 
 const contractEventNotifier = store => next => action => {
 	if (action.type !== EventActions.EVENT_FIRED) {
@@ -33,7 +17,7 @@ const contractEventNotifier = store => next => action => {
 	const eventName = action.event.event;
 	const values = action.event.returnValues;
 
-	if (contractEvents.includes(eventName)) {
+	if (contractEventList.includes(eventName)) {
 		handleContractEvent(eventName, values);
 	}
 
