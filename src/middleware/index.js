@@ -7,6 +7,7 @@ import update from 'react-addons-update';
 import Cookies from 'js-cookie';
 import { doCallback, ProofAndVerifierStatusEnum, txErrorAugmentation } from '../components/utils';
 import { Trans } from 'react-i18next';
+import { handleContractEvent } from './ContractEventHandler';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -16,6 +17,7 @@ const contractEventNotifier = store => next => action => {
 
 	const contract = action.name;
 	const contractEvent = action.event.event;
+	const values = action.event.returnValues;
 	let display = `${contract}: ${contractEvent}`;
 
 	let defaultAccount = store.getState().fin4Store.defaultAccount;
@@ -56,50 +58,8 @@ const contractEventNotifier = store => next => action => {
 	// ------------------------------ ClaimSubmitted ------------------------------
 
 	if (contractEvent === 'ClaimSubmitted') {
-		let claim = action.event.returnValues;
-		let id = claim.tokenAddr + '_' + claim.claimId; // pseudoId, just for frontend
-		let isCurrentUsersClaim = claim.claimer === defaultAccount;
-
-		// block: claim-event not caused by current user / duplicate events
-		if (!isCurrentUsersClaim || store.getState().fin4Store.usersClaims[id]) {
-			return next(action);
-		}
-
-		let quantity = new BN(claim.quantity).toNumber();
-		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
-		display = (
-			<Trans
-				i18nKey="notification.claim-submitted"
-				values={{ quantity: quantity, name: token.name, symbol: token.symbol }}
-			/>
-		);
-
-		let verifierStatusesObj = {};
-		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
-			verifierStatusesObj[claim.requiredVerifierTypes[i]] = {
-				status: ProofAndVerifierStatusEnum.UNSUBMITTED,
-				message: ''
-			};
-		}
-
-		store.dispatch({
-			type: 'ADD_CLAIM',
-			claim: {
-				id: id,
-				token: claim.tokenAddr,
-				claimId: claim.claimId,
-				claimer: claim.claimer,
-				isApproved: false,
-				gotRejected: false,
-				quantity: quantity,
-				claimCreationTime: new BN(claim.claimCreationTime).toNumber(),
-				comment: claim.comment,
-				verifierStatuses: verifierStatusesObj,
-				// these will be fetched "upon request" (when opening the site) in ProofSubmission
-				// and then filled into the
-				verifiersWithMessages: []
-			}
-		});
+		handleContractEvent(contractEvent, values);
+		display = null;
 	}
 
 	// ------------------------------ ClaimApproved ------------------------------
