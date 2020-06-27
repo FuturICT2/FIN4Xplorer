@@ -51,7 +51,7 @@ function LoadInitialData(props, context) {
 
 		if (!isInit.current.subscribedToContractEvents) {
 			isInit.current.subscribedToContractEvents = true;
-			subscribeToContractEvents(props.store.getState().fin4Store.defaultAccount);
+			subscribeToContractEvents(props.store);
 		}
 
 		if (!isInit.current.Fin4Main && props.contracts.Fin4Main.initialized) {

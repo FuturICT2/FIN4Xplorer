@@ -1,8 +1,13 @@
 import { notificationServerIsActive, subscribeToContractEventsViaNotificationServer } from './NotificationServerClient';
 
+let defaultAccount;
+let store;
+
 // if NotificationServer is available, we'll take that
 // otherwise we use the drizzle store contract event listeners here
-const subscribeToContractEvents = defaultAccount => {
+const subscribeToContractEvents = _store => {
+	store = _store;
+	defaultAccount = store.getState().fin4Store.defaultAccount;
 	if (notificationServerIsActive()) {
 		console.log('Subscribing to contract events via the notification server');
 		subscribeToContractEventsViaNotificationServer(defaultAccount);
