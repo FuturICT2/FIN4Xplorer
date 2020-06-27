@@ -32,24 +32,17 @@ const handleContractEvent = (eventName, values) => {
 
 const contractEventHandlers = {
 	handleFin4TokenCreated: values => {},
-	ClaimSubmitted: values => {
-		let claim = values;
+	ClaimSubmitted: claim => {
 		let id = claim.tokenAddr + '_' + claim.claimId; // pseudoId, just for frontend
 		let isCurrentUsersClaim = claim.claimer === defaultAccount;
 
 		// block: claim-event not caused by current user / duplicate events
 		if (!isCurrentUsersClaim || store.getState().fin4Store.usersClaims[id]) {
-			return null;
+			return;
 		}
 
 		let quantity = new BN(claim.quantity).toNumber();
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
-		let display = (
-			<Trans
-				i18nKey="notification.claim-submitted"
-				values={{ quantity: quantity, name: token.name, symbol: token.symbol }}
-			/>
-		);
 
 		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
@@ -77,7 +70,12 @@ const contractEventHandlers = {
 				verifiersWithMessages: []
 			}
 		});
-		return display;
+		return (
+			<Trans
+				i18nKey="notification.claim-submitted"
+				values={{ quantity: quantity, name: token.name, symbol: token.symbol }}
+			/>
+		);
 	},
 	ClaimApproved: values => {},
 	ClaimRejected: values => {},
