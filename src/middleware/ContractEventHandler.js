@@ -17,7 +17,13 @@ const subscribeToContractEvents = _store => {
 	}
 };
 
-const handleContractEvent = () => {};
+const handleContractEvent = (eventName, values) => {
+	// let display = `${contractName}: ${eventName}`;
+	let display = contractEventHandlers[eventName](values);
+	if (display) {
+		toast.success(display, { position: toast.POSITION.TOP_RIGHT });
+	}
+};
 
 const contractEventHandlers = {
 	handleFin4TokenCreated: () => {},
