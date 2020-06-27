@@ -21,6 +21,7 @@ let contractEventList = [
 
 let defaultAccount;
 let store;
+let takeEventsFromNotificationServer = true;
 
 // if NotificationServer is available, we'll take that
 // otherwise we use the drizzle store contract event listeners here
@@ -32,18 +33,22 @@ const subscribeToContractEvents = _store => {
 		subscribeToContractEventsViaNotificationServer(defaultAccount);
 	} else {
 		console.log('Subscribing to contract events via the drizzle store contract event listeners');
-		// TODO
+		takeEventsFromNotificationServer = false;
 	}
 };
 
 const handleContractEvent = (viaNotificationServer, eventName, values) => {
-	let eventSource = viaNotificationServer ? 'notification server' : 'drizzle store subscription';
-	console.log('Received ' + eventName + ' contract event via ' + eventSource, values);
-
+	if (!viaNotificationServer && takeEventsFromNotificationServer) {
+		return; // ignore drizzle store events when we are listening to notification server
+	}
 	// let display = `${contractName}: ${eventName}`;
 	let display = contractEventHandlers[eventName](values);
 	if (display) {
-		toast.success(display, { position: toast.POSITION.TOP_RIGHT });
+		let eventSource = viaNotificationServer ? 'notification server' : 'drizzle store subscription';
+		console.log('Received ' + eventName + ' contract event via ' + eventSource, values);
+		if (display !== 'no-notification') {
+			toast.success(display, { position: toast.POSITION.TOP_RIGHT });
+		}
 	}
 };
 
@@ -168,7 +173,7 @@ const contractEventHandlers = {
 			tokenAddress: tokenAddr,
 			totalSupply: totalSupply
 		});
-		return;
+		return 'no-notification';
 	},
 	VerifierPending: pendingVerifier => {
 		// TODO share code with VerifierApproved and VerifierRejected?
