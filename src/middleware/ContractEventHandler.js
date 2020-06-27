@@ -12,4 +12,20 @@ const subscribeToContractEvents = defaultAccount => {
 	}
 };
 
-export { subscribeToContractEvents };
+const handleContractEvent = () => {};
+
+const contractEventHandlers = {
+	handleFin4TokenCreated: () => {},
+	ClaimSubmitted: () => {},
+	ClaimApproved: () => {},
+	ClaimRejected: () => {},
+	UpdatedTotalSupply: () => {},
+	VerifierPending: () => {},
+	VerifierApproved: () => {},
+	VerifierRejected: () => {},
+	NewMessage: () => {},
+	MessageMarkedAsRead: () => {},
+	SubmissionAdded: () => {}
+};
+
+export { subscribeToContractEvents, handleContractEvent };
