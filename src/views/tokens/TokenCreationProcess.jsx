@@ -15,9 +15,7 @@ import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
 import StepSearchVerifier from './creationProcess/Step5SearchVerifier';
-import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
-import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
-import StepUnderlying from './creationProcess/Step7Underlying';
+import StepUnderlying from './creationProcess/Step6Underlying';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { steps, getStepContent, getStepInfoBoxContent } from './creationProcess/TextContents';
@@ -393,18 +391,18 @@ function TokenCreationProcess(props, context) {
 								</center>
 							)}
 							{activeStep === steps.length &&
-							tokenCreationStage !== 'unstarted' &&
-							tokenCreationStage !== 'completed' &&
-							!tokenCreationStage.toString().includes('failed') && (
-								<center>
-									<CircularProgress />
-									<br />
-									<br />
-									<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
+								tokenCreationStage !== 'unstarted' &&
+								tokenCreationStage !== 'completed' &&
+								!tokenCreationStage.toString().includes('failed') && (
+									<center>
+										<CircularProgress />
+										<br />
+										<br />
+										<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
 											{tokenCreationStage}
 										</span>
-								</center>
-							)}
+									</center>
+								)}
 							{activeStep === steps.length && tokenCreationStage === 'completed' && (
 								<center>
 									<Typography className={classes.instructions}>Token successfully created!</Typography>
