@@ -112,7 +112,7 @@ const readOnlyCall = (
 	let res;
 	if (Object.keys(params).length === 0)
 		res = contract.methods[methodName]().call({ from: defaultAccount, to: contract.address, data: data });
-	else res = contract.methods[methodName](params).call();
+	else res = contract.methods[methodName](params).call({ from: defaultAccount, to: contract.address, data: data });
 	let promises = [];
 	promises.push(res);
 	// console.log(promises);

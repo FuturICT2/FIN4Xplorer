@@ -5,13 +5,16 @@ import colors from '../../config/colors-config';
 import { drizzleConnect } from 'drizzle-react';
 import { findTokenBySymbol, getContractData } from '../../components/Contractor';
 import Box from '../../components/Box';
+import AddIcon from '@material-ui/icons/Add';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
+import Button from '../../components/Button';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import FileUploadProof from './proofs/FileUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
+import { contractCall, readOnlyCall } from '../../components/Contractor';
 import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
 
 function ProofSubmission(props, context) {
@@ -221,7 +224,48 @@ function ProofSubmission(props, context) {
 		return <Status status={status}>{text}</Status>;
 	};
 
+	function isEligibleEndVote(name, claimId) {
+		let res = readOnlyCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			name,
+			'endVotePossible',
+			[claimId],
+			'End Vote Possible',
+			props.callbacks
+		);
+		Promise.all(res).then(result => {
+			console.log(result[0]);
+		});
+	}
+
+	const endVoting = () => {
+		Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
+			let claimObj = props.usersClaims[pseudoClaimId];
+			let generalVerifierObj = props.verifierTypes[verifierTypeAddr];
+			switch (generalVerifierObj.label) {
+				case 'PictureVoting':
+				case 'VideoVoting':
+				case 'LimitedVoting':
+					// console.log("test");
+					contractCall(
+						context,
+						props,
+						props.store.getState().fin4Store.defaultAccount,
+						generalVerifierObj.label,
+						'endVote',
+						[claimObj.claimId],
+						'End Vote',
+						props.callbacks
+					);
+				default:
+			}
+		});
+	};
+
 	const buildVerifierAppearance = (index, claimObj, generalVerifierObj) => {
+		// console.log(isEligibleEndVote(generalVerifierObj.label, claimObj.claimId));
 		let statusObj = claimObj.verifierStatuses[generalVerifierObj.value];
 		let status = statusObj.status;
 		let message = statusObj.message;
@@ -237,12 +281,26 @@ function ProofSubmission(props, context) {
 					</>
 				);
 			case ProofAndVerifierStatusEnum.PENDING:
-				return buildStatusElement(
-					status,
-					<span>
-						{'The proof ' + generalVerifierObj.label + ' is in pending state'}
-						{addMessageIfExistent(message)}
-					</span>
+				return (
+					<div>
+						{buildStatusElement(
+							status,
+							<span>
+								{'The proof ' + generalVerifierObj.label + ' is in pending state'}
+								{addMessageIfExistent(message)}
+							</span>
+						)}
+
+						{generalVerifierObj.label.includes('Voting') &&
+							isEligibleEndVote(generalVerifierObj.label, claimObj.claimId) && (
+								<div>
+									{/* <Status>{"End Voting After 1 Day"}</Status> */}
+									<Button onClick={endVoting} center="true">
+										End Vote
+									</Button>
+								</div>
+							)}
+					</div>
 				);
 			case ProofAndVerifierStatusEnum.APPROVED:
 				return buildStatusElement(
