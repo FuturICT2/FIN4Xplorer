@@ -21,7 +21,8 @@ const contractCall = (
 	params,
 	displayStr = '',
 	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
-	skipDryRun = false
+	skipDryRun = false,
+	showToast = true
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -52,14 +53,17 @@ const contractCall = (
 			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
 			console.log('Dry run failed with error: ' + errObj.reason, err);
-			toast.error(
-				<div>
-					<b>Transaction test failed</b>
-					<br />
-					{'Reson: ' + errObj.reason}
-				</div>,
-				{ position: toast.POSITION.TOP_RIGHT }
-			);
+			if (showToast) {
+				toast.error(
+					<div>
+						<b>Transaction test failed</b>
+						<br />
+						{'Reson: ' + errObj.reason}
+					</div>,
+					{ position: toast.POSITION.TOP_RIGHT }
+				);
+			}
+
 			props.dispatch({
 				type: 'DRY_RUN_FAILED',
 				methodStr: methodStr,
@@ -70,10 +74,49 @@ const contractCall = (
 			return;
 		}
 		console.log('Dry run succeeded, initiating transaction', res);
+		console.log(res);
 		doCallback(callbacks, 'dryRunSucceeded', res);
-
 		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
 	});
+};
+
+const readOnlyCall = (
+	context,
+	props,
+	defaultAccount,
+	contractName,
+	methodName,
+	params,
+	displayStr = '',
+	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	skipDryRun = false,
+	showToast = true
+) => {
+	let contract = context.drizzle.contracts[contractName];
+	let abiArr = contract.abi;
+	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
+	let methodInputs = methodAbi.inputs.map(el => el.type);
+	let eth = context.drizzle.web3.eth;
+	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
+	if (!Array.isArray(params)) {
+		params = [params];
+	}
+	let param = eth.abi.encodeParameters(methodInputs, params);
+	let data = funcSig + param.slice(2);
+	let paramStr = params
+		.map(el => {
+			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
+		})
+		.join(',');
+	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
+	let res;
+	if (Object.keys(params).length === 0)
+		res = contract.methods[methodName]().call({ from: defaultAccount, to: contract.address, data: data });
+	else res = contract.methods[methodName](params).call();
+	let promises = [];
+	promises.push(res);
+	// console.log(promises);
+	return promises;
 };
 
 const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
@@ -225,7 +268,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			5: Fin4MessagingAddress,
 			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
-			8: Fin4SystemParametersAddress
+			8: Fin4SystemParametersAddress,
+			9: Fin4VotingAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -243,6 +287,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4Verifying', Fin4VerifyingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
+			addContract(props, drizzle, 'Fin4Voting', Fin4VotingAddress, []);
 		}
 	);
 };
@@ -604,6 +649,7 @@ const getPollStatus = (pollID, PLCRVotingContract, defaultAccount) => {
 export {
 	getContractData,
 	addContract,
+	readOnlyCall,
 	addSatelliteContracts,
 	addTCRcontracts,
 	fetchMessage,

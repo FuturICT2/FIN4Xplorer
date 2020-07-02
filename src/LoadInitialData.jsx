@@ -15,7 +15,8 @@ import {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchParameterizerParams,
-	fetchUnderlyings
+	fetchUnderlyings,
+	isUserEligibleToBeVoter
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -30,6 +31,7 @@ function LoadInitialData(props, context) {
 		Fin4Claiming: false,
 		Fin4Collections: false,
 		Fin4Verifying: false,
+		Fin4Voting: false,
 		Registry: false,
 		Parameterizer: false,
 		Fin4SystemParameters: false,
@@ -125,6 +127,11 @@ function LoadInitialData(props, context) {
 			isInit.current.Fin4Verifying = true;
 			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle);
 			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Verifying);
+		}
+
+		if (!isInit.current.Fin4Voting && props.contracts.Fin4Voting && props.contracts.Fin4Voting.initialized) {
+			isInit.current.Fin4Voting = true;
+			// isUserEligibleToBeVoter(props, context.drizzle.contracts.FinVoting)
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {

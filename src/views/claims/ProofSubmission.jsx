@@ -9,6 +9,7 @@ import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
 import PictureUploadProof from './proofs/PictureUploadProof';
+import FileUploadProof from './proofs/FileUploadProof';
 import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
 import { abiTypeToTextfieldType, capitalizeFirstLetter, ProofAndVerifierStatusEnum } from '../../components/utils';
@@ -117,6 +118,59 @@ function ProofSubmission(props, context) {
 						}}
 					/>
 				);
+			case 'LimitedVoting':
+				return (
+					<FileUploadProof
+						// key={'file_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName={'LimitedVoting'}
+						callbacks={{
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
+							}
+						}}
+					/>
+				);
+			case 'PictureVoting':
+				return (
+					<FileUploadProof
+						// key={'file_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName={'PictureVoting'}
+						accept={'image/*'}
+						callbacks={{
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
+							}
+						}}
+					/>
+				);
+			case 'VideoVoting':
+				return (
+					<FileUploadProof
+						// key={'file_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName={'VideoVoting'}
+						accept={'video/*'}
+						callbacks={{
+							markVerifierPendingUponBroadcastedTransaction: () => {
+								return {
+									pseudoClaimId: pseudoClaimId,
+									verifierTypeName: verifierTypeName
+								};
+							}
+						}}
+					/>
+				);
 			/*case 'Networking':
 				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'HappyMoment':
@@ -128,6 +182,9 @@ function ProofSubmission(props, context) {
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type, input.name)];
 				}); // I don't remember why I capitalized the first letter...
+				// if(verifierTypeName.localeCompare('Password') == 0){
+				// console.log(fields);
+				// }
 				return (
 					<ContractFormSimple
 						contractName={verifierTypeName}
