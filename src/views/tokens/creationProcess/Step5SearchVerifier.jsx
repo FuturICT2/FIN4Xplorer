@@ -9,8 +9,9 @@ import { verifiers as verifierDefinitions, verifierOptions } from '../../../conf
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { TextField } from '@material-ui/core';
+import { TextField, IconButton } from '@material-ui/core';
 import { findVerifierTypeAddressByName } from '../../../components/utils';
+import AddLocation from '@material-ui/icons/AddLocation';
 
 function valuesToOptions(values) {
 	let result = [];
@@ -42,7 +43,9 @@ function StepSearchVerifier(props) {
 		}
 		let draft = props.draft;
 		verifiers.current = draft.noninteractiveVerifiers;
-
+		if (verifiers.current['Location']) {
+			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
+		}
 		setVerifiersAdded(
 			Object.keys(draft.noninteractiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
 		);
@@ -116,6 +119,24 @@ function StepSearchVerifier(props) {
 		});
 	};
 
+	const requestLocation = (verifierName, paramName) => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(pos => {
+				let latitude = pos.coords.latitude;
+				let longitude = pos.coords.longitude;
+				let locStr = latitude + ' / ' + longitude;
+				console.log('Captured location ' + locStr);
+				verifiers.current[verifierName].parameters[paramName] = locStr;
+				setLocVal(locStr);
+			});
+		} else {
+			console.error('Geolocation is not supported by this browser.');
+		}
+	};
+
+	// TODO make this a general solution instead of for one field of one proof type
+	const [locVal, setLocVal] = useState('');
+
 	return (
 		<>
 			<TextField
@@ -168,6 +189,13 @@ function StepSearchVerifier(props) {
 										/>
 									)}
 								</div>
+								{name === 'Location' && (
+									<small style={{ color: 'orange', padding: '' }}>
+										<b>Note</b>: Submitting location proof is currently not
+										<br />
+										possible for users of MetaMask mobile on Android
+									</small>
+								)}
 								{verifier.paramsEncoded &&
 									verifier.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
@@ -176,28 +204,58 @@ function StepSearchVerifier(props) {
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
 										let key = 'verifier_' + index + '_param_' + paramIndex;
-										return (
-											<span key={key}>
-												<TextField
-													type={type === 'uint' ? 'number' : 'text'}
-													label={
-														<>
-															<span>{paramName}</span>
-															{description && <small> ({description})</small>}{' '}
-														</>
-													}
-													inputProps={{
-														style: { fontSize: isArray ? 'small' : 'medium' }
-													}}
-													multiline={isArray ? true : null}
-													rows={isArray ? 1 : null}
-													variant={isArray ? 'outlined' : 'standard'}
-													defaultValue={verifiers.current[name].parameters[paramName]}
-													onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
-													style={styles.normalField}
-												/>
-											</span>
-										);
+										if (description === 'gps') {
+											// ONLY FOR LAT/LON FIELD OF LOCATION
+											// more solid indicator?
+											return (
+												<span key={key}>
+													<TextField
+														type="text"
+														label={
+															<>
+																<span>{paramName}</span>
+																<small> ({description})</small>
+															</>
+														}
+														value={locVal}
+														onChange={e => {
+															verifiers.current[name].parameters[paramName] = e.target.value;
+															setLocVal(e.target.value);
+														}}
+														style={styles.shortenedField}
+														inputProps={{ style: { fontSize: 'small' } }}
+													/>
+													<IconButton
+														style={{ margin: '17px 0 0 6px', transform: 'scale(1.4)' }}
+														onClick={() => requestLocation(name, paramName)}>
+														<AddLocation />
+													</IconButton>
+												</span>
+											);
+										} else {
+											return (
+												<span key={key}>
+													<TextField
+														type={type === 'uint' ? 'number' : 'text'}
+														label={
+															<>
+																<span>{paramName}</span>
+																{description && <small> ({description})</small>}{' '}
+															</>
+														}
+														inputProps={{
+															style: { fontSize: isArray ? 'small' : 'medium' }
+														}}
+														multiline={isArray ? true : null}
+														rows={isArray ? 1 : null}
+														variant={isArray ? 'outlined' : 'standard'}
+														defaultValue={verifiers.current[name].parameters[paramName]}
+														onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
+														style={styles.normalField}
+													/>
+												</span>
+											);
+										}
 									})}
 							</div>
 						);
