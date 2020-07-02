@@ -1,7 +1,7 @@
 import React from 'react';
 
 //const steps = ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Underlying']; // Disbursement/Valuation instead of Value?
-const steps = ['', '', '', '', '', '', ''];
+const steps = ['', '', '','', '', ''];
 
 const getStepContent = stepIndex => {
 	switch (stepIndex) {
@@ -14,9 +14,10 @@ const getStepContent = stepIndex => {
 		case 3:
 			return 'Minting policy'; // Formerly: What quantity can be obtained per claim?
 		case 4:
-			return 'Noninteractive Verifiers'; // Formerly: Add proof types that users will have to provide
-		case 5:
-			return 'Interactive Verifiers';
+			return 'Search Verifiers'; // Formally: Search interactive and non-interactive verifiers
+		//return 'Noninteractive Verifiers'; // Formerly: Add proof types that users will have to provide
+		// case 5:
+		// 	return 'Interactive Verifiers';
 		case 6:
 			return 'Source of Value';
 		default:
@@ -114,7 +115,7 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					Default is a fixed factor of 1.
 				</>
 			);*/
-		case 4: // Noninteractive verifiers
+		/*case 4: // Noninteractive verifiers
 			return (
 				<>
 					<b>Verifying actions</b>
@@ -194,30 +195,36 @@ const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 					<b>Proof type: group member approval</b>
 					<br />
 					The token creator specifies one or more user groups, of which one member has to approve. Handle with care!
-					*/}
+					}
 				</>
 			);
-		case 5: // Interactive verifiers
-			return (
-				<>
-					{Object.keys(verifierTypes).map((verifierAddr, idx) => {
-						let verifier = verifierTypes[verifierAddr];
-						if (verifier.isNoninteractive) {
-							return '';
-						}
-						return (
-							<span key={'verifierInfo_' + idx}>
-								<b>{verifier.label}</b>
-								<br />
-								{verifier.description}
-								<br />
-								<br />
-							</span>
-						);
-					})}
-				</>
-			);
-		case 6: // Underlying
+		*/
+		case 4: // Search verifiers
+			return <center>TODO</center>;
+		/*(
+			<>
+				{Object.keys(verifierTypes).map((verifierAddr, idx) => {
+					let verifier = verifierTypes[verifierAddr];
+					if (verifier.isNoninteractive) {
+						return '';
+					}
+					return (
+						<span key={'verifierInfo_' + idx}>
+							<b>{verifier.label}</b>
+							<br />
+							{verifier.description}
+							<br />
+							<br />
+						</span>
+					);
+				})}
+			</>
+		);
+
+		 */
+		// case 5: // Search verifiers
+		// 	return <center>TODO</center>;
+		case 5: // Underlying
 			return <center>TODO</center>;
 		default:
 			return <center>TODO</center>;

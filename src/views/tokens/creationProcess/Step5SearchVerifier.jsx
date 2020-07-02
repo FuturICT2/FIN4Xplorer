@@ -5,18 +5,34 @@ import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
+import { verifiers as verifierDefinitions, verifierOptions } from '../../../config/verifier-info';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from '@material-ui/core';
-import styled from 'styled-components';
 import { findVerifierTypeAddressByName } from '../../../components/utils';
 
-function StepNoninteractiveVerifier(props) {
+function valuesToOptions(values) {
+	let result = [];
+	for (let value of values) {
+		result.push({ label: value, value: value });
+	}
+	return result;
+}
+
+function StepSearchVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [showDropdown, setShowDropdown] = useState(false);
+	const [verifierProperty, setVerifierProperty] = useState({
+		name: '',
+		verifierType: '',
+		dataType: ''
+	});
+	const [search, setSearch] = useState({
+		searchInitiate: false,
+		searchResults: null
+	});
 	const [verifiersAdded, setVerifiersAdded] = useState([]);
 	const verifiers = useRef({});
 
@@ -61,7 +77,6 @@ function StepNoninteractiveVerifier(props) {
 		}
 
 		setVerifiersAdded(verifiersAdded.concat(addr));
-		setShowDropdown(false);
 	};
 
 	const removeVerifier = addr => {
@@ -69,8 +84,63 @@ function StepNoninteractiveVerifier(props) {
 		delete verifiers.current[props.verifierTypes[addr].label];
 	};
 
+	const typesHandler = type => {
+		setVerifierProperty({
+			...verifierProperty,
+			verifierType: type
+		});
+	};
+
+	const dataTypesHandler = dataType => {
+		setVerifierProperty({
+			...verifierProperty,
+			dataType: dataType
+		});
+	};
+
+	const searchVerifiers = () => {
+		let searchResults = [];
+		for (let [key, value] of Object.entries(verifierDefinitions)) {
+			if (
+				verifierProperty.name.toLowerCase() !== '' &&
+				!key.toLowerCase().includes(verifierProperty.name.toLowerCase())
+			)
+				continue;
+			if (verifierProperty.verifierType !== '' && value.type !== verifierProperty.verifierType) continue;
+			if (verifierProperty.dataType !== '' && value.claimerInput.inputType !== verifierProperty.dataType) continue;
+			searchResults.push({ label: key, value: value.address });
+		}
+		setSearch({
+			searchResults,
+			searchInitiate: true
+		});
+	};
+
 	return (
 		<>
+			<TextField
+				key={'drop_' + 1}
+				type="text"
+				value={verifierProperty.name}
+				onChange={event => setVerifierProperty({ ...verifierProperty, name: event.target.value })}
+				label="Name/ID"
+				style={{ width: '100%', marginBottom: 14 }}
+			/>
+			<Dropdown
+				key={'drop_' + 2}
+				onChange={e => typesHandler(e.value)}
+				options={valuesToOptions(verifierOptions.type.values)}
+				label="Types"
+			/>
+			<Dropdown
+				key={'drop_' + 4}
+				onChange={e => dataTypesHandler(e.value)}
+				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
+				label="Claimer Input Data"
+			/>
+			<Button onClick={() => searchVerifiers()} center="true" color="inherit">
+				Search
+			</Button>
 			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{verifiersAdded.map((verifierAddress, index) => {
@@ -134,29 +204,13 @@ function StepNoninteractiveVerifier(props) {
 					})}
 				</div>
 			)}
-			{verifiersAdded.length > 0 && <Spacer />}
-			{showDropdown ? (
-				<Dropdown
-					onChange={e => addVerifier(e.value)}
-					options={Object.keys(props.verifierTypes)
-						.filter(addr => props.verifierTypes[addr].isNoninteractive)
-						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
-						.map(addr => props.verifierTypes[addr])}
-					label="Add token verifier"
-				/>
-			) : (
-				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-					Add
-				</Button>
+			{search.searchInitiate && (
+				<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />
 			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
-
-const Spacer = styled.div`
-	height: 30px;
-`;
 
 const styles = {
 	removeIcon: {
@@ -183,4 +237,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepNoninteractiveVerifier, mapStateToProps);
+export default drizzleConnect(StepSearchVerifier, mapStateToProps);

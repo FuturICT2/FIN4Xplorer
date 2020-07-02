@@ -24,6 +24,7 @@
 		"js-file-download": "^0.4.8",
 		"moment": "^2.24.0",
 		"nanoid": "^2.1.6",
+		"node-gyp": "^5.1.1",
 		"qrcode.react": "^0.9.3",
 		"react": "^16.8.6",
 		"react-addons-update": "^15.6.2",
