@@ -516,9 +516,9 @@
 				"name": "Password",
 				"description": "Approval if the user provides the password matching the one the token creator set."
 			},
-			"picture": {
-				"name": "Picture",
-				"description": "The claimer has to supply a picture, based on which the approver will decide to approve."
+			"picture-self-chosen-approver": {
+				"name": "Picture, self-chosen approver",
+				"description": "The claimer has to supply a picture and a public address of the person deciding whether or not to approve based on seeing the picture."
 			},
 			"self-approve": {
 				"name": "Self-approve",
