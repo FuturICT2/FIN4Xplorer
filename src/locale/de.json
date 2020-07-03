@@ -473,9 +473,9 @@
 	},
 	"sc": {
 		"verifier": {
-			"approval-by-group-member": {
-				"name": "Genehmigung durch Gruppenmitglied",
-				"description": "Der Token-Ersteller gibt eine oder mehrere Anwendergruppen an, die von einem Mitglied genehmigt werden müssen."
+			"approval-by-users-or-groups": {
+				"name": "Genehmigung durch Einzelne oder Gruppen",
+				"description": "Der Token-Ersteller gibt ein oder mehrere Benutzer und/oder ein oder mehrere Gruppen an. Alle User aus dem resultierenden Pool werden benachrichtigt. Sobald einer davon die Anfrage genehmigt oder ablehnt, wird die Nachricht bei allen anderen als gelesen markiert."
 			},
 			"location": {
 				"name": "Standort",

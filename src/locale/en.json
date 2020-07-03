@@ -496,9 +496,9 @@
 	},
 	"sc": {
 		"verifier": {
-			"approval-by-group-member": {
-				"name": "Approval by group member",
-				"description": "The token creator specifies one or more user groups, of which one member has to approve."
+			"approval-by-users-or-groups": {
+				"name": "Approval by users or groups",
+				"description": "The token creator specifies one or more users and/or one or more groups. All users in the resulting pool will be notified about the pending approval request. As soon as one of them approves or rejects the request, the message will be marked as read for the others."
 			},
 			"location": {
 				"name": "Location",
