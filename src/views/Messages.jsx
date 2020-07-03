@@ -44,7 +44,7 @@ function Messages(props, context) {
 			props,
 			props.defaultAccount,
 			verifierContractName,
-			'receiveApprovalFromSpecificAddress',
+			'receiveApproval',
 			[pendingApprovalId, attachedMessage],
 			'Approve approval request'
 		);
@@ -56,7 +56,7 @@ function Messages(props, context) {
 			props,
 			props.defaultAccount,
 			verifierContractName,
-			'receiveRejectionFromSpecificAddress',
+			'receiveRejection',
 			[pendingApprovalId, attachedMessage],
 			'Reject approval request'
 		);
