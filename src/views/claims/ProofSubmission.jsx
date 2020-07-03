@@ -291,15 +291,15 @@ function ProofSubmission(props, context) {
 							</span>
 						)}
 
-						{generalVerifierObj.label.includes('Voting') &&
-							isEligibleEndVote(generalVerifierObj.label, claimObj.claimId) && (
-								<div>
-									{/* <Status>{"End Voting After 1 Day"}</Status> */}
-									<Button onClick={endVoting} center="true">
-										End Vote
-									</Button>
-								</div>
-							)}
+						{generalVerifierObj.label.includes('Voting') && (
+							// isEligibleEndVote(generalVerifierObj.label, claimObj.claimId) &&
+							<div>
+								{/* <Status>{"End Voting After 1 Day"}</Status> */}
+								<Button onClick={endVoting} center="true">
+									End Vote
+								</Button>
+							</div>
+						)}
 					</div>
 				);
 			case ProofAndVerifierStatusEnum.APPROVED:
