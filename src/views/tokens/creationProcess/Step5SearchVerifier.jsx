@@ -27,6 +27,7 @@ function StepSearchVerifier(props) {
 	const [draftId, setDraftId] = useState(null);
 	const [verifierProperty, setVerifierProperty] = useState({
 		name: '',
+		chain: '',
 		verifierType: '',
 		dataType: ''
 	});
@@ -136,7 +137,6 @@ function StepSearchVerifier(props) {
 
 	// TODO make this a general solution instead of for one field of one proof type
 	const [locVal, setLocVal] = useState('');
-
 	return (
 		<>
 			<TextField
@@ -144,9 +144,15 @@ function StepSearchVerifier(props) {
 				type="text"
 				value={verifierProperty.name}
 				onChange={event => setVerifierProperty({ ...verifierProperty, name: event.target.value })}
-				label="Name/ID"
+				label="Name"
 				style={{ width: '100%', marginBottom: 14 }}
 			/>
+			{/* <Dropdown
+				key={'drop_' + 3}
+				onChange={e => typesHandler(e.value)}
+				options={valuesToOptions(verifierOptions.chain.values)}
+				label="On or Off Chain"
+			/> */}
 			<Dropdown
 				key={'drop_' + 2}
 				onChange={e => typesHandler(e.value)}

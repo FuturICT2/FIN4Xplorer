@@ -7,15 +7,14 @@ import { contractCall } from '../../../components/Contractor';
 
 function FileUploadProof(props, context) {
 	const { t } = useTranslation();
-
 	const onSubmit = ipfsHash => {
 		contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
-			props.contractName,
-			'submitProof_' + props.contractName,
-			[props.tokenAddr, props.claimId, ipfsHash],
+			'Fin4Verifying',
+			'submit_Proof',
+			[props.tokenAddr, props.claimId, props.contractName, ipfsHash],
 			'Submit ' + props.contractName + ' proof',
 			props.callbacks
 		);
