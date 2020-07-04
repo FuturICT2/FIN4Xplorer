@@ -278,6 +278,9 @@ function TokenCreationProcess(props, context) {
 			}
 		}
 
+		// TODO validate addresses in arrays: AllowOnlyThese, BlockThese, ApprovalByUsersOrGroups
+		// and block if arrays are empty
+
 		return '';
 	};
 
