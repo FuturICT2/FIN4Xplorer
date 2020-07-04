@@ -78,7 +78,7 @@ function ProofSubmission(props, context) {
 		switch (verifierContractName) {
 			case 'Location':
 				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
-			case 'SelfieTogether':
+			/*case 'SelfieTogether':
 				return (
 					<PictureUploadProof
 						key={'selfie_' + index}
@@ -86,14 +86,14 @@ function ProofSubmission(props, context) {
 						claimId={claimId}
 						contractName={'SelfieTogether'}
 					/>
-				);
-			case 'Picture':
+				);*/
+			case 'PictureSelfChosenApprover':
 				return (
 					<PictureUploadProof
 						key={'pic_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
-						contractName={'Picture'}
+						contractName="PictureSelfChosenApprover"
 					/>
 				);
 			/*case 'Networking':
