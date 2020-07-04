@@ -30,7 +30,7 @@ function PreviousClaims(props) {
 	};
 
 	const [filterModes, setFilterModes] = useState({
-		pendingApproval: true,
+		pending: true,
 		isApproved: true,
 		gotRejected: true
 	});
@@ -107,7 +107,7 @@ function PreviousClaims(props) {
 				</TableIcons>
 				{filterSettingsOpen && (
 					<OutlinedDiv label={t('claims.previous-claims.filter.menu-title')}>
-						{buildCheckbox('pendingApproval', t('claims.previous-claims.filter.pending-checkbox'))}
+						{buildCheckbox('pending', t('claims.previous-claims.filter.pending-checkbox'))}
 						{buildCheckbox('isApproved', t('claims.previous-claims.filter.approved-checkbox'))}
 						{buildCheckbox('gotRejected', t('claims.previous-claims.filter.rejected-checkbox'))}
 					</OutlinedDiv>
@@ -115,7 +115,7 @@ function PreviousClaims(props) {
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];
-						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pendingApproval';
+						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pending';
 						if (!filterModes[status]) {
 							return;
 						}
@@ -235,7 +235,7 @@ const Claim = styled(Paper)`
 			switch (props.status) {
 				case 'isApproved':
 					return colors.true;
-				case 'pendingApproval':
+				case 'pending':
 					return colors.wrong;
 				case 'gotRejected':
 					return colors.gotRejected;
