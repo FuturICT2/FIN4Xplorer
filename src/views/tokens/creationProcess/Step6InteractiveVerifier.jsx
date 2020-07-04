@@ -136,6 +136,7 @@ function StepInteractiveVerifier(props) {
 									verifierType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
 										let type = paramStr.split(':')[0];
+										let isArray = type.includes('[]');
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
 										let key = 'verifier_' + index + '_param_' + paramIndex;
@@ -182,6 +183,12 @@ function StepInteractiveVerifier(props) {
 														defaultValue={verifiers.current[contractName].parameters[paramName]}
 														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
+														inputProps={{
+															style: { fontSize: isArray ? 'small' : 'medium' }
+														}}
+														multiline={isArray ? true : null}
+														rows={isArray ? 1 : null}
+														variant={isArray ? 'outlined' : 'standard'}
 													/>
 												</span>
 											);
