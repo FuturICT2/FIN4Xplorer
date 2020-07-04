@@ -494,8 +494,8 @@
 				"description": "Genehmigung, wenn der Benutzer das Passwort angibt, das mit dem vom Tokenersteller festgelegten, übereinstimmt."
 			},
 			"picture": {
-				"name": "Bild",
-				"description": "Der Antragsteller muss ein Bild vorlegen, auf dessen Grundlage der Genehmigende über die Genehmigung entscheidet."
+				"name": "Bild, selbstgewählter Genehmiger",
+				"description": "Der Antragsteller muss ein Bild vorlegen, auf dessen Grundlage ein vom Antragsteller gewählter Benutzer über die Genehmigung entscheidet."
 			},
 			"picture-self-chosen-approver": {
 				"name": "Bild, selbst-gewählter Genehmiger",
