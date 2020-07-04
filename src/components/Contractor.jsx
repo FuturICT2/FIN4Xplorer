@@ -62,7 +62,13 @@ const contractCall = (
 	console.log('Initiating dry run: ' + methodStr);
 	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
 		if (err) {
-			let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
+			// let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
+			// The above way of parsing is unreliable as it worked on MetaMask v7.7.9 but no longer does with v8.0.1
+			// They meanwhile fixed to turn [object Object] into a string.
+			// Hoping that split('{') is more reliable, tried it successfully on v7.7.9 and v8.0.1.
+			let preJsonObjText = err.toString().split('{')[0];
+			let errParsed = JSON.parse(err.toString().substring(preJsonObjText.length - 1));
+
 			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
 			console.log('Dry run failed with error: ' + errObj.reason, err);
 			toast.error(
