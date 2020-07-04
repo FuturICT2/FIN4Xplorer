@@ -95,8 +95,8 @@
 		"verifier": {
 			"unsubmitted": "Für den Anspruch muss der folgende Nachweis erbracht werden: {{description}}",
 			"pending": "Der Nachweis {{name}} ist in anhängigem Zustand",
-			"approved": "Der Nachweis {{name}} wurde erfolgreich verifiziert",
-			"rejected": "Der Nachweis {{name}} wurde abgelehnt"
+			"approved": "Der Nachweis \"{{name}}\" wurde erfolgreich verifiziert",
+			"rejected": "Der Nachweis \"{{name}}\" wurde abgelehnt"
 		},
 		"box-title": "Einreichen von Nachweisen",
 		"claim-rejected": "Deine Forderung wurde abgelehnt",

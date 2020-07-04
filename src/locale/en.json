@@ -120,8 +120,8 @@
 		"verifier": {
 			"unsubmitted": "Your claim requires you to provide the following proof: {{description}}",
 			"pending": "The proof {{name}} is in pending state",
-			"approved": "The proof {{name}} got verified successfully",
-			"rejected": "The proof {{name}} got rejected"
+			"approved": "The proof \"{{name}}\" got verified successfully",
+			"rejected": "The proof \"{{name}}\" got rejected"
 		},
 		"custom-component": {
 			"location": {
