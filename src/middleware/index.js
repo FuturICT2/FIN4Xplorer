@@ -237,7 +237,7 @@ function fin4StoreReducer(state = initialState, action) {
 						message: { $set: msg.message },
 						hasBeenActedUpon: { $set: msg.hasBeenActedUpon },
 						attachment: { $set: msg.attachment },
-						pendingApprovalId: { $set: msg.pendingApprovalId }
+						pendingRequestId: { $set: msg.pendingRequestId }
 					}
 				}
 			});

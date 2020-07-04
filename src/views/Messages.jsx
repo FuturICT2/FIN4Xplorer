@@ -38,26 +38,26 @@ function Messages(props, context) {
 			});
 	});
 
-	const approveRequest = (verifierContractName, pendingApprovalId) => {
+	const approveRequest = (verifierContractName, pendingRequestId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
 			verifierContractName,
 			'receiveApproval',
-			[pendingApprovalId, attachedMessage],
+			[pendingRequestId, attachedMessage],
 			'Approve approval request'
 		);
 	};
 
-	const rejectRequest = (verifierContractName, pendingApprovalId) => {
+	const rejectRequest = (verifierContractName, pendingRequestId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
 			verifierContractName,
 			'receiveRejection',
-			[pendingApprovalId, attachedMessage],
+			[pendingRequestId, attachedMessage],
 			'Reject approval request'
 		);
 	};
@@ -116,7 +116,7 @@ function Messages(props, context) {
 							.filter(msg => !msg.hasBeenActedUpon && msg.messageType)
 							.map((msg, index) => {
 								return (
-									<Message key={`${msg.verifierContractName}_${msg.pendingApprovalId}_${index}`}>
+									<Message key={`${msg.verifierContractName}_${msg.pendingRequestId}_${index}`}>
 										<span style={{ color: 'gray' }}>
 											<Typography color="inherit" variant="body2">
 												<b>{getIntroText(msg.messageType).toUpperCase()}</b>
@@ -153,7 +153,7 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbUpIcon}
-															onClick={() => approveRequest(msg.verifierContractName, msg.pendingApprovalId)}>
+															onClick={() => approveRequest(msg.verifierContractName, msg.pendingRequestId)}>
 															{t('messages.approve-button')}
 														</Button>
 													</span>
@@ -162,7 +162,7 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbDownIcon}
-															onClick={() => rejectRequest(msg.verifierContractName, msg.pendingApprovalId)}>
+															onClick={() => rejectRequest(msg.verifierContractName, msg.pendingRequestId)}>
 															{t('messages.reject-button')}
 														</Button>
 													</span>

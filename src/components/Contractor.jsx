@@ -168,7 +168,7 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 			4: message,
 			5: hasBeenActedUpon,
 			6: attachment,
-			7: pendingApprovalId
+			7: pendingRequestId
 		}) => {
 			return {
 				messageId: messageId.toString(),
@@ -178,7 +178,7 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 				message: message,
 				hasBeenActedUpon: hasBeenActedUpon,
 				attachment: attachment,
-				pendingApprovalId: pendingApprovalId
+				pendingRequestId: pendingRequestId
 			};
 		}
 	);

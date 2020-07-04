@@ -277,7 +277,7 @@ const contractEventHandlers = {
 				message: null,
 				hasBeenActedUpon: null,
 				attachment: null,
-				pendingApprovalId: null
+				pendingRequestId: null
 			}
 		});
 		return <Trans i18nKey="notification.new-message" />;
