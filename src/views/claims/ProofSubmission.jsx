@@ -179,7 +179,7 @@ function ProofSubmission(props, context) {
 			case 'HappyMoment':
 				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
 			default:
-				const abi = require('../../build/contracts/' + verifierTypeName).abi;
+				const abi = require('../../build/contracts/' + 'Fin4Verifying').abi;
 				let contractMethod = 'submitProof_' + verifierTypeName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
@@ -190,13 +190,14 @@ function ProofSubmission(props, context) {
 				// }
 				return (
 					<ContractFormSimple
-						contractName={verifierTypeName}
+						contractName={'Fin4Verifying'}
 						contractMethod={'submitProof_' + verifierTypeName}
 						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
 						fixValues={{
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
-							ClaimId: claimId + ''
+							ClaimId: claimId + '',
+							VerifierName: verifierTypeName
 						}}
 						callbacks={{
 							markVerifierPendingUponBroadcastedTransaction: () => {
@@ -253,9 +254,9 @@ function ProofSubmission(props, context) {
 						context,
 						props,
 						props.store.getState().fin4Store.defaultAccount,
-						generalVerifierObj.label,
+						'Fin4Verifying',
 						'endVote',
-						[claimObj.claimId],
+						[generalVerifierObj.label, claimObj.claimId],
 						'End Vote',
 						props.callbacks
 					);

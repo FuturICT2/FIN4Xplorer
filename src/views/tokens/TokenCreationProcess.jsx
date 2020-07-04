@@ -271,15 +271,21 @@ function TokenCreationProcess(props, context) {
 		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
 			let userList = values[0];
 			let groupsList = values[1];
-			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+			console.log(userList);
+			console.log(groupsList);
+			if (userList != null && groupsList != null)
+				values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+			else if (userList != null) values = [userList.split(',').map(str => str.trim()), new Array('0')];
+			else if (groupsList != null)
+				values = [new Array('0x0000000000000000000000000000000000000000'), groupsList.split(',').map(Number)];
 		}
 		contractCall(
 			context,
 			props,
 			defaultAccount,
-			contractName,
-			'setParameters',
-			[tokenAddr, ...values],
+			'Fin4Verifying',
+			'setParameters_' + contractName,
+			[tokenAddr, contractName, ...values],
 			'Set parameter on verifier type: ' + contractName,
 			{
 				transactionCompleted: () => {

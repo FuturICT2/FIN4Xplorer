@@ -13,9 +13,9 @@ function PictureUploadProof(props, context) {
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
-			props.contractName,
+			'Fin4Verifying',
 			'submitProof_' + props.contractName,
-			[props.tokenAddr, props.claimId, approverAddress, ipfsHash],
+			[props.tokenAddr, props.claimId, props.contractName, approverAddress, ipfsHash],
 			'Submit ' + props.contractName + ' proof',
 			props.callbacks
 		);
