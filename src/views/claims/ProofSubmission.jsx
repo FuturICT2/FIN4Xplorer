@@ -94,6 +94,17 @@ function ProofSubmission(props, context) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="PictureSelfChosenApprover"
+						showAddressField={true}
+					/>
+				);
+			case 'PictureGivenApprovers':
+				return (
+					<PictureUploadProof
+						key={'pic_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="PictureGivenApprovers"
+						showAddressField={false}
 					/>
 				);
 			/*case 'Networking':
@@ -108,7 +119,7 @@ function ProofSubmission(props, context) {
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
-				}); // I don't remember why I capitalized the first letter...
+				});
 				return (
 					<ContractFormSimple
 						contractName={verifierContractName}

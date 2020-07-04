@@ -8,20 +8,26 @@ import { contractCall } from '../../../components/Contractor';
 function PictureUploadProof(props, context) {
 	const { t } = useTranslation();
 
-	const onSubmit = (approverAddress, ipfsHash) => {
+	const onSubmit = (ipfsHash, approverAddress) => {
+		let values;
+		if (approverAddress) {
+			values = [props.tokenAddr, props.claimId, approverAddress, ipfsHash];
+		} else {
+			values = [props.tokenAddr, props.claimId, ipfsHash];
+		}
 		contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
 			props.contractName,
 			'submitProof_' + props.contractName,
-			[props.tokenAddr, props.claimId, approverAddress, ipfsHash],
+			values,
 			'Submit ' + props.contractName + ' proof',
 			props.callbacks
 		);
 	};
 
-	return <PictureUploadComponent onSubmit={onSubmit} />;
+	return <PictureUploadComponent onSubmit={onSubmit} showAddressField={props.showAddressField} />;
 }
 
 PictureUploadProof.contextTypes = {

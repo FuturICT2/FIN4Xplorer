@@ -155,12 +155,16 @@ function PictureUploadComponent(props, context) {
 
 	return (
 		<>
-			<AddressQRreader
-				onChange={val => (addressValue.current = val)}
-				label={t('proof-submission.custom-component.picture-upload.qr-reader-label')}
-			/>
-			<br />
-			<br />
+			{props.showAddressField && (
+				<>
+					<AddressQRreader
+						onChange={val => (addressValue.current = val)}
+						label={t('proof-submission.custom-component.picture-upload.qr-reader-label')}
+					/>
+					<br />
+					<br />
+				</>
+			)}
 			<center style={{ fontFamily: 'arial' }}>
 				{uploadInProgress ? (
 					<table>
@@ -249,16 +253,23 @@ function PictureUploadComponent(props, context) {
 			)}
 			<Button
 				onClick={() => {
+					if (!ipfsHash) {
+						alert('No completed upload');
+						return;
+					}
+
+					if (!props.showAddressField) {
+						props.onSubmit(ipfsHash, null);
+						return;
+					}
+
 					// sanity checks
 					if (!isValidPublicAddress(addressValue.current)) {
 						alert('Invalid Ethereum public address');
 						return;
 					}
-					if (!ipfsHash) {
-						alert('No completed upload');
-						return;
-					}
-					props.onSubmit(addressValue.current, ipfsHash);
+
+					props.onSubmit(ipfsHash, addressValue.current);
 				}}
 				center="true">
 				{t('proof-submission.custom-component.picture-upload.submit-button')}
