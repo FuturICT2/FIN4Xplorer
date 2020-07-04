@@ -500,6 +500,10 @@
 				"name": "Approval by users or groups",
 				"description": "The token creator specifies one or more users and/or one or more groups. All users in the resulting pool will be notified about the pending approval request. As soon as one of them approves or rejects the request, the message will be marked as read for the others. Users and group IDs can't be modified after the token creation. However, members within a group can be edited by the group owner at any point. The right to approve or reject pending requests as a group member is directly connected to being in the group or not: if a group member is removed from the group but still has an open approval request, they can't act on it anymore. Members added to a group won't receive messages about pending approval requests that were made before they joined - they do however immediately gain the right for approval/rejection on all requests currently pending. If they know how to use the command line they can act on them. A claimer is not allowed to be among the appointed approvers (as individual or via group membership). If he gets added to an approver group after making a claim, his decision will not be accepted."
 			},
+			"picture-given-approvers": {
+				"name": "Picture, given approvers",
+				"description": "Same as the \"Approval by users or groups\" verifier, but including a picture that the claimer has to upload. Approvers base their decision on this picture."
+			},
 			"location": {
 				"name": "Location",
 				"description": "A location, which is within a radius of a location the token creator defines, needs to be provided."
