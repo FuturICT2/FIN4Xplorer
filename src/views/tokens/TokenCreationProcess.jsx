@@ -501,10 +501,13 @@ function TokenCreationProcess(props, context) {
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? TODO
-		if (type === 'verifier' && (contractName === 'AllowOnlyThese' || contractName === 'BlockThese')) {
-			let userList = values[0];
-			let groupsList = values[1];
-			values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+		if (
+			type === 'verifier' &&
+			(contractName === 'AllowOnlyThese' || contractName === 'BlockThese', contractName === 'ApprovalByUsersOrGroups')
+		) {
+			let userList = values[0] ? values[0].split(',').map(str => str.trim()) : [];
+			let groupsList = values[1] ? values[1].split(',').map(Number) : [];
+			values = [userList, groupsList];
 		}
 		contractCall(
 			context,
