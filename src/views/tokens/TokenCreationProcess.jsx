@@ -503,10 +503,13 @@ function TokenCreationProcess(props, context) {
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
-		// hackish, find a better way to handle this conversion? TODO
+		// hackish, find a better way to handle this conversion? Get "[]" from encoded params again maybe? TODO
 		if (
 			type === 'verifier' &&
-			(contractName === 'AllowOnlyThese' || contractName === 'BlockThese', contractName === 'ApprovalByUsersOrGroups')
+			(contractName === 'AllowOnlyThese' ||
+				contractName === 'BlockThese' ||
+				contractName === 'ApprovalByUsersOrGroups' ||
+				contractName === 'PictureGivenApprovers')
 		) {
 			let userList = values[0] ? values[0].split(',').map(str => str.trim()) : [];
 			let groupsList = values[1] ? values[1].split(',').map(Number) : [];
