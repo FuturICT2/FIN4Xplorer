@@ -205,7 +205,7 @@ const fileToBase64 = file =>
 
 // adds info to the error if known workarounds/fixes exist
 const txErrorAugmentation = reason => {
-	if (reason.includes('No keyring found for the requested account')) {
+	if (reason && reason.includes('No keyring found for the requested account')) {
 		reason += ' (try removing and reinstalling MetaMask)';
 	}
 	// TODO more?
