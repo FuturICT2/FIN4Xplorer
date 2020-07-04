@@ -42,9 +42,9 @@ function Messages(props, context) {
 			context,
 			props,
 			props.defaultAccount,
-			verifierTypeName,
+			'Fin4Verifying',
 			'receiveApprovalFromSpecificAddress',
-			[pendingApprovalId, attachedMessage],
+			[verifierTypeName, pendingApprovalId, attachedMessage],
 			'Approve approval request'
 		);
 	};
@@ -54,9 +54,9 @@ function Messages(props, context) {
 			context,
 			props,
 			props.defaultAccount,
-			verifierTypeName,
+			'Fin4Verifying',
 			'receiveRejectionFromSpecificAddress',
-			[pendingApprovalId, attachedMessage],
+			[verifierTypeName, pendingApprovalId, attachedMessage],
 			'Reject approval request'
 		);
 	};
