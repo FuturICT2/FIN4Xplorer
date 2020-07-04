@@ -102,6 +102,13 @@ function StepSearchVerifier(props) {
 		});
 	};
 
+	const chainTypesHandler = chain => {
+		setVerifierProperty({
+			...verifierProperty,
+			chain: chain
+		});
+	};
+
 	const searchVerifiers = () => {
 		let searchResults = [];
 		for (let [key, value] of Object.entries(verifierDefinitions)) {
@@ -112,6 +119,7 @@ function StepSearchVerifier(props) {
 				continue;
 			if (verifierProperty.verifierType !== '' && value.type !== verifierProperty.verifierType) continue;
 			if (verifierProperty.dataType !== '' && value.claimerInput.inputType !== verifierProperty.dataType) continue;
+			if (verifierProperty.chain !== '' && value.chain !== verifierProperty.chain) continue;
 			searchResults.push({ label: key, value: value.address });
 		}
 		setSearch({
@@ -147,12 +155,12 @@ function StepSearchVerifier(props) {
 				label="Name"
 				style={{ width: '100%', marginBottom: 14 }}
 			/>
-			{/* <Dropdown
+			<Dropdown
 				key={'drop_' + 3}
-				onChange={e => typesHandler(e.value)}
+				onChange={e => chainTypesHandler(e.value)}
 				options={valuesToOptions(verifierOptions.chain.values)}
 				label="On or Off Chain"
-			/> */}
+			/>
 			<Dropdown
 				key={'drop_' + 2}
 				onChange={e => typesHandler(e.value)}
