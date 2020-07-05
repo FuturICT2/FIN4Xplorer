@@ -12,7 +12,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { fetchMessage, contractCall } from '../components/Contractor';
 import history from '../components/history';
 import Container from '../components/Container';
-import ipfs from '../config/ipfs';
+// import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Messages(props, context) {
 	const { t } = useTranslation();
@@ -47,6 +47,12 @@ function Messages(props, context) {
 			'receiveApproval',
 			[pendingRequestId, attachedMessage],
 			'Approve approval request'
+			/*{
+				transactionSent: () => setTxPending(true), // needs to be message specific statuses: e.g. undecided/pending/decided for each
+				transactionCompleted: () => setTxPending(false),
+				transactionFailed: () => setTxPending(false),
+				dryRunFailed: () => setTxPending(false)
+			}*/
 		);
 	};
 
@@ -140,6 +146,14 @@ function Messages(props, context) {
 															{t('messages.click-to-see-image')}
 														</Button>
 													)}
+												{/*txPending ? 
+													<center>
+														<CircularProgress />
+													</center>
+													:
+													<>
+													</>
+												*/}
 												<TextField
 													key="approve-reject-message"
 													type="text"
