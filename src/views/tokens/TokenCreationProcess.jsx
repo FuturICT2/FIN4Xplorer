@@ -135,6 +135,7 @@ function TokenCreationProcess(props, context) {
 				return buildInfoContent('step4-minting', [
 					'is-mintable',
 					'fin4-has-minter-role',
+					'minting-sourcerer-has-minter-role',
 					'additional-minter-roles',
 					'fixed-amount',
 					'variable-amount',
@@ -314,6 +315,8 @@ function TokenCreationProcess(props, context) {
 			draft.properties.initialSupplyOwner === 'token-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
 
+		// MINTER ROLES
+
 		let minterRoles = [];
 		if (draft.minting.additionalMinterRoles.length > 0) {
 			minterRoles = draft.minting.additionalMinterRoles.split(',').map(addr => addr.trim());
@@ -321,6 +324,12 @@ function TokenCreationProcess(props, context) {
 		if (draft.minting.Fin4ClaimingHasMinterRole) {
 			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
 		}
+		if (draft.minting.MintingSourcererHasMinterRole) {
+			minterRoles.push(context.drizzle.contracts.MintingSourcerer.address);
+			// TODO
+		}
+
+		// VERIFIERS
 
 		let verifiers = {
 			...draft.noninteractiveVerifiers,

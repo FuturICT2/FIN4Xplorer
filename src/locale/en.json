@@ -246,6 +246,10 @@
 					"info": "To award succesfull claimers with a balance on this token, the Finance 4.0 system needs the minter role.",
 					"hint": "To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this option is not checked you have to take care of implementing your own minting policy: by handling the ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the SuccessfulClaimNotifierInterface."
 				},
+				"minting-sourcerer-has-minter-role": {
+					"label": "Minting-Sourcerer has the minter role",
+					"info": "To utilize this token as collateral via a Minting-Sourcerer (pairs of tokens can be defined: burn the one in order to mint this collateral), the respective contract needs to have the minter role."
+				},
 				"additional-minter-roles": {
 					"label": "Additional minter roles",
 					"info": "Additional user accounts or smart contracts that are allowed to mint this token. Be aware that your tokens claiming process might loose credibility by seeing that someone can mint the token without having to claim."

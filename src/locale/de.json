@@ -215,6 +215,10 @@
 					"info": "Um erfolgreiche Antragsteller mit einem Restbetrag auf diese Tokens auszurüsten, benötigt das System Finance 4.0 die Rolle des Prägers.",
 					"hint": "Um die Erschaffungsregeln durchsetzen zu können, muss das Finance 4.0-System den Prägungsprozess kontrollieren. Wenn diese Option nicht angekreuzt ist, muss man sich um die Umsetzung seiner eigenen Erschaffungsregeln kümmern: durch die Behandlung des Ereignisses \"ClaimApproved\" aus dem Fin4Claiming-Vertrag oder durch das Hinzufügen einer Erweiterung, die der Implementierung der Schnittstelle \"SuccessfulClaimNotifier\" zugrunde liegt."
 				},
+				"minting-sourcerer-has-minter-role": {
+					"label": "Minting-Sourcerer hat die Präger-Rolle",
+					"info": "Um diesen Token als Sicherheit via dem Minting-Sourcerer zu nutzen (Paare von Tokens können definiert werden: verbrenne den einen um diesen Sicherheits-Token zu prägen) benötigt der entsprechende smart contract die Präge-Rolle."
+				},
 				"additional-minter-roles": {
 					"label": "Zusätzliche Präge-Rollen",
 					"info": "Zusätzliche Nutzerkonten oder \"smart contracts\", die dieses Token prägen dürfen. Seien Sie sich bewusst, dass dein Verfahren zur Beanspruchung des Tokens an Glaubwürdigkeit verlieren kann, wenn jemand den Token prägen kann, ohne den Forderungsprozess zu durchlaufen."

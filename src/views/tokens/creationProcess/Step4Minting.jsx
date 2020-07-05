@@ -5,10 +5,12 @@ import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import { Checkbox, FormControlLabel, Radio, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { UnderlyingsActive } from '../../../components/utils';
 
 const PROPERTY_DEFAULT = {
 	isMintable: true,
 	Fin4ClaimingHasMinterRole: true,
+	MintingSourcererHasMinterRole: false,
 	additionalMinterRoles: '',
 	fixedAmount: 1,
 	unit: 'quantity'
@@ -36,6 +38,7 @@ function StepMinting(props, context) {
 		setMinting({
 			isMintable: getValue(draft, 'isMintable'),
 			Fin4ClaimingHasMinterRole: getValue(draft, 'Fin4ClaimingHasMinterRole'),
+			MintingSourcererHasMinterRole: getValue(draft, 'MintingSourcererHasMinterRole'),
 			additionalMinterRoles: getValue(draft, 'additionalMinterRoles'),
 			fixedAmount: fixed,
 			unit: draft.minting.hasOwnProperty('unit')
@@ -107,6 +110,11 @@ function StepMinting(props, context) {
 						t('token-creator.step4-minting.fields.fin4-has-minter-role.label'),
 						'Fin4ClaimingHasMinterRole'
 					)}
+					{UnderlyingsActive &&
+						buildCheckboxWithLabel(
+							t('token-creator.step4-minting.fields.minting-sourcerer-has-minter-role.label'),
+							'MintingSourcererHasMinterRole'
+						)}
 					<TextField
 						label={t('token-creator.step4-minting.fields.additional-minter-roles.label')}
 						style={{ margin: '10px 0 10px 0' }}
