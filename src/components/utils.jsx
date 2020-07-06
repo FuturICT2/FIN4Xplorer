@@ -203,6 +203,17 @@ const fileToBase64 = file =>
 		reader.onerror = error => reject(error);
 	});
 
+const sizeOfBase64 = base64Img => {
+	// via https://stackoverflow.com/a/52903460/2474159
+	let buffer = Buffer.from(base64Img.substring(base64Img.indexOf(',') + 1));
+	let inKB = buffer.length / 1000;
+	let inMB = buffer.length / 1e6;
+	if (inMB > 1) {
+		return Math.round(inMB * 100) / 100 + ' MB';
+	}
+	return inKB + ' KB';
+};
+
 // adds info to the error if known workarounds/fixes exist
 const txErrorAugmentation = reason => {
 	if (reason && reason.includes('No keyring found for the requested account')) {
@@ -238,5 +249,6 @@ export {
 	isMobileDevice,
 	getImageDimensions,
 	fileToBase64,
+	sizeOfBase64,
 	txErrorAugmentation
 };
