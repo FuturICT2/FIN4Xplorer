@@ -89,6 +89,10 @@ function PictureUploadComponent(props, context) {
 
 	const saveToIpfs = async dataStream => {
 		ipfs.add(dataStream, (err, result) => {
+			if (err) {
+				console.log('Upload error: ', err);
+				return;
+			}
 			console.log('Upload result: ', result);
 			let hash = result[0].hash;
 			let sizeKB = Math.round(result[0].size / 1000);
