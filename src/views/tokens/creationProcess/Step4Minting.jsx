@@ -145,6 +145,11 @@ function StepMinting(props, context) {
 									'CreateMSpairs_maxNumber',
 									'small'
 								)}
+								{buildCheckboxWithLabel(
+									'Only with this address as the beneficiary:',
+									'CreateMSpairs_fixedBeneficiary',
+									'small'
+								)}
 							</>
 						}
 					</div>*/}

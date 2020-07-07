@@ -151,6 +151,7 @@ function StepDesign(props, context) {
 				</div>
 				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-transferable.label'), 'isTransferable')}
 				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-burnable.label'), 'isBurnable')}
+				{/* if checked, also give BurnSourcerer options like in minting step */}
 				<br />
 				<TextField
 					type="number"
