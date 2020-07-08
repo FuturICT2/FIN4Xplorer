@@ -99,6 +99,11 @@ function PictureUploadComponent(props, context) {
 			setIpfsHash(hash);
 			setUploadInProgress(false);
 			console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
+
+			// alternative way of getting the download-data:
+			// under cat "Show IPFS object data": https://infura.io/docs/ipfs/get/block_get.md
+			// --> curl "https://ipfs.infura.io:5001/api/v0/cat?arg=" + hash
+
 			// ipfs.pin.add(hash, function (err) {
 			//	console.log("Could not pin hash " + hash, err);
 			// });
