@@ -266,7 +266,10 @@
 			"listing-header": "Im Folgenden werden alle verfügbaren interaktiven Verifizierer aufgelistet"
 		},
 		"step7-sourcerers": {
-			"title": "Bezugsquellenfinder"
+			"title": "Bezugsquellenfinder",
+			"settings": {
+				"allow-new-pairs": "Erlaube das Hinzufügen neuer Bezugsqeullen-Paare mit diesem hier als PAT nach der Token-Erstellung"
+			}
 		},
 		"step8-underlyings": {
 			"title": "Externe Wertquellen"

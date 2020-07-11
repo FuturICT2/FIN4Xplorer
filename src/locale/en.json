@@ -297,7 +297,10 @@
 			"listing-header": "In the following all available interactive verifiers are listed"
 		},
 		"step7-sourcerers": {
-			"title": "Sourcerers"
+			"title": "Sourcerers",
+			"settings": {
+				"allow-new-pairs": "Allow addition of new sourcerer pairs with this one as PAT after token creation"
+			}
 		},
 		"step8-underlyings": {
 			"title": "External sources of value"

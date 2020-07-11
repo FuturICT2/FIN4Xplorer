@@ -198,8 +198,9 @@ function StepSourcerers(props) {
 				)}
 				<br />
 				{buildCheckboxWithLabel(
-					'Allow addition of new sourcerer pairs after token creation',
-					'allowAdditionAfterCreation'
+					t('token-creator.step7-sourcerers.settings.allow-new-pairs'),
+					'allowAdditionAfterCreation',
+					'small'
 				)}
 			</>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
