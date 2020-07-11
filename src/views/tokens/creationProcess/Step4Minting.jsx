@@ -115,44 +115,6 @@ function StepMinting(props, context) {
 							t('token-creator.step4-minting.fields.minting-sourcerer-has-minter-role.label'),
 							'MintingSourcererHasMinterRole'
 						)}
-					{/*<div style={minting.MintingSourcererHasMinterRole ? styles.divOutline : null}>
-						{UnderlyingsActive &&
-							buildCheckboxWithLabel(
-								t('token-creator.step4-minting.fields.minting-sourcerer-has-minter-role.label'),
-								'MintingSourcererHasMinterRole'
-							)}
-						{minting.MintingSourcererHasMinterRole &&
-							<>
-								<br/>
-								<span style={{ fontFamily: 'arial' }}>Optional: restrict the Minting-Sourcerer pairs this token can be used as collateral in:</span>
-								{buildCheckboxWithLabel(
-									'Only I can create such pairs',
-									'CreateMSpairs_onlyMe',
-									'small'
-								)}
-								{buildCheckboxWithLabel(
-									'Only users in this group can create such pairs:',
-									'CreateMSpairs_onlyThisGroup',
-									'small'
-								)}
-								{buildCheckboxWithLabel(
-									'Such pairs can only be made for tokens in this collection:',
-									'CreateMSpairs_onlyForTokensInThisCollection',
-									'small'
-								)}
-								{buildCheckboxWithLabel(
-									'There can\'t be more than this many such pairs:',
-									'CreateMSpairs_maxNumber',
-									'small'
-								)}
-								{buildCheckboxWithLabel(
-									'Only with this address as the beneficiary:',
-									'CreateMSpairs_fixedBeneficiary',
-									'small'
-								)}
-							</>
-						}
-					</div>*/}
 					<TextField
 						label={t('token-creator.step4-minting.fields.additional-minter-roles.label')}
 						style={{ margin: '10px 0 10px 0' }}
