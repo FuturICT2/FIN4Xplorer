@@ -13,7 +13,8 @@ import { getRandomStringOfLength } from '../../../components/utils';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 
 const PROPERTY_DEFAULT = {
-	allowAdditionAfterCreation: false
+	allowAdditionAfterCreation: false,
+	allowCollateralUsageForOthers: true
 };
 
 function StepSourcerers(props) {
@@ -39,7 +40,8 @@ function StepSourcerers(props) {
 		setSourcererPairs(draft.sourcererPairs);
 		setDraftId(draft.id);
 		setSourcererSettings({
-			allowAdditionAfterCreation: getValue(draft, 'allowAdditionAfterCreation')
+			allowAdditionAfterCreation: getValue(draft, 'allowAdditionAfterCreation'),
+			allowCollateralUsageForOthers: getValue(draft, 'allowCollateralUsageForOthers')
 		});
 	});
 
@@ -200,6 +202,11 @@ function StepSourcerers(props) {
 				{buildCheckboxWithLabel(
 					t('token-creator.step7-sourcerers.settings.allow-new-pairs'),
 					'allowAdditionAfterCreation',
+					'small'
+				)}
+				{buildCheckboxWithLabel(
+					t('token-creator.step7-sourcerers.settings.allow-others-collateral-usage'),
+					'allowCollateralUsageForOthers',
 					'small'
 				)}
 			</>

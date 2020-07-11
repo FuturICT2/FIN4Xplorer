@@ -367,10 +367,17 @@ function TokenCreationProcess(props, context) {
 		}
 
 		// settings
+		// TODO a more elegant way to do this?
 
 		let sourcererSettingValues = [];
 		if (draft.sourcererSettings.allowAdditionAfterCreation) {
-			sourcererSettingValues.push(true);
+			sourcererSettingValues.push(true); // default is false
+		}
+		if (!draft.sourcererSettings.allowCollateralUsageForOthers) {
+			if (!draft.sourcererSettings.allowAdditionAfterCreation) {
+				sourcererSettingValues.push(false);
+			}
+			sourcererSettingValues.push(false); // default is true
 		}
 
 		if (sourcererSettingValues.length > 0) {

@@ -268,7 +268,8 @@
 		"step7-sourcerers": {
 			"title": "Bezugsquellenfinder",
 			"settings": {
-				"allow-new-pairs": "Erlaube dir selbst das Hinzufügen neuer Bezugsqeullen-Paare mit diesem hier als PAT nach der Token-Erstellung"
+				"allow-new-pairs": "Erlaube dir selbst das Hinzufügen neuer Bezugsqeullen-Paare mit diesem hier als PAT nach der Token-Erstellung",
+				"allow-others-collateral-usage": "Erlaube anderen Bezugsquellen-Paare mit diesem Token als Sicherheit anzulegen"
 			}
 		},
 		"step8-underlyings": {
