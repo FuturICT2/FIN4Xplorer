@@ -82,6 +82,14 @@
 		"variable-minting": "Variable minting amount set by user",
 		"fixed-minting": "Fixed minting quantity per claim",
 		"claimable-actions": "Claimable actions",
+		"allow-add-pairs-after-creation": {
+			"title": "Token creator can add more sourcerer pairs",
+			"tooltip": "The default is false. If this is true, the token creator can add more sourcerer pairs with this token as PAT after the token creation."
+		},
+		"allow-collateral-pairs-created-by-others": {
+			"title": "Anyone can use this token as collateral",
+			"tooltip": "The default is true. If false, only the token creator can create sourcerer pairs that use this token as collateral."
+		},
 		"token-actions": "Token actions",
 		"submissions": "Submissions",
 		"collage": {

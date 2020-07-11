@@ -584,6 +584,14 @@
 		"variable-minting": "Variabler Betrag pro Forderung, vom Benutzer gesetzt",
 		"fixed-minting": "Festgelegter Betrag pro Forderung",
 		"claimable-actions": "Einforderbare Aktionen",
+		"allow-add-pairs-after-creation": {
+			"title": "Token Kreirer kann weitere Sourcerer-Paare hinzufügen",
+			"tooltip": "Standardmäßig false. Falls true, kann der Token Kreirer nach der Token-Erstellung weitere Sourcerer-Paare mit diesem Token als PAT erstellen."
+		},
+		"allow-collateral-pairs-created-by-others": {
+			"title": "Jeder kann diesen Token als Sicherheit einsetzen",
+			"tooltip": "Standardmäßig true. Falls false kann nur der Token Kreirer Sourcerer-Paare mit diesem Token als Sicherheit erstellen."
+		},
 		"token-actions": "Token Aktionen",
 		"submissions": "Einreichungen",
 		"collage": {

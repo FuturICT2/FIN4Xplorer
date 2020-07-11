@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { isCollateralFor, hasTheseCollaterals } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function TokenView(props, context) {
 	const { t } = useTranslation();
@@ -90,6 +91,10 @@ function TokenView(props, context) {
 				{value}
 			</p>
 		);
+	};
+
+	const buildTooltipInfoLine = (label, value, tooltipText) => {
+		return <Tooltip title={tooltipText}>{buildInfoLine(label, value)}</Tooltip>;
 	};
 
 	const buildCheckboxWithLabel = (label, checked) => {
@@ -288,6 +293,19 @@ function TokenView(props, context) {
 									: buildInfoLine(t('token-view.fixed-minting'), details.fixedAmount)}
 								{buildInfoLine(t('token-creator.step4-minting.fields.unit.label'), tokenViaURL.unit)}
 								{buildInfoLine(t('token-view.claimable-actions'), details.actionsText)}
+
+								<Divider style={{ margin: '10px 0' }} variant="middle" />
+
+								{buildTooltipInfoLine(
+									t('token-view.allow-add-pairs-after-creation.title'),
+									details.allowAddPairsAfterCreation.toString(),
+									t('token-view.allow-add-pairs-after-creation.tooltip')
+								)}
+								{buildTooltipInfoLine(
+									t('token-view.allow-collateral-pairs-created-by-others.title'),
+									details.allowCollateralPairsCreatedByOthers.toString(),
+									t('token-view.allow-collateral-pairs-created-by-others.tooltip')
+								)}
 							</span>
 						)}
 					</span>
