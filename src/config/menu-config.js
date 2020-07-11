@@ -26,6 +26,7 @@ import TokenVoteSubmissions from '../views/tokens/TokenVoteSubmissions';
 import TransactionLog from '../views/TransactionLog';
 import DepositCollateral from '../views/underlying/DepositCollateral';
 import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
+import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
 
 const menu = [
 	{
@@ -223,6 +224,12 @@ const menu = [
 	{
 		component: ConvertToCollateral,
 		path: '/underlying/convert/:sourcererName/:patToken/:collateralToken/:amount',
+		showInNavBar: false
+	},
+	// ------------------ SOURCERERS ------------------
+	{
+		component: AddNewSourcererPair,
+		path: '/sourcerer/new-pair/:patToken',
 		showInNavBar: false
 	}
 ];
