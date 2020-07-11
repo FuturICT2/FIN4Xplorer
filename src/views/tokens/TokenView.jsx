@@ -306,9 +306,7 @@ function TokenView(props, context) {
 											{t('token-view.download-claims')}
 										</Link>
 										<br />
-										<Link to="#" onClick={() => {}}>
-											{t('token-view.add-sourcerer-pair')}
-										</Link>
+										<Link to={'/sourcerer/new-pair/' + tokenViaURL.symbol}>{t('token-view.add-sourcerer-pair')}</Link>
 									</td>
 								</tr>
 							</tbody>
