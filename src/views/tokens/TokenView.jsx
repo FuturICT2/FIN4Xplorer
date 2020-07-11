@@ -179,6 +179,17 @@ function TokenView(props, context) {
 		}
 	};
 
+	const getFormattedMinterRole = address => {
+		switch (address) {
+			case context.drizzle.contracts.Fin4Claiming.address:
+				return <small>Fin4Claiming contract</small>;
+			case context.drizzle.contracts.MintingSourcerer.address:
+				return <small>MintingSourcerer contract</small>;
+			default:
+				return <AddressDisplayWithCopy address={address} fontSize={'x-small'} />;
+		}
+	};
+
 	return (
 		<Container>
 			<Box>
@@ -277,11 +288,7 @@ function TokenView(props, context) {
 											<span key={'minterRole_' + index}>
 												<br />
 												&nbsp;&nbsp;&nbsp;&nbsp;
-												{addr === context.drizzle.contracts.Fin4Claiming.address ? (
-													<small>Fin4Claiming contract</small>
-												) : (
-													<AddressDisplayWithCopy address={addr} fontSize={'x-small'} />
-												)}
+												{getFormattedMinterRole(addr)}
 											</span>
 										))
 									)}
