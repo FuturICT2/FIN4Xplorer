@@ -8,7 +8,8 @@ import {
 	findTokenBySymbol,
 	addContract,
 	fetchTokenDetails,
-	downloadClaimHistoryOnToken
+	downloadClaimHistoryOnToken,
+	getContractData
 } from '../../components/Contractor';
 import SourcererPairInfoComponent from '../../components/SourcererPairInfoComponent';
 import UnderlyingInfoComponent from '../../components/UnderlyingInfoComponent';
@@ -28,7 +29,16 @@ function TokenView(props, context) {
 
 	const fetchDetailedTokenInfo = () => {
 		fetchTokenDetails(context.drizzle.contracts['Fin4Token_' + tokenViaURL.symbol], props.defaultAccount).then(data => {
-			setDetails(data);
+			getContractData(
+				context.drizzle.contracts.Fin4Underlyings,
+				props.defaultAccount,
+				'getSourcererSettings',
+				tokenViaURL.address
+			).then(({ 0: allowAddPairsAfterCreation, 1: allowCollateralPairsCreatedByOthers }) => {
+				data.allowAddPairsAfterCreation = allowAddPairsAfterCreation;
+				data.allowCollateralPairsCreatedByOthers = allowCollateralPairsCreatedByOthers;
+				setDetails(data);
+			});
 		});
 	};
 
