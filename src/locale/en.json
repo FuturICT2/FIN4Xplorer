@@ -90,7 +90,8 @@
 			"picture": "picture",
 			"vote": "vote"
 		},
-		"download-claims": "Download claims"
+		"download-claims": "Download claims",
+		"add-sourcerer-pair": "Add sourcerer pair"
 	},
 	"claims": {
 		"default-unit": "Quantity",

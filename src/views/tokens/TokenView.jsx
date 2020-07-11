@@ -290,14 +290,29 @@ function TokenView(props, context) {
 					<span style={{ fontFamily: 'arial' }}>
 						{buildInfoLine(t('home.on-the-blockchain.users-balance'), details.usersBalance)}
 						<Divider style={{ margin: '10px 0' }} variant="middle" />
-						<span style={{ color: 'gray' }}>{t('token-view.token-actions') + ': '}</span>
-						<Link to={'/claim/' + tokenViaURL.symbol}>{t('tokens-list.claim-button')}</Link>
-						{', '}
-						<Link to={'/user/transfer/' + tokenViaURL.symbol}>{t('home.wallet.transfer-token')}</Link>
-						{', '}
-						<Link to="#" onClick={() => downloadClaimHistoryOnToken(props, tokenViaURL.symbol, context)}>
-							{t('token-view.download-claims')}
-						</Link>
+
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<span style={{ color: 'gray', marginRight: '10px' }}>{t('token-view.token-actions') + ':'}</span>
+									</td>
+									<td>
+										<Link to={'/claim/' + tokenViaURL.symbol}>{t('tokens-list.claim-button')}</Link>
+										<br />
+										<Link to={'/user/transfer/' + tokenViaURL.symbol}>{t('home.wallet.transfer-token')}</Link>
+										<br />
+										<Link to="#" onClick={() => downloadClaimHistoryOnToken(props, tokenViaURL.symbol, context)}>
+											{t('token-view.download-claims')}
+										</Link>
+										<br />
+										<Link to="#" onClick={() => {}}>
+											{t('token-view.add-sourcerer-pair')}
+										</Link>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 						{buildSourcererInfos()}
 						{buildExternalUnderlyingsInfos()}
 					</span>

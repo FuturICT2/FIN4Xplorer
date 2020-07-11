@@ -591,6 +591,7 @@
 			"picture": "Bild",
 			"vote": "Abstimmung"
 		},
-		"download-claims": "Forderungen herunterladen"
+		"download-claims": "Forderungen herunterladen",
+		"add-sourcerer-pair": "Sourcerer Paar hinzufügen"
 	}
 }
