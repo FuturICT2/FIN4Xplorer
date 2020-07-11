@@ -176,7 +176,7 @@ function StepSourcerers(props) {
 							if (underlyingObj.paramsEncoded) {
 								underlyingObj.paramsEncoded.split(',').map(paramStr => {
 									let paramName = paramStr.split(':')[1];
-									parameters[paramName] = null;
+									parameters[paramName] = paramName === 'exchangeRatio' ? 1 : null;
 								});
 							}
 							setSourcererPairs([
