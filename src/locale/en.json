@@ -300,7 +300,7 @@
 		"step7-sourcerers": {
 			"title": "Sourcerers",
 			"settings": {
-				"allow-new-pairs": "Allow addition of new sourcerer pairs with this one as PAT after token creation"
+				"allow-new-pairs": "Allow myself to add new sourcerer pairs with this one as PAT after token creation"
 			}
 		},
 		"step8-underlyings": {
