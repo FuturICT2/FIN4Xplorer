@@ -333,8 +333,14 @@ function TokenView(props, context) {
 										<Link to="#" onClick={() => downloadClaimHistoryOnToken(props, tokenViaURL.symbol, context)}>
 											{t('token-view.download-claims')}
 										</Link>
-										<br />
-										<Link to={'/sourcerer/new-pair/' + tokenViaURL.symbol}>{t('token-view.add-sourcerer-pair')}</Link>
+										{details && details.allowAddPairsAfterCreation && details.tokenCreator === props.defaultAccount && (
+											<>
+												<br />
+												<Link to={'/sourcerer/new-pair/' + tokenViaURL.symbol}>
+													{t('token-view.add-sourcerer-pair')}
+												</Link>
+											</>
+										)}
 									</td>
 								</tr>
 							</tbody>
