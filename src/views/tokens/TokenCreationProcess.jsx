@@ -370,14 +370,16 @@ function TokenCreationProcess(props, context) {
 		// TODO a more elegant way to do this?
 
 		let sourcererSettingValues = [];
-		if (draft.sourcererSettings.allowAdditionAfterCreation) {
-			sourcererSettingValues.push(true); // default is false
-		}
-		if (!draft.sourcererSettings.allowCollateralUsageForOthers) {
-			if (!draft.sourcererSettings.allowAdditionAfterCreation) {
-				sourcererSettingValues.push(false);
-			}
-			sourcererSettingValues.push(false); // default is true
+
+		let allowAdditionAfterCreation = draft.sourcererSettings.allowAdditionAfterCreation;
+		let allowCollateralUsageForOthers = draft.sourcererSettings.allowCollateralUsageForOthers;
+
+		if (!allowAdditionAfterCreation && allowCollateralUsageForOthers) {
+			// default, leave array empty
+		} else {
+			// if not default, we are making the call to the contract and then need both booleans
+			sourcererSettingValues.push(allowAdditionAfterCreation);
+			sourcererSettingValues.push(allowCollateralUsageForOthers);
 		}
 
 		if (sourcererSettingValues.length > 0) {
