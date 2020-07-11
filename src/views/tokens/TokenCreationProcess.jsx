@@ -369,7 +369,9 @@ function TokenCreationProcess(props, context) {
 		// settings
 
 		let sourcererSettingValues = [];
-		sourcererSettingValues.push(draft.sourcererSettings.allowAdditionAfterCreation);
+		if (draft.sourcererSettings.allowAdditionAfterCreation) {
+			sourcererSettingValues.push(true);
+		}
 
 		if (sourcererSettingValues.length > 0) {
 			transactionsRequired.current += 1;
