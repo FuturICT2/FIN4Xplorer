@@ -3,7 +3,6 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { TextField } from '@material-ui/core';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +10,11 @@ import styled from 'styled-components';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getRandomStringOfLength } from '../../../components/utils';
+import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+
+const PROPERTY_DEFAULT = {
+	allowAdditionAfterCreation: false
+};
 
 function StepSourcerers(props) {
 	const { t } = useTranslation();
@@ -19,6 +23,14 @@ function StepSourcerers(props) {
 	const [sourcererPairs, setSourcererPairs] = useState([]); // name and pairs[]
 	const [mode, setMode] = useState('collapsed'); // addFromDropdown
 
+	const [sourcererSettings, setSourcererSettings] = useState(PROPERTY_DEFAULT);
+
+	const getValue = (draft, prop) => {
+		return draft.sourcererSettings && draft.sourcererSettings.hasOwnProperty(prop)
+			? draft.sourcererSettings[prop]
+			: PROPERTY_DEFAULT[prop];
+	};
+
 	useEffect(() => {
 		if (!props.draft || draftId) {
 			return;
@@ -26,6 +38,9 @@ function StepSourcerers(props) {
 		let draft = props.draft;
 		setSourcererPairs(draft.sourcererPairs);
 		setDraftId(draft.id);
+		setSourcererSettings({
+			allowAdditionAfterCreation: getValue(draft, 'allowAdditionAfterCreation')
+		});
 	});
 
 	const submit = () => {
@@ -35,6 +50,13 @@ function StepSourcerers(props) {
 			lastModified: moment().valueOf(),
 			nodeName: 'sourcererPairs',
 			node: sourcererPairs
+		});
+		props.dispatch({
+			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			draftId: draftId,
+			lastModified: moment().valueOf(),
+			nodeName: 'sourcererSettings',
+			node: sourcererSettings
 		});
 		props.handleNext();
 	};
@@ -58,6 +80,29 @@ function StepSourcerers(props) {
 
 	const getSourcererById = id => {
 		return sourcererPairs.filter(pair => pair.id === id)[0];
+	};
+
+	const buildCheckboxWithLabel = (label, fieldName, size = 'medium') => {
+		return (
+			<>
+				<FormControlLabel
+					control={
+						<Checkbox
+							size={size}
+							checked={sourcererSettings[fieldName]}
+							onChange={() => {
+								setSourcererSettings({
+									...sourcererSettings,
+									[fieldName]: !sourcererSettings[fieldName]
+								});
+							}}
+						/>
+					}
+					label={<div style={{ fontSize: size === 'medium' ? '1rem' : '0.9rem' }}>{label}</div>}
+				/>
+				<br />
+			</>
+		);
 	};
 
 	return (
@@ -150,6 +195,11 @@ function StepSourcerers(props) {
 						})}
 						label="Choose sourcerer"
 					/>
+				)}
+				<br />
+				{buildCheckboxWithLabel(
+					'Allow addition of new sourcerer pairs after token creation',
+					'allowAdditionAfterCreation'
 				)}
 			</>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
