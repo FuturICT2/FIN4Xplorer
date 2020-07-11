@@ -371,6 +371,10 @@ function TokenCreationProcess(props, context) {
 		let sourcererSettingValues = [];
 		sourcererSettingValues.push(draft.sourcererSettings.allowAdditionAfterCreation);
 
+		if (sourcererSettingValues.length > 0) {
+			transactionsRequired.current += 1;
+		}
+
 		// EXTERNAL UNDERLYINGS
 
 		let externalUnderlyings = [];
