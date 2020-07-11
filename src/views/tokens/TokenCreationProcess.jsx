@@ -337,6 +337,7 @@ function TokenCreationProcess(props, context) {
 		};
 
 		// SOURCERERS
+		// pairs
 
 		let sourcerersToParameterize = [];
 
@@ -364,6 +365,11 @@ function TokenCreationProcess(props, context) {
 				values: values
 			});
 		}
+
+		// settings
+
+		let sourcererSettingValues = [];
+		sourcererSettingValues.push(draft.sourcererSettings.allowAdditionAfterCreation);
 
 		// EXTERNAL UNDERLYINGS
 
@@ -445,7 +451,8 @@ function TokenCreationProcess(props, context) {
 					if (
 						verifiersToParameterize.length === 0 &&
 						sourcerersToParameterize.length === 0 &&
-						newExternalUnderlyings.names.length === 0
+						newExternalUnderlyings.names.length === 0 &&
+						sourcererSettingValues.length === 0
 					) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
@@ -456,7 +463,19 @@ function TokenCreationProcess(props, context) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 					};
 
+					if (sourcererSettingValues.length > 0) {
+						setParamsOnOtherContract(
+							'sourcerer',
+							defaultAccount,
+							'Fin4Underlyings',
+							newTokenAddress,
+							sourcererSettingValues,
+							callbackOthersDone
+						);
+					}
+
 					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
+
 					verifiersToParameterize.map(verifier => {
 						setParamsOnOtherContract(
 							'verifier',
