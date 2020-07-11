@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import { drizzleConnect } from 'drizzle-react';
-import { findTokenBySymbol, isValidPublicAddress, contractCall } from '../../components/Contractor.jsx';
+import { findTokenBySymbol, isValidPublicAddress, contractCall, zeroAddress } from '../../components/Contractor.jsx';
 import Box from '../../components/Box';
 import Dropdown from '../../components/Dropdown';
 import { TextField } from '@material-ui/core';
@@ -52,13 +52,25 @@ function AddNewSourcererPair(props, context) {
 	};
 
 	const submit = () => {
+		if (
+			!data.sourcererName ||
+			!isValidPublicAddress(data.patAddress) ||
+			!isValidPublicAddress(data.collateralAddress)
+		) {
+			alert('Incomplete or error-prone inputs');
+			return;
+		}
+		let beneficiary = data.beneficiaryAddress;
+		if (!beneficiary) {
+			beneficiary = zeroAddress;
+		}
 		contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
 			data.sourcererName,
 			'setParameters',
-			[data.patAddress, data.collateralAddress, data.beneficiaryAddress, data.exchangeRatio],
+			[data.patAddress, data.collateralAddress, beneficiary, data.exchangeRatio],
 			'Adding new ' + data.sourcererName + '-sourcerer pair',
 			{}
 		);
