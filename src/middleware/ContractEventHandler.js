@@ -2,6 +2,7 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { ProofAndVerifierStatusEnum } from '../components/utils';
+import { subscribeToContractEventsViaEthersjsListeners } from './EthersjsListeners';
 const BN = require('bignumber.js');
 
 let contractEventList = [
@@ -24,8 +25,7 @@ let store;
 const subscribeToContractEvents = _store => {
 	store = _store;
 	defaultAccount = store.getState().fin4Store.defaultAccount;
-
-	// TODO
+	subscribeToContractEventsViaEthersjsListeners(defaultAccount);
 
 	/*if (notificationServerIsActive()) {
 		console.log('Subscribing to contract events via the notification server');
