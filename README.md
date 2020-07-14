@@ -45,25 +45,20 @@ npm install # might require more than 1GB of memory to run
 
 Install the [MetaMask](https://metamask.io/) browser extension.
 
-## Servers
+## config.json
 
-If you have additional servers running, add their URLs to `src/config/server-urls.json`:
+The file `src/config/config.json` has to be added and filled. If no Infura API key is given, contract events won't be received and reload is necessary to update the frontend.
 
 ```json
 {
     "FAUCET_SERVER_URL": "",
-    "NOTIFICATION_SERVER_URL": ""
+    "INFURA_API_KEY": ""
 }
 ```
 
 ### Faucet server
 
-The [faucet server](https://github.com/FuturICT2/FIN4FaucetServer), can send users Ether if they request it. If an URL is added to `server-urls.json`, the box *On the blockchain* on *Home* will show the option *Request Ether*. Note that the faucet URL has to be HTTPS if your deployment is also served via HTTPS.
-
-### Notification server
-
-The [notification server](https://github.com/FuturICT2/FIN4NotificationServer) relays contract events to frontends via sockets. Furthermore to email subscribes and a telegram bot.
-If this server is offline, frontends will not receive contract events and have to reload the page to see any changes.
+The [faucet server](https://github.com/FuturICT2/FIN4FaucetServer), can send users Ether if they request it. If an URL is added to `config.json`, the box *On the blockchain* on *Home* will show the option *Request Ether*. Note that the faucet URL has to be HTTPS if your deployment is also served via HTTPS.
 
 ## Required files
 

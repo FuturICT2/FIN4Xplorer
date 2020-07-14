@@ -4,7 +4,7 @@ src/build/
 .env/
 .idea/
 
-src/config/server-urls.json
+src/config/config.json
 src/config/deployment-info.js
 
 package-lock.json
