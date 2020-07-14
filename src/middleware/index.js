@@ -5,11 +5,10 @@ import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
 import { doCallback, txErrorAugmentation } from '../components/utils';
-import { contractEventList, handleContractEvent } from './ContractEventHandler';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
-	if (action.type !== EventActions.EVENT_FIRED) {
+	/*if (action.type !== EventActions.EVENT_FIRED) {
 		return next(action);
 	}
 
@@ -19,8 +18,7 @@ const contractEventNotifier = store => next => action => {
 
 	if (contractEventList.includes(eventName)) {
 		handleContractEvent(false, eventName, values);
-	}
-
+	}*/
 	return next(action);
 };
 

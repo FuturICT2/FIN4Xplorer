@@ -1,6 +1,5 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { notificationServerIsActive, subscribeToContractEventsViaNotificationServer } from './NotificationServerClient';
 import { toast } from 'react-toastify';
 import { ProofAndVerifierStatusEnum } from '../components/utils';
 const BN = require('bignumber.js');
@@ -21,31 +20,31 @@ let contractEventList = [
 
 let defaultAccount;
 let store;
-let takeEventsFromNotificationServer = true;
 
-// if NotificationServer is available, we'll take that
-// otherwise we use the drizzle store contract event listeners here
 const subscribeToContractEvents = _store => {
 	store = _store;
 	defaultAccount = store.getState().fin4Store.defaultAccount;
-	if (notificationServerIsActive()) {
+
+	// TODO
+
+	/*if (notificationServerIsActive()) {
 		console.log('Subscribing to contract events via the notification server');
 		subscribeToContractEventsViaNotificationServer(defaultAccount);
 	} else {
 		console.log('Subscribing to contract events via the drizzle store contract event listeners');
 		takeEventsFromNotificationServer = false;
-	}
+	}*/
 };
 
-const handleContractEvent = (viaNotificationServer, eventName, values) => {
-	if (!viaNotificationServer && takeEventsFromNotificationServer) {
+const handleContractEvent = (eventName, values) => {
+	/*if (!viaNotificationServer && takeEventsFromNotificationServer) {
 		return; // ignore drizzle store events when we are listening to notification server
 	}
-	// let display = `${contractName}: ${eventName}`;
+	let display = `${contractName}: ${eventName}`;*/
 	let display = contractEventHandlers[eventName](values);
 	if (display) {
-		let eventSource = viaNotificationServer ? 'notification server' : 'drizzle store subscription';
-		console.log('Received ' + eventName + ' contract event via ' + eventSource, values);
+		// let eventSource = viaNotificationServer ? 'notification server' : 'drizzle store subscription';
+		// console.log('Received ' + eventName + ' contract event via ' + eventSource, values);
 		if (display !== 'no-notification') {
 			toast.success(display, { position: toast.POSITION.TOP_RIGHT });
 		}
