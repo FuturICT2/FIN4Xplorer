@@ -1,6 +1,6 @@
 import { getNetworkName } from '../components/utils';
 import { Fin4MainAddress } from '../config/deployment-info.js';
-import { contractEventList } from './ContractEventHandler';
+import { contractEventList, handleContractEvent } from './ContractEventHandler';
 const { ethers } = require('ethers');
 const config = require('../config/config.json');
 
@@ -46,10 +46,41 @@ const subscribeToContractEventsViaEthersjsListeners = defaultAccount => {
 			let contractName = entry[0];
 			let eventName = entry[1];
 			contracts[contractName].on(eventName, (...args) => {
-				// TODO
+				let values = extractValues(contractName, args);
+				console.log('Received ' + eventName + ' Event from ' + contractName + ' contract', values);
+				handleContractEvent(eventName, values);
 			});
 		});
 	});
+};
+
+const extractValues = (contractName, args) => {
+	/*
+	Rearranging the contract event data like this seems necessary
+	because it arrives as a mix of array and object:
+
+	0: 0x...
+	1: 1
+	tokenAddr: 0x...
+	claimId: 1
+
+	When I sent this to the frontend or use JSON.stringify(), it keeps
+	only the array-part and the keys are lost. I want to pass them though.
+	*/
+	let raw = args.pop().args;
+	let values = {};
+	Object.keys(raw).map(key => {
+		if (isNaN(key)) {
+			// keep it only if the key is not a number
+			let value = raw[key];
+			if (value._isBigNumber) {
+				value = value.toString();
+			}
+			values[key] = value;
+		}
+	});
+	values['contractName'] = contractName;
+	return values;
 };
 
 export { subscribeToContractEventsViaEthersjsListeners };
