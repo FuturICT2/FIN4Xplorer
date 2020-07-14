@@ -6,17 +6,17 @@ import { subscribeToContractEventsViaEthersjsListeners } from './EthersjsListene
 const BN = require('bignumber.js');
 
 let contractEventList = [
-	'Fin4TokenCreated',
-	'ClaimSubmitted',
-	'ClaimApproved',
-	'ClaimRejected',
-	'UpdatedTotalSupply',
-	'VerifierPending',
-	'VerifierApproved',
-	'VerifierRejected',
-	'NewMessage',
-	'MessageMarkedAsRead',
-	'SubmissionAdded'
+	['Fin4TokenManagement', 'Fin4TokenCreated'],
+	['Fin4Claiming', 'ClaimSubmitted'],
+	['Fin4Claiming', 'ClaimApproved'],
+	['Fin4Claiming', 'ClaimRejected'],
+	['Fin4Claiming', 'UpdatedTotalSupply'],
+	['Fin4Claiming', 'VerifierPending'],
+	['Fin4Claiming', 'VerifierApproved'],
+	['Fin4Claiming', 'VerifierRejected'],
+	['Fin4Messaging', 'NewMessage'],
+	['Fin4Messaging', 'MessageMarkedAsRead'],
+	['Fin4Verifying', 'SubmissionAdded']
 ];
 
 let defaultAccount;
