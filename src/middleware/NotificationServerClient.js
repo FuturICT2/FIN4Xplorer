@@ -27,7 +27,8 @@ const subscribeToContractEventsViaNotificationServer = defaultAccount => {
 		);
 		socket.emit('register', defaultAccount);
 	});
-	contractEventList.map(eventName => {
+	contractEventList.map(entry => {
+		let eventName = entry[1];
 		socket.on(eventName, values => {
 			handleContractEvent(true, eventName, values);
 		});
