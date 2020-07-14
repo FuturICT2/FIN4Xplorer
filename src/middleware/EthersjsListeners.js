@@ -4,6 +4,14 @@ import { contractEventList, handleContractEvent } from './ContractEventHandler';
 const { ethers } = require('ethers');
 const config = require('../config/config.json');
 
+const serverLaunchTime = Date.now();
+const blockedTimeAfterLaunch = 5; // seconds
+// when subscribing with ethers.js, sometimes contract events from BEFORE subscribing are
+// fired immediately, the initial block-period is to avoid sending out notifications for these
+const inBlockedPhase = () => {
+	return (Date.now() - serverLaunchTime) / 1000 < blockedTimeAfterLaunch;
+};
+
 const subscribeToContractEventsViaEthersjsListeners = defaultAccount => {
 	let provider;
 	if (config.INFURA_API_KEY && getNetworkName() === 'Rinkeby') {
@@ -46,6 +54,9 @@ const subscribeToContractEventsViaEthersjsListeners = defaultAccount => {
 			let contractName = entry[0];
 			let eventName = entry[1];
 			contracts[contractName].on(eventName, (...args) => {
+				if (inBlockedPhase()) {
+					return;
+				}
 				let values = extractValues(contractName, args);
 				console.log('Received ' + eventName + ' Event from ' + contractName + ' contract', values);
 				handleContractEvent(eventName, values);
