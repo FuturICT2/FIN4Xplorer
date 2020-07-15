@@ -119,9 +119,13 @@ function PreviousClaims(props) {
 						if (!filterModes[status]) {
 							return;
 						}
-						let token = props.store.getState().fin4Store.fin4Tokens[claim.token];
+						let token = props.fin4Tokens[claim.token];
+						if (!token) {
+							// can happen in some race condition cases
+							return;
+						}
 						let date = moment.unix(claim.claimCreationTime).calendar();
-						let symbol = props.fin4Tokens[claim.token].symbol; // of token that gets claimed
+						let symbol = token.symbol; // of token that gets claimed
 						let proofSite = '/claim/' + symbol + '/proof/' + claim.claimId;
 						return (
 							<Claim status={status} key={`${claim.token}${claim.claimId}`}>
