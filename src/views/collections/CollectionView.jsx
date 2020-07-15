@@ -68,7 +68,10 @@ function CollectionView(props, context) {
 			{collection && (
 				<Box title={t('collections.view.tokens-list-box-title')}>
 					<SortableTokenList
-						tokens={collection.tokens.map(tokenAddr => props.fin4Tokens[tokenAddr])}
+						// The filter for null is necessary to avoid race conditions:
+						// When reloading the collection view, it's very possible that collections are loaded
+						// before tokens are, in that case this passes an array of nulls to <SortableTokenList>
+						tokens={collection.tokens.map(tokenAddr => props.fin4Tokens[tokenAddr]).filter(token => token != null)}
 						showFilterAndSortOptions={false}
 					/>
 				</Box>
