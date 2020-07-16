@@ -8,9 +8,7 @@ import ipfs from '../../../config/ipfs';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/Check';
 import { isValidPublicAddress } from '../../../components/Contractor';
-import { getImageDimensions, fileToBase64 } from '../../../components/utils';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
 import UploadIcon from '@material-ui/icons/CloudUpload';
 import { Link } from 'react-router-dom';
 const Jimp = require('jimp');
@@ -109,15 +107,6 @@ function PictureUploadComponent(props, context) {
 		// .then(result => {});
 	};
 
-	const reducedDimensions = () => {
-		let factor = Math.sqrt(maxPixels / original.pixels);
-		return {
-			factor: Math.round(factor * 100) / 100,
-			w: Math.round(original.width * factor),
-			h: Math.round(original.height * factor)
-		};
-	};
-
 	const upload = () => {
 		// uploadToIPFS(uri);
 		if (reduceImageSize) {
@@ -185,7 +174,7 @@ function PictureUploadComponent(props, context) {
 								<img src={original.previewBase64} />
 							</>
 						)}
-						{original.pixels > maxPixels && (
+						{original.size > maxSizeInKB && (
 							<>
 								<br />
 								<FormControlLabel
@@ -199,18 +188,9 @@ function PictureUploadComponent(props, context) {
 										/>
 									}
 									label={
-										<Tooltip
-											title={t('proof-submission.custom-component.picture-upload.reduce-image-size-tooltip', {
-												triggerDimensions: '1024x768=786432',
-												originalDimensions: original.width + 'x' + original.height + '=' + original.pixels,
-												reductionFactor: '(786432/' + original.pixels + ')^0.5=' + reducedDimensions().factor,
-												reducedDimensions: reducedDimensions().w + 'x' + reducedDimensions().h,
-												compressionRate: compressionRate
-											})}>
-											<span style={{ fontSize: 'small' }}>
-												{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox')}
-											</span>
-										</Tooltip>
+										<span style={{ fontSize: 'small' }}>
+											{t('proof-submission.custom-component.picture-upload.reduce-image-size-checkbox')}
+										</span>
 									}
 								/>
 							</>

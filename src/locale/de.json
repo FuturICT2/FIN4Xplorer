@@ -107,7 +107,6 @@
 				"qr-reader-label": "Öffentliche Adresse des Bildgenhmigers",
 				"upload-complete": "Hochladung komplett",
 				"reduce-image-size-checkbox": "Reduziere die Bildgröße",
-				"reduce-image-size-tooltip": "Die Anzahl Pixel aber dieser Vorschlag ausgelöst wird is {{triggerDimensions}}. Dein Bild hat {{originalDimensions}} Pixel. Daraus ergibt sich ein Reduktionsfaktor von {{reductionFactor}} mit neuen Dimensionen von {{reducedDimensions}}. Die JPG Komprimierungsrate ist {{compressionRate}}.",
 				"upload-button": "Hochladen"
 			},
 			"vote": {

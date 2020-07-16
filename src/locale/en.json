@@ -143,7 +143,6 @@
 				"uploading": "Uploading...",
 				"upload-complete": "Upload complete",
 				"reduce-image-size-checkbox": "Reduce image size",
-				"reduce-image-size-tooltip": "The numbers of pixel for when this suggestion is triggered is {{triggerDimensions}}. Your image has {{originalDimensions}} pixels. Therefore the reduction factor is {{reductionFactor}}, resulting in new dimensions of {{reducedDimensions}}. The JPEG compression rate is set to {{compressionRate}}.",
 				"upload-button": "Upload"
 			},
 			"vote": {
