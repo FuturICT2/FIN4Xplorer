@@ -22,7 +22,6 @@ function PictureUploadComponent(props, context) {
 	const [ipfsHash, setIpfsHash] = useState(null);
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
-	const maxPixels = 786432; // 1024 * 768, threshold that triggers the recommendation to reduce file size
 	const maxSizeInKB = 500000;
 	const compressionRate = 85; // JPEG compression rate, 100 would be not compressed
 	const previewWidth = 300;
@@ -32,7 +31,6 @@ function PictureUploadComponent(props, context) {
 		previewBase64: null,
 		width: null,
 		height: null,
-		pixels: null,
 		size: null
 	});
 
@@ -60,10 +58,9 @@ function PictureUploadComponent(props, context) {
 							previewBase64: src,
 							width: w,
 							height: h,
-							pixels: w * h,
 							size: file.size
 						});
-						if (w * h > maxPixels || file.size > maxSizeInKB) {
+						if (file.size > maxSizeInKB) {
 							setReduceImageSize(true);
 						}
 					});
