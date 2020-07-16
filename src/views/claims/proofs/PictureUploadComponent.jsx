@@ -11,6 +11,7 @@ import { isValidPublicAddress } from '../../../components/Contractor';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import UploadIcon from '@material-ui/icons/CloudUpload';
 import { Link } from 'react-router-dom';
+import { isMobileDevice } from '../../../components/utils';
 const Jimp = require('jimp');
 
 function PictureUploadComponent(props, context) {
@@ -175,26 +176,36 @@ function PictureUploadComponent(props, context) {
 						</tbody>
 					</table>
 				) : ipfsHash ? (
-					<Link
-						to="#"
-						onClick={() => {
-							window.open('https://gateway.ipfs.io/ipfs/' + ipfsHash, '_blank');
-						}}
-						style={{ textDecoration: 'none' }}>
-						<table>
-							<tbody>
-								<tr>
-									<td>
-										<CheckIcon />
-									</td>
-									<td>
-										{t('proof-submission.custom-component.picture-upload.upload-complete')}
-										<small>{' (' + uploadSize.current + ' KB)'}</small>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</Link>
+					<>
+						<Link
+							to="#"
+							onClick={() => {
+								// if users on mobile click on this it opens in this tab and when they come back its lost
+								if (!isMobileDevice()) {
+									window.open('https://gateway.ipfs.io/ipfs/' + ipfsHash, '_blank');
+								}
+							}}
+							style={{ textDecoration: 'none' }}>
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<CheckIcon />
+										</td>
+										<td>
+											{t('proof-submission.custom-component.picture-upload.upload-complete')}
+											<small>{' (' + uploadSize.current + ' KB)'}</small>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</Link>
+						<div style={{ fontSize: 'x-small', color: 'gray' }}>
+							https://gateway.ipfs.io/ipfs/
+							<br />
+							<b>{ipfsHash}</b>
+						</div>
+					</>
 				) : (
 					<>
 						<input type="file" onChange={onImageSelected} accept="image/png, image/jpeg" />
