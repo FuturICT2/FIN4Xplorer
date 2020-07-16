@@ -27,7 +27,7 @@ function PictureUploadComponent(props, context) {
 	const previewWidth = 300;
 
 	const [original, setOriginal] = useState({
-		fileName: null,
+		type: null,
 		fileReaderResult: null,
 		previewBase64: null,
 		width: null,
@@ -48,6 +48,7 @@ function PictureUploadComponent(props, context) {
 		fileReader.addEventListener('load', e => {
 			Jimp.read(fileReader.result)
 				.then(img => {
+					let type = img._originalMime;
 					let w = img.bitmap.width;
 					let h = img.bitmap.height;
 					img.resize(previewWidth, (previewWidth / w) * h).getBase64(Jimp.MIME_JPEG, (err, src) => {
@@ -55,7 +56,7 @@ function PictureUploadComponent(props, context) {
 							console.error(err);
 						}
 						setOriginal({
-							fileName: file.name,
+							type: type,
 							fileReaderResult: fileReader.result,
 							previewBase64: src,
 							width: w,
@@ -123,11 +124,13 @@ function PictureUploadComponent(props, context) {
 	const upload = () => {
 		Jimp.read(original.fileReaderResult)
 			.then(img => {
+				let type = original.type;
 				if (reduceImageSize) {
 					let dim = reducedDimensions();
 					img.resize(dim.w, dim.h).quality(reducedQuality);
+					type = Jimp.MIME_JPEG;
 				}
-				img.getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+				img.getBuffer(type, (err, buffer) => {
 					uploadToIPFS(buffer);
 				});
 			})
