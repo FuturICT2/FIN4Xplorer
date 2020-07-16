@@ -8,12 +8,12 @@ import ipfs from '../../../config/ipfs';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/Check';
 import { isValidPublicAddress } from '../../../components/Contractor';
-import Resizer from 'react-image-file-resizer';
 import { getImageDimensions, fileToBase64 } from '../../../components/utils';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import UploadIcon from '@material-ui/icons/CloudUpload';
 import { Link } from 'react-router-dom';
+const Jimp = require('jimp');
 
 function PictureUploadComponent(props, context) {
 	const { t } = useTranslation();
@@ -23,18 +23,17 @@ function PictureUploadComponent(props, context) {
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
 	const maxPixels = 786432; // 1024 * 768, threshold that triggers the recommendation to reduce file size
+	const maxSizeInKB = 500000;
 	const compressionRate = 85; // JPEG compression rate, 100 would be not compressed
+	const previewWidth = 300;
 
 	const [original, setOriginal] = useState({
-		fileObject: null,
+		fileReaderResult: null,
+		previewBase64: null,
 		width: null,
 		height: null,
-		pixels: null
-	});
-
-	const [processedImageData, setProcessedImageData] = useState({
-		previewBase64: null,
-		uploadBase64: null
+		pixels: null,
+		size: null
 	});
 
 	const [reduceImageSize, setReduceImageSize] = useState(false);
@@ -45,35 +44,35 @@ function PictureUploadComponent(props, context) {
 			return;
 		}
 
-		// store preview
-		Resizer.imageFileResizer(
-			file,
-			300,
-			300,
-			'JPEG',
-			compressionRate,
-			0,
-			uri => {
-				setProcessedImageData({
-					...processedImageData,
-					previewBase64: uri
+		const fileReader = new FileReader();
+		// via https://github.com/oliver-moran/jimp/issues/286#issue-233572780
+		fileReader.addEventListener('load', e => {
+			Jimp.read(fileReader.result)
+				.then(img => {
+					let w = img.bitmap.width;
+					let h = img.bitmap.height;
+					img.resize(previewWidth, (previewWidth / w) * h).getBase64(Jimp.MIME_JPEG, (err, src) => {
+						if (err) {
+							console.error(err);
+						}
+						setOriginal({
+							fileReaderResult: fileReader.result,
+							previewBase64: src,
+							width: w,
+							height: h,
+							pixels: w * h,
+							size: file.size
+						});
+						if (w * h > maxPixels || file.size > maxSizeInKB) {
+							setReduceImageSize(true);
+						}
+					});
+				})
+				.catch(err => {
+					console.error(err);
 				});
-			},
-			'base64'
-		);
-
-		getImageDimensions(file, (w, h) => {
-			setOriginal({
-				fileObject: file,
-				width: w,
-				height: h,
-				pixels: w * h
-			});
-			if (w * h > maxPixels) {
-				// TODO also detect by large filesize? PNGs with small dimensions could still be large
-				setReduceImageSize(true);
-			}
 		});
+		fileReader.readAsArrayBuffer(file);
 	};
 
 	const uploadToIPFS = data => {
@@ -123,37 +122,17 @@ function PictureUploadComponent(props, context) {
 	};
 
 	const upload = () => {
+		// uploadToIPFS(uri);
 		if (reduceImageSize) {
-			Resizer.imageFileResizer(
-				original.fileObject,
-				reducedDimensions().w,
-				reducedDimensions().h,
-				'JPEG',
-				compressionRate,
-				0,
-				uri => {
-					setProcessedImageData({
-						...processedImageData,
-						uploadBase64: uri
-					});
-					uploadToIPFS(uri);
-				},
-				'base64'
-			);
+			// TODO
 		} else {
-			fileToBase64(original.fileObject).then(uri => {
-				setProcessedImageData({
-					...processedImageData,
-					uploadBase64: uri
-				});
-				uploadToIPFS(uri);
-			});
+			// TODO
 		}
 	};
 
 	const downloadUploadedImage = () => {
 		let a = document.createElement('a');
-		a.href = processedImageData.uploadBase64;
+		// a.href = processedImageData.uploadBase64;
 		let fileName = original.fileObject.name;
 		// this will fail for files without extension
 		let extension = fileName.split('.')[fileName.split('.').length - 1];
@@ -202,11 +181,11 @@ function PictureUploadComponent(props, context) {
 				) : (
 					<>
 						<input type="file" onChange={onImageSelected} accept="image/png, image/jpeg" />
-						{processedImageData.previewBase64 && (
+						{original.previewBase64 && (
 							<>
 								<br />
 								<br />
-								<img src={processedImageData.previewBase64} />
+								<img src={original.previewBase64} />
 							</>
 						)}
 						{original.pixels > maxPixels && (
