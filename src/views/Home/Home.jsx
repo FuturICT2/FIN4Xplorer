@@ -9,8 +9,6 @@ import MessageIcon from '@material-ui/icons/Message';
 import EmailIcon from '@material-ui/icons/Email';
 import StarIcon from '@material-ui/icons/Star';
 import TokenBalances from '../../components/TokenBalances';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import SettingsIcon from '@material-ui/icons/SettingsOutlined';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import BuildIcon from '@material-ui/icons/Build';
@@ -19,7 +17,6 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import SendIcon from '@material-ui/icons/Send';
 import ConvertIcon from '@material-ui/icons/SwapHoriz';
 import DepositIcon from '@material-ui/icons/SaveAlt';
-import QRModal from '../../components/QRModal';
 import { buildIconLabelLink, buildIconLabelCallback, TCRactive, UnderlyingsActive } from '../../components/utils';
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
@@ -41,11 +38,6 @@ function Home(props, context) {
 	const { t } = useTranslation();
 
 	const [faucetRequestPending, setFaucetRequestPending] = useState(false);
-	const [iconIsHovered, setIconHovered] = useState(false);
-	const [isQRModalOpen, setQRModalOpen] = useState(false);
-	const toggleQRModal = () => {
-		setQRModalOpen(!isQRModalOpen);
-	};
 
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
@@ -106,20 +98,10 @@ function Home(props, context) {
 						{!window.web3 ? (
 							t('home.on-the-blockchain.info-not-yet-available')
 						) : (
-							<>
-								<AddressDisplayWithCopy address={props.defaultAccount} />
-								<FontAwesomeIcon
-									style={iconIsHovered ? styles.QRiconHover : styles.QRicon}
-									icon={faQrcode}
-									onClick={toggleQRModal}
-									onMouseEnter={() => setIconHovered(true)}
-									onMouseLeave={() => setIconHovered(false)}
-								/>
-							</>
+							<AddressDisplayWithCopy address={props.defaultAccount} />
 						)}
 					</span>
 				</p>
-				<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 				<div style={{ fontFamily: 'arial' }}>
 					{t('home.on-the-blockchain.users-balance') + ': '}
 					{props.usersEthBalance === null
