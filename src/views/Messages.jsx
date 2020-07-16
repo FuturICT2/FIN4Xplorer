@@ -91,7 +91,7 @@ function Messages(props, context) {
 		}
 	};
 
-	const downloadImage = ipfsHash => {
+	/*const downloadImage = ipfsHash => {
 		// make it work via ipfs.get() instead?
 		fetch('https://gateway.ipfs.io/ipfs/' + ipfsHash).then(response =>
 			response.text().then(base64 => {
@@ -109,7 +109,7 @@ function Messages(props, context) {
 				a.click();
 			})
 		);
-	};
+	};*/
 
 	return (
 		<Container>
@@ -142,7 +142,10 @@ function Messages(props, context) {
 												{msg.attachment &&
 												msg.attachment.length > 0 &&
 												msg.verifierContractName !== 'Networking' && ( // TODO generic solution!
-														<Button center="true" icon={Photo} onClick={() => downloadImage(msg.attachment)}>
+														<Button
+															center="true"
+															icon={Photo}
+															onClick={() => window.open('https://gateway.ipfs.io/ipfs/' + msg.attachment, '_blank')}>
 															{t('messages.click-to-see-image')}
 														</Button>
 													)}
