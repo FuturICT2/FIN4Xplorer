@@ -18,13 +18,16 @@ function PictureUploadComponent(props, context) {
 
 	const addressValue = useRef(null);
 	const [ipfsHash, setIpfsHash] = useState(null);
+	const uploadSize = useRef(null);
 	const [uploadInProgress, setUploadInProgress] = useState(false);
 
 	const maxSizeInKB = 500000;
-	const compressionRate = 85; // JPEG compression rate, 100 would be not compressed
+	const reducedQuality = 85;
+	const reducedPixels = 786432; // 1024 * 768
 	const previewWidth = 300;
 
 	const [original, setOriginal] = useState({
+		fileName: null,
 		fileReaderResult: null,
 		previewBase64: null,
 		width: null,
@@ -52,6 +55,7 @@ function PictureUploadComponent(props, context) {
 							console.error(err);
 						}
 						setOriginal({
+							fileName: file.name,
 							fileReaderResult: fileReader.result,
 							previewBase64: src,
 							width: w,
@@ -90,6 +94,7 @@ function PictureUploadComponent(props, context) {
 			console.log('Upload result: ', result);
 			let hash = result[0].hash;
 			let sizeKB = Math.round(result[0].size / 1000);
+			uploadSize.current = sizeKB;
 			setIpfsHash(hash);
 			setUploadInProgress(false);
 			console.log('Upload of ' + sizeKB + ' KB to IPFS successful: ' + hash, 'https://gateway.ipfs.io/ipfs/' + hash);
@@ -107,25 +112,40 @@ function PictureUploadComponent(props, context) {
 		// .then(result => {});
 	};
 
-	const upload = () => {
-		// uploadToIPFS(uri);
-		if (reduceImageSize) {
-			// TODO
-		} else {
-			// TODO
-		}
+	const reducedDimensions = () => {
+		let factor = Math.sqrt(reducedPixels / (original.width * original.height));
+		return {
+			w: Math.round(original.width * factor),
+			h: Math.round(original.height * factor)
+		};
 	};
 
-	const downloadUploadedImage = () => {
+	const upload = () => {
+		Jimp.read(original.fileReaderResult)
+			.then(img => {
+				if (reduceImageSize) {
+					let dim = reducedDimensions();
+					img.resize(dim.w, dim.h).quality(reducedQuality);
+				}
+				img.getBuffer(Jimp.MIME_JPEG, (err, buffer) => {
+					uploadToIPFS(buffer);
+				});
+			})
+			.catch(err => {
+				console.error(err);
+			});
+	};
+
+	/*const downloadUploadedImage = () => {
 		let a = document.createElement('a');
 		// a.href = processedImageData.uploadBase64;
-		let fileName = original.fileObject.name;
+		let fileName = original.fileName;
 		// this will fail for files without extension
 		let extension = fileName.split('.')[fileName.split('.').length - 1];
 		let fileNameWithoutExtension = fileName.substring(0, fileName.length - extension.length - 1);
 		a.download = fileNameWithoutExtension + '_uploaded.' + extension;
 		a.click();
-	};
+	};*/
 
 	return (
 		<>
@@ -152,14 +172,22 @@ function PictureUploadComponent(props, context) {
 						</tbody>
 					</table>
 				) : ipfsHash ? (
-					<Link to="#" onClick={downloadUploadedImage} style={{ textDecoration: 'none' }}>
+					<Link
+						to="#"
+						onClick={() => {
+							window.open('https://gateway.ipfs.io/ipfs/' + ipfsHash, '_blank');
+						}}
+						style={{ textDecoration: 'none' }}>
 						<table>
 							<tbody>
 								<tr>
 									<td>
 										<CheckIcon />
 									</td>
-									<td>{t('proof-submission.custom-component.picture-upload.upload-complete')}</td>
+									<td>
+										{t('proof-submission.custom-component.picture-upload.upload-complete')}
+										<small>{' (' + uploadSize.current + ' KB)'}</small>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -198,7 +226,7 @@ function PictureUploadComponent(props, context) {
 					</>
 				)}
 			</center>
-			{original.fileObject && !uploadInProgress && !ipfsHash ? (
+			{original.fileReaderResult && !uploadInProgress && !ipfsHash ? (
 				<center style={{ fontFamily: 'arial' }}>
 					<Link to="#" onClick={upload} style={{ textDecoration: 'none' }}>
 						<table>
