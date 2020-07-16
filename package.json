@@ -30,6 +30,7 @@
 		"react": "^16.8.6",
 		"react-addons-update": "^15.6.2",
 		"react-copy-to-clipboard": "^5.0.2",
+		"react-device-detect": "^1.13.1",
 		"react-dom": "^16.8.6",
 		"react-i18next": "^10.13.1",
 		"react-image-file-resizer": "^0.3.1",

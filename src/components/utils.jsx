@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import web3 from 'web3';
 import { networkName } from '../config/deployment-info.js';
+import { isMobile } from 'react-device-detect';
 const nanoid = require('nanoid');
 
 const TCRactive = false; // the other necessary switch is in migrations/3_deploy_tcr.js
@@ -180,7 +181,7 @@ const translationMarkdown = (i18nextReturnValue, replacingObjects) => {
 };
 
 const isMobileDevice = () => {
-	return window.innerWidth < 400;
+	return isMobile; // window.innerWidth < 400;
 };
 
 const getImageDimensions = (fileObject, callback) => {
