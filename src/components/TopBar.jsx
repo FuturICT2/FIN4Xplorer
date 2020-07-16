@@ -167,20 +167,22 @@ function TopBar(props) {
 							right: '10px',
 							top: '28px'
 						}}>
-						<Badge
-							onClick={() => {
-								setTimeNow(Date.now());
-								togglePendingTxModal();
-							}}
-							anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-							badgeContent={getPendingTransactions().length}
-							color="secondary">
-							{getPendingTransactions().length === 0 ? (
-								<HourglassEmptyIcon className={classes.transactionsIcon} />
-							) : (
-								<HourglassFullIcon className={classes.transactionsIcon} />
-							)}
-						</Badge>
+						{!isMobileDevice() && (
+							<Badge
+								onClick={() => {
+									setTimeNow(Date.now());
+									togglePendingTxModal();
+								}}
+								anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+								badgeContent={getPendingTransactions().length}
+								color="secondary">
+								{getPendingTransactions().length === 0 ? (
+									<HourglassEmptyIcon className={classes.transactionsIcon} />
+								) : (
+									<HourglassFullIcon className={classes.transactionsIcon} />
+								)}
+							</Badge>
+						)}
 						<FontAwesomeIcon className={classes.QRicon} icon={faQrcode} onClick={toggleQRModal} />
 						<RefreshIcon onClick={() => window.location.reload()} />
 						<Link to={'/messages'}>
