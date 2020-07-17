@@ -17,7 +17,7 @@ import Container from '../components/Container';
 function Messages(props, context) {
 	const { t } = useTranslation();
 
-	const [attachedMessage, setAttachedMessage] = useState('');
+	const [attachedMessages, setAttachedMessages] = useState({});
 
 	useEffect(() => {
 		// missing messageType = indicator that this is only a message stub
@@ -38,14 +38,14 @@ function Messages(props, context) {
 			});
 	});
 
-	const approveRequest = (verifierContractName, pendingRequestId) => {
+	const approveRequest = (messageId, verifierContractName, pendingRequestId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
 			verifierContractName,
 			'receiveApproval',
-			[pendingRequestId, attachedMessage],
+			[pendingRequestId, attachedMessages[messageId]],
 			'Approve approval request'
 			/*{
 				transactionSent: () => setTxPending(true), // needs to be message specific statuses: e.g. undecided/pending/decided for each
@@ -56,14 +56,14 @@ function Messages(props, context) {
 		);
 	};
 
-	const rejectRequest = (verifierContractName, pendingRequestId) => {
+	const rejectRequest = (messageId, verifierContractName, pendingRequestId) => {
 		contractCall(
 			context,
 			props,
 			props.defaultAccount,
 			verifierContractName,
 			'receiveRejection',
-			[pendingRequestId, attachedMessage],
+			[pendingRequestId, attachedMessages[messageId]],
 			'Reject approval request'
 		);
 	};
@@ -110,6 +110,13 @@ function Messages(props, context) {
 			})
 		);
 	};*/
+
+	const updateVal = (messageId, msg) => {
+		setAttachedMessages({
+			...attachedMessages,
+			[messageId]: msg
+		});
+	};
 
 	return (
 		<Container>
@@ -161,8 +168,8 @@ function Messages(props, context) {
 													key="approve-reject-message"
 													type="text"
 													label={t('messages.attach-message-optional')}
-													value={attachedMessage}
-													onChange={e => setAttachedMessage(e.target.value)}
+													value={attachedMessages[msg.messageId] ? attachedMessages[msg.messageId] : ''}
+													onChange={e => updateVal(msg.messageId, e.target.value)}
 													style={inputFieldStyle}
 												/>
 												<center>
@@ -170,7 +177,9 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbUpIcon}
-															onClick={() => approveRequest(msg.verifierContractName, msg.pendingRequestId)}>
+															onClick={() =>
+																approveRequest(msg.messageId, msg.verifierContractName, msg.pendingRequestId)
+															}>
 															{t('messages.approve-button')}
 														</Button>
 													</span>
@@ -179,7 +188,9 @@ function Messages(props, context) {
 														<Button
 															color="inherit"
 															icon={ThumbDownIcon}
-															onClick={() => rejectRequest(msg.verifierContractName, msg.pendingRequestId)}>
+															onClick={() =>
+																rejectRequest(msg.messageId, msg.verifierContractName, msg.pendingRequestId)
+															}>
 															{t('messages.reject-button')}
 														</Button>
 													</span>
