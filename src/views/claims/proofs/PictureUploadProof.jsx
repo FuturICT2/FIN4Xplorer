@@ -15,13 +15,15 @@ function PictureUploadProof(props, context) {
 		} else {
 			values = [props.tokenAddr, props.claimId, ipfsHash];
 		}
+		// TODO post-merge use values once two picture verifier contracts are set up again
+
 		contractCall(
 			context,
 			props,
 			props.store.getState().fin4Store.defaultAccount,
-			props.contractName,
+			'Fin4Verifying',
 			'submitProof_' + props.contractName,
-			values,
+			[props.tokenAddr, props.claimId, props.contractName, approverAddress, ipfsHash],
 			'Submit ' + props.contractName + ' proof',
 			props.callbacks
 		);

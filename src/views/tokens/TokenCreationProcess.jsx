@@ -14,8 +14,8 @@ import StepIdentity from './creationProcess/Step1Identity';
 import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
-import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
-import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
+import StepSearchVerifier from './creationProcess/Step5SearchVerifier';
+import StepUnderlying from './creationProcess/Step6Underlying';
 import StepSourcerers from './creationProcess/Step7Sourcerers';
 import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -276,6 +276,13 @@ function TokenCreationProcess(props, context) {
 			if (latLonStr.split('/').length !== 2) {
 				// also check for other possibly wrong cases?
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
+			}
+		}
+		if (draft.interactiveVerifiers.Password) {
+			let pass = draft.interactiveVerifiers.Password.parameters['password'];
+			var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+			if (!pass.match(decimal)) {
+				return "The password you have chosen doesn't abide by the rules described";
 			}
 		}
 
@@ -558,14 +565,42 @@ function TokenCreationProcess(props, context) {
 			let groupsList = values[1] ? values[1].split(',').map(Number) : [];
 			values = [userList, groupsList];
 		}
+	};
+
+	// TODO post-merge: merge above and below method
+
+	const setParamsOnVerifierContract = (
+		defaultAccount,
+		contractName,
+		tokenAddr,
+		values,
+		tokenCreatorContract,
+		postCreationStepsArgs
+	) => {
+		// hackish, find a better way to handle this conversion? TODO
+		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+			let userList = values[0];
+			let groupsList = values[1];
+			console.log(userList);
+			console.log(groupsList);
+			if (userList != null && groupsList != null)
+				values = [userList.split(',').map(str => str.trim()), groupsList.split(',').map(Number)];
+			else if (userList != null) values = [userList.split(',').map(str => str.trim()), new Array('0')];
+			else if (groupsList != null)
+				values = [new Array('0x0000000000000000000000000000000000000000'), groupsList.split(',').map(Number)];
+		}
 		contractCall(
 			context,
 			props,
 			defaultAccount,
-			contractName,
+			contractName, // TODO post-merge
 			'setParameters',
 			[tokenAddr, ...values],
 			'Set parameter on ' + type + ': ' + contractName,
+			'Fin4Verifying',
+			'setParameters_' + contractName,
+			[tokenAddr, contractName, ...values],
+			'Set parameter on verifier type: ' + contractName,
 			{
 				transactionCompleted: () => {
 					transactionCounter.current++;
@@ -679,6 +714,8 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 1 && buildStepComponent(StepDesign)}
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
+
+							{/* TODO post-merge */}
 							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
 							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
 							{UnderlyingsActive && (
@@ -688,6 +725,11 @@ function TokenCreationProcess(props, context) {
 								</>
 							)}
 							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (
+							{activeStep === 4 && buildStepComponent(StepSearchVerifier)}
+							{/*{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}*/}
+							{/*{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}*/}
+							{activeStep === 5 && buildStepComponent(StepUnderlying)}
+							{activeStep === steps.length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>
 										{t('token-creator.navigation.all-steps-completed')}

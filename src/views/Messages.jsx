@@ -43,9 +43,9 @@ function Messages(props, context) {
 			context,
 			props,
 			props.defaultAccount,
-			verifierContractName,
-			'receiveApproval',
-			[pendingRequestId, attachedMessages[messageId]],
+			'Fin4Verifying',
+			'receiveApprovalFromSpecificAddress',
+			[verifierTypeName, pendingRequestId, attachedMessages[messageId]],
 			'Approve approval request'
 			/*{
 				transactionSent: () => setTxPending(true), // needs to be message specific statuses: e.g. undecided/pending/decided for each
@@ -61,9 +61,9 @@ function Messages(props, context) {
 			context,
 			props,
 			props.defaultAccount,
-			verifierContractName,
-			'receiveRejection',
-			[pendingRequestId, attachedMessages[messageId]],
+			'Fin4Verifying',
+			'receiveRejectionFromSpecificAddress',
+			[verifierTypeName, pendingRequestId, attachedMessages[messageId]],
 			'Reject approval request'
 		);
 	};

@@ -42,9 +42,9 @@ function LocationProof(props, context) {
 					context,
 					props,
 					defaultAccount,
-					'Location',
-					'submitProof_Location',
-					[props.tokenAddr, props.claimId, distanceToTokenCreatorsLocation],
+					'Fin4Verifying',
+					'submitProof_Location_Server',
+					[props.tokenAddr, props.claimId, 'Location', Math.round(latitude), Math.round(longitude)],
 					'Submit location proof',
 					props.callbacks
 				);
