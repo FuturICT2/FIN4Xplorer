@@ -5,7 +5,7 @@ import { networkName } from '../config/deployment-info.js';
 import { isMobile } from 'react-device-detect';
 const nanoid = require('nanoid');
 
-const TCRactive = true; // the other necessary switch is in migrations/3_deploy_tcr.js
+const TCRactive = false; // the other necessary switch is in migrations/3_deploy_tcr.js
 const UnderlyingsActive = true; // the other necessary switch is in migrations/2_deploy_contracts.js
 
 const Fin4Colors = {
