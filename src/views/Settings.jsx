@@ -89,7 +89,7 @@ function Settings(props, context) {
 											{translationMarkdown(t('settings.notification-server-info'), {
 												'link-obj': label => {
 													return (
-														<a href="https://notifications.finfour.net" target="_blank">
+														<a key="link-obj" href="https://notifications.finfour.net" target="_blank">
 															{label}
 														</a>
 													);
