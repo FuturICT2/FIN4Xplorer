@@ -155,9 +155,10 @@ function Home(props, context) {
 					<SendIcon />,
 					t('home.inbox.transfer-token-button'),
 					true,
-					UnderlyingsActive
+					false
+					// UnderlyingsActive
 				)}
-				{UnderlyingsActive && (
+				{false && UnderlyingsActive && (
 					<>
 						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, t('home.inbox.deposit-collateral-button'))}
 						{buildIconLabelLink(
