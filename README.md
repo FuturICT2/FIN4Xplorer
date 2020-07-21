@@ -80,13 +80,10 @@ npm start
 
 ### Production mode
 
+The `npm run build` command often crashes because of memory issues. If his happens, try running this before: `export NODE_OPTIONS=--max_old_space_size=1500` with the value being a bit less then you have available (check using the `free` command). Another thing to try is to modify `scripts.build` in `package.json` like so: `"react-scripts --max_old_space_size=4096 build"`. It can also help to close all other programs on your computer. If this doesn't work, try an older version of `react-scripts` or try building locally and then `scp`-ing the build folder onto the host machine. Note that it will package `deployment-info.js` as you have it locally, make sure it has the correct `Fin4Main address` in it. If you `scp` a locally built `build`-folder, there is no need to also `scp` the `src/build` folder with the contract ABIs as that is packed already.
+
 ```sh
-npm run build # if this fails with memory errors, try running this before: export NODE_OPTIONS=--max_old_space_size=1500
-              # where the value should be a bit less then what you have available (check with the 'free' command)
-              # if this doesn't help, try an older version of react-scripts or try building locally and then scp-ing the build
-              # folder onto the host machine. Note that it will package deployment-info.js as you have it locally, make sure
-              # it has the correct Fin4Main address in it. If you scp a locally built build-folder, there is no need to also
-              # scp the src/build folder with the contract ABIs as that is packed already.
+npm run build
 npm install -g serve
 serve -s build -l 3000 # default port would be 5000
 ```
