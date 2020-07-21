@@ -463,6 +463,7 @@
 		"box-title": "Settings",
 		"language": "Language",
 		"cookie-info": "We use cookies to store language preferences and token creation drafts.",
+		"notification-server-info": "Go to [notifications.finfour.net](link-obj) to subscribe to events via Email or Telegram.",
 		"system-parameters": {
 			"box-title": "System parameters",
 			"main-smart-contract-address": "Address of the Fin4Main smart contract"

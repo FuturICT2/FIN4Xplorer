@@ -9,6 +9,12 @@ import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
 import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
 import moment from 'moment';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import { translationMarkdown } from '../components/utils';
+let config = null;
+try {
+	config = require('../config/config.json');
+} catch (err) {}
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -69,6 +75,32 @@ function Settings(props, context) {
 					<br />
 					<br />
 					<small>{t('settings.cookie-info')}</small>
+					{config && config.NOTIFICATION_SERVER_URL && (
+						<>
+							<br />
+							<br />
+							<table>
+								<tbody>
+									<tr>
+										<td style={{ paddingRight: '10px' }}>
+											<NotificationsIcon />
+										</td>
+										<td>
+											{translationMarkdown(t('settings.notification-server-info'), {
+												'link-obj': label => {
+													return (
+														<a href="https://notifications.finfour.net" target="_blank">
+															{label}
+														</a>
+													);
+												}
+											})}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</>
+					)}
 				</div>
 			</Box>
 			<Box title={t('settings.system-parameters.box-title')}>
