@@ -45,7 +45,7 @@ function Messages(props, context) {
 			props.defaultAccount,
 			verifierContractName,
 			'receiveApproval',
-			[pendingRequestId, attachedMessages[messageId]],
+			[pendingRequestId, attachedMessages[messageId] ? attachedMessages[messageId] : ''],
 			'Approve approval request'
 			/*{
 				transactionSent: () => setTxPending(true), // needs to be message specific statuses: e.g. undecided/pending/decided for each
@@ -63,7 +63,7 @@ function Messages(props, context) {
 			props.defaultAccount,
 			verifierContractName,
 			'receiveRejection',
-			[pendingRequestId, attachedMessages[messageId]],
+			[pendingRequestId, attachedMessages[messageId] ? attachedMessages[messageId] : ''],
 			'Reject approval request'
 		);
 	};
