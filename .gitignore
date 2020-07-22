@@ -6,6 +6,7 @@ src/build/
 
 src/config/config.json
 src/config/deployment-info.js
+src/config/verifier-info.js
 
 package-lock.json
 
