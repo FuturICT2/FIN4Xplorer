@@ -724,7 +724,8 @@ function TokenCreationProcess(props, context) {
 									{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
 								</>
 							)}
-							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (
+							{/* TODO post-merge */}
+							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && <></>}
 							{activeStep === 4 && buildStepComponent(StepSearchVerifier)}
 							{/*{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}*/}
 							{/*{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}*/}
