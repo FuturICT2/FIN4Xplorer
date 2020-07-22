@@ -578,7 +578,7 @@ function TokenCreationProcess(props, context) {
 		postCreationStepsArgs
 	) => {
 		// hackish, find a better way to handle this conversion? TODO
-		if (contractName === 'Whitelisting' || contractName === 'Blacklisting') {
+		if (contractName === 'AllowOnlyThese' || contractName === 'BlockThese') {
 			let userList = values[0];
 			let groupsList = values[1];
 			console.log(userList);
