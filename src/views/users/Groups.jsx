@@ -173,7 +173,8 @@ function Groups(props, context) {
 						{groups
 							.filter(g => g.userIsMember)
 							.map((group, index) => {
-								return ( // TODO post-merge have to add "if (group.name !== '')" ? Because random voter groups? Don't get deleted?
+								return (
+									// TODO post-merge have to add "if (group.name !== '')" ? Because random voter groups? Don't get deleted?
 									<TableRow
 										key={'groupMember_' + index}
 										// TODO leave group option, checkbox if inform group owner about you leaving or not
@@ -202,23 +203,14 @@ function Groups(props, context) {
 															} else {
 																toggleLeaveGroupModal();
 															}
-															style={{ color: 'blue', textDecoration: 'underline' }}
-															onClick={() => {
-																leaveGroupValues.current.groupId = group.groupId;
-																if (group.userIsCreator) {
-																	removeUsersMembership(group.groupId);
-																} else {
-																	toggleLeaveGroupModal();
-																}
-															}}>
-															Leave group
-														</small>
-													</>
-												)
-											}}
-										/>
-									);
-								}
+														}}>
+														Leave group
+													</small>
+												</>
+											)
+										}}
+									/>
+								);
 							})}
 					</Table>
 				</Box>
