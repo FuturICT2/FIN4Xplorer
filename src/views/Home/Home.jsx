@@ -116,7 +116,7 @@ function Home(props, context) {
 			false
 		);
 		Promise.all(res).then(result => {
-			console.log(result[0]);
+			// console.log(result[0]);
 			setIsEligibleToBeAVoter(result[0]);
 		});
 	};
@@ -211,7 +211,8 @@ function Home(props, context) {
 				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
 				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'))} {/*true, false*/}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'))}{' '}
+				{/*true, false*/}
 				{isEligibleToBeAVoter ? (
 					<Link to={'#'} style={style}>
 						<div

@@ -91,6 +91,8 @@ function Token(props, context) {
 
 			let verifiers = details.requiredVerifierTypes.map(addr => props.verifierTypes[addr]);
 			let emptyVerifierBody = { parameters: {} };
+
+			// TODO post-merge no more split into 1 and 2
 			let verifiers1 = {};
 			verifiers.filter(v => v.isNoninteractive).map(v => (verifiers1[v.contractName] = emptyVerifierBody));
 			let verifiers2 = {};
