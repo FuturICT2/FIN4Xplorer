@@ -5,14 +5,12 @@ import colors from '../../config/colors-config';
 import { drizzleConnect } from 'drizzle-react';
 import { findTokenBySymbol, getContractData } from '../../components/Contractor';
 import Box from '../../components/Box';
-import AddIcon from '@material-ui/icons/Add';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
 import Button from '../../components/Button';
 import PictureUploadProof from './proofs/PictureUploadProof';
 import FileUploadProof from './proofs/FileUploadProof';
-import { Link } from 'react-router-dom';
 import ContractFormSimple from '../../components/ContractFormSimple';
 import {
 	abiTypeToTextfieldType,
@@ -179,7 +177,7 @@ function ProofSubmission(props, context) {
 				});
 				return (
 					<ContractFormSimple
-						contractName='Fin4Verifying'
+						contractName="Fin4Verifying"
 						contractMethod={'submitProof_' + verifierTypeName}
 						pendingTxStr={'Submit proof ' + verifierTypeName}
 						fields={fields}
