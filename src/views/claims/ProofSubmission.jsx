@@ -116,14 +116,6 @@ function ProofSubmission(props, context) {
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName={'LimitedVoting'}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierContractName: verifierContractName
-								};
-							}
-						}}
 					/>
 				);
 			case 'PictureVoting':
@@ -134,14 +126,6 @@ function ProofSubmission(props, context) {
 						claimId={claimId}
 						contractName={'PictureVoting'}
 						accept={'image/*'}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierContractName: verifierContractName
-								};
-							}
-						}}
 					/>
 				);
 			case 'VideoVoting':
@@ -152,14 +136,6 @@ function ProofSubmission(props, context) {
 						claimId={claimId}
 						contractName={'VideoVoting'}
 						accept={'video/*'}
-						callbacks={{
-							markVerifierPendingUponBroadcastedTransaction: () => {
-								return {
-									pseudoClaimId: pseudoClaimId,
-									verifierContractName: verifierContractName
-								};
-							}
-						}}
 					/>
 				);
 			/*case 'Networking':
