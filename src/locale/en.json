@@ -300,14 +300,14 @@
 				}
 			}
 		},
-		"step7-sourcerers": {
+		"step6-sourcerers": {
 			"title": "Sourcerers",
 			"settings": {
 				"allow-new-pairs": "Allow myself to add new sourcerer pairs with this one as PAT after token creation",
 				"allow-others-collateral-usage": "Allow others to create sourcerer pairs with this token as collateral"
 			}
 		},
-		"step8-underlyings": {
+		"step7-underlyings": {
 			"title": "External sources of value"
 		}
 	},
