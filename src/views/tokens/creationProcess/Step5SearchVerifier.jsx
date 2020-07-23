@@ -10,7 +10,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField, IconButton } from '@material-ui/core';
-import { findVerifierTypeAddressByName } from '../../../components/utils';
+import { findVerifierTypeAddressByContractName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
 function valuesToOptions(values) {
@@ -48,7 +48,9 @@ function StepSearchVerifier(props) {
 			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
 		setVerifiersAdded(
-			Object.keys(draft.noninteractiveVerifiers).map(name => findVerifierTypeAddressByName(props.verifierTypes, name))
+			Object.keys(draft.noninteractiveVerifiers).map(contractName =>
+				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
+			)
 		);
 		setDraftId(draft.id);
 	});
