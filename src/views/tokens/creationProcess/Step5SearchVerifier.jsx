@@ -43,12 +43,12 @@ function StepSearchVerifier(props) {
 			return;
 		}
 		let draft = props.draft;
-		verifiers.current = draft.noninteractiveVerifiers;
+		verifiers.current = draft.verifiers;
 		if (verifiers.current['Location']) {
 			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
 		setVerifiersAdded(
-			Object.keys(draft.noninteractiveVerifiers).map(contractName =>
+			Object.keys(draft.verifiers).map(contractName =>
 				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
 			)
 		);
@@ -60,7 +60,7 @@ function StepSearchVerifier(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'noninteractiveVerifiers',
+			nodeName: 'verifiers',
 			node: verifiers.current
 		});
 		props.handleNext();
@@ -68,14 +68,14 @@ function StepSearchVerifier(props) {
 
 	const addVerifier = addr => {
 		let verifier = props.verifierTypes[addr];
-		let name = verifier.label;
+		let contractName = verifier.contractName;
 
-		verifiers.current[name] = {
+		verifiers.current[contractName] = {
 			parameters: {}
 		};
 
 		if (verifier.paramsEncoded) {
-			verifiers.current[name].parameters = {};
+			verifiers.current[contractName].parameters = {};
 			verifier.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
 				verifiers.current[contractName].parameters[paramName] = null;
@@ -137,7 +137,7 @@ function StepSearchVerifier(props) {
 				let longitude = pos.coords.longitude;
 				let locStr = latitude + ' / ' + longitude;
 				console.log('Captured location ' + locStr);
-				verifiers.current[contractName].parameters[paramName] = locStr;
+				verifiers.current[verifierName].parameters[paramName] = locStr;
 				setLocVal(locStr);
 			});
 		} else {
@@ -182,6 +182,7 @@ function StepSearchVerifier(props) {
 				<div style={{ fontFamily: 'arial' }}>
 					{verifiersAdded.map((verifierAddress, index) => {
 						let verifier = props.verifierTypes[verifierAddress];
+						let contractName = verifier.contractName;
 						let name = verifier.label;
 						return (
 							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
@@ -194,14 +195,14 @@ function StepSearchVerifier(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title={t('token-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
+										title={t('token-creator.step5-verifiers.fields.remove-verifier-tooltip.label')}
 										onClick={() => removeVerifier(verifierAddress)}
 									/>
 									{verifier.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title={t('token-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
+											title={t('token-creator.step5-verifiers.fields.verifier-to-parameterize-tooltip.label')}
 										/>
 									)}
 								</div>
@@ -265,15 +266,17 @@ function StepSearchVerifier(props) {
 														multiline={isArray ? true : null}
 														rows={isArray ? 1 : null}
 														variant={isArray ? 'outlined' : 'standard'}
-														defaultValue={verifiers.current[name].parameters[paramName]}
-														onChange={e => (verifiers.current[name].parameters[paramName] = e.target.value)}
+														defaultValue={verifiers.current[contractName].parameters[paramName]}
+														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
-														inputProps={{
+
+														// TODO post-merge keep this?
+														/*inputProps={{
 															style: { fontSize: isArray ? 'small' : 'medium' }
 														}}
 														multiline={isArray ? true : null}
 														rows={isArray ? 1 : null}
-														variant={isArray ? 'outlined' : 'standard'}
+														variant={isArray ? 'outlined' : 'standard'}*/
 													/>
 												</span>
 											);

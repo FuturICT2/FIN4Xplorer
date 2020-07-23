@@ -281,8 +281,10 @@
 			},
 			"info": "Minting is the default way users earn balances on positive action tokens by submitting and prooving claims."
 		},
-		"step5-verifiers1": {
-			"title": "Noninteractive verifiers",
+		"step5-verifiers": {
+			"title": "Verifiers",
+			"info": "To obtain tokens, users need to prove to the system that they actually performed the action required. You can choose any combination of verifiers from the list. Please take your time to think precisely about any combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical for the users trying to obtain them, and practical for the token creators. The harder the proving is, the less users will try to obtain your token; the easier the proving is, the less perceived quality users will see in the token. In complex cases, you may want to experiment with different token designs at the same time. Finally, proving actions is a complex matter and we constantly work to improve the verifiying mechanisms.",
+			"listing-header": "In the following all available verifiers are listed",
 			"fields": {
 				"add-token-verifier": {
 					"label": "Add token verifier"
@@ -296,13 +298,7 @@
 				"verifier-to-parameterize-tooltip": {
 					"label": "Since this verifier has parameters to set, it will require an extra transaction when creating the token"
 				}
-			},
-			"info": "To obtain tokens, users need to prove to the system that they actually performed the action required. You can choose any combination of verifiers from the list. Please take your time to think precisely about any combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical for the users trying to obtain them, and practical for the token creators. The harder the proving is, the less users will try to obtain your token; the easier the proving is, the less perceived quality users will see in the token. In complex cases, you may want to experiment with different token designs at the same time. Finally, proving actions is a complex matter and we constantly work to improve the verifiying mechanisms.",
-			"listing-header": "In the following all available noninteractive verifiers are listed"
-		},
-		"step6-verifiers2": {
-			"title": "Interactive verifiers",
-			"listing-header": "In the following all available interactive verifiers are listed"
+			}
 		},
 		"step7-sourcerers": {
 			"title": "Sourcerers",
