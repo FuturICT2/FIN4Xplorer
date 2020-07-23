@@ -120,7 +120,7 @@ function ProofSubmission(props, context) {
 							markVerifierPendingUponBroadcastedTransaction: () => {
 								return {
 									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
+									verifierContractName: verifierContractName
 								};
 							}
 						}}
@@ -138,7 +138,7 @@ function ProofSubmission(props, context) {
 							markVerifierPendingUponBroadcastedTransaction: () => {
 								return {
 									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
+									verifierContractName: verifierContractName
 								};
 							}
 						}}
@@ -156,7 +156,7 @@ function ProofSubmission(props, context) {
 							markVerifierPendingUponBroadcastedTransaction: () => {
 								return {
 									pseudoClaimId: pseudoClaimId,
-									verifierTypeName: verifierTypeName
+									verifierContractName: verifierContractName
 								};
 							}
 						}}
@@ -170,7 +170,7 @@ function ProofSubmission(props, context) {
 				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			default:
 				const abi = require('../../build/contracts/Fin4Verifying').abi;
-				let contractMethod = 'submitProof_' + verifierTypeName;
+				let contractMethod = 'submitProof_' + verifierContractName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
 					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type, input.name)];
@@ -178,13 +178,13 @@ function ProofSubmission(props, context) {
 				return (
 					<ContractFormSimple
 						contractName="Fin4Verifying"
-						contractMethod={'submitProof_' + verifierTypeName}
-						pendingTxStr={'Submit proof ' + verifierTypeName}
+						contractMethod={'submitProof_' + verifierContractName}
+						pendingTxStr={'Submit proof ' + verifierContractName}
 						fields={fields}
 						fixValues={{
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
 							ClaimId: claimId + '',
-							VerifierName: verifierTypeName
+							VerifierName: verifierContractName
 						}}
 					/>
 				);
