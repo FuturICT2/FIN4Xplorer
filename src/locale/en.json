@@ -465,8 +465,7 @@
 		},
 		"verifiers": {
 			"box-title": "Verifier type addresses",
-			"parameters": "Parameters",
-			"is-non-interactive": "is non-interactive"
+			"parameters": "Parameters"
 		},
 		"sourcerer": {
 			"box-title": "Fin4 Sourcerer"

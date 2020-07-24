@@ -99,12 +99,6 @@ function Settings(props, context) {
 										<b>{t('settings.verifiers.parameters')}</b>: {verifierType.paramsEncoded}
 									</small>
 								)}
-								{verifierType.isNoninteractive && (
-									<small>
-										<br />
-										{t('settings.verifiers.is-non-interactive')}
-									</small>
-								)}
 								{index < Object.keys(props.verifierTypes).length - 1 && (
 									<Divider style={{ margin: '10px 0' }} variant="middle" />
 								)}
