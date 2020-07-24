@@ -89,14 +89,11 @@ function Token(props, context) {
 				minterRoles.pop();
 			}
 
-			let verifiers = details.requiredVerifierTypes.map(addr => props.verifierTypes[addr]);
+			// TODO this can be done nicer?
+			let verifiersWithoutParams = details.requiredVerifierTypes.map(addr => props.verifierTypes[addr]);
 			let emptyVerifierBody = { parameters: {} };
-
-			// TODO post-merge no more split into 1 and 2
-			let verifiers1 = {};
-			verifiers.filter(v => v.isNoninteractive).map(v => (verifiers1[v.contractName] = emptyVerifierBody));
-			let verifiers2 = {};
-			verifiers.filter(v => !v.isNoninteractive).map(v => (verifiers2[v.contractName] = emptyVerifierBody));
+			let verifiers = {};
+			verifiersWithoutParams.map(v => (verifiers[v.contractName] = emptyVerifierBody));
 
 			let draft = {
 				id: getRandomTokenCreationDraftID(),
@@ -128,8 +125,7 @@ function Token(props, context) {
 					fixedAmount: Number(details.fixedAmount),
 					unit: templateToken.unit
 				},
-				noninteractiveVerifiers: verifiers1,
-				interactiveVerifiers: verifiers2,
+				verifiers: verifiers,
 				sourcererPairs: [], // TODO
 				externalUnderlyings: [] // TODO
 			};
@@ -215,8 +211,7 @@ function Token(props, context) {
 				properties: {},
 				actions: {},
 				minting: {},
-				noninteractiveVerifiers: {},
-				interactiveVerifiers: {},
+				verifiers: {},
 				sourcererPairs: [],
 				externalUnderlyings: []
 			},
