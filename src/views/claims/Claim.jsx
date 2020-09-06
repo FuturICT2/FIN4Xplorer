@@ -8,7 +8,7 @@ import Dropdown from '../../components/Dropdown';
 import PreviousClaims from './PreviousClaims';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
-import { findTokenBySymbol } from '../../components/Contractor.jsx';
+import { findTokenBySymbol, contractCall } from '../../components/Contractor.jsx';
 import PropTypes from 'prop-types';
 import { getFormattedSelectOptions } from '../../components/utils';
 
@@ -29,14 +29,16 @@ function Claim(props, context) {
 			alert('Token must be selected');
 			return;
 		}
-		context.drizzle.contracts.Fin4Claiming.methods
-			.submitClaim(values.tokenAddress, values.quantity, values.comment)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Claiming',
+			'submitClaim',
+			[values.tokenAddress, values.quantity, values.comment],
+			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
+			{}
+		);
 	};
 
 	useEffect(() => {
@@ -55,7 +57,7 @@ function Claim(props, context) {
 	const updateSelectedOption = tokenAddr => {
 		updateVal('tokenAddress', tokenAddr);
 		let unit = props.fin4Tokens[tokenAddr].unit;
-		setUnit(unit.length > 0 ? unit : t('quantity'));
+		setUnit(unit.length > 0 ? unit : t('claims.default-unit'));
 	};
 
 	const updateVal = (key, val) => {
@@ -68,12 +70,12 @@ function Claim(props, context) {
 	return (
 		<Container>
 			<div>
-				<Box title={t('claim-tokens')}>
+				<Box title={t('claims.claim-tokens-box-title')}>
 					<Dropdown
 						key="token-dropdown"
 						onChange={e => updateSelectedOption(e.value)}
 						options={getFormattedSelectOptions(props.fin4Tokens)}
-						label={t('token-type')}
+						label={t('claims.tokens-dropdown')}
 						defaultValue={
 							tokenViaURL
 								? {
@@ -97,13 +99,13 @@ function Claim(props, context) {
 					<TextField
 						key="comment-field"
 						type="text"
-						label={t('comment')}
+						label={t('claims.comment')}
 						value={values.comment}
 						onChange={e => updateVal('comment', e.target.value)}
 						style={inputFieldStyle}
 					/>
 					<Button icon={AddIcon} onClick={submitClaim} center="true">
-						Submit
+						{t('claims.submit-button')}
 					</Button>
 				</Box>
 			</div>

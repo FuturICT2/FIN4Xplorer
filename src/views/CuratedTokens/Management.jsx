@@ -5,13 +5,13 @@ import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
-import ContractForm from '../../components/ContractForm';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { getContractData } from '../../components/Contractor';
+import { getContractData, contractCall } from '../../components/Contractor';
 import Container from '../../components/Container';
 import GovNavComponent from './GovNavComponent';
 import { TCRactive } from '../../components/utils';
+import ContractFormSimple from '../../components/ContractFormSimple';
 const BN = require('bignumber.js');
 
 function Management(props, context) {
@@ -38,12 +38,17 @@ function Management(props, context) {
 	};
 
 	const claimGOV = () => {
-		context.drizzle.contracts.Fin4Reputation.methods
-			.getGOVFromReputation()
-			.send({ from: props.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting GOV.approve: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'REP',
+			'getGOVFromReputation',
+			[],
+			'Claim GOV from REP',
+			{},
+			true // TODO why does dry-run fail?
+		);
 	};
 
 	const toggleDelegateModal = () => {
@@ -65,10 +70,10 @@ function Management(props, context) {
 							data={{
 								token: 'Reputation Token',
 								balance:
-									props.contracts.Fin4Reputation &&
-									props.contracts.Fin4Reputation.initialized &&
-									props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.Fin4Reputation.address] !== undefined
-										? props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.Fin4Reputation.address]
+									props.contracts.REP &&
+									props.contracts.REP.initialized &&
+									props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.REP.address] !== undefined
+										? props.usersFin4GovernanceTokenBalances[context.drizzle.contracts.REP.address]
 										: '?',
 								actions: <Button onClick={claimGOV}>Claim GOV</Button>
 							}}
@@ -109,15 +114,15 @@ function Management(props, context) {
 						handleClose={toggleDelegateModal}
 						title="Delegate GOV tokens"
 						width="400px">
-						<ContractForm
+						<ContractFormSimple
 							contractName="GOV"
-							method="delegate"
-							labels={['Delegator address', 'Amount']}
-							postSubmitCallback={(success, result) => {
-								if (!success) {
-									alert(result.message);
+							contractMethod="delegate"
+							pendingTxStr="Delegate GOV"
+							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
+							callbacks={{
+								transactionSent: () => {
+									toggleDelegateModal();
 								}
-								toggleDelegateModal();
 							}}
 						/>
 					</Modal>
@@ -126,15 +131,15 @@ function Management(props, context) {
 						handleClose={toggleRefundDelegationModal}
 						title="Refund delegated GOV tokens"
 						width="400px">
-						<ContractForm
+						<ContractFormSimple
 							contractName="GOV"
-							method="refundDelegation"
-							labels={['Delegator address', 'Amount']}
-							postSubmitCallback={(success, result) => {
-								if (!success) {
-									alert(result.message);
+							contractMethod="refundDelegation"
+							pendingTxStr="Delegate GOV"
+							fields={[['Delegator address', 'text'], ['Amount', 'number']]}
+							callbacks={{
+								transactionSent: () => {
+									toggleRefundDelegationModal();
 								}
-								toggleRefundDelegationModal();
 							}}
 						/>
 					</Modal>

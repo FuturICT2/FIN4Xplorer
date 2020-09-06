@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AddLocation from '@material-ui/icons/AddLocation';
 import Button from '../../../components/Button';
-import { getContractData } from '../../../components/Contractor';
+import { getContractData, contractCall } from '../../../components/Contractor';
 
 function LocationProof(props, context) {
 	const { t } = useTranslation();
 
 	const onSubmitLocation = () => {
 		if (!navigator.geolocation) {
-			alert('Location requests are not supported by this browser');
+			alert(t('proof-submission.custom-component.location.not-supported-alert'));
 			return;
 		}
 
@@ -38,19 +38,23 @@ function LocationProof(props, context) {
 					distanceInKmBetweenEarthCoordinates(tokenCreatorLatitude, tokenCreatorLongitude, latitude, longitude) * 1000
 				);
 
-				context.drizzle.contracts.Location.methods
-					.submitProof_Location(props.tokenAddr, props.claimId, distanceToTokenCreatorsLocation)
-					.send({ from: defaultAccount })
-					.then(result => {
-						console.log('Results of submitting Location.submitProof_Location: ', result);
-					});
+				contractCall(
+					context,
+					props,
+					defaultAccount,
+					'Location',
+					'submitProof_Location',
+					[props.tokenAddr, props.claimId, distanceToTokenCreatorsLocation],
+					'Submit location proof',
+					props.callbacks
+				);
 			});
 		});
 	};
 
 	return (
 		<Button icon={AddLocation} onClick={onSubmitLocation} center="true">
-			Submit location
+			{t('proof-submission.custom-component.location.submit-button')}
 		</Button>
 	);
 }

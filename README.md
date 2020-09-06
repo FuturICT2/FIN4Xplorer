@@ -33,8 +33,11 @@ source ~/.bashrc
 nvm install 10.0.0
 nvm use 10.0.0
 
-# on macOS, to prevent gyp related errors
+# on macOS: to prevent gyp related errors
 npm explore npm -g -- npm install node-gyp@latest
+# on macOS: if you get "gyp: No Xcode or CLT version detected!", try un- and then reinstalling the XCode Command Line Tools:
+sudo rm -r -f /Library/Developer/CommandLineTools
+xcode-select --install
 
 # project
 npm install # might require more than 1GB of memory to run
@@ -42,30 +45,34 @@ npm install # might require more than 1GB of memory to run
 
 Install the [MetaMask](https://metamask.io/) browser extension.
 
-## Faucet
+## config.json
 
-If you have a running faucet server (`scripts/faucet-server`), you can add the URL to it in `src/config/faucet-url.json`:
+The file `src/config/config.json` has to be added and filled. If no Infura API key is given, contract events won't be received and reload is necessary to update the frontend.
 
 ```json
 {
-    "FAUCET_URL": ""
+    "FAUCET_SERVER_URL": "",
+    "INFURA_API_KEY": ""
 }
 ```
-If this file is present, the box *On the blockchain* on *Home* will show the option *Request Ether*.
+
+### Faucet server
+
+The [faucet server](https://github.com/FuturICT2/FIN4FaucetServer), can send users Ether if they request it. If an URL is added to `config.json`, the box *On the blockchain* on *Home* will show the option *Request Ether*. Note that the faucet URL has to be HTTPS if your deployment is also served via HTTPS.
 
 ## Required files
 
 To run the app, the compiled smart contracts that will be interacted with as well as the address of the deployed Fin4Main smart contract must be known.
 
-The JSON-files of the smart contracts are expected to be located in `src/build/contracts`. They can get there either automatically be setting the `config.json` in the [FIN4Contracts](https://github.com/FuturICT2/FIN4Contracts) repository accordingly and running `truffle compile`, or have to be manually placed there.
+The JSON-files of the smart contracts are expected to be located in `src/build/contracts`. They can get there either automatically be setting the `config.json` in the [FIN4Contracts](https://github.com/FuturICT2/FIN4Contracts) repository accordingly and running `truffle compile`, or have to be manually placed there, e.g. via `scp -r git/FIN4Xplorer/src/build ubuntu@your-server-ip:/home/ubuntu/FIN4Xplorer/src`.
 
-The address of the Fin4Main contract is expected to reside in `src/config/Fin4MainAddress.js`. As with the compiled contracts, this can happen automatically upon `truffle migrate` in the FIN4Contracts repository, or has to be manually inserted.
+The address of the Fin4Main contract is expected to reside in `src/config/deployment-info.js`. As with the compiled contracts, this can happen automatically upon `truffle migrate` in the FIN4Contracts repository, or has to be manually inserted.
 
 ## Serving the GUI
 
-### Development mode
+Serving via React-app-default port 3000. Serving via HTTPS is recommended. If only HTTP, some features won't work. Location requests and permissions to use the webcam for QR code scanning are blocked (meaning the user doesn't even see the prompt to allow it or not) by by modern browsers on sites not using HTTPS.
 
-This starts the React app on port 3000:
+### Development mode
 
 ```sh
 npm start
@@ -73,12 +80,12 @@ npm start
 
 ### Production mode
 
-This starts the React app on port 5000:
+The `npm run build` command often crashes because of memory issues. If his happens, try running this before: `export NODE_OPTIONS=--max_old_space_size=1500` with the value being a bit less then you have available (check using the `free` command). Another thing to try is to modify `scripts.build` in `package.json` like so: `"react-scripts --max_old_space_size=4096 build"`. It can also help to close all other programs on your computer. If this doesn't work, try an older version of `react-scripts` or try building locally and then `scp`-ing the build folder onto the host machine. Note that it will package `deployment-info.js` as you have it locally, make sure it has the correct `Fin4Main address` in it. If you `scp` a locally built `build`-folder, there is no need to also `scp` the `src/build` folder with the contract ABIs as that is packed already.
 
 ```sh
 npm run build
 npm install -g serve
-serve -s build # -l 3000 to use that port e.g.
+serve -s build -l 3000 # default port would be 5000
 ```
 
 Serving the DApp in production mode instead of development mode also solves an issue with sub-sites (e.g. `/tokens`) on mobile DApp browsers (observed in MetaMask on Android) where it would only show `cannot GET /URL` on reloading.

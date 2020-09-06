@@ -7,39 +7,51 @@ import {
 	fetchAllTokens,
 	fetchUsersNonzeroTokenBalances,
 	fetchCurrentUsersClaims,
-	fetchAndAddAllProofTypes,
+	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	fetchCollectionsInfo,
 	fetchOPATs,
 	fetchSystemParameters,
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
-	fetchParameterizerParams
+	fetchParameterizerParams,
+	fetchAndAddAllUnderlyings
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
-import { TCRactive } from './components/utils';
+import { TCRactive, UnderlyingsActive } from './components/utils';
+import { useTranslation } from 'react-i18next';
+import { subscribeToContractEvents } from './middleware/ContractEventHandler';
 
 function LoadInitialData(props, context) {
+	const { t } = useTranslation();
+
 	const isInit = useRef({
 		// "once" flags
+		subscribedToContractEvents: false,
 		Fin4Main: false,
 		Fin4TokenManagement: false,
 		Fin4Messaging: false,
 		Fin4Claiming: false,
 		Fin4Collections: false,
-		Fin4Proving: false,
+		Fin4Verifying: false,
 		Registry: false,
 		Parameterizer: false,
 		Fin4SystemParameters: false,
+		Fin4Underlyings: false,
 		REP: false,
 		GOV: false,
 		tokenCreationDraftsLoaded: false // from cookies to store
 	});
 
 	useEffect(() => {
-		if (!props.drizzleInitialized) {
+		if (!props.drizzleInitialized || !window.web3) {
 			return; // we don't move a muscle until that is done
+		}
+
+		if (!isInit.current.subscribedToContractEvents) {
+			isInit.current.subscribedToContractEvents = true;
+			subscribeToContractEvents(props.store);
 		}
 
 		if (!isInit.current.Fin4Main && props.contracts.Fin4Main.initialized) {
@@ -70,9 +82,9 @@ function LoadInitialData(props, context) {
 			fetchUsersGOVbalance(props, context.drizzle.contracts.GOV);
 		}
 
-		if (!isInit.current.REP && props.contracts.Fin4Reputation && props.contracts.Fin4Reputation.initialized) {
+		if (!isInit.current.REP && props.contracts.REP && props.contracts.REP.initialized) {
 			isInit.current.REP = true;
-			fetchUsersREPbalance(props, context.drizzle.contracts.Fin4Reputation);
+			fetchUsersREPbalance(props, context.drizzle.contracts.REP);
 		}
 
 		if (
@@ -88,11 +100,14 @@ function LoadInitialData(props, context) {
 			!isInit.current.Fin4TokenManagement &&
 			props.contracts.Fin4TokenManagement &&
 			props.contracts.Fin4TokenManagement.initialized &&
-			(isInit.current.Registry || !TCRactive)
+			(isInit.current.Registry || !TCRactive) &&
+			(isInit.current.Fin4Underlyings || !UnderlyingsActive)
 		) {
 			isInit.current.Fin4TokenManagement = true;
 			let Fin4TokenManagementContract = context.drizzle.contracts.Fin4TokenManagement;
-			fetchAllTokens(props, Fin4TokenManagementContract, () => {
+			let Fin4UnderlyingsContract = UnderlyingsActive ? context.drizzle.contracts.Fin4Underlyings : null;
+			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, () => {
+				// TODO also do these in fetchAllTokens or in parallel to it? Like Fin4Underlyings was added in via promises
 				if (TCRactive) {
 					fetchOPATs(props, context.drizzle.contracts.Registry);
 				}
@@ -119,10 +134,20 @@ function LoadInitialData(props, context) {
 			fetchCurrentUsersClaims(props, context.drizzle.contracts.Fin4Claiming);
 		}
 
-		if (!isInit.current.Fin4Proving && props.contracts.Fin4Proving && props.contracts.Fin4Proving.initialized) {
-			isInit.current.Fin4Proving = true;
-			fetchAndAddAllProofTypes(props, context.drizzle.contracts.Fin4Proving, context.drizzle);
-			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Proving);
+		if (!isInit.current.Fin4Verifying && props.contracts.Fin4Verifying && props.contracts.Fin4Verifying.initialized) {
+			isInit.current.Fin4Verifying = true;
+			fetchAndAddAllVerifierTypes(props, context.drizzle.contracts.Fin4Verifying, context.drizzle, t);
+			fetchAllSubmissions(props, context.drizzle.contracts.Fin4Verifying);
+		}
+
+		if (
+			UnderlyingsActive &&
+			!isInit.current.Fin4Underlyings &&
+			props.contracts.Fin4Underlyings &&
+			props.contracts.Fin4Underlyings.initialized
+		) {
+			isInit.current.Fin4Underlyings = true;
+			fetchAndAddAllUnderlyings(props, context.drizzle.contracts.Fin4Underlyings, context.drizzle);
 		}
 
 		if (!isInit.current.tokenCreationDraftsLoaded) {

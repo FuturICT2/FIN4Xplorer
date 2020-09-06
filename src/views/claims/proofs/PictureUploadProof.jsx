@@ -1,0 +1,37 @@
+import React from 'react';
+import { drizzleConnect } from 'drizzle-react';
+import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import PictureUploadComponent from './PictureUploadComponent';
+import { contractCall } from '../../../components/Contractor';
+
+function PictureUploadProof(props, context) {
+	const { t } = useTranslation();
+
+	const onSubmit = (ipfsHash, approverAddress) => {
+		let values;
+		if (approverAddress) {
+			values = [props.tokenAddr, props.claimId, approverAddress, ipfsHash];
+		} else {
+			values = [props.tokenAddr, props.claimId, ipfsHash];
+		}
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			props.contractName,
+			'submitProof_' + props.contractName,
+			values,
+			'Submit ' + props.contractName + ' proof',
+			props.callbacks
+		);
+	};
+
+	return <PictureUploadComponent onSubmit={onSubmit} showAddressField={props.showAddressField} />;
+}
+
+PictureUploadProof.contextTypes = {
+	drizzle: PropTypes.object
+};
+
+export default drizzleConnect(PictureUploadProof);

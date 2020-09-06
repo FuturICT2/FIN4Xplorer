@@ -13,7 +13,7 @@ import AddressQRreader from '../../components/AddressQRreader';
 import Dropdown from '../../components/Dropdown';
 import { TextField } from '@material-ui/core';
 import Button from '../../components/Button';
-import { isValidPublicAddress } from '../../components/Contractor';
+import { isValidPublicAddress, contractCall } from '../../components/Contractor';
 
 function UserTransfer(props, context) {
 	const { t } = useTranslation();
@@ -81,46 +81,47 @@ function UserTransfer(props, context) {
 
 	const sendTransfer = () => {
 		let token = props.fin4Tokens[data.current.tokenAddress];
-		let tokenNameSuffixed = 'Fin4Token_' + token.symbol;
+		let tokenNameSuffixed = 'ERC20Token_' + token.symbol;
 		if (contractReady(tokenNameSuffixed)) {
 			doSendTransfer(tokenNameSuffixed);
 		} else {
 			waitingForContract.current = tokenNameSuffixed;
-			addContract(props, context.drizzle, 'Fin4Token', data.current.tokenAddress, [], tokenNameSuffixed);
+			addContract(props, context.drizzle, 'ERC20', data.current.tokenAddress, [], tokenNameSuffixed);
 		}
 	};
 
-	const doSendTransfer = name => {
-		context.drizzle.contracts[name].methods
-			.transfer(data.current.userAddress, data.current.amount)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+	const doSendTransfer = tokenName => {
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			tokenName,
+			'transfer',
+			[data.current.userAddress, data.current.amount],
+			'Transfer token to user'
+		);
 	};
 
 	return (
 		<Container>
-			<Box title="Transfer tokens to user">
+			<Box title={t('user-to-user.transfer.box-title')}>
 				<center>
 					<AddressQRreader
 						initialValue={dataViaURL.userAddress}
 						onChange={val => (data.current.userAddress = val)}
-						label="Public address of token-receiver"
+						label={t('user-to-user.transfer.fields.receiver-address')}
 					/>
 					<Dropdown
 						key="token-dropdown"
 						onChange={e => (data.current.tokenAddress = e.value)}
 						options={getFin4TokensFormattedForSelectOptions(props.fin4Tokens)}
-						label={t('token-type')}
+						label={t('user-to-user.transfer.fields.token-dropdown')}
 						defaultValue={dataViaURL.tokenTriple}
 					/>
 					<TextField
 						key="amount-field"
 						type="number"
-						label="Amount"
+						label={t('user-to-user.transfer.fields.amount')}
 						onChange={e => (data.current.amount = e.target.value)}
 						style={inputFieldStyle}
 						defaultValue={dataViaURL.amount}
@@ -146,7 +147,7 @@ function UserTransfer(props, context) {
 
 							sendTransfer();
 						}}>
-						Send
+						{t('user-to-user.transfer.send-button')}
 					</Button>
 				</center>
 			</Box>

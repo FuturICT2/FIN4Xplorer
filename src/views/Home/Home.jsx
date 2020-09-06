@@ -9,39 +9,42 @@ import MessageIcon from '@material-ui/icons/Message';
 import EmailIcon from '@material-ui/icons/Email';
 import StarIcon from '@material-ui/icons/Star';
 import TokenBalances from '../../components/TokenBalances';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import SettingsIcon from '@material-ui/icons/SettingsOutlined';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import BuildIcon from '@material-ui/icons/Build';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import QRModal from '../../components/QRModal';
-import { buildIconLabelLink, buildIconLabelCallback } from '../../components/utils';
+import SendIcon from '@material-ui/icons/Send';
+import ConvertIcon from '@material-ui/icons/SwapHoriz';
+import DepositIcon from '@material-ui/icons/SaveAlt';
+import { buildIconLabelLink, buildIconLabelCallback, TCRactive, UnderlyingsActive } from '../../components/utils';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
+import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import { contractCall } from '../../components/Contractor';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-let faucetConfig = null;
+let config = null;
 try {
-	faucetConfig = require('../../config/faucet-url.json');
+	config = require('../../config/config.json');
 } catch (err) {
-	console.log('faucet-url.json not found');
+	console.log('config.json not found');
 }
 
 const axios = require('axios');
+const showDevButton = false;
 
-function Home(props) {
+function Home(props, context) {
 	const { t } = useTranslation();
 
-	const [iconIsHovered, setIconHovered] = useState(false);
-	const [isQRModalOpen, setQRModalOpen] = useState(false);
-	const toggleQRModal = () => {
-		setQRModalOpen(!isQRModalOpen);
-	};
+	const [faucetRequestPending, setFaucetRequestPending] = useState(false);
 
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
 		let networkID = window.ethereum.networkVersion;
-		let encodedURL = faucetConfig.FAUCET_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
+		let encodedURL = config.FAUCET_SERVER_URL + '/faucet?recipient=' + recipient + '&networkID=' + networkID;
 		console.log('Calling faucet server: ' + encodedURL);
+		setFaucetRequestPending(true);
 		axios
 			.get(encodedURL)
 			.then(response => {
@@ -50,81 +53,145 @@ function Home(props) {
 			})
 			.catch(error => {
 				console.log('Error calling faucet server', error);
-				alert('Failed to request Ether');
+				alert(t('home.on-the-blockchain.request-ether.error'));
 			})
-			.finally(() => {});
+			.finally(() => {
+				setFaucetRequestPending(false);
+			});
+	};
+
+	const dev = () => {
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Main',
+			'dev',
+			3,
+			'dev method call',
+			{
+				transactionCompleted: () => {
+					console.log('--> transactionCompleted callback');
+				},
+				transactionFailed: () => {
+					console.log('--> transactionFailed callback');
+				},
+				dryRunSucceeded: () => {
+					console.log('--> dryRunSucceeded callback');
+				},
+				dryRunFailed: () => {
+					console.log('--> dryRunFailed callback');
+				}
+			}
+		);
 	};
 
 	return (
 		<Container>
 			<TokenBalances />
-			<Box title="On the blockchain">
+			<Box title={t('home.on-the-blockchain.box-title')}>
 				{' '}
-				{/*t('about-you')*/}
 				<p style={{ fontFamily: 'arial' }}>
-					{t('your-public-address')}
+					{t('home.on-the-blockchain.your-public-address')}:
 					<br />
 					<span style={{ fontSize: 'x-small' }}>
-						{props.defaultAccount === null ? (
-							t('info-not-yet-available')
+						{!window.web3 ? (
+							t('home.on-the-blockchain.info-not-yet-available')
 						) : (
-							<>
-								{/* TODO make network-generic */}
-								<a href={'https://rinkeby.etherscan.io/address/' + props.defaultAccount} target="_blank">
-									{props.defaultAccount}
-								</a>
-								<FontAwesomeIcon
-									style={iconIsHovered ? styles.QRiconHover : styles.QRicon}
-									icon={faQrcode}
-									onClick={toggleQRModal}
-									onMouseEnter={() => setIconHovered(true)}
-									onMouseLeave={() => setIconHovered(false)}
-								/>
-							</>
+							<AddressDisplayWithCopy address={props.defaultAccount} />
 						)}
 					</span>
 				</p>
-				<QRModal isOpen={isQRModalOpen} handleClose={toggleQRModal} publicAddress={props.defaultAccount} />
 				<div style={{ fontFamily: 'arial' }}>
-					Your balance:{' '}
+					{t('home.on-the-blockchain.users-balance') + ': '}
 					{props.usersEthBalance === null
-						? t('info-not-yet-available')
+						? t('home.on-the-blockchain.info-not-yet-available')
 						: // TODO dynamic rounding / unit?
 						  `${Math.round(props.usersEthBalance * 1000) / 1000} ETH`}
 				</div>
-				{props.usersEthBalance === 0 && (
+				{window.web3 && props.usersEthBalance === 0 && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Without Ether you are limited to read-only interactions.</small>
+						<small>{t('home.on-the-blockchain.no-ether-warning')}</small>
 					</div>
 				)}
 				{(props.usersEthBalance === null || props.usersEthBalance === 0) && (
 					<div style={{ fontFamily: 'arial', color: 'red' }}>
-						<small>Are you connected to the correct network?</small>
+						<small>{t('home.on-the-blockchain.right-network-warning')}</small>
 					</div>
 				)}
-				{faucetConfig && faucetConfig.FAUCET_URL && (
+				{config && config.FAUCET_SERVER_URL && (
 					<>
 						<br />
-						{buildIconLabelCallback(() => {}, <SaveAltIcon />, t('request-ether'), false)}
+						{faucetRequestPending ? (
+							<>
+								<CircularProgress size={20} style={{ color: '#695EAD' }} />
+								&nbsp;&nbsp;
+								<small style={{ fontFamily: 'arial', color: 'gray' }}>
+									{t('home.on-the-blockchain.request-ether.pending')}
+								</small>
+							</>
+						) : (
+							buildIconLabelCallback(
+								requestEther,
+								<SaveAltIcon />,
+								t('home.on-the-blockchain.request-ether.button'),
+								false
+							)
+						)}
 					</>
 				)}
 			</Box>
-			<Box title="Settings" width="250px">
-				{/* TODO better title */}
-				{buildIconLabelLink('/about', <InfoIcon />, 'About')}
-				{buildIconLabelLink('/settings', <SettingsIcon />, 'System settings')}
-				{buildIconLabelLink('/users/groups', <UsersIcon />, 'User groups')}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, 'Token collections', true, false)}
+			<Box title={t('home.settings.box-title')} width="250px">
+				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
+				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
+				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'), true, false)}
 			</Box>
-			<Box title="Inbox" width="250px">
-				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
+			<Box title={t('home.inbox.box-title')} width="250px">
+				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
+				{buildIconLabelLink('/user/message', <MessageIcon />, t('home.inbox.message-user-button'))}
+				{buildIconLabelLink(
+					'/user/transfer',
+					<SendIcon />,
+					t('home.inbox.transfer-token-button'),
+					true,
+					UnderlyingsActive
+				)}
+				{UnderlyingsActive && (
+					<>
+						{buildIconLabelLink('/underlying/deposit', <DepositIcon />, t('home.inbox.deposit-collateral-button'))}
+						{buildIconLabelLink(
+							'/underlying/convert',
+							<ConvertIcon />,
+							t('home.inbox.convert-collateral-button'),
+							true,
+							false
+						)}
+					</>
+				)}
 			</Box>
-			<Box title="Token curation" width="250px">
-				{buildIconLabelLink('/governance/listing', <StarIcon />, 'Listing')}
-				{buildIconLabelLink('/governance/management', <AssignmentIcon />, 'Management')}
-				{buildIconLabelLink('/governance/parameters', <BuildIcon />, 'Parameters', true, false)}
-			</Box>
+			{TCRactive && (
+				<Box title={t('home.token-curation.box-title')} width="250px">
+					{buildIconLabelLink('/governance/listing', <StarIcon />, t('home.token-curation.listing-button'))}
+					{buildIconLabelLink('/governance/management', <AssignmentIcon />, t('home.token-curation.management-button'))}
+					{buildIconLabelLink(
+						'/governance/parameters',
+						<BuildIcon />,
+						t('home.token-curation.parameters-button'),
+						true,
+						false
+					)}
+				</Box>
+			)}
+			{showDevButton && (
+				<Box width="250px">
+					<center>
+						<Button variant="contained" color="primary" onClick={dev}>
+							do the thing
+						</Button>
+					</center>
+				</Box>
+			)}
 		</Container>
 	);
 }
@@ -151,6 +218,10 @@ const mapStateToProps = state => {
 		defaultAccount: state.fin4Store.defaultAccount,
 		usersEthBalance: state.fin4Store.usersEthBalance
 	};
+};
+
+Home.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 export default drizzleConnect(Home, mapStateToProps);

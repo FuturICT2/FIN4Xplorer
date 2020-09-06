@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Box from '../../components/Box';
 import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
-import { getContractData, getPollStatus, PollStatus } from '../../components/Contractor';
+import { getContractData, getPollStatus, PollStatus, contractCall } from '../../components/Contractor';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import { drizzleConnect } from 'drizzle-react';
@@ -224,21 +224,30 @@ function Listing(props, context) {
 
 		// Step 1: approve deposit to be taken from users GOV balance
 
-		govContract.methods
-			.approve(registryContract.address, deposit)
-			.send({ from: props.defaultAccount })
-			.then(function(result) {
-				console.log('Results of submitting GOV.approve: ', result);
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'GOV',
+			'approve',
+			[registryContract.address, deposit],
+			'Approve GOV spending',
+			{
+				transactionCompleted: () => {
+					// Step 2: applyToken
 
-				// Step 2: applyToken
-
-				registryContract.methods
-					.applyToken(token, deposit, data)
-					.send({ from: props.defaultAccount })
-					.then(function(result) {
-						console.log('Results of submitting Registry.applyToken: ', result);
-					});
-			});
+					contractCall(
+						context,
+						props,
+						props.defaultAccount,
+						'Registry',
+						'applyToken',
+						[token, deposit, data],
+						'Apply token'
+					);
+				}
+			}
+		);
 	};
 
 	// ---------- VoteModal ----------
@@ -275,31 +284,45 @@ function Listing(props, context) {
 
 		toggleChallengeModal();
 
-		context.drizzle.contracts.GOV.methods
-			.approve(context.drizzle.contracts.Registry.address, minDeposit)
-			.send({ from: props.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting GOV.approve: ', result);
-
-				context.drizzle.contracts.Registry.methods
-					.challenge(listingHash, data)
-					.send({ from: props.defaultAccount })
-					.then(result => {
-						console.log('Results of submitting Registry.challenge: ', result);
-					});
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'GOV',
+			'approve',
+			[context.drizzle.contracts.Registry.address, minDeposit],
+			'Approve GOV spending',
+			{
+				transactionCompleted: () => {
+					contractCall(
+						context,
+						props,
+						props.defaultAccount,
+						'Registry',
+						'challenge',
+						[listingHash, data],
+						'Challenge listing'
+					);
+				}
+			}
+		);
 	};
 
 	// ----------
 
 	const updateStatus = () => {
 		let listingKey = selectedListing.current.listingKey;
-		context.drizzle.contracts.Registry.methods
-			.updateStatus(listingKey)
-			.send({ from: props.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting Listing.updateStatus: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.defaultAccount,
+			'Registry',
+			'updateStatus',
+			[listingKey],
+			'Update listing',
+			{},
+			true // TODO why does the dry-run fail?
+		);
 	};
 
 	return (

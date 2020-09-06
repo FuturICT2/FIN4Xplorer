@@ -12,6 +12,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
 import SendIcon from '@material-ui/icons/Send'; // or Forward
 import { Link } from 'react-router-dom';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function TokenBalances(props, context) {
 	const { t } = useTranslation();
@@ -65,19 +66,20 @@ function TokenBalances(props, context) {
 	};
 
 	return (
-		<Box title="Wallet">
+		<Box title={t('home.wallet.box-title')}>
 			{' '}
-			{/*t('your-token-balances')}*/}
 			{noBalanceYet(props.usersFin4TokenBalances) && noBalanceYet(props.usersFin4GovernanceTokenBalances) ? (
-				<NoTokens>{t('no-tokens-yet')}</NoTokens>
+				<NoTokens>{t('home.wallet.no-tokens-yet')}</NoTokens>
 			) : (
-				<Table headers={[t('token-name'), t('token-balance'), 'Transfer']} colWidths={[70, 15, 15]}>
+				<Table
+					headers={[t('tokens-list.token-name'), t('home.wallet.token-balance'), t('home.wallet.transfer-token')]}
+					colWidths={[70, 15, 15]}>
 					{props.contracts.GOV &&
 						props.contracts.GOV.initialized &&
-						buildGovernanceTokenBalance(context.drizzle.contracts.GOV, 'Fin4 Governance Token', 'GOV')}
-					{props.contracts.Fin4Reputation &&
-						props.contracts.Fin4Reputation.initialized &&
-						buildGovernanceTokenBalance(context.drizzle.contracts.Fin4Reputation, 'Fin4 Reputation Token', 'REP', {
+						buildGovernanceTokenBalance(context.drizzle.contracts.GOV, 'Governance Token', 'GOV')}
+					{props.contracts.REP &&
+						props.contracts.REP.initialized &&
+						buildGovernanceTokenBalance(context.drizzle.contracts.REP, 'Reputation Token', 'REP', {
 							borderBottom: '2px dotted silver'
 						})}
 					{getTokenAddressesSortedByBalance().map((tokenAddr, index) => {
@@ -87,9 +89,16 @@ function TokenBalances(props, context) {
 								key={'balance_' + index}
 								data={{
 									name: (
-										<span title={'Description: ' + token.description + '\nUnit:' + token.unit}>
-											<Currency symbol={token.symbol} name={token.name} linkTo={'/token/view/' + token.symbol} />
-										</span>
+										<Tooltip
+											title={t('tokens-list.token-tooltip', {
+												shortDescription: token.description.split('||')[0],
+												unit: token.unit
+											})}
+											arrow>
+											<span>
+												<Currency symbol={token.symbol} name={token.name} linkTo={'/token/view/' + token.symbol} />
+											</span>
+										</Tooltip>
 									),
 									balance: props.usersFin4TokenBalances[tokenAddr],
 									transfer: (
@@ -103,6 +112,7 @@ function TokenBalances(props, context) {
 					})}
 				</Table>
 			)}
+			{/* TODO Revise and integrate the following into translation files */}
 			<Modal isOpen={isModalOpen} handleClose={toggleModal} title="Governance tokens" width="350px">
 				<div style={{ fontFamily: 'arial' }}>
 					You can earn <b>Reputation Tokens (REP)</b> by being active here on the plattform:

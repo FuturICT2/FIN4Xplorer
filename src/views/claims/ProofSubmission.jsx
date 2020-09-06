@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Divider } from '@material-ui/core';
-import ContractForm from '../../components/ContractForm';
 import styled from 'styled-components';
 import colors from '../../config/colors-config';
 import { drizzleConnect } from 'drizzle-react';
-import { findTokenBySymbol } from '../../components/Contractor';
+import { findTokenBySymbol, getContractData } from '../../components/Contractor';
 import Box from '../../components/Box';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
-import SelfieTogetherProof from './proofs/SelfieTogetherProof';
-import PictureProof from './proofs/PictureProof';
-import NetworkingProof from './proofs/NetworkingProof';
-import HappyMomentProof from './proofs/HappyMomentProof';
+import PictureUploadProof from './proofs/PictureUploadProof';
 import { Link } from 'react-router-dom';
+import ContractFormSimple from '../../components/ContractFormSimple';
+import {
+	abiTypeToTextfieldType,
+	capitalizeFirstLetter,
+	ProofAndVerifierStatusEnum,
+	translationMarkdown
+} from '../../components/utils';
+import VoteProof from './proofs/VoteProof';
+import { useTranslation } from 'react-i18next';
 
-function ProofSubmission(props) {
+function ProofSubmission(props, context) {
+	const { t } = useTranslation();
+
 	const [pseudoClaimId, setPseudoClaimId] = useState(null);
 
 	useEffect(() => {
@@ -23,7 +30,7 @@ function ProofSubmission(props) {
 		if (
 			!pseudoClaimId &&
 			Object.keys(props.fin4Tokens).length > 0 &&
-			Object.keys(props.proofTypes).length > 0 &&
+			Object.keys(props.verifierTypes).length > 0 &&
 			symbol
 		) {
 			let token = findTokenBySymbol(props, symbol);
@@ -35,86 +42,237 @@ function ProofSubmission(props) {
 			if (props.usersClaims[_pseudoClaimId]) {
 				// acts as barrier to wait until usersClaims is available
 				setPseudoClaimId(_pseudoClaimId);
+				fetchMessagesFromVerifiers(_pseudoClaimId);
 			}
 		}
 	});
 
-	const buildProofSubmissionForm = (proofTypeName, tokenAddrToReceiveProof, claimId, index) => {
-		switch (proofTypeName) {
+	const fetchMessagesFromVerifiers = _pseudoClaimId => {
+		let claim = props.usersClaims[_pseudoClaimId];
+		let verifiersWithMessages = claim.verifiersWithMessages;
+		if (verifiersWithMessages.length === 0) {
+			return;
+		}
+		let Fin4ClaimingContract = context.drizzle.contracts.Fin4Claiming;
+		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+		verifiersWithMessages.map(verifierAddr => {
+			getContractData(
+				Fin4ClaimingContract,
+				defaultAccount,
+				'getVerifierMessageOnClaim',
+				claim.token,
+				claim.claimId,
+				verifierAddr
+			).then(message => {
+				props.dispatch({
+					type: 'SET_VERIFIER_MESSAGE',
+					pseudoClaimId: _pseudoClaimId,
+					verifierTypeAddress: verifierAddr,
+					message: message
+				});
+			});
+		});
+	};
+
+	const buildProofSubmissionForm = (verifierContractName, tokenAddrToReceiveVerifierNotice, claimId, index) => {
+		switch (verifierContractName) {
 			case 'Location':
-				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
-			case 'SelfieTogether':
-				return <SelfieTogetherProof key={'selfie_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
-			case 'Picture':
-				return <PictureProof key={'pic_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
-			case 'Networking':
-				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
-			case 'HappyMoment':
-				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveProof} claimId={claimId} />;
-			default:
+				return <LocationProof key={'loc_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
+			/*case 'SelfieTogether':
 				return (
-					<ContractForm
-						contractName={proofTypeName}
-						method="submitProof"
-						staticArgs={{
-							tokenAddrToReceiveProof: tokenAddrToReceiveProof,
-							claimId: claimId + ''
+					<PictureUploadProof
+						key={'selfie_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName={'SelfieTogether'}
+					/>
+				);*/
+			case 'PictureSelfChosenApprover':
+				return (
+					<PictureUploadProof
+						key={'pic_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="PictureSelfChosenApprover"
+						showAddressField={true}
+					/>
+				);
+			case 'PictureGivenApprovers':
+				return (
+					<PictureUploadProof
+						key={'pic_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="PictureGivenApprovers"
+						showAddressField={false}
+					/>
+				);
+			/*case 'Networking':
+				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
+			case 'HappyMoment':
+				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
+			case 'Vote':
+				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
+			default:
+				const abi = require('../../build/contracts/' + verifierContractName).abi;
+				let contractMethod = 'submitProof_' + verifierContractName;
+				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
+				let fields = inputs.map(input => {
+					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
+				});
+				return (
+					<ContractFormSimple
+						contractName={verifierContractName}
+						contractMethod={'submitProof_' + verifierContractName}
+						pendingTxStr={'Submit proof ' + verifierContractName}
+						fields={fields}
+						fixValues={{
+							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
+							ClaimId: claimId + ''
 						}}
-						buttonLabel="Submit proof"
 					/>
 				);
 		}
 	};
 
+	/*const transactionSentCallback = (_pseudoClaimId, _verifierTypeName) => {
+		props.dispatch({
+			type: 'SET_VERIFIER_STATUS',
+			pseudoClaimId: _pseudoClaimId,
+			verifierTypeAddress: findVerifierTypeAddressByName(props.verifierTypes, _verifierTypeName),
+			status: ProofAndVerifierStatusEnum.PENDING
+		});
+	};*/
+
+	const buildStatusElement = (status, text) => {
+		return <Status status={status}>{text}</Status>;
+	};
+
+	const buildVerifierAppearance = (index, claimObj, generalVerifierObj) => {
+		let statusObj = claimObj.verifierStatuses[generalVerifierObj.value];
+		let status = statusObj.status;
+		let message = statusObj.message;
+		switch (status) {
+			case ProofAndVerifierStatusEnum.UNSUBMITTED:
+				return (
+					<>
+						{buildStatusElement(
+							status,
+							t('proof-submission.verifier.unsubmitted', { description: generalVerifierObj.description })
+						)}
+						{buildProofSubmissionForm(generalVerifierObj.contractName, claimObj.token, claimObj.claimId, index)}
+					</>
+				);
+			case ProofAndVerifierStatusEnum.PENDING:
+				return buildStatusElement(
+					status,
+					<span>
+						{t('proof-submission.verifier.pending', { name: generalVerifierObj.label })}
+						{addMessageIfExistent(message)}
+					</span>
+				);
+			case ProofAndVerifierStatusEnum.APPROVED:
+				return buildStatusElement(
+					status,
+					<span>
+						{t('proof-submission.verifier.approved', { name: generalVerifierObj.label })}
+						{addMessageIfExistent(message)}
+					</span>
+				);
+			case ProofAndVerifierStatusEnum.REJECTED:
+				return buildStatusElement(
+					status,
+					<span>
+						{t('proof-submission.verifier.rejected', { name: generalVerifierObj.label })}
+						{addMessageIfExistent(message)}
+					</span>
+				);
+		}
+	};
+
+	const addMessageIfExistent = message => {
+		if (!message) {
+			return '';
+		}
+		return (
+			<>
+				<br />
+				<small>
+					<i>{message}</i>
+				</small>
+			</>
+		);
+	};
+
 	return (
 		pseudoClaimId && (
 			<Container>
-				<Box title="Proof Submission">
-					{props.usersClaims[pseudoClaimId].gotRejected ? (
+				<Box title={t('proof-submission.box-title')}>
+					{props.usersClaims[pseudoClaimId].gotRejected && (
 						<center style={{ fontFamily: 'arial' }}>
-							<b style={{ color: 'red' }}>Your claim got rejected.</b>
+							<b style={{ color: 'red' }}>{t('proof-submission.claim-rejected') + '.'}</b>
 							<br />
 							<br />
-							See the reason(s) in your <Link to={'/messages'}>messages</Link>.
+							{translationMarkdown(t('proof-submission.reason-hint') + '.', {
+								'msgs-link': label => {
+									return (
+										// TODO <Link> would be smoother than <a>
+										<a key="msgs-link" href="/messages">
+											{label}
+										</a>
+									);
+								}
+							})}
 							<br />
-							If you want, you can submit <Link to={'/claim/' + props.match.params.tokenSymbol}>a new claim</Link>.
+							{translationMarkdown(t('proof-submission.submit-new-claim') + '.', {
+								'new-claim-link': label => {
+									return (
+										// TODO <Link> would be smoother than <a>
+										<a key="new-claim-link" href={'/claim/' + props.match.params.tokenSymbol}>
+											{label}
+										</a>
+									);
+								}
+							})}
 							{/* TODO "or contact the token creator" too? #ConceptualDecision */}
 						</center>
-					) : (
+					)}
+					{
 						<>
-							{Object.keys(props.usersClaims[pseudoClaimId].proofStatuses).map((proofTypeAddr, index) => {
-								let claim = props.usersClaims[pseudoClaimId];
-								let proofIsApproved = claim.proofStatuses[proofTypeAddr];
-								let proofObj = props.proofTypes[proofTypeAddr];
+							{Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
+								let claimObj = props.usersClaims[pseudoClaimId];
+								let generalVerifierObj = props.verifierTypes[verifierTypeAddr];
 								return (
 									<div key={index}>
 										{index > 0 && <Divider variant="middle" style={{ margin: '50px 0' }} />}
-										{proofIsApproved ? (
-											<Status isapproved="true">
-												{'The proof ' + proofObj.label + ' was submitted successfully.'}
-											</Status>
-										) : (
-											<>
-												<Status isapproved="false">
-													{'Your claim requires you to provide the following proof: ' + proofObj.description}
-												</Status>
-												{buildProofSubmissionForm(proofObj.label, claim.token, claim.claimId, index)}
-											</>
-										)}
+										{buildVerifierAppearance(index, claimObj, generalVerifierObj)}
 									</div>
 								);
 							})}
 						</>
-					)}
+					}
 				</Box>
 			</Container>
 		)
 	);
 }
 
+const getStatusColor = status => {
+	switch (status) {
+		case ProofAndVerifierStatusEnum.UNSUBMITTED:
+			return colors.wrong;
+		case ProofAndVerifierStatusEnum.PENDING:
+			return '#FED8B1'; // light orange
+		case ProofAndVerifierStatusEnum.APPROVED:
+			return colors.true;
+		case ProofAndVerifierStatusEnum.REJECTED:
+			return 'lightgray';
+	}
+};
+
 const Status = styled(Typography)`
 	&& {
-		background: ${props => (props.isapproved === 'true' ? colors.true : colors.wrong)};
+		background: ${props => getStatusColor(props.status)};
 		padding: 10px;
 		margin: 20px 0;
 		box-sizing: border-box;
@@ -130,7 +288,7 @@ const mapStateToProps = state => {
 	return {
 		usersClaims: state.fin4Store.usersClaims,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 

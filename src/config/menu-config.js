@@ -22,6 +22,11 @@ import Messages from '../views/Messages';
 import TokenCreationProcess from '../views/tokens/TokenCreationProcess';
 import TokenTextSubmissions from '../views/tokens/TokenTextSubmissions';
 import TokenPictureSubmissions from '../views/tokens/TokenPictureSubmissions';
+import TokenVoteSubmissions from '../views/tokens/TokenVoteSubmissions';
+import TransactionLog from '../views/TransactionLog';
+import DepositCollateral from '../views/underlying/DepositCollateral';
+import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
+import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
 
 const menu = [
 	{
@@ -45,6 +50,11 @@ const menu = [
 		showInNavBar: false
 	},
 	{
+		component: TokenCreationProcess,
+		path: '/token/create/:draftId/:stepId',
+		showInNavBar: false
+	},
+	{
 		component: TokenView,
 		path: '/token/view/',
 		showInNavBar: false
@@ -64,6 +74,11 @@ const menu = [
 	{
 		component: TokenPictureSubmissions,
 		path: '/token/submissions/:tokenSymbol/picture',
+		showInNavBar: false
+	},
+	{
+		component: TokenVoteSubmissions,
+		path: '/token/submissions/:tokenSymbol/vote',
 		showInNavBar: false
 	},
 	// ------------------ CLAIMS ------------------
@@ -172,6 +187,49 @@ const menu = [
 	{
 		component: About,
 		path: '/about',
+		showInNavBar: false
+	},
+	// ------------------ TRANSACTION LOG ------------------
+	{
+		component: TransactionLog,
+		path: '/transactions',
+		showInNavBar: false
+	},
+	// ------------------ UNDERLYING ------------------
+	{
+		component: DepositCollateral,
+		path: '/underlying/deposit',
+		showInNavBar: false
+	},
+	{
+		component: DepositCollateral,
+		path: '/underlying/deposit/:sourcererName/:patToken/:collateralToken', // token: symbol or address
+		showInNavBar: false
+	},
+	{
+		component: DepositCollateral,
+		path: '/underlying/deposit/:sourcererName/:patToken/:collateralToken/:amount',
+		showInNavBar: false
+	},
+	{
+		component: ConvertToCollateral,
+		path: '/underlying/convert',
+		showInNavBar: false
+	},
+	{
+		component: ConvertToCollateral,
+		path: '/underlying/convert/:sourcererName/:patToken/:collateralToken', // token: symbol or address
+		showInNavBar: false
+	},
+	{
+		component: ConvertToCollateral,
+		path: '/underlying/convert/:sourcererName/:patToken/:collateralToken/:amount',
+		showInNavBar: false
+	},
+	// ------------------ SOURCERERS ------------------
+	{
+		component: AddNewSourcererPair,
+		path: '/sourcerer/new-pair/:patToken',
 		showInNavBar: false
 	}
 ];

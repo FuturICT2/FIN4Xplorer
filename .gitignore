@@ -4,9 +4,8 @@ src/build/
 .env/
 .idea/
 
-src/config/faucet-url.json
-src/config/Fin4MainAddress.js
-src/config/Fin4OracleHubAddress.js
+src/config/config.json
+src/config/deployment-info.js
 
 package-lock.json
 

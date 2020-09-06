@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Box from '../../components/Box';
 import Currency from '../../components/Currency';
@@ -12,21 +12,121 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import history from '../../components/history';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import OutlinedDiv from '../../components/OutlinedDiv';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
+import Cookies from 'js-cookie';
+import { Fin4Colors } from '../../components/utils';
 
 function PreviousClaims(props) {
 	const { t } = useTranslation();
 
+	const [filterIconHovered, setFilterIconHovered] = useState(false);
+	const [filterSettingsOpen, setFilterSettingsOpen] = useState(false);
+
+	const toggleFilterSettings = () => {
+		setFilterSettingsOpen(!filterSettingsOpen);
+	};
+
+	const [filterModes, setFilterModes] = useState({
+		pending: true,
+		isApproved: true,
+		gotRejected: true
+	});
+
+	const checkedCookie = useRef(false);
+
+	useEffect(() => {
+		let cookieEntry = Cookies.get('claims-filter-modes');
+		if (cookieEntry && !checkedCookie.current) {
+			checkedCookie.current = true;
+			setFilterModes(JSON.parse(cookieEntry));
+		}
+	});
+
+	const buildCheckbox = (attribute, label) => {
+		return (
+			<FormControlLabel
+				control={
+					<Checkbox
+						checked={filterModes[attribute]}
+						onChange={() => {
+							let filterModesCopy = Object.assign({}, filterModes);
+							setFilterModes({
+								...filterModes,
+								[attribute]: !filterModes[attribute]
+							});
+							// state is not immediately updated, need to do it manually in parallel
+							filterModesCopy[attribute] = !filterModesCopy[attribute];
+							Cookies.set('claims-filter-modes', JSON.stringify(filterModesCopy), { expires: 7 });
+						}}
+					/>
+				}
+				label={label}
+			/>
+		);
+	};
+
+	const filterActive = () => {
+		return Object.keys(filterModes).filter(key => filterModes[key] === false).length > 0;
+	};
+
+	const getFilterIconStyle = () => {
+		if (filterIconHovered) {
+			return styles.iconHovered;
+		}
+		if (filterSettingsOpen) {
+			return styles.iconActive;
+		}
+		if (filterActive()) {
+			return styles.iconDefaultFiltersActive;
+		}
+		return styles.iconDefault;
+	};
+
 	return (
 		<>
-			<Box title={t('my-previous-claims')}>
+			<Box title={t('claims.previous-claims.box-title')}>
+				<TableIcons>
+					{/* TODO share code with SortableTokenList by outsourcing a SortFilterMenu.jsx */}
+					{filterActive() ? (
+						<small style={{ fontFamily: 'arial', color: Fin4Colors.darkPink }}>
+							{t('claims.previous-claims.filter.filter-active') + ' '}
+						</small>
+					) : (
+						''
+					)}
+					<FontAwesomeIcon
+						icon={faFilter}
+						style={getFilterIconStyle()}
+						onClick={toggleFilterSettings}
+						onMouseEnter={() => setFilterIconHovered(true)}
+						onMouseLeave={() => setFilterIconHovered(false)}
+					/>
+				</TableIcons>
+				{filterSettingsOpen && (
+					<OutlinedDiv label={t('claims.previous-claims.filter.menu-title')}>
+						{buildCheckbox('pending', t('claims.previous-claims.filter.pending-checkbox'))}
+						{buildCheckbox('isApproved', t('claims.previous-claims.filter.approved-checkbox'))}
+						{buildCheckbox('gotRejected', t('claims.previous-claims.filter.rejected-checkbox'))}
+					</OutlinedDiv>
+				)}
 				{Object.keys(props.fin4Tokens).length > 0 &&
 					Object.keys(props.usersClaims).map(pseudoClaimId => {
 						let claim = props.usersClaims[pseudoClaimId];
-						let token = props.store.getState().fin4Store.fin4Tokens[claim.token];
+						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pending';
+						if (!filterModes[status]) {
+							return;
+						}
+						let token = props.fin4Tokens[claim.token];
+						if (!token) {
+							// can happen in some race condition cases
+							return;
+						}
 						let date = moment.unix(claim.claimCreationTime).calendar();
-						let symbol = props.fin4Tokens[claim.token].symbol; // of token that gets claimed
+						let symbol = token.symbol; // of token that gets claimed
 						let proofSite = '/claim/' + symbol + '/proof/' + claim.claimId;
-						let status = claim.gotRejected ? 'gotRejected' : claim.isApproved ? 'isApproved' : 'pendingApproval';
 						return (
 							<Claim status={status} key={`${claim.token}${claim.claimId}`}>
 								<div>
@@ -56,7 +156,7 @@ function PreviousClaims(props) {
 									<span
 										style={{ fontFamily: 'arial', color: 'gray', fontSize: 'small', marginLeft: '20px' }}
 										onClick={() => history.push(proofSite)}>
-										REJECTED
+										{t('claims.previous-claims.rejected-label')}
 									</span>
 								)}
 								{status !== 'gotRejected' && (
@@ -66,7 +166,9 @@ function PreviousClaims(props) {
 											onClick={() => history.push(proofSite)}
 											color={claim.isApproved ? 'primary' : 'secondary'}
 											style={{ margin: '0 7px 7px 0' }}>
-											{claim.isApproved ? t('approved') : t('submit-proof-short')}
+											{claim.isApproved
+												? t('claims.previous-claims.approved-label')
+												: t('claims.previous-claims.submit-proof-button')}
 										</Button>
 									</ThemeProvider>
 								)}
@@ -77,6 +179,34 @@ function PreviousClaims(props) {
 		</>
 	);
 }
+
+const TableIcons = styled.div`
+	text-align: right;
+	margin-top: -10px;
+`;
+
+const styles = {
+	iconDefaultFiltersActive: {
+		color: Fin4Colors.darkPink,
+		width: '12px',
+		height: '12px'
+	},
+	iconDefault: {
+		color: 'gray',
+		width: '12px',
+		height: '12px'
+	},
+	iconHovered: {
+		color: 'silver',
+		width: '12px',
+		height: '12px'
+	},
+	iconActive: {
+		color: Fin4Colors.blue,
+		width: '12px',
+		height: '12px'
+	}
+};
 
 const chipTheme = createMuiTheme({
 	palette: {
@@ -109,7 +239,7 @@ const Claim = styled(Paper)`
 			switch (props.status) {
 				case 'isApproved':
 					return colors.true;
-				case 'pendingApproval':
+				case 'pending':
 					return colors.wrong;
 				case 'gotRejected':
 					return colors.gotRejected;

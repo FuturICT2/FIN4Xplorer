@@ -7,6 +7,14 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Cookies from 'js-cookie';
 import { Divider } from '@material-ui/core';
+import AddressDisplayWithCopy from '../components/AddressDisplayWithCopy';
+import moment from 'moment';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import { translationMarkdown } from '../components/utils';
+let config = null;
+try {
+	config = require('../config/config.json');
+} catch (err) {}
 
 const useStyles = makeStyles(theme => ({
 	font: {
@@ -31,9 +39,9 @@ function Settings(props, context) {
 
 	return (
 		<Container>
-			<Box title="Settings">
+			<Box title={t('settings.box-title')}>
 				<div className={classes.font}>
-					Language:{' '}
+					{t('settings.box-title') + ': '}
 					<a
 						className={`${classes.lngLink} ${langIsEN() ? classes.activeLng : ''}`}
 						href="#"
@@ -43,6 +51,8 @@ function Settings(props, context) {
 								console.log('Language changed: from ' + lng + ' to en');
 								Cookies.set('language', 'en', { expires: 7 });
 								// TODO is 7 a good expiry date for cookies? #ConceptualDecision
+								moment.locale('en');
+								window.location.reload();
 							});
 						}}>
 						EN
@@ -56,60 +66,112 @@ function Settings(props, context) {
 							i18n.changeLanguage('de', () => {
 								console.log('Language changed: from ' + lng + ' to de');
 								Cookies.set('language', 'de', { expires: 7 });
+								moment.locale('de');
+								window.location.reload();
 							});
 						}}>
 						DE
 					</a>
 					<br />
 					<br />
-					<small>We use cookies to store language preferences and token creation drafts.</small>
+					<small>{t('settings.cookie-info')}</small>
+					{config && config.NOTIFICATION_SERVER_URL && (
+						<>
+							<br />
+							<br />
+							<table>
+								<tbody>
+									<tr>
+										<td style={{ paddingRight: '10px' }}>
+											<NotificationsIcon />
+										</td>
+										<td>
+											{translationMarkdown(t('settings.notification-server-info'), {
+												'link-obj': label => {
+													return (
+														<a key="link-obj" href="https://notifications.finfour.net" target="_blank">
+															{label}
+														</a>
+													);
+												}
+											})}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</>
+					)}
 				</div>
 			</Box>
-			<Box title="System parameters">
+			<Box title={t('settings.system-parameters.box-title')}>
 				<div className={classes.font}>
-					Address of the Fin4Main smart contract:
+					{t('settings.system-parameters.main-smart-contract-address') + ': '}
 					<br />
 					{props.contracts.Fin4Main && props.contracts.Fin4Main.initialized && context.drizzle.contracts.Fin4Main ? (
-						<small>
-							<a
-								href={'https://rinkeby.etherscan.io/address/' + context.drizzle.contracts.Fin4Main.address}
-								target="_blank">
-								{context.drizzle.contracts.Fin4Main.address}
-							</a>
-						</small>
+						<AddressDisplayWithCopy address={context.drizzle.contracts.Fin4Main.address} />
 					) : (
 						'Loading...'
 					)}
 				</div>
 			</Box>
-			<Box title="Proof type addresses">
+			<Box title={t('settings.verifiers.box-title')}>
 				<div style={{ fontFamily: 'arial' }}>
-					{Object.keys(props.proofTypes).map((addr, index) => {
-						let proofType = props.proofTypes[addr];
-						let name = proofType.label;
-						let address = proofType.value;
+					{Object.keys(props.verifierTypes).map((addr, index) => {
+						let verifierType = props.verifierTypes[addr];
+						let name = verifierType.label;
+						let address = verifierType.value;
 						return (
-							<span key={'proof_' + index}>
+							<span key={'verifier_' + index}>
 								{name}
 								<br />
-								<a
-									style={{ fontSize: 'small' }}
-									href={'https://rinkeby.etherscan.io/address/' + address}
-									target="_blank">
-									{address}
-								</a>
+								<AddressDisplayWithCopy address={address} />
 								<br />
-								{proofType.paramsEncoded && (
+								{verifierType.paramsEncoded && (
 									<small style={{ color: 'gray' }}>
-										<b>Parameters</b>: {proofType.paramsEncoded}
+										<b>{t('settings.verifiers.parameters')}</b>: {verifierType.paramsEncoded}
 									</small>
 								)}
-								{index < Object.keys(props.proofTypes).length - 1 && (
+								{verifierType.isNoninteractive && (
+									<small>
+										<br />
+										{t('settings.verifiers.is-non-interactive')}
+									</small>
+								)}
+								{index < Object.keys(props.verifierTypes).length - 1 && (
 									<Divider style={{ margin: '10px 0' }} variant="middle" />
 								)}
 							</span>
 						);
 					})}
+				</div>
+			</Box>
+			<Box title={t('settings.sourcerer.box-title')}>
+				<div style={{ fontFamily: 'arial' }}>
+					{Object.keys(props.allUnderlyings)
+						.filter(name => props.allUnderlyings[name].isSourcerer)
+						.map((name, index) => {
+							let underlyingObj = props.allUnderlyings[name];
+							return (
+								<span key={'underlying_' + index}>
+									{underlyingObj.name}
+									<br />
+									{underlyingObj.contractAddress && (
+										<>
+											<AddressDisplayWithCopy address={underlyingObj.contractAddress} />
+											<br />
+										</>
+									)}
+									{underlyingObj.paramsEncoded && (
+										<small style={{ color: 'gray' }}>
+											<b>{t('settings.verifiers.parameters')}</b>: {underlyingObj.paramsEncoded}
+										</small>
+									)}
+									{index < Object.keys(props.allUnderlyings).length - 1 && (
+										<Divider style={{ margin: '10px 0' }} variant="middle" />
+									)}
+								</span>
+							);
+						})}
 				</div>
 			</Box>
 		</Container>
@@ -123,7 +185,8 @@ Settings.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		contracts: state.contracts,
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes,
+		allUnderlyings: state.fin4Store.allUnderlyings
 	};
 };
 

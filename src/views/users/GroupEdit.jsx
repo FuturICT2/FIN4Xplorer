@@ -4,7 +4,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
-import { getContractData, zeroAddress, isValidPublicAddress } from '../../components/Contractor';
+import { getContractData, zeroAddress, isValidPublicAddress, contractCall } from '../../components/Contractor';
 import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@material-ui/core';
@@ -62,14 +62,15 @@ function GroupEdit(props, context) {
 	};
 
 	const removeMember = address => {
-		context.drizzle.contracts.Fin4Groups.methods
-			.removeMember(groupId, address, false)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'removeMember',
+			[groupId, address, false],
+			'Remove user from group'
+		);
 	};
 
 	const addMembers = () => {
@@ -84,14 +85,15 @@ function GroupEdit(props, context) {
 				return;
 			}
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.addMembers(groupId, addresses)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'addMembers',
+			[groupId, addresses],
+			'Add members to group'
+		);
 	};
 
 	const transferOwnership = () => {
@@ -103,19 +105,20 @@ function GroupEdit(props, context) {
 			alert('Invalid Ethereum public address');
 			return;
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.transferOwnership(groupId, newOwnerAddress.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'transferOwnership',
+			[groupId, newOwnerAddress.current],
+			'Transfer group ownership'
+		);
 	};
 
 	return (
 		<Container>
-			<Box title="Edit group">
+			<Box title={t('groups.edit.group.box-title')}>
 				<center style={{ fontFamily: 'arial' }}>
 					{groupData.creator === null ? (
 						<span>Loading...</span>
@@ -129,9 +132,9 @@ function GroupEdit(props, context) {
 							<br />
 							<br />
 							{groupData.userIsCreator ? (
-								<span>You are the creator of this group</span>
+								<span>{t('groups.edit.group.user-is-creator')}</span>
 							) : (
-								<span style={{ color: 'red' }}>You have no editing rights for this group</span>
+								<span style={{ color: 'red' }}>{t('groups.edit.group.no-edit-rights')}</span>
 							)}
 						</>
 					)}
@@ -139,8 +142,8 @@ function GroupEdit(props, context) {
 			</Box>
 			{groupData.creator !== null && groupData.creator !== zeroAddress && groupData.userIsCreator && (
 				<>
-					<Box title="Edit members">
-						<Table headers={['Member', 'Action']} colWidths={[85, 15]}>
+					<Box title={t('groups.edit.members.box-title')}>
+						<Table headers={[t('groups.columns.member'), t('groups.columns.action')]} colWidths={[85, 15]}>
 							{groupData.members.map((memberAddress, index) => {
 								let user = props.store.getState().fin4Store.defaultAccount;
 								return (
@@ -152,7 +155,9 @@ function GroupEdit(props, context) {
 												<small
 													onClick={() => removeMember(memberAddress)}
 													style={{ color: 'blue', textDecoration: 'underline' }}>
-													Remove {memberAddress === user ? 'yourself' : ''}
+													{t('groups.edit.members.remove-user', {
+														user: memberAddress === user ? t('groups.edit.members.yourself') : ''
+													})}
 												</small>
 											)
 										}}
@@ -164,7 +169,7 @@ function GroupEdit(props, context) {
 						{groupData.userIsMember && (
 							<>
 								<center style={{ fontFamily: 'arial', color: 'gray' }}>
-									<small>Removing yourself as member does not change your ownership of this group</small>
+									<small>{t('groups.user-is-member.remove-yourself-hint')}</small>
 								</center>
 								<br />
 							</>
@@ -176,19 +181,19 @@ function GroupEdit(props, context) {
 								newMembersString.current = '';
 							}}
 							value={addMemberMode}>
-							<FormControlLabel value="addOne" control={<Radio />} label="Add a member" />
-							<FormControlLabel value="addMultiple" control={<Radio />} label="Add multiple members" />
+							<FormControlLabel value="addOne" control={<Radio />} label={t('groups.edit.members.add-one')} />
+							<FormControlLabel value="addMultiple" control={<Radio />} label={t('groups.edit.members.add-multiple')} />
 						</RadioGroup>
 						<br />
 						{addMemberMode === 'addOne' ? (
 							<AddressQRreader
 								onChange={val => (newMembersString.current = val)}
-								label="Public address of new member"
+								label={t('groups.edit.members.new-member-address')}
 							/>
 						) : (
 							<>
 								<TextField
-									label="Public addresses, comma separated"
+									label={t('groups.edit.members.new-members-addresses')}
 									multiline
 									rows="4"
 									fullWidth
@@ -200,26 +205,26 @@ function GroupEdit(props, context) {
 						)}
 						<br />
 						<center>
-							<Button onClick={() => addMembers()}>Add</Button>
+							<Button onClick={() => addMembers()}>{t('groups.edit.members.add-button')}</Button>
 						</center>
 						<br />
 					</Box>
-					<Box title="Transfer ownership">
+					<Box title={t('groups.edit.ownership.box-title')}>
 						<br />
 						<center style={{ fontFamily: 'arial' }}>
 							{ownershipExpanded && (
 								<>
 									<AddressQRreader
 										onChange={val => (newOwnerAddress.current = val)}
-										label="Public address of new group owner"
+										label={t('groups.edit.ownership.new-owner-address')}
 									/>
 									<br />
-									<span style={{ color: 'red' }}>You won't be able to edit this group anymore</span>
+									<span style={{ color: 'red' }}>{t('groups.edit.ownership.no-edit-hint')}</span>
 									<br />
 									<br />
 								</>
 							)}
-							<Button onClick={() => transferOwnership()}>Transfer ownership</Button>
+							<Button onClick={() => transferOwnership()}>{t('groups.edit.ownership.transfer-button')}</Button>
 						</center>
 						<br />
 					</Box>

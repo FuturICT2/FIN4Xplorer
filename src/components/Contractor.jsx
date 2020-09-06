@@ -1,13 +1,112 @@
+import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
+import { doCallback, bytes32ToString, txErrorAugmentation } from './utils';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 const BN = require('bignumber.js');
 const web3 = new Web3(window.ethereum);
+const jsonexport = require('jsonexport');
+const fileDownload = require('js-file-download');
 
 // --------------------- CONSTANTS ---------------------
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 // --------------------- HELPER METHODS ---------------------
+/*
+// --> npmjs.com/package/ethereum-ens#ens
+// try the truffle integration? trufflesuite.com/blog/using-the-ens-integration trufflesuite.com/docs/truffle/advanced/ethereum-name-service
+const ENS = require('ethereum-ens');
+const ensLookup = (ensStr, callback) => {
+	var ens = new ENS(web3.currentProvider);
+	ens.resolver(ensStr).addr().then(addr => {
+		callback(addr);
+	});
+};
+*/
+const contractCall = (
+	context,
+	props,
+	defaultAccount,
+	contractName,
+	methodName,
+	params,
+	displayStr = '',
+	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
+	skipDryRun = false
+) => {
+	let contract = context.drizzle.contracts[contractName];
+	let abiArr = contract.abi;
+	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
+	let methodInputs = methodAbi.inputs.map(el => el.type);
+	let eth = context.drizzle.web3.eth;
+	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
+	if (!Array.isArray(params)) {
+		params = [params];
+	}
+	let param = eth.abi.encodeParameters(methodInputs, params);
+	let data = funcSig + param.slice(2);
+	let paramStr = params
+		.map(el => {
+			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
+		})
+		.join(',');
+	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
+
+	if (skipDryRun) {
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		return;
+	}
+
+	console.log('Initiating dry run: ' + methodStr);
+	eth.call({ from: defaultAccount, to: contract.address, data: data }, (err, res) => {
+		if (err) {
+			// let errParsed = JSON.parse(err.toString().substring('Error: [object Object]'.length));
+			// The above way of parsing is unreliable as it worked on MetaMask v7.7.9 but no longer does with v8.0.1
+			// They meanwhile fixed to turn [object Object] into a string.
+			// Hoping that split('{') is more reliable, tried it successfully on v7.7.9 and v8.0.1.
+			let preJsonObjText = err.toString().split('{')[0];
+			let errParsed = JSON.parse(err.toString().substring(preJsonObjText.length - 1));
+
+			let errObj = errParsed.data[Object.keys(errParsed.data)[0]];
+			console.log('Dry run failed with error: ' + errObj.reason, err);
+			toast.error(
+				<div>
+					<b>Transaction test failed</b>
+					<br />
+					{'Reson: ' + errObj.reason}
+				</div>,
+				{ position: toast.POSITION.TOP_RIGHT }
+			);
+			props.dispatch({
+				type: 'DRY_RUN_FAILED',
+				methodStr: methodStr,
+				displayStr: displayStr,
+				errorReason: errObj.reason
+			});
+			doCallback(callbacks, 'dryRunFailed', txErrorAugmentation(errObj.reason));
+			return;
+		}
+		console.log('Dry run succeeded, initiating transaction', res);
+		doCallback(callbacks, 'dryRunSucceeded', res);
+
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+	});
+};
+
+const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
+	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+	doCallback(callbacks, 'transactionSent');
+
+	props.dispatch({
+		type: 'ENRICH_PENDING_TRANSACTION',
+		stackId: stackId,
+		methodStr: methodStr,
+		displayStr: displayStr,
+		callbacks: callbacks
+	});
+};
 
 const getContractData = (contract, defaultAccount, method, ...methodArgs) => {
 	if (methodArgs.length === 0) {
@@ -42,12 +141,14 @@ const findTokenBySymbol = (props, symb) => {
 	return null;
 };
 
-const isValidPublicAddress = addr => {
+const isValidPublicAddress = (addr, verbose = true) => {
 	try {
 		let address = web3.utils.toChecksumAddress(addr);
 		return true;
 	} catch (e) {
-		console.error(e.message);
+		if (verbose) {
+			console.error(e.message);
+		}
 		return false;
 	}
 };
@@ -73,17 +174,17 @@ const fetchMessage = (Fin4MessagingContract, defaultAccount, messageId) => {
 			4: message,
 			5: hasBeenActedUpon,
 			6: attachment,
-			7: pendingApprovalId
+			7: pendingRequestId
 		}) => {
 			return {
 				messageId: messageId.toString(),
 				messageType: messageType.toString(),
 				sender: sender,
-				proofTypeName: senderStr,
+				verifierContractName: senderStr,
 				message: message,
 				hasBeenActedUpon: hasBeenActedUpon,
 				attachment: attachment,
-				pendingApprovalId: pendingApprovalId
+				pendingRequestId: pendingRequestId
 			};
 		}
 	);
@@ -131,6 +232,94 @@ const fetchUsersREPbalance = (props, REPcontract) => {
 	});
 };
 
+// must have been already added to drizzle by the caller though
+const fetchTokenDetails = (tokenContract, defaultAccount) => {
+	return getContractData(tokenContract, defaultAccount, 'getDetailedTokenInfo').then(
+		({
+			0: requiredVerifierTypes,
+			1: claimsCount,
+			2: usersBalance,
+			3: totalSupply,
+			4: tokenCreationTime,
+			5: boolPropertiesArr,
+			6: uintValuesArr,
+			7: actionsText,
+			8: initialSupplyOwnerAndTokenCreatorAndMinterRoles
+		}) => {
+			return {
+				requiredVerifierTypes: requiredVerifierTypes,
+				claimsCount: claimsCount,
+				usersBalance: usersBalance,
+				totalSupply: totalSupply, // how much of this token has been minted
+				tokenCreationTime: moment.unix(tokenCreationTime).calendar(),
+				isTransferable: boolPropertiesArr[0],
+				isMintable: boolPropertiesArr[1],
+				isBurnable: boolPropertiesArr[2],
+				isCapped: boolPropertiesArr[3],
+				cap: uintValuesArr[0],
+				decimals: uintValuesArr[1],
+				fixedAmount: uintValuesArr[2],
+				initialSupply: uintValuesArr[3],
+				actionsText: actionsText,
+				initialSupplyOwner: initialSupplyOwnerAndTokenCreatorAndMinterRoles[0],
+				tokenCreator: initialSupplyOwnerAndTokenCreatorAndMinterRoles[1],
+				addressesWithMinterRoles: initialSupplyOwnerAndTokenCreatorAndMinterRoles.slice(2)
+			};
+		}
+	);
+};
+
+const fetchAllClaimsOnToken = (props, symbol, context, callback) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	let token = findTokenBySymbol(props, symbol);
+	let Fin4ClaimingContract = context.drizzle.contracts.Fin4Claiming;
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimsCountOnThisToken', token.address).then(count => {
+		let claimIds = [];
+		for (let i = 0; i < count; i++) {
+			claimIds.push(i);
+		}
+		Promise.all(
+			fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, token.address, claimIds, symbol)
+		).then(data => {
+			callback(data);
+		});
+	});
+};
+
+const downloadClaimHistoryOnToken = (props, symbol, context) => {
+	fetchAllClaimsOnToken(props, symbol, context, data => {
+		jsonexport(data, (err, csv) => {
+			if (err) return console.error(err);
+			fileDownload(csv, 'AllClaimsOnToken_' + symbol + '_' + moment().valueOf() + '.csv');
+		});
+	});
+};
+
+const downloadClaimHistoryOnTokensInCollection = (props, collectionIdentifier, symbols, context) => {
+	if (symbols.length === 0) {
+		console.log('No tokens in collection');
+		return;
+	}
+	// TODO maybe easier via promises then this recursion approach?
+	getClaimsFromNextToken(props, symbols, context, 0, [], data => {
+		jsonexport(data, (err, csv) => {
+			if (err) return console.error(err);
+			fileDownload(csv, 'AllClaimsOnAllTokensInCollection_' + collectionIdentifier + '_' + moment().valueOf() + '.csv');
+		});
+	});
+};
+
+const getClaimsFromNextToken = (props, symbols, context, index, allData, callbackDone) => {
+	fetchAllClaimsOnToken(props, symbols[index], context, data => {
+		allData = [...allData, ...data];
+		if (index === symbols.length - 1) {
+			callbackDone(allData);
+		} else {
+			getClaimsFromNextToken(props, symbols, context, index + 1, allData, callbackDone);
+		}
+	});
+};
+
 // --------------------- LOAD INITIAL DATA ---------------------
 
 const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
@@ -143,9 +332,10 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			3: Fin4ClaimingAddress,
 			4: Fin4CollectionsAddress,
 			5: Fin4MessagingAddress,
-			6: Fin4ProvingAddress,
+			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
-			8: Fin4SystemParametersAddress
+			8: Fin4SystemParametersAddress,
+			9: Fin4UnderlyingsAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -155,13 +345,16 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 				'ClaimSubmitted',
 				'ClaimApproved',
 				'ClaimRejected',
-				'ProofApproved',
+				'VerifierPending',
+				'VerifierApproved',
+				'VerifierRejected',
 				'UpdatedTotalSupply'
 			]);
 			addContract(props, drizzle, 'Fin4Collections', Fin4CollectionsAddress, []);
-			addContract(props, drizzle, 'Fin4Proving', Fin4ProvingAddress, ['SubmissionAdded']);
+			addContract(props, drizzle, 'Fin4Verifying', Fin4VerifyingAddress, ['SubmissionAdded']);
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
+			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
 		}
 	);
 };
@@ -170,7 +363,7 @@ const addTCRcontracts = (props, Fin4MainContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4MainContract, defaultAccount, 'getTCRaddresses').then(
 		({ 0: REPTokenAddress, 1: GOVTokenAddress, 2: RegistryAddress, 3: PLCRVotingAddress, 4: ParameterizerAddress }) => {
-			addContract(props, drizzle, 'Fin4Reputation', REPTokenAddress, []);
+			addContract(props, drizzle, 'REP', REPTokenAddress, []);
 			addContract(props, drizzle, 'GOV', GOVTokenAddress, []);
 			addContract(props, drizzle, 'Registry', RegistryAddress, []);
 			addContract(props, drizzle, 'PLCRVoting', PLCRVotingAddress, []);
@@ -223,48 +416,58 @@ const fetchMessages = (props, Fin4MessagingContract) => {
 		});
 };
 
-const fetchAllTokens = (props, Fin4TokenManagementContract, callback) => {
+const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, callback) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens')
-		.then(tokens => {
-			return tokens.map(tokenAddr => {
-				return getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
+	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
+		let promises = [];
+		let tokensObj = {};
+		tokens.map(tokenAddr => {
+			tokensObj[tokenAddr] = {};
+			promises.push(
+				getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
 					({
 						0: userIsCreator,
-						1: userIsAdmin,
-						2: name,
-						3: symbol,
-						4: description,
-						5: unit,
-						6: totalSupply,
-						7: creationTime,
-						8: hasFixedMintingQuantity
+						1: name,
+						2: symbol,
+						3: description,
+						4: unit,
+						5: totalSupply,
+						6: creationTime,
+						7: hasFixedMintingQuantity
 					}) => {
-						return {
-							userIsCreator: userIsCreator,
-							userIsAdmin: userIsAdmin,
-							address: tokenAddr,
-							name: name,
-							symbol: symbol,
-							description: description,
-							unit: unit,
-							totalSupply: new BN(totalSupply).toNumber(),
-							creationTime: creationTime,
-							hasFixedMintingQuantity: hasFixedMintingQuantity,
-							isOPAT: null
-						};
+						tokensObj[tokenAddr].userIsCreator = userIsCreator;
+						tokensObj[tokenAddr].address = tokenAddr;
+						tokensObj[tokenAddr].name = name;
+						tokensObj[tokenAddr].symbol = symbol;
+						tokensObj[tokenAddr].description = description;
+						tokensObj[tokenAddr].unit = unit;
+						tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
+						tokensObj[tokenAddr].creationTime = creationTime;
+						tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
+						tokensObj[tokenAddr].isOPAT = null;
+						// empty underlyings array required?
 					}
+				)
+			);
+			if (Fin4UnderlyingsContract) {
+				// if its null that means UnderlyingsActive is false
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
+						underlyingNamesBytes32 => {
+							tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
+						}
+					)
 				);
-			});
-		})
-		.then(promises => Promise.all(promises))
-		.then(tokenArr => {
+			}
+		});
+		Promise.all(promises).then(() => {
 			props.dispatch({
 				type: 'ADD_MULTIPLE_FIN4_TOKENS',
-				tokenArr: tokenArr
+				tokensObj: tokensObj
 			});
 			callback();
 		});
+	});
 };
 
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
@@ -283,21 +486,98 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
+const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypes')
-		.then(proofTypeAddresses => {
-			return proofTypeAddresses.map(proofTypeAddress => {
-				return getContractData(Fin4ProvingContract, defaultAccount, 'getProofTypeInfo', proofTypeAddress).then(
-					({ 0: name, 1: description, 2: parameterForTokenCreatorToSetEncoded }) => {
+	getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyings').then(
+		({ 0: names, 1: isSourcerers, 2: contractAddresses, 3: attachments }) => {
+			let underlyingsObj = {};
+			let sourcererPairs = [];
+			let promises = [];
+			for (let i = 0; i < names.length; i++) {
+				let name = bytes32ToString(names[i]);
+				let contractAddress = contractAddresses[i];
+				let isSourcerer = isSourcerers[i];
+				underlyingsObj[name] = {
+					name: name,
+					isSourcerer: isSourcerer,
+					contractAddress: contractAddress,
+					attachment: bytes32ToString(attachments[i]),
+					paramsEncoded: ''
+				};
+
+				if (!isSourcerer) {
+					continue;
+				}
+
+				addContract(props, drizzle, name, contractAddress, []);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererParams', contractAddress).then(
+						paramsEncoded => {
+							underlyingsObj[name].paramsEncoded = paramsEncoded;
+						}
+					)
+				);
+				promises.push(
+					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getSourcererPairs', contractAddress).then(
+						({
+							0: pats,
+							1: collaterals,
+							2: beneficiaries,
+							3: exchangeRatios,
+							4: totalCollateralBalances,
+							5: totalExchangedPatAmounts
+						}) => {
+							for (let i = 0; i < pats.length; i++) {
+								sourcererPairs.push({
+									sourcererName: name,
+									pat: pats[i],
+									collateral: collaterals[i],
+									beneficiary: beneficiaries[i],
+									exchangeRatio: exchangeRatios[i],
+									totalCollateralBalance: totalCollateralBalances[i],
+									totalExchangedPatAmount: totalExchangedPatAmounts[i]
+								});
+							}
+						}
+					)
+				);
+			}
+			Promise.all(promises).then(() => {
+				props.dispatch({
+					type: 'SET_UNDERLYINGS',
+					allUnderlyings: underlyingsObj
+				});
+				props.dispatch({
+					type: 'SET_SOURCERER_PAIRS',
+					sourcererPairs: sourcererPairs
+				});
+			});
+		}
+	);
+};
+
+const fetchAndAddAllVerifierTypes = (props, Fin4Verifying, drizzle, t) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypes')
+		.then(verifierTypeAddresses => {
+			return verifierTypeAddresses.map(verifierTypeAddress => {
+				return getContractData(Fin4Verifying, defaultAccount, 'getVerifierTypeInfo', verifierTypeAddress).then(
+					({
+						0: contractName,
+						1: nameTransKey,
+						2: descriptionTransKey,
+						3: parameterForTokenCreatorToSetEncoded,
+						4: isNoninteractive
+					}) => {
 						// add Contract objects to drizzle
-						addContract(props, drizzle, name, proofTypeAddress, []);
+						addContract(props, drizzle, contractName, verifierTypeAddress, []);
 						return {
-							value: proofTypeAddress,
-							label: name,
-							description: description,
+							contractName: contractName,
+							value: verifierTypeAddress,
+							label: t(nameTransKey),
+							description: t(descriptionTransKey),
 							paramsEncoded: parameterForTokenCreatorToSetEncoded,
-							paramValues: {} // TODO remove this weird placeholder to be used in ContractForm
+							isNoninteractive: isNoninteractive
 						};
 					}
 				);
@@ -306,56 +586,72 @@ const fetchAndAddAllProofTypes = (props, Fin4ProvingContract, drizzle) => {
 		.then(data => Promise.all(data))
 		.then(data => {
 			props.dispatch({
-				type: 'ADD_MULTIPLE_PROOF_TYPES',
-				proofTypesArr: data
+				type: 'ADD_MULTIPLE_VERIFIER_TYPES',
+				verifierTypesArr: data
 			});
 		});
 };
 
+const fetchTheseClaimsOnThisToken = (
+	Fin4ClaimingContract,
+	defaultAccount,
+	tokenAddr,
+	claimIds,
+	tokenSymbol = null // if != null, this is for CSV export
+) => {
+	return claimIds.map(claimId => {
+		return getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimOnThisToken', tokenAddr, claimId).then(
+			({
+				0: claimer,
+				1: isApproved,
+				2: gotRejected,
+				3: quantityBN,
+				4: claimCreationTimeBN,
+				5: claimApprovalOrRejectionTimeBN,
+				6: comment,
+				7: requiredVerifierTypes,
+				8: verifierStatuses, // ProofAndVerifierStatusEnum
+				9: verifiersWithMessages
+			}) => {
+				let verifierStatusesObj = {};
+				for (let i = 0; i < requiredVerifierTypes.length; i++) {
+					verifierStatusesObj[requiredVerifierTypes[i]] = {
+						status: Number(verifierStatuses[i]),
+						message: ''
+					};
+				}
+				let claimObj = {};
+				if (tokenSymbol) {
+					claimObj.tokenSymbol = tokenSymbol;
+				}
+				claimObj.token = tokenAddr;
+				claimObj.claimId = claimId;
+				claimObj.claimer = claimer;
+				claimObj.isApproved = isApproved;
+				claimObj.gotRejected = gotRejected;
+				claimObj.quantity = new BN(quantityBN).toNumber();
+				claimObj.claimCreationTime = new BN(claimCreationTimeBN).toNumber();
+				claimObj.claimApprovalOrRejectionTime = new BN(claimApprovalOrRejectionTimeBN).toNumber();
+				claimObj.comment = comment;
+				if (!tokenSymbol) {
+					claimObj.id = tokenAddr + '_' + claimId; // pseudoId
+					claimObj.verifierStatuses = verifierStatusesObj;
+					claimObj.verifiersWithMessages = verifiersWithMessages.filter(addr => addr !== zeroAddress);
+				}
+				return claimObj;
+			}
+		);
+	});
+};
+
 const fetchCurrentUsersClaims = (props, Fin4ClaimingContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ClaimingContract, defaultAccount, 'getActionsWhereUserHasClaims')
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getTokensWhereUserHasClaims')
 		.then(tokenAddresses => {
 			return tokenAddresses.map(tokenAddr => {
 				return getContractData(Fin4ClaimingContract, defaultAccount, 'getMyClaimIdsOnThisToken', tokenAddr).then(
 					claimIds => {
-						return claimIds.map(claimId => {
-							return getContractData(
-								Fin4ClaimingContract,
-								defaultAccount,
-								'getClaimOnThisToken',
-								tokenAddr,
-								claimId
-							).then(
-								({
-									0: claimer,
-									1: isApproved,
-									2: gotRejected,
-									3: quantityBN,
-									4: claimCreationTimeBN,
-									5: comment,
-									6: requiredProofTypes,
-									7: proofStatusesBool
-								}) => {
-									let proofStatusesObj = {};
-									for (let i = 0; i < requiredProofTypes.length; i++) {
-										proofStatusesObj[requiredProofTypes[i]] = proofStatusesBool[i];
-									}
-									return {
-										id: tokenAddr + '_' + claimId, // pseudoId
-										token: tokenAddr,
-										claimId: claimId,
-										claimer: claimer,
-										isApproved: isApproved,
-										gotRejected: gotRejected,
-										quantity: new BN(quantityBN).toNumber(),
-										claimCreationTime: new BN(claimCreationTimeBN).toNumber(),
-										comment: comment,
-										proofStatuses: proofStatusesObj
-									};
-								}
-							);
-						});
+						return fetchTheseClaimsOnThisToken(Fin4ClaimingContract, defaultAccount, tokenAddr, claimIds);
 					}
 				);
 			});
@@ -416,23 +712,23 @@ const fetchCollectionsInfo = (props, Fin4CollectionsContract) => {
 		});
 };
 
-const fetchAllSubmissions = (props, Fin4ProvingContract) => {
+const fetchAllSubmissions = (props, Fin4Verifying) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ProvingContract, defaultAccount, 'getSubmissionsCount')
+	getContractData(Fin4Verifying, defaultAccount, 'getSubmissionsCount')
 		.then(submissionsCount => {
 			return Array(new BN(submissionsCount).toNumber())
 				.fill()
 				.map((x, i) => i)
 				.map(submissionId => {
-					return getContractData(Fin4ProvingContract, defaultAccount, 'submissions', submissionId).then(
-						({ 0: submissionId, 1: proofType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
+					return getContractData(Fin4Verifying, defaultAccount, 'submissions', submissionId).then(
+						({ 0: submissionId, 1: verifierType, 2: token, 3: user, 4: timestamp, 5: contentType, 6: content }) => {
 							return {
 								submissionId: submissionId,
-								proofType: proofType,
+								verifierType: verifierType,
 								token: token,
 								user: user,
 								timestamp: timestamp,
-								contentType: contentType,
+								contentType: contentType, // 0 = text, 1 = picture, 2 = vote
 								content: content
 							};
 						}
@@ -511,7 +807,7 @@ export {
 	fetchAllTokens,
 	fetchUsersNonzeroTokenBalances,
 	fetchCurrentUsersClaims,
-	fetchAndAddAllProofTypes,
+	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	findTokenBySymbol,
 	isValidPublicAddress,
@@ -524,23 +820,10 @@ export {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchOPATs,
-	fetchSystemParameters
+	fetchSystemParameters,
+	contractCall,
+	fetchAndAddAllUnderlyings,
+	fetchTokenDetails,
+	downloadClaimHistoryOnToken,
+	downloadClaimHistoryOnTokensInCollection
 };
-
-/*
-// DEPRECATED
-const getAllActionTypes = () => {
-	return getContractData_deprecated(Fin4MainAddress, 'Fin4Main', 'getAllFin4Tokens')
-		.then(tokens => {
-			return tokens.map(address => {
-				return getContractData_deprecated(address, 'Fin4Token', 'getInfo').then(({ 0: name, 1: symbol, 2: description }) => {
-					return {
-						value: address,
-						label: `[${symbol}] ${name}`
-					};
-				});
-			});
-		})
-		.then(data => Promise.all(data));
-};
-*/

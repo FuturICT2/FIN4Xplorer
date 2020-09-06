@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import TextField from '@material-ui/core/TextField';
 import MessageIcon from '@material-ui/icons/Message';
 import AddressQRreader from '../../components/AddressQRreader';
-import { isValidPublicAddress } from '../../components/Contractor';
+import { isValidPublicAddress, contractCall } from '../../components/Contractor';
 import PropTypes from 'prop-types';
 
 function UserMessage(props, context) {
@@ -25,28 +25,29 @@ function UserMessage(props, context) {
 	});
 
 	const sendMessage = () => {
-		context.drizzle.contracts.Fin4Messaging.methods
-			.addUserMessage(addressValue.current, msgText.current)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Messaging',
+			'addUserMessage',
+			[addressValue.current, msgText.current],
+			'Send message to user'
+		);
 	};
 
 	return (
 		<Container>
-			<Box title="Send message to user">
+			<Box title={t('user-to-user.messages.box-title')}>
 				<center>
 					<AddressQRreader
 						initialValue={userAddressViaURL}
 						onChange={val => (addressValue.current = val)}
-						label="Public address of message-receiver"
+						label={t('user-to-user.messages.fields.receiver-address')}
 					/>
 					<br />
 					<TextField
-						label="Message text"
+						label={t('user-to-user.messages.fields.message-text-field')}
 						multiline
 						rows="4"
 						fullWidth
@@ -54,10 +55,7 @@ function UserMessage(props, context) {
 						onChange={e => (msgText.current = e.target.value)}
 					/>
 					<br />
-					<small style={{ color: 'gray', fontFamily: 'arial' }}>
-						Note that messages are <i>not</i> encrypted. With some effort they can be retrieved in plain text from the
-						blockchain.
-					</small>
+					<small style={{ color: 'gray', fontFamily: 'arial' }}>{t('user-to-user.messages.non-encryption-hint')}</small>
 					<br />
 					<br />
 					<Button
@@ -69,7 +67,7 @@ function UserMessage(props, context) {
 							}
 							sendMessage();
 						}}>
-						Send
+						{t('user-to-user.messages.send-button')}
 					</Button>
 					<br />
 					<br />

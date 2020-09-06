@@ -20,6 +20,7 @@ function NetworkingProof(props, context) {
 			return;
 		}
 		let content = contentValue.current;
+		// TODO use new contractCall()
 		context.drizzle.contracts.Networking.methods
 			.submitProof(props.tokenAddr, props.claimId, approver, content)
 			.send({ from: props.store.getState().fin4Store.defaultAccount })

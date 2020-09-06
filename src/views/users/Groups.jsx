@@ -6,7 +6,7 @@ import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import { TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import Button from '../../components/Button';
-import { getContractData } from '../../components/Contractor';
+import { getContractData, contractCall } from '../../components/Contractor';
 import Table from '../../components/Table';
 import TableRow from '../../components/TableRow';
 import { Link } from 'react-router-dom';
@@ -83,38 +83,39 @@ function Groups(props, context) {
 			alert('Group name invalid');
 			return;
 		}
-		context.drizzle.contracts.Fin4Groups.methods
-			.createGroup(val.name, val.addCreator)
-			.send({
-				from: props.store.getState().fin4Store.defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-				setShowHint(true);
-			});
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Groups',
+			'createGroup',
+			[val.name, val.addCreator],
+			'Create group'
+		);
 	};
 
 	const removeUsersMembership = () => {
 		let groupId = leaveGroupValues.current.groupId;
 		let notifyOwner = leaveGroupValues.current.notifyOwner;
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-		context.drizzle.contracts.Fin4Groups.methods
-			.removeMember(groupId, defaultAccount, notifyOwner)
-			.send({
-				from: defaultAccount
-			})
-			.then(function(result) {
-				console.log('Results of submitting: ', result);
-			});
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Groups',
+			'removeMember',
+			[groupId, defaultAccount, notifyOwner],
+			'Remove user from group'
+		);
 	};
 
 	return (
 		<Container>
-			<Box title="Create a group">
+			<Box title={t('groups.create-new.box-title')}>
 				<TextField
 					key="name-field"
 					type="text"
-					label="Group name"
+					label={t('groups.create-new.group-name-field')}
 					onChange={e => (values.current.name = e.target.value)}
 					style={inputFieldStyle}
 				/>
@@ -127,18 +128,20 @@ function Groups(props, context) {
 							}}
 						/>
 					}
-					label={<span style={{ color: 'gray' }}>Add yourself as member</span>}
+					label={<span style={{ color: 'gray' }}>{t('groups.create-new.add-yourself-checkbox')}</span>}
 				/>
 				<Button onClick={submitNewGroup} center="true">
-					Submit
+					{t('groups.create-new.submit-button')}
 				</Button>
 				{showHint && (
-					<center style={{ color: 'gray', fontFamily: 'arial' }}>Reload the page to see your new group.</center>
+					<center style={{ color: 'gray', fontFamily: 'arial' }}>{t('groups.create-new.reload-hint')}</center>
 				)}
 			</Box>
 			{groups.filter(group => group.userIsCreator).length > 0 && (
-				<Box title="Groups you created">
-					<Table headers={['Group name', 'ID', 'Action']} colWidths={[75, 10, 15]}>
+				<Box title={t('groups.created-by-user.box-title')}>
+					<Table
+						headers={[t('groups.columns.group-name'), t('groups.columns.group-id'), t('groups.columns.action')]}
+						colWidths={[75, 10, 15]}>
 						{groups
 							.filter(g => g.userIsCreator)
 							.map((group, index) => {
@@ -161,8 +164,10 @@ function Groups(props, context) {
 				</Box>
 			)}
 			{groups.filter(group => group.userIsMember).length > 0 && (
-				<Box title="My groups">
-					<Table headers={['Group name', 'ID', 'Action']} colWidths={[64, 5, 31]}>
+				<Box title={t('groups.user-is-member.box-title')}>
+					<Table
+						headers={[t('groups.columns.group-name'), t('groups.columns.group-id'), t('groups.columns.action')]}
+						colWidths={[64, 5, 31]}>
 						{groups
 							.filter(g => g.userIsMember)
 							.map((group, index) => {
@@ -176,19 +181,17 @@ function Groups(props, context) {
 											actions: (
 												<>
 													{group.userIsCreator ? (
-														<small>You are owner</small>
+														<small>{t('groups.user-is-member.user-is-owner')}</small>
 													) : (
 														<small style={{ color: 'blue', textDecoration: 'underline' }}>
-															<Link to={'/user/message/' + group.creator}>Message owner</Link>
+															<Link to={'/user/message/' + group.creator}>
+																{t('groups.user-is-member.message-owner')}
+															</Link>
 														</small>
 													)}
 													<br />
 													<small
-														title={
-															group.userIsCreator
-																? 'Removing yourself as member does not change your ownership of this group'
-																: ''
-														}
+														title={group.userIsCreator ? t('groups.user-is-member.remove-yourself-hint') : ''}
 														style={{ color: 'blue', textDecoration: 'underline' }}
 														onClick={() => {
 															leaveGroupValues.current.groupId = group.groupId;

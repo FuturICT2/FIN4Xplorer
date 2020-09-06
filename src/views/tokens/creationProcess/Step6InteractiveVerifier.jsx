@@ -10,26 +10,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
-import { findProofTypeAddressByName } from '../../../components/utils';
+import { findVerifierTypeAddressByContractName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
-function StepProving(props) {
+function StepInteractiveVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const proofs = useRef({}); // TODO rework this to use state too as in other steps?
+	const verifiers = useRef({}); // TODO rework this to use state too as in other steps?
 
 	useEffect(() => {
-		if (!props.draft || draftId || Object.keys(props.proofTypes).length === 0) {
+		if (!props.draft || draftId || Object.keys(props.verifierTypes).length === 0) {
 			return;
 		}
 		let draft = props.draft;
-		proofs.current = draft.proofs;
-		if (proofs.current['Location']) {
-			setLocVal(proofs.current['Location'].parameters['latitude / longitude']);
+		verifiers.current = draft.interactiveVerifiers;
+		if (verifiers.current['Location']) {
+			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
 
-		setProofsAdded(Object.keys(draft.proofs).map(name => findProofTypeAddressByName(props.proofTypes, name)));
+		setVerifiersAdded(
+			Object.keys(draft.interactiveVerifiers).map(contractName =>
+				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
+			)
+		);
 		setDraftId(draft.id);
 	});
 
@@ -38,49 +42,49 @@ function StepProving(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'proofs',
-			node: proofs.current
+			nodeName: 'interactiveVerifiers',
+			node: verifiers.current
 		});
 		props.handleNext();
 	};
 
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [proofsAdded, setProofsAdded] = useState([]);
+	const [verifiersAdded, setVerifiersAdded] = useState([]);
 
-	const addProof = addr => {
-		let proofType = props.proofTypes[addr];
-		let name = proofType.label;
+	const addVerifier = addr => {
+		let verifier = props.verifierTypes[addr];
+		let contractName = verifier.contractName;
 
-		proofs.current[name] = {
+		verifiers.current[contractName] = {
 			// address: addr,
 			parameters: {}
 		};
 
-		if (proofType.paramsEncoded) {
-			proofs.current[name].parameters = {};
-			proofType.paramsEncoded.split(',').map(paramStr => {
+		if (verifier.paramsEncoded) {
+			verifiers.current[contractName].parameters = {};
+			verifier.paramsEncoded.split(',').map(paramStr => {
 				let paramName = paramStr.split(':')[1];
-				proofs.current[name].parameters[paramName] = null;
+				verifiers.current[contractName].parameters[paramName] = null;
 			});
 		}
 
-		setProofsAdded(proofsAdded.concat(addr));
+		setVerifiersAdded(verifiersAdded.concat(addr));
 		setShowDropdown(false);
 	};
 
-	const removeProof = addr => {
-		setProofsAdded(proofsAdded.filter(a => a !== addr));
-		delete proofs.current[props.proofTypes[addr].label];
+	const removeVerifier = addr => {
+		setVerifiersAdded(verifiersAdded.filter(a => a !== addr));
+		delete verifiers.current[props.verifierTypes[addr].contractName];
 	};
 
-	const requestLocation = (proofName, paramName) => {
+	const requestLocation = (contractName, paramName) => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				let latitude = pos.coords.latitude;
 				let longitude = pos.coords.longitude;
 				let locStr = latitude + ' / ' + longitude;
 				console.log('Captured location ' + locStr);
-				proofs.current[proofName].parameters[paramName] = locStr;
+				verifiers.current[contractName].parameters[paramName] = locStr;
 				setLocVal(locStr);
 			});
 		} else {
@@ -93,46 +97,49 @@ function StepProving(props) {
 
 	return (
 		<>
-			{proofsAdded.length > 0 && Object.keys(props.proofTypes).length > 0 && (
+			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
-					{proofsAdded.map((proofAddress, index) => {
-						let proofType = props.proofTypes[proofAddress];
-						let name = proofType.label;
+					{verifiersAdded.map((verifierAddress, index) => {
+						let verifierType = props.verifierTypes[verifierAddress];
+						let name = verifierType.label;
+						let contractName = verifierType.contractName;
 						return (
-							<div key={'proof_' + index} style={{ paddingTop: '20px' }}>
+							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
-									key={'proofLabel_' + index}
-									title={proofType.description}
+									key={'verifierLabel_' + index}
+									title={verifierType.description}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
 									{name}
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										onClick={() => removeProof(proofAddress)}
+										title={t('token-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
+										onClick={() => removeVerifier(verifierAddress)}
 									/>
-									{proofType.paramsEncoded.length > 0 && (
+									{verifierType.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title="Since this proof has parameters to set, it will require an extra transaction when creating the token"
+											title={t('token-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
 										/>
 									)}
 								</div>
-								{name === 'Location' && (
+								{contractName === 'Location' && (
 									<small style={{ color: 'orange', padding: '' }}>
 										<b>Note</b>: Submitting location proof is currently not
 										<br />
 										possible for users of MetaMask mobile on Android
 									</small>
 								)}
-								{proofType.paramsEncoded &&
-									proofType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
+								{verifierType.paramsEncoded &&
+									verifierType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
 										let type = paramStr.split(':')[0];
+										let isArray = type.includes('[]');
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
-										let key = 'proof_' + index + '_param_' + paramIndex;
+										let key = 'verifier_' + index + '_param_' + paramIndex;
 
 										if (description === 'gps') {
 											// ONLY FOR LAT/LON FIELD OF LOCATION
@@ -149,7 +156,7 @@ function StepProving(props) {
 														}
 														value={locVal}
 														onChange={e => {
-															proofs.current[name].parameters[paramName] = e.target.value;
+															verifiers.current[contractName].parameters[paramName] = e.target.value;
 															setLocVal(e.target.value);
 														}}
 														style={styles.shortenedField}
@@ -157,7 +164,7 @@ function StepProving(props) {
 													/>
 													<IconButton
 														style={{ margin: '17px 0 0 6px', transform: 'scale(1.4)' }}
-														onClick={() => requestLocation(name, paramName)}>
+														onClick={() => requestLocation(contractName, paramName)}>
 														<AddLocation />
 													</IconButton>
 												</span>
@@ -173,9 +180,15 @@ function StepProving(props) {
 																{description && <small> ({description})</small>}{' '}
 															</>
 														}
-														defaultValue={proofs.current[name].parameters[paramName]}
-														onChange={e => (proofs.current[name].parameters[paramName] = e.target.value)}
+														defaultValue={verifiers.current[contractName].parameters[paramName]}
+														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
+														inputProps={{
+															style: { fontSize: isArray ? 'small' : 'medium' }
+														}}
+														multiline={isArray ? true : null}
+														rows={isArray ? 1 : null}
+														variant={isArray ? 'outlined' : 'standard'}
 													/>
 												</span>
 											);
@@ -186,18 +199,19 @@ function StepProving(props) {
 					})}
 				</div>
 			)}
-			{proofsAdded.length > 0 && <Spacer />}
+			{verifiersAdded.length > 0 && <Spacer />}
 			{showDropdown ? (
 				<Dropdown
-					onChange={e => addProof(e.value)}
-					options={Object.keys(props.proofTypes)
-						.filter(addr => !proofs.current[props.proofTypes[addr].label])
-						.map(addr => props.proofTypes[addr])}
-					label="Add proof type"
+					onChange={e => addVerifier(e.value)}
+					options={Object.keys(props.verifierTypes)
+						.filter(addr => !props.verifierTypes[addr].isNoninteractive)
+						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
+						.map(addr => props.verifierTypes[addr])}
+					label={t('token-creator.step5-verifiers1.fields.add-token-verifier.label')}
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-					Add
+					{t('token-creator.step5-verifiers1.fields.add-button.label')}
 				</Button>
 			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
@@ -234,8 +248,8 @@ const styles = {
 
 const mapStateToProps = state => {
 	return {
-		proofTypes: state.fin4Store.proofTypes
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 
-export default drizzleConnect(StepProving, mapStateToProps);
+export default drizzleConnect(StepInteractiveVerifier, mapStateToProps);

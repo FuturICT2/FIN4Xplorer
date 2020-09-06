@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
@@ -19,10 +19,12 @@ import Modal from '../../components/Modal';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import history from '../../components/history';
 import Currency from '../../components/Currency';
+import { addContract, fetchTokenDetails } from '../../components/Contractor';
+import PropTypes from 'prop-types';
 const fileDownload = require('js-file-download');
 const slugify = require('slugify');
 
-function Token(props) {
+function Token(props, context) {
 	const { t } = useTranslation();
 
 	/* {
@@ -59,6 +61,85 @@ function Token(props) {
 	};
 	const chosenTokenAddress = useRef(null);
 
+	const contractReady = name => {
+		return props.contracts[name] && props.contracts[name].initialized;
+	};
+
+	const initiateWhenContractReady = useRef(null); // tokenNameSuffixed if not null
+
+	useEffect(() => {
+		if (initiateWhenContractReady.current && contractReady(initiateWhenContractReady.current)) {
+			initiateWhenContractReady.current = null;
+			fetchTokenDetailsAndDispatchNewDraft();
+		}
+	});
+
+	const fetchTokenDetailsAndDispatchNewDraft = () => {
+		let templateToken = props.fin4Tokens[chosenTokenAddress.current];
+		let tokenNameSuffixed = 'Fin4Token_' + templateToken.symbol;
+
+		fetchTokenDetails(context.drizzle.contracts[tokenNameSuffixed], props.defaultAccount).then(details => {
+			let nowTimestamp = moment().valueOf();
+
+			// expects Fin4Claiming to be the last in this array if it is included, order determined in TokenCreationProcess.createToken()
+			let minterRoles = details.addressesWithMinterRoles;
+			let Fin4ClaimingHasMinterRole =
+				minterRoles[minterRoles.length - 1] === context.drizzle.contracts.Fin4Claiming.address;
+			if (Fin4ClaimingHasMinterRole) {
+				minterRoles.pop();
+			}
+
+			let verifiers = details.requiredVerifierTypes.map(addr => props.verifierTypes[addr]);
+			let emptyVerifierBody = { parameters: {} };
+			let verifiers1 = {};
+			verifiers.filter(v => v.isNoninteractive).map(v => (verifiers1[v.contractName] = emptyVerifierBody));
+			let verifiers2 = {};
+			verifiers.filter(v => !v.isNoninteractive).map(v => (verifiers2[v.contractName] = emptyVerifierBody));
+
+			let draft = {
+				id: getRandomTokenCreationDraftID(),
+				created: nowTimestamp,
+				lastModified: nowTimestamp,
+				basics: {
+					name: 'Copy of ' + templateToken.name,
+					symbol:
+						(templateToken.symbol.length === 5 ? templateToken.symbol.substring(0, 4) : templateToken.symbol) + '2',
+					description: templateToken.description
+				},
+				properties: {
+					isTransferable: details.isTransferable,
+					isBurnable: details.isBurnable,
+					isCapped: details.isCapped,
+					cap: Number(details.cap),
+					decimals: Number(details.decimals),
+					initialSupply: Number(details.initialSupply),
+					initialSupplyOwner:
+						details.initialSupplyOwner === details.tokenCreator ? 'token-creator' : details.initialSupplyOwner
+				},
+				actions: {
+					text: details.actionsText
+				},
+				minting: {
+					isMintable: details.isMintable,
+					Fin4ClaimingHasMinterRole: Fin4ClaimingHasMinterRole,
+					additionalMinterRoles: minterRoles,
+					fixedAmount: Number(details.fixedAmount),
+					unit: templateToken.unit
+				},
+				noninteractiveVerifiers: verifiers1,
+				interactiveVerifiers: verifiers2,
+				sourcererPairs: [], // TODO
+				externalUnderlyings: [] // TODO
+			};
+
+			props.dispatch({
+				type: 'ADD_TOKEN_CREATION_DRAFT',
+				draft: draft,
+				addToCookies: true
+			});
+		});
+	};
+
 	const importTokenAsDraft = () => {
 		toggleTokenChooserVisible();
 		if (chosenTokenAddress.current === null || !props.fin4Tokens[chosenTokenAddress.current]) {
@@ -66,26 +147,13 @@ function Token(props) {
 			return;
 		}
 		let templateToken = props.fin4Tokens[chosenTokenAddress.current];
-		let nowTimestamp = moment().valueOf();
-		props.dispatch({
-			type: 'ADD_TOKEN_CREATION_DRAFT',
-			draft: {
-				id: getRandomTokenCreationDraftID(),
-				created: nowTimestamp,
-				lastModified: nowTimestamp,
-				basics: {
-					name: 'Copy of ' + templateToken.name,
-					symbol: (templateToken.symbol.length < 5 ? templateToken.symbol : templateToken.symbol.substring(0, 4)) + '2',
-					description: templateToken.description
-				},
-				properties: {},
-				actions: {},
-				value: {},
-				proofs: {}
-				// TODO copy more (all) the fields...
-			},
-			addToCookies: true
-		});
+		let tokenNameSuffixed = 'Fin4Token_' + templateToken.symbol;
+		if (contractReady(tokenNameSuffixed)) {
+			fetchTokenDetailsAndDispatchNewDraft();
+		} else {
+			addContract(props, context.drizzle, 'Fin4Token', templateToken.address, [], tokenNameSuffixed);
+			initiateWhenContractReady.current = tokenNameSuffixed;
+		}
 	};
 
 	const exportDraft = draftId => {
@@ -144,8 +212,11 @@ function Token(props) {
 				basics: {},
 				properties: {},
 				actions: {},
-				value: {},
-				proofs: {}
+				minting: {},
+				noninteractiveVerifiers: {},
+				interactiveVerifiers: {},
+				sourcererPairs: [],
+				externalUnderlyings: []
 			},
 			addToCookies: true
 		});
@@ -154,9 +225,9 @@ function Token(props) {
 
 	return (
 		<Container>
-			<Box title={t('create-new-token')}>
-				{buildIconLabelCallback(createNewTokenDraft, <AddIcon />, 'Start token creation wizard')}
-				{buildIconLabelCallback(toggleUploadFileVisible, <ImportIcon />, 'Upload token draft (JSON)')}
+			<Box title={t('tokens-site.create-new-token')}>
+				{buildIconLabelCallback(createNewTokenDraft, <AddIcon />, t('tokens-site.start-token-creation'))}
+				{buildIconLabelCallback(toggleUploadFileVisible, <ImportIcon />, t('tokens-site.upload-token-draft'))}
 				{uploadFileVisible && (
 					<>
 						<input
@@ -169,7 +240,7 @@ function Token(props) {
 						<br />
 					</>
 				)}
-				{buildIconLabelCallback(toggleTokenChooserVisible, <CopyIcon />, 'Copy an existing token')}
+				{buildIconLabelCallback(toggleTokenChooserVisible, <CopyIcon />, t('tokens-site.copy-existing-token'))}
 				{tokenChooserVisible && (
 					<>
 						{' '}
@@ -182,12 +253,11 @@ function Token(props) {
 											key="token-chooser"
 											onChange={e => (chosenTokenAddress.current = e.value)}
 											options={getFormattedSelectOptions(props.fin4Tokens)}
-											label={t('token-type')}
 										/>
 									</td>
 									<td>
 										<Button style={{ paddingLeft: '20px' }} onClick={importTokenAsDraft}>
-											Import
+											{t('tokens-site.import-button')}
 										</Button>
 									</td>
 								</tr>
@@ -200,11 +270,11 @@ function Token(props) {
 					<>
 						<br />
 						<div style={{ fontFamily: 'arial' }}>
-							<b>Your token creation drafts</b>
+							<b>{t('tokens-site.drafts.title')}</b>
 							{Object.keys(props.tokenCreationDrafts).length > 1 && (
 								<>
 									<small style={{ color: 'green', paddingLeft: '110px' }} onClick={() => deleteAllDrafts()}>
-										Delete all
+										{t('tokens-site.drafts.delete-all-button')}
 									</small>
 								</>
 							)}
@@ -221,18 +291,18 @@ function Token(props) {
 											</span>
 											<br />
 											<small style={{ color: 'gray' }}>
-												{'Last modified: '}
+												{t('tokens-site.drafts.last-modified') + ': '}
 												{date}
 											</small>
 											<br />
 											<small style={{ color: 'green' }}>
 												<span onClick={() => continueEditing(draftId)}>
-													<b>Continue editing</b>
+													<b>{t('tokens-site.drafts.continue-editing-button')}</b>
 												</span>
 												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => exportDraft(draftId)}>Download</span>
+												<span onClick={() => exportDraft(draftId)}>{t('tokens-site.drafts.download-button')}</span>
 												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => deleteDraft(draftId)}>Delete</span>
+												<span onClick={() => deleteDraft(draftId)}>{t('tokens-site.drafts.delete-button')}</span>
 											</small>
 											<br />
 										</li>
@@ -245,7 +315,7 @@ function Token(props) {
 				<Modal
 					isOpen={isPreviewDraftModalOpen}
 					handleClose={togglePreviewDraftModalOpen}
-					title="Token creation draft"
+					title={t('tokens-site.drafts.modal-title')}
 					width="400px">
 					<SyntaxHighlighter language="json">{previewDraftStr.current}</SyntaxHighlighter>
 				</Modal>
@@ -255,10 +325,17 @@ function Token(props) {
 	);
 }
 
+Token.contextTypes = {
+	drizzle: PropTypes.object
+};
+
 const mapStateToProps = state => {
 	return {
+		contracts: state.contracts,
+		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts
+		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
+		verifierTypes: state.fin4Store.verifierTypes
 	};
 };
 

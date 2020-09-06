@@ -1,8 +1,8 @@
 import React from 'react';
 import Modal from '../../components/Modal';
 import { drizzleConnect } from 'drizzle-react';
-import ContractForm from '../../components/ContractForm';
 import { useTranslation } from 'react-i18next';
+import ContractFormSimple from '../../components/ContractFormSimple';
 
 function RevealModal(props) {
 	const { t } = useTranslation();
@@ -10,19 +10,18 @@ function RevealModal(props) {
 	return (
 		<center>
 			<Modal isOpen={props.isOpen} handleClose={props.handleClose} title="Set vote and salt" width="400px">
-				<ContractForm
+				<ContractFormSimple
 					contractName="PLCRVoting"
-					method="revealVote"
-					labels={['_pollID', 'Vote', 'Salt']}
-					staticArgs={{
-						_pollID: props.pollID
-					}}
-					postSubmitCallback={(success, result) => {
-						if (!success) {
-							alert(result.message);
+					contractMethod="revealVote"
+					pendingTxStr="Reveal vote"
+					fields={[['pollID', 'number'], ['Vote', 'number'], ['Salt', 'number']]}
+					fixValues={{ pollID: props.pollID }}
+					callbacks={{
+						transactionSent: () => {
+							props.handleClose();
 						}
-						props.handleClose();
 					}}
+					skipDryRun={true}
 				/>
 			</Modal>
 		</center>
