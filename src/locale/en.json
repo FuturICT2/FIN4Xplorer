@@ -43,6 +43,11 @@
 			"parameters-button": "Parameters"
 		}
 	},
+	"campaigns": {
+		"create-new-campaign": "Create a new campaign",
+		"all-campaigns-box-title": "All campaigns",
+		"start-campaign-creation": "Start campaign creation wizard"
+	},
 	"tokens-site": {
 		"create-new-token": "Create a new token",
 		"start-token-creation": "Start token creation wizard",

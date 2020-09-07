@@ -43,6 +43,11 @@
 			"parameters-button": "Rahmenbedingungen"
 		}
 	},
+	"campaigns": {
+		"create-new-campaign": "Erstellen Sie eine neue Kampagne",
+		"all-campaigns-box-title": "alle Kampagnen",
+		"start-campaign-creation": "Assistent zur Kampagnen-Erstellung starten"
+	},
 	"tokens-site": {
 		"copy-existing-token": "Kopiere einen vorhandenen Token",
 		"import-button": "Importieren",
