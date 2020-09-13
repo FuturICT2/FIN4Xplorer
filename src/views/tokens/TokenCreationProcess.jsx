@@ -239,15 +239,15 @@ function TokenCreationProcess(props, context) {
 			return t('token-creator.validation.symbol-duplicate');
 		}
 
-		if (draft.interactiveVerifiers.Location) {
-			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
+		if (draft.verifiers.Location) {
+			let latLonStr = draft.verifiers.Location.parameters['latitude / longitude'];
 			if (latLonStr.split('/').length !== 2) {
 				// also check for other possibly wrong cases?
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
 			}
 		}
-		if (draft.interactiveVerifiers.Password) {
-			let pass = draft.interactiveVerifiers.Password.parameters['password'];
+		if (draft.verifiers.Password) {
+			let pass = draft.verifiers.Password.parameters['password'];
 			var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
 			if (!pass.match(decimal)) {
 				return "The password you have chosen doesn't abide by the rules described";
