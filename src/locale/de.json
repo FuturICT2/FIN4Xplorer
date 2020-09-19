@@ -46,7 +46,10 @@
 	"campaigns": {
 		"create-new-campaign": "Erstellen Sie eine neue Kampagne",
 		"all-campaigns-box-title": "alle Kampagnen",
-		"start-campaign-creation": "Assistent zur Kampagnen-Erstellung starten"
+		"start-campaign-creation": "Assistent zur Kampagnen-Erstellung starten",
+		"campaign-creator": {
+			"box-title": "Kreirung von Kampagnen"
+		}
 	},
 	"tokens-site": {
 		"copy-existing-token": "Kopiere einen vorhandenen Token",

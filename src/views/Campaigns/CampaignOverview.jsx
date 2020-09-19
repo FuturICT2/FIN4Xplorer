@@ -9,7 +9,7 @@ function CampaignOverview(props) {
 
 	return (
 		<>
-			<Box title={t('campaigns.all-campaigns-box-title')}>
+			<Box title={t('tokens-list.all-tokens-box-title')}>
 				<SortableTokenList
 					tokens={Object.keys(props.fin4Tokens).map(addr => props.fin4Tokens[addr])}
 					showFilterAndSortOptions={false}

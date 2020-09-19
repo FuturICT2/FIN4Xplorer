@@ -46,7 +46,10 @@
 	"campaigns": {
 		"create-new-campaign": "Create a new campaign",
 		"all-campaigns-box-title": "All campaigns",
-		"start-campaign-creation": "Start campaign creation wizard"
+		"start-campaign-creation": "Start campaign creation wizard",
+		"campaign-creator": {
+			"box-title": "Campaign creation"
+		}
 	},
 	"tokens-site": {
 		"create-new-token": "Create a new token",
