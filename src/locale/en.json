@@ -51,6 +51,33 @@
 			"box-title": "Campaign creation"
 		}
 	},
+	"campaigns-list": {
+		"all-campaigns-box-title": "All Campaigns"
+	},
+	"campaign-creator": {
+		"step1-identity": {
+			"title": "Campaign identity",
+			"fields": {
+				"name": {
+					"label": "Name",
+					"info": "Give the new token, you want to create, a descriptive/telling name."
+				},
+				"symbol": {
+					"label": "Symbol",
+					"info": "Choose a short symbol of 3-5 letters (numbers are allowed, too) for your new token. Please note, that the system rejects symbols that are already in use."
+				},
+				"short-description": {
+					"label": "Short description",
+					"info": "Describe the purpose/idea of your new token in a short version."
+				},
+				"long-description": {
+					"label": "Long description",
+					"info": "Describe the purpose/idea of your new token in a longer version."
+				}
+			},
+			"info": "The basic infos about this tokens identity."
+		}
+	},
 	"tokens-site": {
 		"create-new-token": "Create a new token",
 		"start-token-creation": "Start token creation wizard",
