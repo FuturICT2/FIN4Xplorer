@@ -38,6 +38,7 @@ const appMiddlewares = [contractEventNotifier];
 const initialState = {
 	drizzleInitialized: false,
 	fin4Tokens: {},
+	fin4Campaigns: {},
 	fin4TokensInitiallyFetched: false, // is there a more elegant solution to know this? E.g. needed in Listing.jsx
 	usersClaims: {},
 	usersFin4TokenBalances: {},
@@ -50,6 +51,7 @@ const initialState = {
 	parameterizerParams: {},
 	systemParameters: {},
 	tokenCreationDrafts: {},
+	campaignCreationDrafts: {},
 	submissions: {},
 	transactions: [],
 	allUnderlyings: {},
@@ -298,6 +300,17 @@ function fin4StoreReducer(state = initialState, action) {
 					[action.draft.id]: action.draft
 				}
 			};
+		case 'ADD_CAMPAIGN_CREATION_DRAFT':
+			if (action.addToCookies) {
+				Cookies.set('CampaignCreationDraft_' + action.draft.id, JSON.stringify(action.draft));
+			}
+			return {
+				...state,
+				campaignCreationDrafts: {
+					...state.campaignCreationDrafts,
+					[action.draft.id]: action.draft
+				}
+			};
 		case 'DELETE_TOKEN_CREATION_DRAFT':
 			Cookies.remove('TokenCreationDraft_' + action.draftId);
 			// via https://flaviocopes.com/how-to-remove-object-property-javascript/
@@ -311,6 +324,19 @@ function fin4StoreReducer(state = initialState, action) {
 				...state,
 				tokenCreationDrafts: newTokenCreationDrafts
 			};
+		case 'DELETE_CAMPAIGN_CREATION_DRAFT':
+			Cookies.remove('CampaignCreationDraft_' + action.draftId);
+			// via https://flaviocopes.com/how-to-remove-object-property-javascript/
+			const newCampaignCreationDrafts = Object.keys(state.campaignCreationDrafts).reduce((object, key) => {
+				if (key !== action.draftId) {
+					object[key] = state.campaignCreationDrafts[key];
+				}
+				return object;
+			}, {});
+			return {
+				...state,
+				campaignCreationDrafts: newCampaignCreationDrafts
+			};
 		case 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS':
 			let draftId = action.draftId;
 			state = update(state, {
@@ -322,6 +348,19 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			});
 			Cookies.set('TokenCreationDraft_' + draftId, JSON.stringify(state.tokenCreationDrafts[draftId]));
+			return state;
+
+		case 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS':
+			let draftId_ = action.draftId;
+			state = update(state, {
+				campaignCreationDrafts: {
+					[draftId_]: {
+						lastModified: { $set: action.lastModified },
+						[action.nodeName]: { $set: action.node }
+					}
+				}
+			});
+			Cookies.set('CampaignCreationDraft_' + draftId_, JSON.stringify(state.campaignCreationDrafts[draftId_]));
 			return state;
 		case 'ADD_SUBMISSION':
 			return {

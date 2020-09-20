@@ -32,7 +32,7 @@ function StepExternalUnderlyings(props) {
 
 	const submit = () => {
 		props.dispatch({
-			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'externalUnderlyings',

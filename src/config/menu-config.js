@@ -99,6 +99,16 @@ const menu = [
 		showInNavBar: false
 	},
 	{
+		component: CampaignCreationProcess,
+		path: '/campaigns/create/:draftId',
+		showInNavBar: false
+	},
+	{
+		component: CampaignCreationProcess,
+		path: '/campaigns/create/:draftId/:stepId',
+		showInNavBar: false
+	},
+	{
 		component: CampaignView,
 		path: '/campaigns/view/',
 		showInNavBar: false

@@ -76,6 +76,10 @@ const getRandomTokenCreationDraftID = () => {
 	return getRandomStringOfLength(5);
 };
 
+const getRandomCampaignCreationDraftID = () => {
+	return getRandomStringOfLength(5);
+};
+
 const getRandomStringOfLength = len => {
 	return nanoid(len);
 };
@@ -230,6 +234,7 @@ export {
 	getFormattedSelectOptions,
 	getRandomStringOfLength,
 	getRandomTokenCreationDraftID,
+	getRandomCampaignCreationDraftID,
 	findVerifierTypeAddressByContractName,
 	TCRactive,
 	UnderlyingsActive,

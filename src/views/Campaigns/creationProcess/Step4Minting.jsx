@@ -43,7 +43,7 @@ function StepMinting(props, context) {
 			fixedAmount: fixed,
 			unit: draft.minting.hasOwnProperty('unit')
 				? draft.minting.unit
-				: t('token-creator.step4-minting.fields.unit.default-value')
+				: t('campaign-creator.step4-minting.fields.unit.default-value')
 		});
 
 		if (fixed === 0) {
@@ -92,7 +92,7 @@ function StepMinting(props, context) {
 
 	const submit = () => {
 		props.dispatch({
-			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'minting',
@@ -103,20 +103,20 @@ function StepMinting(props, context) {
 
 	return (
 		<>
-			{buildCheckboxWithLabel(t('token-creator.step4-minting.fields.is-mintable.label'), 'isMintable')}
+			{buildCheckboxWithLabel(t('campaign-creator.step4-minting.fields.is-mintable.label'), 'isMintable')}
 			{minting.isMintable && (
 				<>
 					{buildCheckboxWithLabel(
-						t('token-creator.step4-minting.fields.fin4-has-minter-role.label'),
+						t('campaign-creator.step4-minting.fields.fin4-has-minter-role.label'),
 						'Fin4ClaimingHasMinterRole'
 					)}
 					{UnderlyingsActive &&
 						buildCheckboxWithLabel(
-							t('token-creator.step4-minting.fields.minting-sourcerer-has-minter-role.label'),
+							t('campaign-creator.step4-minting.fields.minting-sourcerer-has-minter-role.label'),
 							'MintingSourcererHasMinterRole'
 						)}
 					<TextField
-						label={t('token-creator.step4-minting.fields.additional-minter-roles.label')}
+						label={t('campaign-creator.step4-minting.fields.additional-minter-roles.label')}
 						style={{ margin: '10px 0 10px 0' }}
 						inputProps={{
 							style: { fontSize: 'small' }
@@ -134,7 +134,7 @@ function StepMinting(props, context) {
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
-						{t('token-creator.step4-minting.fields.is-mintable.hint')}
+						{t('campaign-creator.step4-minting.fields.is-mintable.hint')}
 					</center>
 					<br />
 				</>
@@ -143,7 +143,7 @@ function StepMinting(props, context) {
 				<>
 					<br />
 					<center style={{ fontFamily: 'arial', color: 'orange' }}>
-						{t('token-creator.step4-minting.fields.fin4-has-minter-role.hint')}
+						{t('campaign-creator.step4-minting.fields.fin4-has-minter-role.hint')}
 					</center>
 					<br />
 				</>
@@ -157,7 +157,7 @@ function StepMinting(props, context) {
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'fixedAmount'}
 									control={<Radio />}
-									label={t('token-creator.step4-minting.fields.fixed-amount.label')}
+									label={t('campaign-creator.step4-minting.fields.fixed-amount.label')}
 									onChange={e => {
 										setChoice('fixedAmount');
 										setMinting({
@@ -171,7 +171,7 @@ function StepMinting(props, context) {
 								<TextField
 									disabled={choice !== 'fixedAmount'}
 									type="number"
-									label={t('token-creator.step4-minting.fields.per-claim.label')}
+									label={t('campaign-creator.step4-minting.fields.per-claim.label')}
 									value={minting.fixedAmount}
 									onChange={e => updateVal('fixedAmount', Number(e.target.value))}
 								/>
@@ -187,7 +187,7 @@ function StepMinting(props, context) {
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									checked={choice === 'variableAmount'}
 									control={<Radio />}
-									label={t('token-creator.step4-minting.fields.variable-amount.label')}
+									label={t('campaign-creator.step4-minting.fields.variable-amount.label')}
 									onChange={e => {
 										setChoice('variableAmount');
 										setMinting({
@@ -204,7 +204,7 @@ function StepMinting(props, context) {
 								<TextField
 									disabled={!minting.Fin4ClaimingHasMinterRole}
 									type="text"
-									label={t('token-creator.step4-minting.fields.unit.label')}
+									label={t('campaign-creator.step4-minting.fields.unit.label')}
 									value={minting.unit}
 									onChange={e => updateVal('unit', e.target.value)}
 									style={{ width: '100%' }}

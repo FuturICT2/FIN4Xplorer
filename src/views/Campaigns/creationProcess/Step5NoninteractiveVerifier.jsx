@@ -37,7 +37,7 @@ function StepNoninteractiveVerifier(props) {
 
 	const submit = () => {
 		props.dispatch({
-			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'noninteractiveVerifiers',
@@ -90,14 +90,14 @@ function StepNoninteractiveVerifier(props) {
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title={t('token-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
+										title={t('camapign-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
 										onClick={() => removeVerifier(verifierAddress)}
 									/>
 									{verifier.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title={t('token-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
+											title={t('camapign-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
 										/>
 									)}
 								</div>
@@ -145,11 +145,11 @@ function StepNoninteractiveVerifier(props) {
 						.filter(addr => props.verifierTypes[addr].isNoninteractive)
 						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
 						.map(addr => props.verifierTypes[addr])}
-					label={t('token-creator.step5-verifiers1.fields.add-token-verifier.label')}
+					label={t('camapign-creator.step5-verifiers1.fields.add-token-verifier.label')}
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-					{t('token-creator.step5-verifiers1.fields.add-button.label')}
+					{t('campaign-creator.step5-verifiers1.fields.add-button.label')}
 				</Button>
 			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />

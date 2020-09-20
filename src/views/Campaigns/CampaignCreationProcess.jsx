@@ -27,7 +27,7 @@ import {
 	UnderlyingsActive,
 	Fin4Colors
 } from '../../components/utils';
-import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
+import { findCampaignBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
@@ -69,21 +69,21 @@ function CampaignCreationProcess(props, context) {
 	const getStepContent = stepIndex => {
 		switch (stepIndex) {
 			case 0:
-				return t('token-creator.step1-identity.title');
+				return t('campaign-creator.step1-identity.title');
 			case 1:
-				return t('token-creator.step2-design.title');
+				return t('campaign-creator.step2-design.title');
 			case 2:
-				return t('token-creator.step3-actions.title');
+				return t('campaign-creator.step3-actions.title');
 			case 3:
-				return t('token-creator.step4-minting.title');
+				return t('campaign-creator.step4-minting.title');
 			case 4:
-				return t('token-creator.step5-verifiers1.title');
+				return t('campaign-creator.step5-verifiers1.title');
 			case 5:
-				return t('token-creator.step6-verifiers2.title');
+				return t('campaign-creator.step6-verifiers2.title');
 			case 6:
-				return UnderlyingsActive ? t('token-creator.step7-sourcerers.title') : '';
+				return UnderlyingsActive ? t('campaign-creator.step7-sourcerers.title') : '';
 			case 7:
-				return t('token-creator.step8-underlyings.title');
+				return t('campaign-creator.step8-underlyings.title');
 			default:
 				return '';
 		}
@@ -93,14 +93,14 @@ function CampaignCreationProcess(props, context) {
 		let items = [];
 		items.push(
 			<div key={stepName + '_info'}>
-				{t('token-creator.' + stepName + '.info')}
+				{t('campaign-creator.' + stepName + '.info')}
 				<br />
 				<br />
 				<br />
 			</div>
 		);
 		fieldNames.map((field, index) => {
-			let translationKey = 'token-creator.' + stepName + '.fields.' + field;
+			let translationKey = 'campaign-creator.' + stepName + '.fields.' + field;
 			items.push(
 				<div key={stepName + '_' + field}>
 					<b>{t(translationKey + '.label')}</b>
@@ -144,10 +144,10 @@ function CampaignCreationProcess(props, context) {
 			case 4:
 				return (
 					<>
-						{t('token-creator.step5-verifiers1.info')}
+						{t('campaign-creator.step5-verifiers1.info')}
 						<br />
 						<br />
-						{t('token-creator.step5-verifiers1.listing-header') + ':'}
+						{t('campaign-creator.step5-verifiers1.listing-header') + ':'}
 						<br />
 						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
@@ -170,7 +170,7 @@ function CampaignCreationProcess(props, context) {
 			case 5:
 				return (
 					<>
-						{t('token-creator.step5-verifiers1.info')}
+						{t('campaign-creator.step5-verifiers1.info')}
 						<br />
 						<br />
 						{t('token-creator.step6-verifiers2.listing-header') + ':'}
@@ -208,7 +208,7 @@ function CampaignCreationProcess(props, context) {
 
 	useEffect(() => {
 		let draftIdViaURL = props.match.params.draftId;
-		if (draftId || !draftIdViaURL || !props.tokenCreationDrafts[draftIdViaURL]) {
+		if (draftId || !draftIdViaURL || !props.campaignCreationDrafts[draftIdViaURL]) {
 			return;
 		}
 
@@ -226,7 +226,7 @@ function CampaignCreationProcess(props, context) {
 	const [activeStep, setActiveStep] = useState(0);
 
 	const modifyURL = (_draftId, step) => {
-		window.history.pushState('', '', '/token/create/' + _draftId + '/' + step);
+		window.history.pushState('', '', '/campaigns/create/' + _draftId + '/' + step);
 	};
 
 	const handleNext = () => {
@@ -246,7 +246,7 @@ function CampaignCreationProcess(props, context) {
 
 	const buildStepComponent = component => {
 		return React.createElement(component, {
-			draft: props.tokenCreationDrafts[draftId],
+			draft: props.campaignCreationDrafts[draftId],
 			nav: [activeStep, getSteps().length, classes, handleBack],
 			handleNext: handleNext
 		});
@@ -267,7 +267,7 @@ function CampaignCreationProcess(props, context) {
 		}
 
 		// do a call to check on the contract here instead?
-		if (findTokenBySymbol(props, draft.basics.symbol) !== null) {
+		if (findCampaignBySymbol(props, draft.basics.symbol) !== null) {
 			return t('token-creator.validation.symbol-duplicate');
 		}
 
@@ -285,8 +285,8 @@ function CampaignCreationProcess(props, context) {
 		return '';
 	};
 
-	const createToken = () => {
-		let draft = props.tokenCreationDrafts[draftId];
+	const createCampaign = () => {
+		let draft = props.campaignCreationDrafts[draftId];
 
 		let validationResult = validateDraft(draft);
 		if (validationResult) {
@@ -296,14 +296,14 @@ function CampaignCreationProcess(props, context) {
 
 		if (!keepAsDraft) {
 			props.dispatch({
-				type: 'DELETE_TOKEN_CREATION_DRAFT',
+				type: 'DELETE_CAMPAIGN_CREATION_DRAFT',
 				draftId: draftId
 			});
 		}
 
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
-		let tokenCreationArgs = [
+		let campaignCreationArgs = [
 			draft.basics.name,
 			draft.basics.symbol,
 			[draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
@@ -415,7 +415,7 @@ function CampaignCreationProcess(props, context) {
 		}
 
 		let postCreationStepsArgs = [
-			null, // token address
+			null, // campaign address
 			Object.keys(verifiers).map(contractName =>
 				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
 			),
@@ -454,7 +454,7 @@ function CampaignCreationProcess(props, context) {
 			defaultAccount,
 			tokenCreatorContract,
 			'createNewToken',
-			tokenCreationArgs,
+			campaignCreationArgs,
 			'Create new token: ' + draft.basics.symbol.toUpperCase(),
 			{
 				transactionCompleted: receipt => {
@@ -645,7 +645,7 @@ function CampaignCreationProcess(props, context) {
 		<>
 			{draftId ? (
 				<Container>
-					<Box title={t('token-creator.box-title')}>
+					<Box title={t('campaign-creator.box-title')}>
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} alternativeLabel>
 								{getSteps().map((label, index) => (
@@ -711,7 +711,7 @@ function CampaignCreationProcess(props, context) {
 										<Button onClick={handleReset} className={classes.backButton}>
 											{t('token-creator.navigation.restart-button')}
 										</Button>
-										<Button variant="contained" color="primary" onClick={createToken}>
+										<Button variant="contained" color="primary" onClick={createCampaign}>
 											{t('token-creator.navigation.create-token-button')}
 										</Button>
 									</div>
@@ -789,9 +789,10 @@ CampaignCreationProcess.contextTypes = {
 
 const mapStateToProps = state => {
 	return {
-		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
+		campaignCreationDrafts: state.fin4Store.campaignCreationDrafts,
 		verifierTypes: state.fin4Store.verifierTypes,
 		fin4Tokens: state.fin4Store.fin4Tokens,
+		fin4Campaigns: state.fin4Store.fin4Campaigns,
 		defaultAccount: state.fin4Store.defaultAccount,
 		allUnderlyings: state.fin4Store.allUnderlyings
 	};

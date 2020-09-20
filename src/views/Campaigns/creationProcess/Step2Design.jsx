@@ -62,7 +62,7 @@ function StepDesign(props, context) {
 
 	const submit = () => {
 		props.dispatch({
-			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'properties',
@@ -101,11 +101,11 @@ function StepDesign(props, context) {
 	return (
 		<>
 			<div style={{ padding: '10px 0 0 85px' }}>
-				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-capped.label'), 'isCapped')}
+				{buildCheckboxWithLabel(t('campaign-creator.step2-design.fields.is-capped.label'), 'isCapped')}
 				<TextField
 					disabled={!properties['isCapped']}
 					type="number"
-					label={t('token-creator.step2-design.fields.cap.label')}
+					label={t('campaign-creator.step2-design.fields.cap.label')}
 					style={styles.numberField}
 					value={properties.cap}
 					onChange={e => updateVal('cap', Number(e.target.value))}
@@ -113,7 +113,7 @@ function StepDesign(props, context) {
 				<div style={properties.initialSupply > 0 ? styles.divOutline : null}>
 					<TextField
 						type="number"
-						label={t('token-creator.step2-design.fields.initial-supply.label')}
+						label={t('campaign-creator.step2-design.fields.initial-supply.label')}
 						style={styles.numberField}
 						value={properties.initialSupply}
 						onChange={e => updateVal('initialSupply', Number(e.target.value))}
@@ -123,7 +123,7 @@ function StepDesign(props, context) {
 							<FormControlLabel
 								checked={properties.initialSupplyOwner === 'token-creator'}
 								control={<Radio />}
-								label={t('token-creator.step2-design.fields.token-creator-owns-initial-supply.label')}
+								label={t('campaign-creator.step2-design.fields.token-creator-owns-initial-supply.label')}
 								classes={{
 									label: classes.label
 								}}
@@ -136,7 +136,7 @@ function StepDesign(props, context) {
 									<TextField
 										disabled={properties.initialSupplyOwner === 'token-creator'}
 										type="text"
-										label={t('token-creator.step2-design.fields.other-initial-supply-owner.label')}
+										label={t('campaign-creator.step2-design.fields.other-initial-supply-owner.label')}
 										inputProps={{
 											style: { fontSize: 'small' }
 										}}
@@ -149,13 +149,13 @@ function StepDesign(props, context) {
 						</>
 					)}
 				</div>
-				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-transferable.label'), 'isTransferable')}
-				{buildCheckboxWithLabel(t('token-creator.step2-design.fields.is-burnable.label'), 'isBurnable')}
+				{buildCheckboxWithLabel(t('campaign-creator.step2-design.fields.is-transferable.label'), 'isTransferable')}
+				{buildCheckboxWithLabel(t('campaign-creator.step2-design.fields.is-burnable.label'), 'isBurnable')}
 				{/* if checked, also give BurnSourcerer options like in minting step */}
 				<br />
 				<TextField
 					type="number"
-					label={t('token-creator.step2-design.fields.decimals.label')}
+					label={t('campaign-creator.step2-design.fields.decimals.label')}
 					style={styles.numberField}
 					value={properties.decimals}
 					onChange={e => updateVal('decimals', Number(e.target.value))}

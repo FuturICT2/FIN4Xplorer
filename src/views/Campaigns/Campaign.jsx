@@ -1,11 +1,3 @@
-// import React, { useState } from 'react';
-
-// const Campaign = () => {
-//    return <div>Campaigns</div>;
-// }
-
-// export default Campaign;
-
 import React, { useState, useRef, useEffect } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +8,8 @@ import Box from '../../components/Box';
 import {
 	buildIconLabelCallback,
 	getFormattedSelectOptions,
-	getRandomTokenCreationDraftID
+	getRandomTokenCreationDraftID,
+	getRandomCampaignCreationDraftID
 } from '../../components/utils';
 import AddIcon from '@material-ui/icons/AddBox';
 import ImportIcon from '@material-ui/icons/ImportExport';
@@ -55,9 +48,9 @@ function Campaign(props, context) {
 			let importedDraft = JSON.parse(reader.result);
 			// TODO sanity checks before adding?
 			importedDraft.importedId = importedDraft.id;
-			importedDraft.id = getRandomTokenCreationDraftID(); // assign new ID to avoid duplicate IDs in store
+			importedDraft.id = getRandomCampaignCreationDraftID(); // assign new ID to avoid duplicate IDs in store
 			props.dispatch({
-				type: 'ADD_TOKEN_CREATION_DRAFT',
+				type: 'ADD_CAMPAIGN_CREATION_DRAFT',
 				draft: importedDraft,
 				addToCookies: true
 			});
@@ -142,7 +135,7 @@ function Campaign(props, context) {
 			};
 
 			props.dispatch({
-				type: 'ADD_TOKEN_CREATION_DRAFT',
+				type: 'ADD_CAMPAIGN_CREATION_DRAFT',
 				draft: draft,
 				addToCookies: true
 			});
@@ -200,7 +193,7 @@ function Campaign(props, context) {
 
 	const deleteDraft = draftId => {
 		props.dispatch({
-			type: 'DELETE_TOKEN_CREATION_DRAFT',
+			type: 'DELETE_CAMPAIGN_CREATION_DRAFT',
 			draftId: draftId
 		});
 	};
@@ -209,11 +202,11 @@ function Campaign(props, context) {
 		history.push('/token/create/' + draftId);
 	};
 
-	const createNewTokenDraft = () => {
+	const createNewCampaignDraft = () => {
 		let nowTimestamp = moment().valueOf();
-		let newDraftId = getRandomTokenCreationDraftID();
+		let newDraftId = getRandomCampaignCreationDraftID();
 		props.dispatch({
-			type: 'ADD_TOKEN_CREATION_DRAFT',
+			type: 'ADD_CAMPAIGN_CREATION_DRAFT',
 			draft: {
 				id: newDraftId,
 				created: nowTimestamp,
@@ -229,59 +222,13 @@ function Campaign(props, context) {
 			},
 			addToCookies: true
 		});
-		history.push('/token/create/' + newDraftId);
+		history.push('/campaigns/create/' + newDraftId);
 	};
 
 	return (
 		<Container>
 			<Box title={t('campaigns.create-new-campaign')}>
-				{buildIconLabelCallback(createNewTokenDraft, <AddIcon />, t('campaigns.start-campaign-creation'))}
-				{Object.keys(props.tokenCreationDrafts).length > 0 && (
-					<>
-						<br />
-						<div style={{ fontFamily: 'arial' }}>
-							<b>{t('tokens-site.drafts.title')}</b>
-							{Object.keys(props.tokenCreationDrafts).length > 1 && (
-								<>
-									<small style={{ color: 'green', paddingLeft: '110px' }} onClick={() => deleteAllDrafts()}>
-										{t('tokens-site.drafts.delete-all-button')}
-									</small>
-								</>
-							)}
-							<ul>
-								{Object.keys(props.tokenCreationDrafts).map(draftId => {
-									let draft = props.tokenCreationDrafts[draftId];
-									let date = moment.unix(Number(draft.lastModified) / 1000).calendar();
-									let name = draft.basics.name && draft.basics.name.length > 0 ? draft.basics.name : 'no-name-yet';
-									let symbol = draft.basics.symbol && draft.basics.symbol.length > 0 ? draft.basics.symbol : null;
-									return (
-										<li key={draftId} style={{ paddingBottom: '10px' }}>
-											<span onClick={() => previewDraft(draftId)} title="Click to see draft as JSON object">
-												<Currency name={name} symbol={symbol} />
-											</span>
-											<br />
-											<small style={{ color: 'gray' }}>
-												{t('tokens-site.drafts.last-modified') + ': '}
-												{date}
-											</small>
-											<br />
-											<small style={{ color: 'green' }}>
-												<span onClick={() => continueEditing(draftId)}>
-													<b>{t('tokens-site.drafts.continue-editing-button')}</b>
-												</span>
-												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => exportDraft(draftId)}>{t('tokens-site.drafts.download-button')}</span>
-												<span style={{ color: 'silver' }}> | </span>
-												<span onClick={() => deleteDraft(draftId)}>{t('tokens-site.drafts.delete-button')}</span>
-											</small>
-											<br />
-										</li>
-									);
-								})}
-							</ul>
-						</div>
-					</>
-				)}
+				{buildIconLabelCallback(createNewCampaignDraft, <AddIcon />, t('campaigns.start-campaign-creation'))}
 				<Modal
 					isOpen={isPreviewDraftModalOpen}
 					handleClose={togglePreviewDraftModalOpen}
@@ -305,7 +252,7 @@ const mapStateToProps = state => {
 		contracts: state.contracts,
 		defaultAccount: state.fin4Store.defaultAccount,
 		fin4Tokens: state.fin4Store.fin4Tokens,
-		tokenCreationDrafts: state.fin4Store.tokenCreationDrafts,
+		campaignCreationDrafts: state.fin4Store.campaignCreationDrafts,
 		verifierTypes: state.fin4Store.verifierTypes
 	};
 };

@@ -141,6 +141,18 @@ const findTokenBySymbol = (props, symb) => {
 	return null;
 };
 
+const findCampaignBySymbol = (props, symb) => {
+	let symbol = symb.toUpperCase();
+	let keys = Object.keys(props.fin4Campaigns);
+	for (let i = 0; i < keys.length; i++) {
+		let campaign = props.fin4Campaigns[keys[i]];
+		if (campaign.symbol === symbol) {
+			return campaign;
+		}
+	}
+	return null;
+};
+
 const isValidPublicAddress = (addr, verbose = true) => {
 	try {
 		let address = web3.utils.toChecksumAddress(addr);
@@ -810,6 +822,7 @@ export {
 	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	findTokenBySymbol,
+	findCampaignBySymbol,
 	isValidPublicAddress,
 	getFin4TokensFormattedForSelectOptions,
 	fetchCollectionsInfo,

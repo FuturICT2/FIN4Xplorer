@@ -36,7 +36,7 @@ function StepIdentity(props) {
 
 	const submit = () => {
 		props.dispatch({
-			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
+			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(), // TODO only set that if actual changes took place: compare
 			nodeName: 'basics',
@@ -61,7 +61,7 @@ function StepIdentity(props) {
 			<TextField
 				key="name-field"
 				type="text"
-				label={t('token-creator.step1-identity.fields.name.label')}
+				label={t('campaign-creator.step1-identity.fields.name.label')}
 				value={basics.name}
 				onChange={e => updateVal('name', e.target.value)}
 				style={inputFieldStyle}
@@ -69,7 +69,7 @@ function StepIdentity(props) {
 			<TextField
 				key="symbol-field"
 				type="text"
-				label={t('token-creator.step1-identity.fields.symbol.label')}
+				label={t('campaign-creator.step1-identity.fields.symbol.label')}
 				value={basics.symbol}
 				onChange={e => updateVal('symbol', e.target.value)}
 				style={inputFieldStyle}
@@ -77,7 +77,7 @@ function StepIdentity(props) {
 			<TextField
 				key="short-description-field"
 				type="text"
-				label={t('token-creator.step1-identity.fields.short-description.label')}
+				label={t('campaign-creator.step1-identity.fields.short-description.label')}
 				value={basics.shortDescription}
 				onChange={e => updateVal('shortDescription', e.target.value)}
 				style={inputFieldStyle}
@@ -89,7 +89,7 @@ function StepIdentity(props) {
 				rows="3"
 				variant="outlined"
 				type="text"
-				label={t('token-creator.step1-identity.fields.long-description.label')}
+				label={t('campaign-creator.step1-identity.fields.long-description.label')}
 				value={basics.longDescription}
 				onChange={e => updateVal('longDescription', e.target.value)}
 				style={inputFieldStyle}
