@@ -52,7 +52,8 @@
 		}
 	},
 	"campaigns-list": {
-		"all-campaigns-box-title": "All Campaigns"
+		"all-campaigns-box-title": "All active campaigns",
+		"all-prev-campaigns": "Previous campaigns"
 	},
 	"campaign-creator": {
 		"box-title": "Campaign Creation",
@@ -199,7 +200,8 @@
 			"finish-button": "Finish",
 			"restart-button": "Restart",
 			"launch-campaign-button": "Launch Campaign",
-			"info-box-close-button": "CLOSE"
+			"info-box-close-button": "CLOSE",
+			"waiting-for-completion": "Waiting for the campaign creation to complete."
 		}
 	},
 	"tokens-site": {

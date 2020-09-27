@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
 import TokenOverview from '../tokens/TokenOverview';
 import CampaignOverview from './CampaignOverview';
+import PreviousCampaigns from './PreviousCampaigns';
 import Box from '../../components/Box';
 import {
 	buildIconLabelCallback,
@@ -239,6 +240,7 @@ function Campaign(props, context) {
 			</Box>
 			{/* <TokenOverview /> */}
 			<CampaignOverview />
+			<PreviousCampaigns />
 		</Container>
 	);
 }

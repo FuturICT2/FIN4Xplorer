@@ -16,11 +16,11 @@ const PROPERTY_DEFAULT = {
 	cap: 0,
 	decimals: 0,
 	initialSupply: 0,
-	// If it stays 'token-creator', it will be replaced with the actual address in the token creation arguments.
+	// If it stays 'campaign-creator', it will be replaced with the actual address in the token creation arguments.
 	// Intentionally not the address of the token creator here already in order to not 'pollute' the token creation
 	// draft with specific details - we want that JSON file to be able to get passed on to someone else and then they
 	// are the token creator etc.
-	initialSupplyOwner: 'token-creator'
+	initialSupplyOwner: 'campaign-creator'
 };
 
 const useStyles = makeStyles(theme => ({
@@ -121,26 +121,26 @@ function StepDesign(props, context) {
 					{properties.initialSupply > 0 && (
 						<>
 							<FormControlLabel
-								checked={properties.initialSupplyOwner === 'token-creator'}
+								checked={properties.initialSupplyOwner === 'campaign-creator'}
 								control={<Radio />}
 								label={t('campaign-creator.step2-design.fields.token-creator-owns-initial-supply.label')}
 								classes={{
 									label: classes.label
 								}}
-								onChange={e => updateVal('initialSupplyOwner', 'token-creator')}
+								onChange={e => updateVal('initialSupplyOwner', 'campaign-creator')}
 							/>
 							<FormControlLabel
-								checked={properties.initialSupplyOwner !== 'token-creator'}
+								checked={properties.initialSupplyOwner !== 'campaign-creator'}
 								control={<Radio />}
 								label={
 									<TextField
-										disabled={properties.initialSupplyOwner === 'token-creator'}
+										disabled={properties.initialSupplyOwner === 'campaign-creator'}
 										type="text"
 										label={t('campaign-creator.step2-design.fields.other-initial-supply-owner.label')}
 										inputProps={{
 											style: { fontSize: 'small' }
 										}}
-										value={properties.initialSupplyOwner === 'token-creator' ? '' : properties.initialSupplyOwner}
+										value={properties.initialSupplyOwner === 'campaign-creator' ? '' : properties.initialSupplyOwner}
 										onChange={e => updateVal('initialSupplyOwner', e.target.value)}
 									/>
 								}

@@ -57,7 +57,7 @@ function CampaignCreationProcess(props, context) {
 	// TEXT CONTENT START
 
 	const getSteps = () => {
-		// ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']; // Disbursement/Valuation instead of Value?
+		// ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']
 		const steps = [];
 		const numbOfSteps = UnderlyingsActive ? 8 : 6;
 		for (let i = 0; i < numbOfSteps; i++) {
@@ -312,7 +312,7 @@ function CampaignCreationProcess(props, context) {
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap)
 			],
-			draft.properties.initialSupplyOwner === 'token-creator' ? defaultAccount : draft.properties.initialSupplyOwner
+			draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
 
 		// MINTER ROLES
@@ -427,7 +427,9 @@ function CampaignCreationProcess(props, context) {
 			externalUnderlyings
 		];
 
-		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
+		let campaignCreatorContract = draft.properties.isCapped
+			? 'CampaignCappedTokenCreator'
+			: 'CampaignUncappedTokenCreator';
 
 		// verifier types with parameters
 		let verifiersToParameterize = [];
@@ -447,15 +449,15 @@ function CampaignCreationProcess(props, context) {
 			}
 		}
 
-		updateTokenCreationStage(t('token-creator.navigation.waiting-for-completion'));
+		updateTokenCreationStage(t('campaign-creator.navigation.waiting-for-completion'));
 		contractCall(
 			context,
 			props,
 			defaultAccount,
-			tokenCreatorContract,
+			campaignCreatorContract,
 			'createNewToken',
 			campaignCreationArgs,
-			'Create new token: ' + draft.basics.symbol.toUpperCase(),
+			'Create new campaign: ' + draft.basics.symbol.toUpperCase(),
 			{
 				transactionCompleted: receipt => {
 					transactionCounter.current++;
@@ -469,13 +471,13 @@ function CampaignCreationProcess(props, context) {
 						newExternalUnderlyings.names.length === 0 &&
 						sourcererSettingValues.length === 0
 					) {
-						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+						tokenParameterization(defaultAccount, campaignCreatorContract, postCreationStepsArgs);
 						return;
 					}
 
 					// verifiers and underlyings done
 					let callbackOthersDone = () => {
-						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
+						tokenParameterization(defaultAccount, campaignCreatorContract, postCreationStepsArgs);
 					};
 
 					if (sourcererSettingValues.length > 0) {
@@ -613,14 +615,14 @@ function CampaignCreationProcess(props, context) {
 		);
 	};
 
-	const tokenParameterization = (defaultAccount, tokenCreatorContract, postCreationStepsArgs) => {
+	const tokenParameterization = (defaultAccount, campaignCreatorContract, postCreationStepsArgs) => {
 		updateTokenCreationStage(t('token-creator.navigation.waiting-for-new-token'));
 
 		contractCall(
 			context,
 			props,
 			defaultAccount,
-			tokenCreatorContract,
+			campaignCreatorContract,
 			'postCreationSteps',
 			postCreationStepsArgs,
 			'Set parameters on new token',
@@ -705,14 +707,14 @@ function CampaignCreationProcess(props, context) {
 										control={
 											<Checkbox size="small" checked={keepAsDraft} onChange={() => setKeepAsDraft(!keepAsDraft)} />
 										}
-										label={<small style={{ color: 'gray' }}>{t('token-creator.navigation.keep-as-draft')}</small>}
+										label={<small style={{ color: 'gray' }}>{t('campaign-creator.navigation.keep-as-draft')}</small>}
 									/>
 									<div style={{ paddingTop: '20px' }}>
 										<Button onClick={handleReset} className={classes.backButton}>
-											{t('token-creator.navigation.restart-button')}
+											{t('campaign-creator.navigation.restart-button')}
 										</Button>
 										<Button variant="contained" color="primary" onClick={createCampaign}>
-											{t('token-creator.navigation.create-token-button')}
+											{t('campaign-creator.navigation.launch-campaign-button')}
 										</Button>
 									</div>
 								</center>
@@ -757,7 +759,7 @@ function CampaignCreationProcess(props, context) {
 							<div style={{ fontFamily: 'arial' }}>
 								<center>
 									<small style={{ color: 'gray' }} onClick={() => setShowInfoBox(false)}>
-										{t('token-creator.navigation.info-box-close-button')}
+										{t('campaign-creator.navigation.info-box-close-button')}
 									</small>
 								</center>
 								<br />
@@ -768,7 +770,7 @@ function CampaignCreationProcess(props, context) {
 				</Container>
 			) : (
 				<center style={{ fontFamily: 'arial' }}>
-					{t('token-creator.navigation.no-token-creation-draft-found', { Id: props.match.params.draftId })}
+					{t('campaign-creator.navigation.no-token-creation-draft-found', { Id: props.match.params.draftId })}
 				</center>
 			)}
 		</>

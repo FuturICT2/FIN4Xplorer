@@ -145,7 +145,7 @@ function StepNoninteractiveVerifier(props) {
 						.filter(addr => props.verifierTypes[addr].isNoninteractive)
 						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
 						.map(addr => props.verifierTypes[addr])}
-					label={t('camapign-creator.step5-verifiers1.fields.add-token-verifier.label')}
+					label={t('campaign-creator.step5-verifiers1.fields.add-token-verifier.label')}
 				/>
 			) : (
 				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
