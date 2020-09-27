@@ -27,7 +27,7 @@ The smart contracts are located at [FIN4Contracts](https://github.com/FuturICT2/
 # basics
 sudo apt-get install git build-essential python
 
-# node v10
+# node v10.0.0
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 source ~/.bashrc
 nvm install 10.0.0
@@ -70,7 +70,7 @@ The address of the Fin4Main contract is expected to reside in `src/config/deploy
 
 ## Serving the GUI
 
-Serving via React-app-default port 3000. Serving via HTTPS is recommended. If only HTTP, some features won't work. Location requests and permissions to use the webcam for QR code scanning are blocked (meaning the user doesn't even see the prompt to allow it or not) by by modern browsers on sites not using HTTPS.
+Serving via React-app-default port 3000. Serving via HTTPS is recommended. If only HTTP, some features won't work. Location requests and permissions to use the webcam for QR code scanning are blocked (meaning the user doesn't even see the prompt to allow it or not) by modern browsers on sites not using HTTPS.
 
 ### Development mode
 
