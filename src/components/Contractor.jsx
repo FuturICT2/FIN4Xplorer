@@ -337,6 +337,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			8: Fin4SystemParametersAddress,
 			9: Fin4UnderlyingsAddress
 		}) => {
+			// TODO the events can be removed from here since ethers.js in ContractEventHandler is doing that now?
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4TokenManagement', Fin4TokenManagementAddress, ['Fin4TokenCreated']);
