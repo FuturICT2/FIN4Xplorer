@@ -37,6 +37,7 @@ const contractCall = (
 	skipDryRun = false
 ) => {
 	let contract = context.drizzle.contracts[contractName];
+	console.log(context.drizzle.contracts);
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
 	let methodInputs = methodAbi.inputs.map(el => el.type);
@@ -347,7 +348,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			6: Fin4VerifyingAddress,
 			7: Fin4GroupsAddress,
 			8: Fin4SystemParametersAddress,
-			9: Fin4UnderlyingsAddress
+			9: Fin4UnderlyingsAddress,
+			10: CampaignTokenCreatorAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -367,6 +369,7 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
 			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
+			addContract(props, drizzle, 'CampaignTokenCreator', CampaignTokenCreatorAddress, []);
 		}
 	);
 };

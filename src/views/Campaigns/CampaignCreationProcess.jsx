@@ -34,6 +34,7 @@ import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { toBN } from 'web3-utils';
 
 const useStyles = makeStyles(theme => ({
 	// from https://material-ui.com/components/steppers/
@@ -117,7 +118,7 @@ function CampaignCreationProcess(props, context) {
 	const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 		switch (stepIndex) {
 			case 0:
-				return buildInfoContent('step1-identity', ['name', 'symbol', 'short-description', 'long-description']);
+				return buildInfoContent('step1-identity', ['name', 'symbol', 'description']);
 			case 1:
 				return buildInfoContent('step2-design', [
 					'is-capped',
@@ -310,10 +311,14 @@ function CampaignCreationProcess(props, context) {
 			[
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
-				BNstr(draft.properties.cap)
+				BNstr(draft.properties.cap),
+				draft.basics.campaignEnd
 			],
 			draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
+
+		console.log(draft.basics);
+		console.log(draft.basics.campaignEnd);
 
 		// MINTER ROLES
 
@@ -427,9 +432,7 @@ function CampaignCreationProcess(props, context) {
 			externalUnderlyings
 		];
 
-		let campaignCreatorContract = draft.properties.isCapped
-			? 'CampaignCappedTokenCreator'
-			: 'CampaignUncappedTokenCreator';
+		let campaignCreatorContract = 'CampaignTokenCreator';
 
 		// verifier types with parameters
 		let verifiersToParameterize = [];

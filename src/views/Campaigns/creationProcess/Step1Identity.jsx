@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { TextField } from '@material-ui/core';
 import StepsBottomNav from './StepsBottomNav';
+import DateTimePicker from 'react-datetime-picker';
 
 function StepIdentity(props) {
 	const { t } = useTranslation();
@@ -12,8 +13,8 @@ function StepIdentity(props) {
 	const [basics, setBasics] = useState({
 		name: '',
 		symbol: '',
-		shortDescription: '',
-		longDescription: ''
+		campaignEnd: 0,
+		Description: ''
 	});
 
 	const getValue = (draft, prop) => {
@@ -28,8 +29,8 @@ function StepIdentity(props) {
 		setBasics({
 			name: getValue(draft, 'name'),
 			symbol: getValue(draft, 'symbol'),
-			shortDescription: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[0] : '',
-			longDescription: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[1] : ''
+			campaignEnd: getValue(draft, 'campaignEnd'),
+			Description: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[0] : ''
 		});
 		setDraftId(draft.id);
 	});
@@ -43,7 +44,8 @@ function StepIdentity(props) {
 			node: {
 				name: basics.name,
 				symbol: basics.symbol,
-				description: basics.shortDescription + '||' + basics.longDescription
+				campaignEnd: basics.campaignEnd,
+				description: basics.Description
 			}
 		});
 		props.handleNext();
@@ -54,6 +56,12 @@ function StepIdentity(props) {
 			...basics,
 			[key]: val
 		});
+	};
+
+	const updateDateTime = value => {
+		if (value != null) {
+			updateVal('campaignEnd', value.getTime());
+		}
 	};
 
 	return (
@@ -74,25 +82,22 @@ function StepIdentity(props) {
 				onChange={e => updateVal('symbol', e.target.value)}
 				style={inputFieldStyle}
 			/>
-			<TextField
-				key="short-description-field"
-				type="text"
-				label={t('campaign-creator.step1-identity.fields.short-description.label')}
-				value={basics.shortDescription}
-				onChange={e => updateVal('shortDescription', e.target.value)}
-				style={inputFieldStyle}
-			/>
 			<div style={{ marginTop: '18px' }} />
 			<TextField
-				key="long-description-field"
+				key="description-field"
 				multiline
 				rows="3"
 				variant="outlined"
 				type="text"
-				label={t('campaign-creator.step1-identity.fields.long-description.label')}
+				label={t('campaign-creator.step1-identity.fields.description.label')}
 				value={basics.longDescription}
 				onChange={e => updateVal('longDescription', e.target.value)}
 				style={inputFieldStyle}
+			/>
+			<TextField label="Campaign ends on" />
+			<DateTimePicker
+				//
+				onChange={updateDateTime}
 			/>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>

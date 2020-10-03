@@ -68,13 +68,9 @@
 					"label": "Symbol",
 					"info": "Choose a short symbol of 3-5 letters (numbers are allowed, too) for your new Campaign. Please note, that the system rejects symbols that are already in use."
 				},
-				"short-description": {
-					"label": "Short Description",
-					"info": "Describe the purpose/idea of your new token in a short version"
-				},
-				"long-description": {
-					"label": "Long Description",
-					"info": "Describe the purpose/idea of your new campaign in a longer version."
+				"description": {
+					"label": "Description",
+					"info": "Describe the purpose/idea of your new campaign."
 				}
 			},
 			"info": "The basic infos about this tokens identity."
