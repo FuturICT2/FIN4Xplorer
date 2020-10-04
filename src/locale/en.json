@@ -71,6 +71,10 @@
 				"description": {
 					"label": "Description",
 					"info": "Describe the purpose/idea of your new campaign."
+				},
+				"end-date": {
+					"label": "Campaign ends on",
+					"info": "Enter the date and time when your campaign is supposed to end."
 				}
 			},
 			"info": "The basic infos about this tokens identity."
