@@ -14,6 +14,7 @@ function StepIdentity(props) {
 		name: '',
 		symbol: '',
 		campaignEnd: 0,
+		successPercentage: 0,
 		Description: ''
 	});
 
@@ -30,6 +31,7 @@ function StepIdentity(props) {
 			name: getValue(draft, 'name'),
 			symbol: getValue(draft, 'symbol'),
 			campaignEnd: getValue(draft, 'campaignEnd'),
+			successPercentage: getValue(draft, 'successPercentage'),
 			Description: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[0] : ''
 		});
 		setDraftId(draft.id);
@@ -45,6 +47,7 @@ function StepIdentity(props) {
 				name: basics.name,
 				symbol: basics.symbol,
 				campaignEnd: basics.campaignEnd,
+				successPercentage: basics.successPercentage,
 				description: basics.Description
 			}
 		});
@@ -95,10 +98,8 @@ function StepIdentity(props) {
 				style={inputFieldStyle}
 			/>
 			<TextField label="Campaign ends on" />
-			<DateTimePicker
-				//
-				onChange={updateDateTime}
-			/>
+			<DateTimePicker onChange={updateDateTime} />
+			<TextField onChange={e => updateVal('successPercentage', e.target.value)} />
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);

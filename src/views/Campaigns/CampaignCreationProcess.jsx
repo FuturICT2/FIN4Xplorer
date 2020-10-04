@@ -312,13 +312,15 @@ function CampaignCreationProcess(props, context) {
 				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
 				BNstr(draft.properties.initialSupply),
 				BNstr(draft.properties.cap),
-				draft.basics.campaignEnd
+				draft.basics.campaignEnd,
+				draft.basics.successPercentage
 			],
 			draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
 
 		console.log(draft.basics);
 		console.log(draft.basics.campaignEnd);
+		console.log(draft.basics.successPercentage);
 
 		// MINTER ROLES
 

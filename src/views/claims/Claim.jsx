@@ -37,7 +37,16 @@ function Claim(props, context) {
 			'submitClaim',
 			[values.tokenAddress, values.quantity, values.comment],
 			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
-			{}
+			{
+				dryRunFailed: reason => {
+					console.log('failed');
+					console.log(reason);
+				},
+				dryRunSucceeded: res => {
+					console.log('succeeded');
+					console.log(res);
+				}
+			}
 		);
 	};
 

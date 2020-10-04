@@ -3,6 +3,7 @@ import Box from '../../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import SortableTokenList from '../../components/SortableTokenList';
+import ActiveCampaignList from '../../components/ActiveCampaignList';
 
 function CampaignOverview(props) {
 	const { t } = useTranslation();
@@ -14,6 +15,7 @@ function CampaignOverview(props) {
 					tokens={Object.keys(props.fin4Tokens).map(addr => props.fin4Tokens[addr])}
 					showFilterAndSortOptions={false}
 				/>
+				<ActiveCampaignList />
 			</Box>
 		</>
 	);
