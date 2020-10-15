@@ -61,138 +61,51 @@
 			"title": "Campaign Identity",
 			"fields": {
 				"name": {
-					"label": "Name/Cause",
-					"info": "Give the new token, you want to create, a descriptive/telling name."
+					"label": "Name",
+					"info": "Give your campaign a descriptive/telling name."
 				},
-				"symbol": {
-					"label": "Symbol",
-					"info": "Choose a short symbol of 3-5 letters (numbers are allowed, too) for your new Campaign. Please note, that the system rejects symbols that are already in use."
-				},
-				"description": {
-					"label": "Description",
-					"info": "Describe the purpose/idea of your new campaign."
+				"start-date": {
+					"label": "Campaign starts on",
+					"info": "Enter the date and time when your campaign is supposed to start."
 				},
 				"end-date": {
 					"label": "Campaign ends on",
 					"info": "Enter the date and time when your campaign is supposed to end."
 				}
 			},
-			"info": "The basic infos about this tokens identity."
+			"info": "The basic infos about this campaign's identity."
 		},
-		"step2-design": {
-			"title": "Campaign Design",
+		"step2-actions": {
+			"title": "Action Policy",
+			"info": "For what sustainable actions should users be able to obtain token(s) which are part of campaign?"
+		},
+		"step3-tokens": {
+			"title": "Select Token(s)",
 			"fields": {
-				"is-capped": {
-					"label": "is capped",
-					"info": "Once the total supply of this token reaches the cap, nobody (incl. the token creator) can mint this token anymore."
+				"create-token": {
+					"label": "Create new token",
+					"info": "Use this option to create a new token if you are not satisfied with any pre-existing token."
 				},
-				"cap": {
-					"label": "Cap",
-					"info": "If the token is capped, this is the value of the cap."
-				},
-				"initial-supply": {
-					"label": "Initial supply",
-					"info": "The initial amount of this token that does not have to be earned via the claiming process. Counts into the total supply of this token. If a value bigger than 0 is set, an owner has to be chosen."
-				},
-				"token-creator-owns-initial-supply": {
-					"label": "Token creator owns",
-					"info": "If an initial supply is set, the token creator owns it."
-				},
-				"other-initial-supply-owner": {
-					"label": "Owner address",
-					"info": "If an initial supply is set, this address owns it."
-				},
-				"is-transferable": {
-					"label": "is transferable",
-					"info": "Users who have a balance on this token, can transfer some or all of it to other users. In most cases users want to be able to transfer positive action tokens (e.g. for trading)."
-				},
-				"is-burnable": {
-					"label": "is burnable",
-					"info": "Users can burn some or all of their balance on this token. The burned amount gets deducted from their balance and the total supply of the token shrinks by that amount."
-				},
-				"decimals": {
-					"label": "Decimals",
-					"info": "The digits by which your token is divisible. Zero means that users can only have natural numbers (0,1,2,3,4...) as balance on your token and only amounts in natural numbers can be transferred. Other number indicate the decimal places, e.g., \"3\" means the token is divisible with 0.001 being the smallest unit."
+				"select-tokens": {
+					"label": "Select from token list",
+					"info": "To select all the tokens that will be part of the campaign."
 				}
 			},
-			"info": "The fundamental properties of the campaign token. Defines the economic cornerstornes around this campaign token."
+			"info": "Select all the token(s) that should be the part of your campaign. Decide carefully and if you are not satisfied with any pre-existing token, then you can also create new tokens."
 		},
-		"step3-actions": {
-			"title": "Action policy",
-			"info": "For what sustainable actions should users be able to obtain your new campaign token? Take your time to think about this question. It very important for the future success for your campaign idea in the system. Also, it is important that users are able to prove they did the actions using the different proving methods (c.f. last section)."
-		},
-		"step4-minting": {
-			"title": "Minting policy",
+		"step4-design": {
+			"title": "Token Design",
 			"fields": {
-				"is-mintable": {
-					"label": "Token is mintable",
-					"info": "Eligible users or smart contracts can \"mint\" any amount to a public address of their choosing. The total supply of this token gets increased by that amount.",
-					"hint": "You set your token to not be mintable."
+				"success-threshold": {
+					"label": "Success Threshold",
+					"info": "Add the total number of tokens in the campaign."
 				},
-				"fin4-has-minter-role": {
-					"label": "Fin4 has the minter role",
-					"info": "To award succesfull claimers with a balance on this token, the Finance 4.0 system needs the minter role.",
-					"hint": "To be able to enforce a minting policy, the Finance 4.0 system needs to control the minting process. If this option is not checked you have to take care of implementing your own minting policy: by handling the ClaimApproved event from the Fin4Claiming contract or by adding an extenal underlying implementing the SuccessfulClaimNotifierInterface."
-				},
-				"minting-sourcerer-has-minter-role": {
-					"label": "Minting-Sourcerer has the minter role",
-					"info": "To utilize this token as collateral via a Minting-Sourcerer (pairs of tokens can be defined: burn the one in order to mint this collateral), the respective contract needs to have the minter role."
-				},
-				"additional-minter-roles": {
-					"label": "Additional minter roles",
-					"info": "Additional user accounts or smart contracts that are allowed to mint this token. Be aware that your tokens claiming process might loose credibility by seeing that someone can mint the token without having to claim."
-				},
-				"fixed-amount": {
-					"label": "Fixed amount",
-					"info": "Once the claim is successful, this fixed amount of tokens will be minted to the user. Default is 1 token per action."
-				},
-				"per-claim": {
-					"label": "per claim"
-				},
-				"variable-amount": {
-					"label": "Variable amount",
-					"info": "The user chooses the amount in the moment of making a claim."
-				},
-				"unit": {
-					"label": "Unit of measurement",
-					"info": "The unit of a claim, e.g. trees or minutes.",
-					"default-value": "quantity"
+				"claim-per-user": {
+					"label": "Number of claims per contributor",
+					"info": "Enter the N number of claims a user is allowed to make."
 				}
 			},
-			"info": "Minting is the default way users earn balances on positive action tokens by submitting and proving claims."
-		},
-		"step5-verifiers1": {
-			"title": "Noninteractive verifiers",
-			"fields": {
-				"add-token-verifier": {
-					"label": "Add token verifier"
-				},
-				"add-button": {
-					"label": "Add"
-				},
-				"remove-verifier-tooltip": {
-					"label": "Remove verifier"
-				},
-				"verifier-to-parameterize-tooltip": {
-					"label": "Since this verifier has parameters to set, it will require an extra transaction when creating the token"
-				}
-			},
-			"info": "To obtain tokens, users need to prove to the system that they actually performed the action required. You can choose any combination of verifiers from the list. Please take your time to think precisely about any combination you choose. Good verifiers are suitable to the the nature of the token, suitable and practical for the users trying to obtain them, and practical for the token creators. The harder the proving is, the less users will try to obtain your token; the easier the proving is, the less perceived quality users will see in the token. In complex cases, you may want to experiment with different token designs at the same time. Finally, proving actions is a complex matter and we constantly work to improve the verifiying mechanisms.",
-			"listing-header": "In the following all available noninteractive verifiers are listed"
-		},
-		"step6-verifiers2": {
-			"title": "Interactive verifiers",
-			"listing-header": "In the following all available interactive verifiers are listed"
-		},
-		"step7-sourcerers": {
-			"title": "Sourcerers",
-			"settings": {
-				"allow-new-pairs": "Allow myself to add new sourcerer pairs with this one as PAT after token creation",
-				"allow-others-collateral-usage": "Allow others to create sourcerer pairs with this token as collateral"
-			}
-		},
-		"step8-underlyings": {
-			"title": "External sources of value"
+			"info": "To assess the success or failur of a campaign, please provide the success threshold i.e. the N number of tokens that should be claimed while the campaign is active. You can also specify how many claims a contributor is allowed to make."
 		},
 		"navigation": {
 			"back-button": "Back",
@@ -201,7 +114,8 @@
 			"restart-button": "Restart",
 			"launch-campaign-button": "Launch Campaign",
 			"info-box-close-button": "CLOSE",
-			"waiting-for-completion": "Waiting for the campaign creation to complete."
+			"waiting-for-completion": "Waiting for the campaign creation to complete.",
+			"no-token-creation-draft-found": "No campaign creation draft found with ID {{Id}}"
 		}
 	},
 	"tokens-site": {

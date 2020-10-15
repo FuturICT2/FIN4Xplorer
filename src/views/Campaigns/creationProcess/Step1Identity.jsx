@@ -11,11 +11,9 @@ function StepIdentity(props) {
 
 	const [draftId, setDraftId] = useState(null);
 	const [basics, setBasics] = useState({
-		name: '',
-		symbol: '',
-		campaignEnd: 0,
-		successPercentage: 0,
-		Description: ''
+		campaignName: '',
+		campaignStartTime: 0,
+		campaignEndTime: 0
 	});
 
 	const getValue = (draft, prop) => {
@@ -28,11 +26,9 @@ function StepIdentity(props) {
 		}
 		let draft = props.draft;
 		setBasics({
-			name: getValue(draft, 'name'),
-			symbol: getValue(draft, 'symbol'),
-			campaignEnd: getValue(draft, 'campaignEnd'),
-			successPercentage: getValue(draft, 'successPercentage'),
-			Description: draft.basics.hasOwnProperty('description') ? draft.basics['description'].split('||')[0] : ''
+			campaignName: getValue(draft, 'campaignName'),
+			campaignStartTime: getValue(draft, 'campaignStartTime'),
+			campaignEndTime: getValue(draft, 'campaignEndTime')
 		});
 		setDraftId(draft.id);
 	});
@@ -41,14 +37,12 @@ function StepIdentity(props) {
 		props.dispatch({
 			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
-			lastModified: moment().valueOf(), // TODO only set that if actual changes took place: compare
+			lastModified: moment().valueOf(),
 			nodeName: 'basics',
 			node: {
-				name: basics.name,
-				symbol: basics.symbol,
-				campaignEnd: basics.campaignEnd,
-				successPercentage: basics.successPercentage,
-				description: basics.Description
+				campaignName: basics.campaignName,
+				campaignStartTime: basics.campaignStartTime,
+				campaignEndTime: basics.campaignEndTime
 			}
 		});
 		props.handleNext();
@@ -61,9 +55,15 @@ function StepIdentity(props) {
 		});
 	};
 
-	const updateDateTime = value => {
+	const updateStartTime = value => {
 		if (value != null) {
-			updateVal('campaignEnd', value.getTime());
+			updateVal('campaignStartTime', value.getTime());
+		}
+	};
+
+	const updateEndTime = value => {
+		if (value != null) {
+			updateVal('campaignEndTime', value.getTime());
 		}
 	};
 
@@ -73,33 +73,34 @@ function StepIdentity(props) {
 				key="name-field"
 				type="text"
 				label={t('campaign-creator.step1-identity.fields.name.label')}
-				value={basics.name}
-				onChange={e => updateVal('name', e.target.value)}
-				style={inputFieldStyle}
-			/>
-			<TextField
-				key="symbol-field"
-				type="text"
-				label={t('campaign-creator.step1-identity.fields.symbol.label')}
-				value={basics.symbol}
-				onChange={e => updateVal('symbol', e.target.value)}
+				value={basics.campaignName}
+				onChange={e => updateVal('campaignName', e.target.value)}
 				style={inputFieldStyle}
 			/>
 			<div style={{ marginTop: '18px' }} />
 			<TextField
-				key="description-field"
-				multiline
-				rows="3"
-				variant="outlined"
-				type="text"
-				label={t('campaign-creator.step1-identity.fields.description.label')}
-				value={basics.longDescription}
-				onChange={e => updateVal('longDescription', e.target.value)}
+				id="datetime-local"
+				label={t('campaign-creator.step1-identity.fields.start-date.label')}
+				type="datetime-local"
+				defaultValue="2020-12-31T10:30"
+				InputLabelProps={{
+					shrink: true
+				}}
+				onChange={updateStartTime}
 				style={inputFieldStyle}
 			/>
-			<TextField label="Campaign ends on" />
-			<DateTimePicker onChange={updateDateTime} />
-			<TextField onChange={e => updateVal('successPercentage', e.target.value)} />
+			<TextField
+				id="datetime-local"
+				label={t('campaign-creator.step1-identity.fields.end-date.label')}
+				type="datetime-local"
+				defaultValue="2020-12-31T10:30"
+				InputLabelProps={{
+					shrink: true
+				}}
+				onChange={updateEndTime}
+				style={inputFieldStyle}
+			/>
+
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);

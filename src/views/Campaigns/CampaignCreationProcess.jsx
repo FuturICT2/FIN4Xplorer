@@ -11,13 +11,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import StepIdentity from './creationProcess/Step1Identity';
-import StepDesign from './creationProcess/Step2Design';
-import StepActions from './creationProcess/Step3Actions';
-import StepMinting from './creationProcess/Step4Minting';
-import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
-import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
-import StepSourcerers from './creationProcess/Step7Sourcerers';
-import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
+import StepActions from './creationProcess/Step2Actions';
+import StepToken from './creationProcess/Step3Tokens';
+import StepDesign from './creationProcess/Step4Design';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -37,7 +33,6 @@ import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { toBN } from 'web3-utils';
 
 const useStyles = makeStyles(theme => ({
-	// from https://material-ui.com/components/steppers/
 	root: {
 		width: '100%'
 	},
@@ -58,9 +53,9 @@ function CampaignCreationProcess(props, context) {
 	// TEXT CONTENT START
 
 	const getSteps = () => {
-		// ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']
+		// ['Identity', 'Actions', 'Token(s)', 'Token features']
 		const steps = [];
-		const numbOfSteps = UnderlyingsActive ? 8 : 6;
+		const numbOfSteps = 4;
 		for (let i = 0; i < numbOfSteps; i++) {
 			steps.push('');
 		}
@@ -72,19 +67,11 @@ function CampaignCreationProcess(props, context) {
 			case 0:
 				return t('campaign-creator.step1-identity.title');
 			case 1:
-				return t('campaign-creator.step2-design.title');
+				return t('campaign-creator.step2-actions.title');
 			case 2:
-				return t('campaign-creator.step3-actions.title');
+				return t('campaign-creator.step3-tokens.title');
 			case 3:
-				return t('campaign-creator.step4-minting.title');
-			case 4:
-				return t('campaign-creator.step5-verifiers1.title');
-			case 5:
-				return t('campaign-creator.step6-verifiers2.title');
-			case 6:
-				return UnderlyingsActive ? t('campaign-creator.step7-sourcerers.title') : '';
-			case 7:
-				return t('campaign-creator.step8-underlyings.title');
+				return t('campaign-creator.step4-design.title');
 			default:
 				return '';
 		}
@@ -118,92 +105,17 @@ function CampaignCreationProcess(props, context) {
 	const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
 		switch (stepIndex) {
 			case 0:
-				return buildInfoContent('step1-identity', ['name', 'symbol', 'description']);
+				return buildInfoContent('step1-identity', ['name', 'start-date', 'end-date']);
 			case 1:
-				return buildInfoContent('step2-design', [
-					'is-capped',
-					'cap',
-					'initial-supply',
-					'token-creator-owns-initial-supply',
-					'other-initial-supply-owner',
-					'is-transferable',
-					'is-burnable',
-					'decimals'
-				]);
+				return buildInfoContent('step2-actions');
 			case 2:
-				return buildInfoContent('step3-actions');
+				return buildInfoContent('step3-tokens');
 			case 3:
-				return buildInfoContent('step4-minting', [
-					'is-mintable',
-					'fin4-has-minter-role',
-					'minting-sourcerer-has-minter-role',
-					'additional-minter-roles',
-					'fixed-amount',
-					'variable-amount',
-					'unit'
-				]);
-			case 4:
-				return (
-					<>
-						{t('campaign-creator.step5-verifiers1.info')}
-						<br />
-						<br />
-						{t('campaign-creator.step5-verifiers1.listing-header') + ':'}
-						<br />
-						<br />
-						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
-							let verifier = verifierTypes[verifierAddr];
-							if (!verifier.isNoninteractive) {
-								return '';
-							}
-							return (
-								<span key={'verifierInfo_' + idx}>
-									<b>{verifier.label}</b>
-									<br />
-									{verifier.description}
-									<br />
-									<br />
-								</span>
-							);
-						})}
-					</>
-				);
-			case 5:
-				return (
-					<>
-						{t('campaign-creator.step5-verifiers1.info')}
-						<br />
-						<br />
-						{t('token-creator.step6-verifiers2.listing-header') + ':'}
-						<br />
-						<br />
-						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
-							let verifier = verifierTypes[verifierAddr];
-							if (verifier.isNoninteractive) {
-								return '';
-							}
-							return (
-								<span key={'verifierInfo_' + idx}>
-									<b>{verifier.label}</b>
-									<br />
-									{verifier.description}
-									<br />
-									<br />
-								</span>
-							);
-						})}
-					</>
-				);
-			case 6: // Sourcerers
-				return '';
-			case 7: // External source of value
-				return '';
+				return buildInfoContent('step4-design');
 			default:
 				return '';
 		}
 	};
-
-	// TEXT CONTENT END
 
 	const [draftId, setDraftId] = useState(null);
 
@@ -213,7 +125,6 @@ function CampaignCreationProcess(props, context) {
 			return;
 		}
 
-		// TODO browser back/forth navigation doesn't work, should be possible to make it work
 		let stepIdViaURL = props.match.params.stepId;
 		if (stepIdViaURL && Number(stepIdViaURL) > 0 && Number(stepIdViaURL) <= 8) {
 			setActiveStep(Number(stepIdViaURL) - 1);
@@ -683,17 +594,9 @@ function CampaignCreationProcess(props, context) {
 						<div style={{ padding: '10px 20px 30px 20px' }}>
 							{/* Or create back/next buttons here and pass them down? */}
 							{activeStep === 0 && buildStepComponent(StepIdentity)}
-							{activeStep === 1 && buildStepComponent(StepDesign)}
-							{activeStep === 2 && buildStepComponent(StepActions)}
-							{activeStep === 3 && buildStepComponent(StepMinting)}
-							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
-							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
-							{UnderlyingsActive && (
-								<>
-									{activeStep === 6 && buildStepComponent(StepSourcerers)}
-									{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
-								</>
-							)}
+							{activeStep === 1 && buildStepComponent(StepActions)}
+							{activeStep === 2 && buildStepComponent(StepToken)}
+							{activeStep === 3 && buildStepComponent(StepDesign)}
 							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>
