@@ -24,6 +24,10 @@ function StepDesign(props) {
 		}
 		let draft = props.draft;
 		setBasics({
+			name: getValue(draft, 'name'),
+			campaignStartTime: getValue(draft, 'campaignStartTime'),
+			campaignEndTime: getValue(draft, 'campaignEndTime'),
+			allTokens: getValue(draft, 'allTokens'),
 			successThreshold: getValue(draft, 'successThreshold'),
 			claimPerCampaignContributor: getValue(draft, 'claimPerCampaignContributor')
 		});
@@ -37,6 +41,10 @@ function StepDesign(props) {
 			lastModified: moment().valueOf(),
 			nodeName: 'basics',
 			node: {
+				name: basics.name,
+				campaignStartTime: basics.campaignStartTime,
+				campaignEndTime: basics.campaignStartTime,
+				allTokens: basics.allTokens,
 				successThreshold: basics.successThreshold,
 				claimPerCampaignContributor: basics.claimPerCampaignContributor
 			}

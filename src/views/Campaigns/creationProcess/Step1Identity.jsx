@@ -11,7 +11,7 @@ function StepIdentity(props) {
 
 	const [draftId, setDraftId] = useState(null);
 	const [basics, setBasics] = useState({
-		campaignName: '',
+		name: '',
 		campaignStartTime: 0,
 		campaignEndTime: 0
 	});
@@ -26,7 +26,7 @@ function StepIdentity(props) {
 		}
 		let draft = props.draft;
 		setBasics({
-			campaignName: getValue(draft, 'campaignName'),
+			name: getValue(draft, 'name'),
 			campaignStartTime: getValue(draft, 'campaignStartTime'),
 			campaignEndTime: getValue(draft, 'campaignEndTime')
 		});
@@ -34,13 +34,14 @@ function StepIdentity(props) {
 	});
 
 	const submit = () => {
+		console.log(basics.campaignStartTime);
 		props.dispatch({
 			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
 			nodeName: 'basics',
 			node: {
-				campaignName: basics.campaignName,
+				name: basics.name,
 				campaignStartTime: basics.campaignStartTime,
 				campaignEndTime: basics.campaignEndTime
 			}
@@ -58,12 +59,14 @@ function StepIdentity(props) {
 	const updateStartTime = value => {
 		if (value != null) {
 			updateVal('campaignStartTime', value.getTime());
+			console.log(value.getTime());
 		}
 	};
 
 	const updateEndTime = value => {
 		if (value != null) {
 			updateVal('campaignEndTime', value.getTime());
+			console.log(value.getTime());
 		}
 	};
 
@@ -73,12 +76,12 @@ function StepIdentity(props) {
 				key="name-field"
 				type="text"
 				label={t('campaign-creator.step1-identity.fields.name.label')}
-				value={basics.campaignName}
-				onChange={e => updateVal('campaignName', e.target.value)}
+				value={basics.name}
+				onChange={e => updateVal('name', e.target.value)}
 				style={inputFieldStyle}
 			/>
 			<div style={{ marginTop: '18px' }} />
-			<TextField
+			{/* <TextField
 				id="datetime-local"
 				label={t('campaign-creator.step1-identity.fields.start-date.label')}
 				type="datetime-local"
@@ -99,7 +102,9 @@ function StepIdentity(props) {
 				}}
 				onChange={updateEndTime}
 				style={inputFieldStyle}
-			/>
+			/> */}
+			<DateTimePicker label={t('campaign-creator.step1-identity.fields.start-date.label')} onChange={updateStartTime} />
+			<DateTimePicker label={t('campaign-creator.step1-identity.fields.end-date.label')} onChange={updateEndTime} />
 
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>

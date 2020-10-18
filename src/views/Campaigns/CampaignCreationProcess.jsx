@@ -174,14 +174,14 @@ function CampaignCreationProcess(props, context) {
 			return t('token-creator.validation.name-empty');
 		}
 
-		if (!draft.basics.symbol || draft.basics.symbol.length < 3 || draft.basics.symbol.length > 5) {
-			return t('token-creator.validation.symbol-length-wrong');
-		}
+		// if (!draft.basics.symbol || draft.basics.symbol.length < 3 || draft.basics.symbol.length > 5) {
+		// 	return t('token-creator.validation.symbol-length-wrong');
+		// }
 
 		// do a call to check on the contract here instead?
-		if (findCampaignBySymbol(props, draft.basics.symbol) !== null) {
-			return t('token-creator.validation.symbol-duplicate');
-		}
+		// if (findCampaignBySymbol(props, draft.basics.symbol) !== null) {
+		// 	return t('token-creator.validation.symbol-duplicate');
+		// }
 
 		if (draft.interactiveVerifiers.Location) {
 			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
@@ -198,6 +198,7 @@ function CampaignCreationProcess(props, context) {
 	};
 
 	const createCampaign = () => {
+		console.log(props.campaignCreationDrafts[draftId].basics);
 		let draft = props.campaignCreationDrafts[draftId];
 
 		let validationResult = validateDraft(draft);
@@ -217,25 +218,28 @@ function CampaignCreationProcess(props, context) {
 
 		let campaignCreationArgs = [
 			draft.basics.name,
-			draft.basics.symbol,
-			[draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
-			[
-				draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
-				BNstr(draft.properties.initialSupply),
-				BNstr(draft.properties.cap),
-				draft.basics.campaignEnd,
-				draft.basics.successPercentage
-			],
-			draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
+			defaultAccount,
+			draft.actions.text,
+			draft.basics.campaignStartTime,
+			draft.basics.campaignEndTime,
+			draft.basics.allTokens, //.map(val => BNstr(val)),
+			draft.basics.successThreshold,
+			draft.basics.claimPerCampaignContributor
+			// [draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
+			// [
+			// 	draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
+			// 	BNstr(draft.properties.initialSupply),
+			// 	BNstr(draft.properties.cap),
+			// 	draft.basics.campaignEnd,
+			// 	draft.basics.successPercentage
+			// ],
+			// draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
-
-		console.log(draft.basics);
-		console.log(draft.basics.campaignEnd);
-		console.log(draft.basics.successPercentage);
 
 		// MINTER ROLES
 
 		let minterRoles = [];
+		/*
 		if (draft.minting.additionalMinterRoles.length > 0) {
 			minterRoles = draft.minting.additionalMinterRoles.split(',').map(addr => addr.trim());
 		}
@@ -246,6 +250,7 @@ function CampaignCreationProcess(props, context) {
 			minterRoles.push(context.drizzle.contracts.MintingSourcerer.address);
 			// TODO
 		}
+		*/
 
 		// VERIFIERS
 
@@ -288,7 +293,7 @@ function CampaignCreationProcess(props, context) {
 		// TODO a more elegant way to do this?
 
 		let sourcererSettingValues = [];
-
+		/*
 		let allowAdditionAfterCreation = draft.sourcererSettings.allowAdditionAfterCreation;
 		let allowCollateralUsageForOthers = draft.sourcererSettings.allowCollateralUsageForOthers;
 
@@ -303,6 +308,7 @@ function CampaignCreationProcess(props, context) {
 		if (sourcererSettingValues.length > 0) {
 			transactionsRequired.current += 1;
 		}
+*/
 
 		// EXTERNAL UNDERLYINGS
 
@@ -313,6 +319,8 @@ function CampaignCreationProcess(props, context) {
 			attachments: [],
 			usableForAlls: []
 		};
+
+		/*
 		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
 			let name = draft.externalUnderlyings[i];
 			let underlyingObj = props.allUnderlyings[name];
@@ -344,11 +352,13 @@ function CampaignCreationProcess(props, context) {
 			draft.minting.unit,
 			externalUnderlyings
 		];
+		*/
 
-		let campaignCreatorContract = 'CampaignTokenCreator';
+		let campaignCreatorContract = 'CampaignCreator';
 
 		// verifier types with parameters
 		let verifiersToParameterize = [];
+		/*
 		for (var name in verifiers) {
 			if (verifiers.hasOwnProperty(name)) {
 				let verifier = verifiers[name];
@@ -363,7 +373,7 @@ function CampaignCreationProcess(props, context) {
 					values: values
 				});
 			}
-		}
+		}*/
 
 		updateTokenCreationStage(t('campaign-creator.navigation.waiting-for-completion'));
 		contractCall(
@@ -371,13 +381,13 @@ function CampaignCreationProcess(props, context) {
 			props,
 			defaultAccount,
 			campaignCreatorContract,
-			'createNewToken',
+			'createNewCampaign',
 			campaignCreationArgs,
-			'Create new campaign: ' + draft.basics.symbol.toUpperCase(),
+			'Create new campaign: ', // + draft.basics.symbol.toUpperCase(),
 			{
 				transactionCompleted: receipt => {
 					transactionCounter.current++;
-
+					/*
 					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
 					postCreationStepsArgs[0] = newTokenAddress;
 
@@ -405,10 +415,10 @@ function CampaignCreationProcess(props, context) {
 							sourcererSettingValues,
 							callbackOthersDone
 						);
-					}
+					}*/
 
-					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
-
+					updateTokenCreationStage(t('completed'));
+					/*
 					verifiersToParameterize.map(verifier => {
 						setParamsOnOtherContract(
 							'verifier',
@@ -434,6 +444,7 @@ function CampaignCreationProcess(props, context) {
 					if (newExternalUnderlyings.names.length > 0) {
 						addNewExternalUnderlyingsOnContract(defaultAccount, newExternalUnderlyings, callbackOthersDone);
 					}
+					*/
 				},
 				transactionFailed: reason => {
 					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
@@ -460,7 +471,7 @@ function CampaignCreationProcess(props, context) {
 	};
 
 	const transactionCounter = useRef(0);
-	const transactionsRequired = useRef(2);
+	const transactionsRequired = useRef(1);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
@@ -559,6 +570,10 @@ function CampaignCreationProcess(props, context) {
 
 	const [keepAsDraft, setKeepAsDraft] = useState(false);
 
+	console.log(activeStep);
+	console.log(getSteps().length);
+	console.log(tokenCreationStage);
+
 	return (
 		<>
 			{draftId ? (
@@ -642,11 +657,11 @@ function CampaignCreationProcess(props, context) {
 								)}
 							{activeStep === getSteps().length && tokenCreationStage === 'completed' && (
 								<center>
-									<Typography className={classes.instructions}>Token successfully created!</Typography>
+									<Typography className={classes.instructions}>Campaign successfully created!</Typography>
 									<br />
 									<IconButton
 										style={{ color: 'green', transform: 'scale(2.4)' }}
-										onClick={() => history.push('/tokens')}>
+										onClick={() => history.push('/campaigns')}>
 										<CheckIcon />
 									</IconButton>
 								</center>

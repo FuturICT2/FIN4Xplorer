@@ -349,7 +349,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			7: Fin4GroupsAddress,
 			8: Fin4SystemParametersAddress,
 			9: Fin4UnderlyingsAddress,
-			10: CampaignTokenCreatorAddress
+			10: CampaignCreatorAddress,
+			11: CampaignManagementAddress
 		}) => {
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
 			addContract(props, drizzle, 'Fin4CappedTokenCreator', Fin4CappedTokenCreatorAddress, []);
@@ -369,7 +370,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4Groups', Fin4GroupsAddress, []);
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
 			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
-			addContract(props, drizzle, 'CampaignTokenCreator', CampaignTokenCreatorAddress, []);
+			addContract(props, drizzle, 'CampaignCreator', CampaignCreatorAddress, []);
+			addContract(props, drizzle, 'CampaignManagement', CampaignManagementAddress, []);
 		}
 	);
 };
