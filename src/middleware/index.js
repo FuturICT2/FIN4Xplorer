@@ -99,6 +99,21 @@ function fin4StoreReducer(state = initialState, action) {
 			return update(state, {
 				fin4TokensInitiallyFetched: { $set: true }
 			});
+		case 'ADD_MULTIPLE_CAMPAIGNS':
+			for (var campaignAddr in action.campaignsObj) {
+				if (action.campaignsObj.hasOwnProperty(campaignAddr)) {
+					state = {
+						...state,
+						fin4Campaigns: {
+							...state.fin4Campaigns,
+							[campaignAddr]: action.campaignsObj[campaignAddr]
+						}
+					};
+				}
+			}
+			return update(state, {
+				fin4TokensInitiallyFetched: { $set: true }
+			});
 		case 'ADD_CLAIM':
 			return {
 				...state,

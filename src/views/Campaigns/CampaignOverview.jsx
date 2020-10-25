@@ -3,7 +3,7 @@ import Box from '../../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import SortableTokenList from '../../components/SortableTokenList';
-import ActiveCampaignList from '../../components/ActiveCampaignList';
+import ActiveCampaignList from './ActiveCampaignList';
 
 function CampaignOverview(props) {
 	const { t } = useTranslation();
@@ -11,11 +11,7 @@ function CampaignOverview(props) {
 	return (
 		<>
 			<Box title={t('campaigns-list.all-campaigns-box-title')}>
-				{/* <SortableTokenList
-					tokens={Object.keys(props.fin4Tokens).map(addr => props.fin4Tokens[addr])}
-					showFilterAndSortOptions={false}
-				/> */}
-				<ActiveCampaignList />
+				<ActiveCampaignList campaigns={Object.keys(props.fin4Campaigns).map(addr => props.fin4Campaigns[addr])} />
 			</Box>
 		</>
 	);
@@ -23,7 +19,7 @@ function CampaignOverview(props) {
 
 const mapStateToProps = state => {
 	return {
-		fin4Tokens: state.fin4Store.fin4Tokens
+		fin4Campaigns: state.fin4Store.fin4Campaigns
 	};
 };
 

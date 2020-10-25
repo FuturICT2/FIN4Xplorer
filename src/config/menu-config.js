@@ -31,6 +31,7 @@ import DepositCollateral from '../views/underlying/DepositCollateral';
 import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
 import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
 import CampaignView from '../views/Campaigns/CampaignView';
+import DetailedCampaignView from '../views/Campaigns/DetailedCampaignView';
 
 const menu = [
 	{
@@ -111,6 +112,11 @@ const menu = [
 	{
 		component: CampaignView,
 		path: '/campaigns/view/',
+		showInNavBar: false
+	},
+	{
+		component: DetailedCampaignView,
+		path: '/campaigns/DetailedCampaignView/:campaignName',
 		showInNavBar: false
 	},
 	// ------------------ CLAIMS ------------------

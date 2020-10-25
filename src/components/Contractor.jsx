@@ -487,6 +487,48 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 	});
 };
 
+const fetchAllCampaigns = (props, CampaignManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(CampaignManagementContract, defaultAccount, 'getAllCampaigns').then(campaigns => {
+		let promises = [];
+		let campaignsObj = {};
+		campaigns.map(campaignAddr => {
+			campaignsObj[campaignAddr] = {};
+			promises.push(
+				getContractData(CampaignManagementContract, defaultAccount, 'getCampaignInfo', campaignAddr).then(
+					({
+						0: name,
+						1: userIsCreator,
+						2: text,
+						3: campaignStartTime,
+						4: campaignEndTime,
+						5: allTokens,
+						6: successThreshold,
+						7: claimPerCampaignContributor
+					}) => {
+						campaignsObj[campaignAddr].name = name;
+						campaignsObj[campaignAddr].address = campaignAddr;
+						campaignsObj[campaignAddr].userIsCreator = userIsCreator;
+						campaignsObj[campaignAddr].text = text;
+						campaignsObj[campaignAddr].campaignStartTime = campaignStartTime;
+						campaignsObj[campaignAddr].campaignEndTime = campaignEndTime;
+						campaignsObj[campaignAddr].allTokens = allTokens;
+						campaignsObj[campaignAddr].successThreshold = successThreshold;
+						campaignsObj[campaignAddr].claimPerCampaignContributor = claimPerCampaignContributor;
+						// tokensObj[tokenAddr].isOPAT = null;
+					}
+				)
+			);
+		});
+		Promise.all(promises).then(() => {
+			props.dispatch({
+				type: 'ADD_MULTIPLE_CAMPAIGNS',
+				campaignsObj: campaignsObj
+			});
+		});
+	});
+};
+
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMyNonzeroTokenBalances').then(
@@ -502,6 +544,22 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 		}
 	);
 };
+
+// const getUserCampaignBalances = () => {
+// 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+// 	getContractData(CampaignManagementContract, defaultAccount, 'getCampaignBalances').then(
+// 		({ 0: nonzeroBalanceTokens, 1: balancesBN }) => {
+// 			if (nonzeroBalanceTokens.length === 0) {
+// 				return;
+// 			}
+// 			props.dispatch({
+// 				type: 'UPDATE_MULTIPLE_BALANCES',
+// 				tokenAddresses: nonzeroBalanceTokens,
+// 				balances: balancesBN.map(balanceBN => new BN(balanceBN).toNumber())
+// 			});
+// 		}
+// 	);
+// };
 
 const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
@@ -822,7 +880,9 @@ export {
 	fetchMessage,
 	fetchMessages,
 	fetchAllTokens,
+	fetchAllCampaigns,
 	fetchUsersNonzeroTokenBalances,
+	// getUserCampaignBalances,
 	fetchCurrentUsersClaims,
 	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
