@@ -138,10 +138,18 @@ function ProofSubmission(props, context) {
 						accept={'video/*'}
 					/>
 				);
-			/*case 'Networking':
-				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			case 'HappyMoment':
-				return <HappyMomentProof key={'happy_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
+				return (
+					<PictureUploadProof
+						key={'pic_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="HappyMoment"
+						showAddressField={false}
+					/>
+				);
+			/*case 'Networking':
+				return <NetworkingProof key={'networking_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;*/
 			case 'Vote':
 				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			default:
