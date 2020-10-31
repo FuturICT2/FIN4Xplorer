@@ -31,10 +31,7 @@ function StepSearchVerifier(props) {
 		verifierType: '',
 		dataType: ''
 	});
-	const [search, setSearch] = useState({
-		searchInitiate: false,
-		searchResults: null
-	});
+	const [search, setSearch] = useState([]);
 	const [verifiersAdded, setVerifiersAdded] = useState([]);
 	const verifiers = useRef({});
 
@@ -53,6 +50,7 @@ function StepSearchVerifier(props) {
 			)
 		);
 		setDraftId(draft.id);
+		searchVerifiers(verifierProperty);
 	});
 
 	const submit = () => {
@@ -91,29 +89,32 @@ function StepSearchVerifier(props) {
 	};
 
 	const updateVerifierProperty = (key, val) => {
+		// setting the state is not fast enough to work with the object
+		// straight afterwards, that's why a temp object needs to be used
+		let tmp = verifierProperty;
+		tmp[key] = val;
+		searchVerifiers(tmp);
 		setVerifierProperty({
 			...verifierProperty,
 			[key]: val
 		});
 	};
 
-	const searchVerifiers = () => {
+	const searchVerifiers = newVerifierProperty => {
 		let searchResults = [];
 		for (let [key, value] of Object.entries(verifierDefinitions)) {
 			if (
-				verifierProperty.name.toLowerCase() !== '' &&
-				!key.toLowerCase().includes(verifierProperty.name.toLowerCase())
+				newVerifierProperty.name.toLowerCase() !== '' &&
+				!key.toLowerCase().includes(newVerifierProperty.name.toLowerCase())
 			)
 				continue;
-			if (verifierProperty.verifierType !== '' && value.type !== verifierProperty.verifierType) continue;
-			if (verifierProperty.dataType !== '' && value.claimerInput.inputType !== verifierProperty.dataType) continue;
-			if (verifierProperty.chain !== '' && value.chain !== verifierProperty.chain) continue;
+			if (newVerifierProperty.verifierType !== '' && value.type !== newVerifierProperty.verifierType) continue;
+			if (newVerifierProperty.dataType !== '' && value.claimerInput.inputType !== newVerifierProperty.dataType)
+				continue;
+			if (newVerifierProperty.chain !== '' && value.chain !== newVerifierProperty.chain) continue;
 			searchResults.push({ label: key, value: value.address });
 		}
-		setSearch({
-			searchResults,
-			searchInitiate: true
-		});
+		setSearch(searchResults);
 	};
 
 	const requestLocation = (verifierName, paramName) => {
@@ -161,9 +162,9 @@ function StepSearchVerifier(props) {
 				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
 				label="Claimer Input Data"
 			/>
-			<Button onClick={() => searchVerifiers()} center="true" color="inherit">
+			{/*<Button onClick={() => searchVerifiers()} center="true" color="inherit">
 				Search
-			</Button>
+			</Button>*/}
 			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{verifiersAdded.map((verifierAddress, index) => {
@@ -273,9 +274,23 @@ function StepSearchVerifier(props) {
 					})}
 				</div>
 			)}
-			{search.searchInitiate && (
-				<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />
-			)}
+			{
+				<div style={{ fontFamily: 'arial' }}>
+					Verifiers matching the criteria:
+					<br />
+					<br />
+					{search.map((verifier, idx) => {
+						return (
+							<div key={'searchVer_' + idx}>
+								<a style={{ textDecoration: 'none' }} href="#" onClick={() => addVerifier(verifier.value)}>
+									{verifier.label}
+								</a>
+							</div>
+						);
+					})}
+					{/*<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />*/}
+				</div>
+			}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
