@@ -90,24 +90,10 @@ function StepSearchVerifier(props) {
 		delete verifiers.current[props.verifierTypes[addr].contractName];
 	};
 
-	const typesHandler = type => {
+	const updateVerifierProperty = (key, val) => {
 		setVerifierProperty({
 			...verifierProperty,
-			verifierType: type
-		});
-	};
-
-	const dataTypesHandler = dataType => {
-		setVerifierProperty({
-			...verifierProperty,
-			dataType: dataType
-		});
-	};
-
-	const chainTypesHandler = chain => {
-		setVerifierProperty({
-			...verifierProperty,
-			chain: chain
+			[key]: val
 		});
 	};
 
@@ -153,25 +139,25 @@ function StepSearchVerifier(props) {
 				key={'drop_' + 1}
 				type="text"
 				value={verifierProperty.name}
-				onChange={event => setVerifierProperty({ ...verifierProperty, name: event.target.value })}
+				onChange={e => updateVerifierProperty('name', e.target.value)}
 				label="Name"
 				style={{ width: '100%', marginBottom: 14 }}
 			/>
 			<Dropdown
 				key={'drop_' + 3}
-				onChange={e => chainTypesHandler(e.value)}
+				onChange={e => updateVerifierProperty('chain', e.value)}
 				options={valuesToOptions(verifierOptions.chain.values)}
 				label="On or Off Chain"
 			/>
 			<Dropdown
 				key={'drop_' + 2}
-				onChange={e => typesHandler(e.value)}
+				onChange={e => updateVerifierProperty('verifierType', e.value)}
 				options={valuesToOptions(verifierOptions.type.values)}
 				label="Types"
 			/>
 			<Dropdown
 				key={'drop_' + 4}
-				onChange={e => dataTypesHandler(e.value)}
+				onChange={e => updateVerifierProperty('dataType', e.value)}
 				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
 				label="Claimer Input Data"
 			/>
