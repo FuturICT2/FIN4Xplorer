@@ -228,7 +228,6 @@ function StepSearchVerifier(props) {
 														defaultValue={verifiers.current[contractName].parameters[paramName]}
 														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
 														style={styles.normalField}
-
 														// TODO post-merge keep this?
 														/*inputProps={{
 															style: { fontSize: isArray ? 'small' : 'medium' }
@@ -290,7 +289,8 @@ function StepSearchVerifier(props) {
 			<br />
 			{
 				<div style={{ fontFamily: 'arial', color: 'gray' }}>
-					Verifiers matching the criteria:
+					{/* TODO take strings from translation files */}
+					Verifiers matching the criteria, click to add:
 					<br />
 					<br />
 					{search.map((verifier, idx) => {
