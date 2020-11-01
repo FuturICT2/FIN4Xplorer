@@ -276,21 +276,24 @@ function StepSearchVerifier(props) {
 			/>
 			<Dropdown
 				key={'drop_' + 3}
-				onChange={e => updateVerifierProperty('chain', e.value)}
+				onChange={e => updateVerifierProperty('chain', e ? e.value : '')}
 				options={valuesToOptions(verifierOptions.chain.values)}
 				label="On or Off Chain"
+				isClearable={true}
 			/>
 			<Dropdown
 				key={'drop_' + 2}
-				onChange={e => updateVerifierProperty('verifierType', e.value)}
+				onChange={e => updateVerifierProperty('verifierType', e ? e.value : '')}
 				options={valuesToOptions(verifierOptions.type.values)}
 				label="Types"
+				isClearable={true}
 			/>
 			<Dropdown
 				key={'drop_' + 4}
-				onChange={e => updateVerifierProperty('dataType', e.value)}
+				onChange={e => updateVerifierProperty('dataType', e ? e.value : '')}
 				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
 				label="Claimer Input Data"
+				isClearable={true}
 			/>
 			<Button onClick={() => resetVerifierProperty()} center="true" color="inherit">
 				Reset criteria

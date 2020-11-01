@@ -259,6 +259,7 @@ const Dropdown = props => {
 						onChange={props.onChange}
 						isMulti={props.multipleChoice}
 						defaultValue={props.defaultValue ? props.defaultValue : null}
+						isClearable={props.isClearable ? props.isClearable : false}
 					/>
 				</NoSsr>
 			</div>
