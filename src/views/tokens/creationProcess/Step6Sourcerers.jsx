@@ -17,6 +17,7 @@ const PROPERTY_DEFAULT = {
 	allowCollateralUsageForOthers: true
 };
 
+// TODO post-merge make this step 6
 function StepSourcerers(props) {
 	const { t } = useTranslation();
 
@@ -200,12 +201,12 @@ function StepSourcerers(props) {
 				)}
 				<br />
 				{buildCheckboxWithLabel(
-					t('token-creator.step7-sourcerers.settings.allow-new-pairs'),
+					t('token-creator.step6-sourcerers.settings.allow-new-pairs'),
 					'allowAdditionAfterCreation',
 					'small'
 				)}
 				{buildCheckboxWithLabel(
-					t('token-creator.step7-sourcerers.settings.allow-others-collateral-usage'),
+					t('token-creator.step6-sourcerers.settings.allow-others-collateral-usage'),
 					'allowCollateralUsageForOthers',
 					'small'
 				)}

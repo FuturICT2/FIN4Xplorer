@@ -2,7 +2,12 @@ import { getNetworkName } from '../components/utils';
 import { Fin4MainAddress } from '../config/deployment-info.js';
 import { contractEventList, handleContractEvent } from './ContractEventHandler';
 const { ethers } = require('ethers');
-const config = require('../config/config.json');
+let config = null;
+try {
+	config = require('../config/config.json');
+} catch (err) {
+	console.log('config.json not found in EthersjsListeners.js');
+}
 
 const serverLaunchTime = Date.now();
 const blockedTimeAfterLaunch = 5; // seconds
@@ -14,7 +19,7 @@ const inBlockedPhase = () => {
 
 const subscribeToContractEventsViaEthersjsListeners = defaultAccount => {
 	let provider;
-	if (config.INFURA_API_KEY && getNetworkName() === 'Rinkeby') {
+	if (config && config.INFURA_API_KEY && getNetworkName() === 'Rinkeby') {
 		provider = new ethers.providers.InfuraProvider('rinkeby', config.INFURA_API_KEY);
 	} else {
 		provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');

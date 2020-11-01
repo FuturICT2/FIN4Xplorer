@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import Container from '../../components/Container';
 import Box from '../../components/Box';
 import { useTranslation } from 'react-i18next';
 import UsersIcon from '@material-ui/icons/Group';
 import CollectionsIcon from '@material-ui/icons/CollectionsBookmark';
+import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import MessageIcon from '@material-ui/icons/Message';
 import EmailIcon from '@material-ui/icons/Email';
 import StarIcon from '@material-ui/icons/Star';
@@ -21,8 +22,10 @@ import { buildIconLabelLink, buildIconLabelCallback, TCRactive, UnderlyingsActiv
 import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import { contractCall } from '../../components/Contractor';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Modal from '../../components/Modal';
+import { contractCall, getContractData, readOnlyCall } from '../../components/Contractor';
+import { Link } from 'react-router-dom';
 
 let config = null;
 try {
@@ -38,6 +41,19 @@ function Home(props, context) {
 	const { t } = useTranslation();
 
 	const [faucetRequestPending, setFaucetRequestPending] = useState(false);
+	const [iconIsHovered, setIconHovered] = useState(false);
+	const [isQRModalOpen, setQRModalOpen] = useState(false);
+	const [isBecomeVoterModalActive, setisBecomeVoterModalActive] = useState(false);
+	const [isBecomeVoterTabActive, setisBecomeVoterTabActive] = useState(false);
+	const style = { textDecoration: 'none' };
+	const homeReady = useRef(false);
+	const toggleQRModal = () => {
+		setQRModalOpen(!isQRModalOpen);
+	};
+	const toggleBecomeVoterModalActive = () => {
+		setisBecomeVoterModalActive(!isBecomeVoterModalActive);
+	};
+	const [isEligibleToBeAVoter, setIsEligibleToBeAVoter] = useState(false);
 
 	const requestEther = () => {
 		let recipient = props.defaultAccount;
@@ -81,6 +97,55 @@ function Home(props, context) {
 				},
 				dryRunFailed: () => {
 					console.log('--> dryRunFailed callback');
+				}
+			}
+		);
+	};
+
+	const isEligible = () => {
+		let res = readOnlyCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Verifying',
+			'isEligibleToBeAVoter',
+			[],
+			'I want to be a voter',
+			{},
+			false,
+			false
+		);
+		Promise.all(res).then(result => {
+			// console.log(result[0]);
+			setIsEligibleToBeAVoter(result[0]);
+		});
+	};
+
+	useEffect(() => {
+		if (props.contracts.Fin4Voting && props.contracts.Fin4Voting.initialized && !homeReady.current) {
+			homeReady.current = true;
+			isEligible();
+		}
+	});
+
+	const submitClaim = () => {
+		contractCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			'Fin4Verifying',
+			'becomeVoter',
+			[],
+			'I want to be a voter',
+			{
+				transactionCompleted: receipt => {
+					console.log('You are a voter now!');
+					let promises = [];
+					promises.push(receipt.status);
+					Promise.all(promises).then(() => setIsEligibleToBeAVoter(false));
+				},
+				transactionFailed: reason => {
+					console.log("We couldn't enroll you on the list of voters because: " + reason);
 				}
 			}
 		);
@@ -142,10 +207,51 @@ function Home(props, context) {
 				)}
 			</Box>
 			<Box title={t('home.settings.box-title')} width="250px">
+				{/* TODO better title */}
 				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
 				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'), true, false)}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'))}{' '}
+				{/*true, false*/}
+				{isEligibleToBeAVoter ? (
+					<Link to={'#'} style={style}>
+						<div
+							style={{ display: 'flex', alignItems: 'center', paddingLeft: '15px', fontFamily: 'arial' }}
+							onClick={() => {
+								toggleBecomeVoterModalActive();
+							}}>
+							<HowToVoteIcon />
+							&nbsp;&nbsp;Become a voter
+						</div>
+					</Link>
+				) : null}
+			</Box>
+			<Modal
+				isOpen={isBecomeVoterModalActive}
+				handleClose={toggleBecomeVoterModalActive}
+				title="Do you want to become a voter?"
+				width="400px">
+				<Container>
+					<Button
+						onClick={() => {
+							submitClaim();
+							toggleBecomeVoterModalActive();
+						}}>
+						{' '}
+						Yes
+					</Button>
+					<Button
+						onClick={() => {
+							toggleBecomeVoterModalActive();
+						}}>
+						{' '}
+						No
+					</Button>
+				</Container>
+			</Modal>
+			<Box title="Inbox" width="250px">
+				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
+				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
 			</Box>
 			<Box title={t('home.inbox.box-title')} width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
@@ -213,6 +319,7 @@ const styles = {
 
 const mapStateToProps = state => {
 	return {
+		contracts: state.contracts,
 		usersFin4TokenBalances: state.fin4Store.usersFin4TokenBalances,
 		fin4Tokens: state.fin4Store.fin4Tokens,
 		defaultAccount: state.fin4Store.defaultAccount,

@@ -12,6 +12,7 @@ import Dropdown from '../../../components/Dropdown';
 import moment from 'moment';
 import { zeroAddress } from '../../../components/Contractor';
 
+// TODO migrate strings into translation files
 function StepExternalUnderlyings(props) {
 	const { t } = useTranslation();
 

@@ -14,10 +14,9 @@ import StepIdentity from './creationProcess/Step1Identity';
 import StepDesign from './creationProcess/Step2Design';
 import StepActions from './creationProcess/Step3Actions';
 import StepMinting from './creationProcess/Step4Minting';
-import StepNoninteractiveVerifier from './creationProcess/Step5NoninteractiveVerifier';
-import StepInteractiveVerifier from './creationProcess/Step6InteractiveVerifier';
-import StepSourcerers from './creationProcess/Step7Sourcerers';
-import StepExternalUnderlyings from './creationProcess/Step8ExternalUnderlyings';
+import StepSearchVerifier from './creationProcess/Step5SearchVerifier';
+import StepSourcerers from './creationProcess/Step6Sourcerers';
+import StepExternalUnderlyings from './creationProcess/Step7ExternalUnderlyings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -57,9 +56,9 @@ function TokenCreationProcess(props, context) {
 	// TEXT CONTENT START
 
 	const getSteps = () => {
-		// ['Identity', 'Design', 'Actions', 'Minting', 'Verifying1', 'Verifying2', 'Sourcerers', 'ExternalUnderlyings']; // Disbursement/Valuation instead of Value?
+		// ['Identity', 'Design', 'Actions', 'Minting', 'Verifying', 'Sourcerers', 'ExternalUnderlyings']; // Disbursement/Valuation instead of Value?
 		const steps = [];
-		const numbOfSteps = UnderlyingsActive ? 8 : 6;
+		const numbOfSteps = UnderlyingsActive ? 7 : 5;
 		for (let i = 0; i < numbOfSteps; i++) {
 			steps.push('');
 		}
@@ -77,13 +76,11 @@ function TokenCreationProcess(props, context) {
 			case 3:
 				return t('token-creator.step4-minting.title');
 			case 4:
-				return t('token-creator.step5-verifiers1.title');
+				return t('token-creator.step5-verifiers.title');
 			case 5:
-				return t('token-creator.step6-verifiers2.title');
+				return UnderlyingsActive ? t('token-creator.step6-sourcerers.title') : '';
 			case 6:
-				return UnderlyingsActive ? t('token-creator.step7-sourcerers.title') : '';
-			case 7:
-				return t('token-creator.step8-underlyings.title');
+				return t('token-creator.step7-underlyings.title');
 			default:
 				return '';
 		}
@@ -144,17 +141,14 @@ function TokenCreationProcess(props, context) {
 			case 4:
 				return (
 					<>
-						{t('token-creator.step5-verifiers1.info')}
+						{t('token-creator.step5-verifiers.info')}
 						<br />
 						<br />
-						{t('token-creator.step5-verifiers1.listing-header') + ':'}
+						{t('token-creator.step5-verifiers.listing-header') + ':'}
 						<br />
 						<br />
 						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
 							let verifier = verifierTypes[verifierAddr];
-							if (!verifier.isNoninteractive) {
-								return '';
-							}
 							return (
 								<span key={'verifierInfo_' + idx}>
 									<b>{verifier.label}</b>
@@ -167,35 +161,9 @@ function TokenCreationProcess(props, context) {
 						})}
 					</>
 				);
-			case 5:
-				return (
-					<>
-						{t('token-creator.step5-verifiers1.info')}
-						<br />
-						<br />
-						{t('token-creator.step6-verifiers2.listing-header') + ':'}
-						<br />
-						<br />
-						{Object.keys(verifierTypes).map((verifierAddr, idx) => {
-							let verifier = verifierTypes[verifierAddr];
-							if (verifier.isNoninteractive) {
-								return '';
-							}
-							return (
-								<span key={'verifierInfo_' + idx}>
-									<b>{verifier.label}</b>
-									<br />
-									{verifier.description}
-									<br />
-									<br />
-								</span>
-							);
-						})}
-					</>
-				);
-			case 6: // Sourcerers
+			case 5: // Sourcerers
 				return '';
-			case 7: // External source of value
+			case 6: // External source of value
 				return '';
 			default:
 				return '';
@@ -271,11 +239,18 @@ function TokenCreationProcess(props, context) {
 			return t('token-creator.validation.symbol-duplicate');
 		}
 
-		if (draft.interactiveVerifiers.Location) {
-			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
+		if (draft.verifiers.Location) {
+			let latLonStr = draft.verifiers.Location.parameters['latitude / longitude'];
 			if (latLonStr.split('/').length !== 2) {
 				// also check for other possibly wrong cases?
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
+			}
+		}
+		if (draft.verifiers.Password) {
+			let pass = draft.verifiers.Password.parameters['password'];
+			var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+			if (!pass.match(decimal)) {
+				return "The password you have chosen doesn't abide by the rules described";
 			}
 		}
 
@@ -331,9 +306,9 @@ function TokenCreationProcess(props, context) {
 
 		// VERIFIERS
 
+		// TODO post-merge simplify?
 		let verifiers = {
-			...draft.noninteractiveVerifiers,
-			...draft.interactiveVerifiers
+			...draft.verifiers
 		};
 
 		// SOURCERERS
@@ -557,6 +532,7 @@ function TokenCreationProcess(props, context) {
 			let userList = values[0] ? values[0].split(',').map(str => str.trim()) : [];
 			let groupsList = values[1] ? values[1].split(',').map(Number) : [];
 			values = [userList, groupsList];
+			// TODO post-merge is this necessary? https://github.com/johnrachwan123/FIN4Xplorer/blob/65f00f14f14c245a15933f6069aefcd887691a78/src/views/tokens/TokenCreationProcess.jsx#L271
 		}
 		contractCall(
 			context,
@@ -679,12 +655,11 @@ function TokenCreationProcess(props, context) {
 							{activeStep === 1 && buildStepComponent(StepDesign)}
 							{activeStep === 2 && buildStepComponent(StepActions)}
 							{activeStep === 3 && buildStepComponent(StepMinting)}
-							{activeStep === 4 && buildStepComponent(StepNoninteractiveVerifier)}
-							{activeStep === 5 && buildStepComponent(StepInteractiveVerifier)}
+							{activeStep === 4 && buildStepComponent(StepSearchVerifier)}
 							{UnderlyingsActive && (
 								<>
-									{activeStep === 6 && buildStepComponent(StepSourcerers)}
-									{activeStep === 7 && buildStepComponent(StepExternalUnderlyings)}
+									{activeStep === 5 && buildStepComponent(StepSourcerers)}
+									{activeStep === 6 && buildStepComponent(StepExternalUnderlyings)}
 								</>
 							)}
 							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (

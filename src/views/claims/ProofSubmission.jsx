@@ -8,8 +8,9 @@ import Box from '../../components/Box';
 import Container from '../../components/Container';
 import PropTypes from 'prop-types';
 import LocationProof from './proofs/LocationProof';
+import Button from '../../components/Button';
 import PictureUploadProof from './proofs/PictureUploadProof';
-import { Link } from 'react-router-dom';
+import FileUploadProof from './proofs/FileUploadProof';
 import ContractFormSimple from '../../components/ContractFormSimple';
 import {
 	abiTypeToTextfieldType,
@@ -19,6 +20,7 @@ import {
 } from '../../components/utils';
 import VoteProof from './proofs/VoteProof';
 import { useTranslation } from 'react-i18next';
+import { contractCall, readOnlyCall } from '../../components/Contractor';
 
 function ProofSubmission(props, context) {
 	const { t } = useTranslation();
@@ -90,7 +92,7 @@ function ProofSubmission(props, context) {
 			case 'PictureSelfChosenApprover':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'psca_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="PictureSelfChosenApprover"
@@ -100,17 +102,46 @@ function ProofSubmission(props, context) {
 			case 'PictureGivenApprovers':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'pga_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="PictureGivenApprovers"
 						showAddressField={false}
 					/>
 				);
+			case 'LimitedVoting':
+				return (
+					<FileUploadProof
+						key={'lv_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="LimitedVoting"
+					/>
+				);
+			case 'PictureVoting':
+				return (
+					<FileUploadProof
+						key={'pv_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="PictureVoting"
+						accept={'image/*'}
+					/>
+				);
+			case 'VideoVoting':
+				return (
+					<FileUploadProof
+						key={'vv_' + index}
+						tokenAddr={tokenAddrToReceiveVerifierNotice}
+						claimId={claimId}
+						contractName="VideoVoting"
+						accept={'video/*'}
+					/>
+				);
 			case 'HappyMoment':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'hm_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="HappyMoment"
@@ -126,7 +157,7 @@ function ProofSubmission(props, context) {
 				let contractMethod = 'submitProof_' + verifierContractName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
-					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type)];
+					return [capitalizeFirstLetter(input.name), abiTypeToTextfieldType(input.type, input.name)];
 				});
 				return (
 					<ContractFormSimple
@@ -156,7 +187,48 @@ function ProofSubmission(props, context) {
 		return <Status status={status}>{text}</Status>;
 	};
 
+	function isEligibleEndVote(name, claimId) {
+		let res = readOnlyCall(
+			context,
+			props,
+			props.store.getState().fin4Store.defaultAccount,
+			name,
+			'endVotePossible',
+			[claimId],
+			'End Vote Possible',
+			props.callbacks
+		);
+		Promise.all(res).then(result => {
+			console.log(result[0]);
+		});
+	}
+
+	const endVoting = () => {
+		Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map(verifierTypeAddr => {
+			let claimObj = props.usersClaims[pseudoClaimId];
+			let generalVerifierObj = props.verifierTypes[verifierTypeAddr];
+			let contractName = generalVerifierObj.label;
+			switch (contractName) {
+				case 'PictureVoting':
+				case 'VideoVoting':
+				case 'LimitedVoting':
+					contractCall(
+						context,
+						props,
+						props.store.getState().fin4Store.defaultAccount,
+						contractName,
+						'endVote',
+						[claimObj.claimId],
+						'End Vote',
+						props.callbacks
+					);
+				default:
+			}
+		});
+	};
+
 	const buildVerifierAppearance = (index, claimObj, generalVerifierObj) => {
+		// console.log(isEligibleEndVote(generalVerifierObj.label, claimObj.claimId));
 		let statusObj = claimObj.verifierStatuses[generalVerifierObj.value];
 		let status = statusObj.status;
 		let message = statusObj.message;
@@ -172,12 +244,26 @@ function ProofSubmission(props, context) {
 					</>
 				);
 			case ProofAndVerifierStatusEnum.PENDING:
-				return buildStatusElement(
-					status,
-					<span>
-						{t('proof-submission.verifier.pending', { name: generalVerifierObj.label })}
-						{addMessageIfExistent(message)}
-					</span>
+				return (
+					<div>
+						{buildStatusElement(
+							status,
+							<span>
+								{t('proof-submission.verifier.pending', { name: generalVerifierObj.label })}
+								{addMessageIfExistent(message)}
+							</span>
+						)}
+
+						{generalVerifierObj.label.includes('Voting') && (
+							// isEligibleEndVote(generalVerifierObj.label, claimObj.claimId) &&
+							<div>
+								{/* <Status>{"End Voting After 1 Day"}</Status> */}
+								<Button onClick={endVoting} center="true">
+									End Vote
+								</Button>
+							</div>
+						)}
+					</div>
 				);
 			case ProofAndVerifierStatusEnum.APPROVED:
 				return buildStatusElement(

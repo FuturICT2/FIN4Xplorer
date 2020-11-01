@@ -458,8 +458,7 @@
 		},
 		"verifiers": {
 			"box-title": "Adressen der Verifizierer",
-			"parameters": "Parameter",
-			"is-non-interactive": "ist nicht interaktiv"
+			"parameters": "Parameter"
 		},
 		"sourcerer": {
 			"box-title": "Fin4 Beschaffer"

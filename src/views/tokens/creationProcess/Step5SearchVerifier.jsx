@@ -5,36 +5,52 @@ import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
 import Dropdown from '../../../components/Dropdown';
 import Button from '../../../components/Button';
+import { verifiers as verifierDefinitions, verifierOptions } from '../../../config/verifier-info';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { TextField, IconButton } from '@material-ui/core';
-import styled from 'styled-components';
 import { findVerifierTypeAddressByContractName } from '../../../components/utils';
 import AddLocation from '@material-ui/icons/AddLocation';
 
-function StepInteractiveVerifier(props) {
+function valuesToOptions(values) {
+	let result = [];
+	for (let value of values) {
+		result.push({ label: value, value: value });
+	}
+	return result;
+}
+
+function StepSearchVerifier(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const verifiers = useRef({}); // TODO rework this to use state too as in other steps?
+	const [verifierProperty, setVerifierProperty] = useState({
+		name: '',
+		chain: '',
+		verifierType: '',
+		dataType: ''
+	});
+	const [search, setSearch] = useState([]);
+	const [verifiersAdded, setVerifiersAdded] = useState([]);
+	const verifiers = useRef({});
 
 	useEffect(() => {
-		if (!props.draft || draftId || Object.keys(props.verifierTypes).length === 0) {
+		if (!props.draft || draftId) {
 			return;
 		}
 		let draft = props.draft;
-		verifiers.current = draft.interactiveVerifiers;
+		verifiers.current = draft.verifiers;
 		if (verifiers.current['Location']) {
 			setLocVal(verifiers.current['Location'].parameters['latitude / longitude']);
 		}
-
 		setVerifiersAdded(
-			Object.keys(draft.interactiveVerifiers).map(contractName =>
+			Object.keys(draft.verifiers).map(contractName =>
 				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
 			)
 		);
 		setDraftId(draft.id);
+		searchVerifiers(verifierProperty);
 	});
 
 	const submit = () => {
@@ -42,21 +58,17 @@ function StepInteractiveVerifier(props) {
 			type: 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'interactiveVerifiers',
+			nodeName: 'verifiers',
 			node: verifiers.current
 		});
 		props.handleNext();
 	};
-
-	const [showDropdown, setShowDropdown] = useState(false);
-	const [verifiersAdded, setVerifiersAdded] = useState([]);
 
 	const addVerifier = addr => {
 		let verifier = props.verifierTypes[addr];
 		let contractName = verifier.contractName;
 
 		verifiers.current[contractName] = {
-			// address: addr,
 			parameters: {}
 		};
 
@@ -69,7 +81,6 @@ function StepInteractiveVerifier(props) {
 		}
 
 		setVerifiersAdded(verifiersAdded.concat(addr));
-		setShowDropdown(false);
 	};
 
 	const removeVerifier = addr => {
@@ -77,14 +88,43 @@ function StepInteractiveVerifier(props) {
 		delete verifiers.current[props.verifierTypes[addr].contractName];
 	};
 
-	const requestLocation = (contractName, paramName) => {
+	const updateVerifierProperty = (key, val) => {
+		// setting the state is not fast enough to work with the object
+		// straight afterwards, that's why a temp object needs to be used
+		let tmp = verifierProperty;
+		tmp[key] = val;
+		searchVerifiers(tmp);
+		setVerifierProperty({
+			...verifierProperty,
+			[key]: val
+		});
+	};
+
+	const searchVerifiers = newVerifierProperty => {
+		let searchResults = [];
+		for (let [key, value] of Object.entries(verifierDefinitions)) {
+			if (
+				newVerifierProperty.name.toLowerCase() !== '' &&
+				!key.toLowerCase().includes(newVerifierProperty.name.toLowerCase())
+			)
+				continue;
+			if (newVerifierProperty.verifierType !== '' && value.type !== newVerifierProperty.verifierType) continue;
+			if (newVerifierProperty.dataType !== '' && value.claimerInput.inputType !== newVerifierProperty.dataType)
+				continue;
+			if (newVerifierProperty.chain !== '' && value.chain !== newVerifierProperty.chain) continue;
+			searchResults.push({ label: key, value: value.address });
+		}
+		setSearch(searchResults);
+	};
+
+	const requestLocation = (verifierName, paramName) => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				let latitude = pos.coords.latitude;
 				let longitude = pos.coords.longitude;
 				let locStr = latitude + ' / ' + longitude;
 				console.log('Captured location ' + locStr);
-				verifiers.current[contractName].parameters[paramName] = locStr;
+				verifiers.current[verifierName].parameters[paramName] = locStr;
 				setLocVal(locStr);
 			});
 		} else {
@@ -100,28 +140,28 @@ function StepInteractiveVerifier(props) {
 			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{verifiersAdded.map((verifierAddress, index) => {
-						let verifierType = props.verifierTypes[verifierAddress];
-						let name = verifierType.label;
-						let contractName = verifierType.contractName;
+						let verifier = props.verifierTypes[verifierAddress];
+						let contractName = verifier.contractName;
+						let name = verifier.label;
 						return (
 							<div key={'verifier_' + index} style={{ paddingTop: '20px' }}>
 								<div
 									key={'verifierLabel_' + index}
-									title={verifierType.description}
+									title={verifier.description}
 									style={{ display: 'flex', alignItems: 'center' }}>
 									<ArrowRightIcon />
 									{name}
 									<FontAwesomeIcon
 										icon={faMinusCircle}
 										style={styles.removeIcon}
-										title={t('token-creator.step5-verifiers1.fields.remove-verifier-tooltip.label')}
+										title={t('token-creator.step5-verifiers.fields.remove-verifier-tooltip.label')}
 										onClick={() => removeVerifier(verifierAddress)}
 									/>
-									{verifierType.paramsEncoded.length > 0 && (
+									{verifier.paramsEncoded.length > 0 && (
 										<FontAwesomeIcon
 											icon={faPlusSquare}
 											style={styles.plusIcon}
-											title={t('token-creator.step5-verifiers1.fields.verifier-to-parameterize-tooltip.label')}
+											title={t('token-creator.step5-verifiers.fields.verifier-to-parameterize-tooltip.label')}
 										/>
 									)}
 								</div>
@@ -132,15 +172,14 @@ function StepInteractiveVerifier(props) {
 										possible for users of MetaMask mobile on Android
 									</small>
 								)}
-								{verifierType.paramsEncoded &&
-									verifierType.paramsEncoded.split(',').map((paramStr, paramIndex) => {
+								{verifier.paramsEncoded &&
+									verifier.paramsEncoded.split(',').map((paramStr, paramIndex) => {
 										// e.g. uint:interval:days,uint:maxQuantity:quantity
 										let type = paramStr.split(':')[0];
 										let isArray = type.includes('[]');
 										let paramName = paramStr.split(':')[1];
 										let description = paramStr.split(':')[2];
 										let key = 'verifier_' + index + '_param_' + paramIndex;
-
 										if (description === 'gps') {
 											// ONLY FOR LAT/LON FIELD OF LOCATION
 											// more solid indicator?
@@ -180,15 +219,22 @@ function StepInteractiveVerifier(props) {
 																{description && <small> ({description})</small>}{' '}
 															</>
 														}
-														defaultValue={verifiers.current[contractName].parameters[paramName]}
-														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
-														style={styles.normalField}
 														inputProps={{
 															style: { fontSize: isArray ? 'small' : 'medium' }
 														}}
 														multiline={isArray ? true : null}
 														rows={isArray ? 1 : null}
 														variant={isArray ? 'outlined' : 'standard'}
+														defaultValue={verifiers.current[contractName].parameters[paramName]}
+														onChange={e => (verifiers.current[contractName].parameters[paramName] = e.target.value)}
+														style={styles.normalField}
+														// TODO post-merge keep this?
+														/*inputProps={{
+															style: { fontSize: isArray ? 'small' : 'medium' }
+														}}
+														multiline={isArray ? true : null}
+														rows={isArray ? 1 : null}
+														variant={isArray ? 'outlined' : 'standard'}*/
 													/>
 												</span>
 											);
@@ -199,29 +245,71 @@ function StepInteractiveVerifier(props) {
 					})}
 				</div>
 			)}
-			{verifiersAdded.length > 0 && <Spacer />}
-			{showDropdown ? (
-				<Dropdown
-					onChange={e => addVerifier(e.value)}
-					options={Object.keys(props.verifierTypes)
-						.filter(addr => !props.verifierTypes[addr].isNoninteractive)
-						.filter(addr => !verifiers.current[props.verifierTypes[addr].label])
-						.map(addr => props.verifierTypes[addr])}
-					label={t('token-creator.step5-verifiers1.fields.add-token-verifier.label')}
-				/>
-			) : (
-				<Button onClick={() => setShowDropdown(true)} center="true" color="inherit">
-					{t('token-creator.step5-verifiers1.fields.add-button.label')}
-				</Button>
+			{verifiersAdded.length === 0 && (
+				<center style={{ fontFamily: 'arial' }}>
+					<i>No verifiers added yet</i>
+				</center>
 			)}
+			<br />
+			<hr />
+			<br />
+			<div style={{ fontFamily: 'arial', color: 'gray' }}>Filter by criteria and add verifier:</div>
+			<TextField
+				key={'drop_' + 1}
+				type="text"
+				value={verifierProperty.name}
+				onChange={e => updateVerifierProperty('name', e.target.value)}
+				label="Name"
+				style={{ width: '100%', marginBottom: 14 }}
+			/>
+			<Dropdown
+				key={'drop_' + 3}
+				onChange={e => updateVerifierProperty('chain', e ? e.value : '')}
+				options={valuesToOptions(verifierOptions.chain.values)}
+				label="On or Off Chain"
+				isClearable={true}
+			/>
+			<Dropdown
+				key={'drop_' + 2}
+				onChange={e => updateVerifierProperty('verifierType', e ? e.value : '')}
+				options={valuesToOptions(verifierOptions.type.values)}
+				label="Types"
+				isClearable={true}
+			/>
+			<Dropdown
+				key={'drop_' + 4}
+				onChange={e => updateVerifierProperty('dataType', e ? e.value : '')}
+				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
+				label="Claimer Input Data"
+				isClearable={true}
+			/>
+			{/*<Button onClick={() => resetVerifierProperty()} center="true" color="inherit">
+				Reset criteria
+			</Button>*/}
+			<br />
+			{
+				<div style={{ fontFamily: 'arial', color: 'gray' }}>
+					{/* TODO take strings from translation files */}
+					Verifiers matching the criteria, click to add:
+					<br />
+					<br />
+					{search.map((verifier, idx) => {
+						return (
+							<div key={'searchVer_' + idx}>
+								<a style={{ textDecoration: 'none' }} href="#" onClick={() => addVerifier(verifier.value)}>
+									{verifier.label}
+								</a>
+							</div>
+						);
+					})}
+					{/*<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />*/}
+				</div>
+			}
+			<br />
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
 }
-
-const Spacer = styled.div`
-	height: 30px;
-`;
 
 const styles = {
 	removeIcon: {
@@ -239,10 +327,6 @@ const styles = {
 	normalField: {
 		width: '80%',
 		margin: '8px 0 8px 25px'
-	},
-	shortenedField: {
-		width: '68%',
-		margin: '8px 0 8px 25px'
 	}
 };
 
@@ -252,4 +336,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default drizzleConnect(StepInteractiveVerifier, mapStateToProps);
+export default drizzleConnect(StepSearchVerifier, mapStateToProps);

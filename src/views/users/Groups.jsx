@@ -109,6 +109,8 @@ function Groups(props, context) {
 		);
 	};
 
+	console.log(groups.filter(group => group.userIsCreator).length > 0);
+
 	return (
 		<Container>
 			<Box title={t('groups.create-new.box-title')}>
@@ -172,6 +174,7 @@ function Groups(props, context) {
 							.filter(g => g.userIsMember)
 							.map((group, index) => {
 								return (
+									// TODO post-merge have to add "if (group.name !== '')" ? Because random voter groups? Don't get deleted?
 									<TableRow
 										key={'groupMember_' + index}
 										// TODO leave group option, checkbox if inform group owner about you leaving or not
