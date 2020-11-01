@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AddLocation from '@material-ui/icons/AddLocation';
 import Button from '../../../components/Button';
-import { getContractData, contractCall } from '../../../components/Contractor';
+import { contractCall } from '../../../components/Contractor';
 
 function LocationProof(props, context) {
 	const { t } = useTranslation();
@@ -17,6 +17,26 @@ function LocationProof(props, context) {
 
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
+		// via https://www.w3schools.com/html/html5_geolocation.asp
+		navigator.geolocation.getCurrentPosition(pos => {
+			let latitude = pos.coords.latitude;
+			let longitude = pos.coords.longitude;
+			console.log('Captured location ' + latitude + ' / ' + longitude);
+
+			contractCall(
+				context,
+				props,
+				defaultAccount,
+				'Location',
+				'submitProof_Location_Server',
+				[props.tokenAddr, props.claimId, Math.round(latitude), Math.round(longitude)],
+				'Submit location proof',
+				props.callbacks
+			);
+		});
+
+		/*
+		// DEPRECATED: calculation in frontend
 		getContractData(
 			context.drizzle.contracts.Location,
 			defaultAccount,
@@ -25,31 +45,13 @@ function LocationProof(props, context) {
 		).then(latLonStr => {
 			let tokenCreatorLatitude = Number(latLonStr.split('/')[0].trim());
 			let tokenCreatorLongitude = Number(latLonStr.split('/')[1].trim());
-
-			// via https://www.w3schools.com/html/html5_geolocation.asp
-			navigator.geolocation.getCurrentPosition(pos => {
-				let latitude = pos.coords.latitude;
-				let longitude = pos.coords.longitude;
-
-				console.log('Captured location ' + latitude + ' / ' + longitude);
-
-				// use an oracle instead!? Maybe http://provable.xyz
-				let distanceToTokenCreatorsLocation = Math.round(
-					distanceInKmBetweenEarthCoordinates(tokenCreatorLatitude, tokenCreatorLongitude, latitude, longitude) * 1000
-				);
-
-				contractCall(
-					context,
-					props,
-					defaultAccount,
-					'Fin4Verifying',
-					'submitProof_Location_Server',
-					[props.tokenAddr, props.claimId, 'Location', Math.round(latitude), Math.round(longitude)],
-					'Submit location proof',
-					props.callbacks
-				);
-			});
+			// use an oracle instead!? Maybe http://provable.xyz
+			let distanceToTokenCreatorsLocation = Math.round(
+				distanceInKmBetweenEarthCoordinates(tokenCreatorLatitude, tokenCreatorLongitude, latitude, longitude) * 1000
+			);
+			// ...
 		});
+		*/
 	};
 
 	return (
@@ -59,6 +61,7 @@ function LocationProof(props, context) {
 	);
 }
 
+/*
 function degreesToRadians(degrees) {
 	return (degrees * Math.PI) / 180;
 }
@@ -78,6 +81,7 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	return earthRadiusKm * c;
 }
+*/
 
 LocationProof.contextTypes = {
 	drizzle: PropTypes.object
