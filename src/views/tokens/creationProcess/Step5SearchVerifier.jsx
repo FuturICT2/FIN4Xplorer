@@ -100,17 +100,6 @@ function StepSearchVerifier(props) {
 		});
 	};
 
-	const resetVerifierProperty = () => {
-		let reset = {
-			name: '',
-			chain: '',
-			verifierType: '',
-			dataType: ''
-		};
-		setVerifierProperty(reset);
-		searchVerifiers(reset);
-	};
-
 	const searchVerifiers = newVerifierProperty => {
 		let searchResults = [];
 		for (let [key, value] of Object.entries(verifierDefinitions)) {
@@ -295,9 +284,9 @@ function StepSearchVerifier(props) {
 				label="Claimer Input Data"
 				isClearable={true}
 			/>
-			<Button onClick={() => resetVerifierProperty()} center="true" color="inherit">
+			{/*<Button onClick={() => resetVerifierProperty()} center="true" color="inherit">
 				Reset criteria
-			</Button>
+			</Button>*/}
 			<br />
 			{
 				<div style={{ fontFamily: 'arial', color: 'gray' }}>
