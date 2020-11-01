@@ -92,7 +92,7 @@ function ProofSubmission(props, context) {
 			case 'PictureSelfChosenApprover':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'psca_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="PictureSelfChosenApprover"
@@ -102,7 +102,7 @@ function ProofSubmission(props, context) {
 			case 'PictureGivenApprovers':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'pga_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="PictureGivenApprovers"
@@ -112,36 +112,36 @@ function ProofSubmission(props, context) {
 			case 'LimitedVoting':
 				return (
 					<FileUploadProof
-						// key={'file_' + index}
+						key={'lv_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
-						contractName={'LimitedVoting'}
+						contractName="LimitedVoting"
 					/>
 				);
 			case 'PictureVoting':
 				return (
 					<FileUploadProof
-						// key={'file_' + index}
+						key={'pv_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
-						contractName={'PictureVoting'}
+						contractName="PictureVoting"
 						accept={'image/*'}
 					/>
 				);
 			case 'VideoVoting':
 				return (
 					<FileUploadProof
-						// key={'file_' + index}
+						key={'vv_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
-						contractName={'VideoVoting'}
+						contractName="VideoVoting"
 						accept={'video/*'}
 					/>
 				);
 			case 'HappyMoment':
 				return (
 					<PictureUploadProof
-						key={'pic_' + index}
+						key={'hm_' + index}
 						tokenAddr={tokenAddrToReceiveVerifierNotice}
 						claimId={claimId}
 						contractName="HappyMoment"
