@@ -153,7 +153,7 @@ function ProofSubmission(props, context) {
 			case 'Vote':
 				return <VoteProof key={'vote_' + index} tokenAddr={tokenAddrToReceiveVerifierNotice} claimId={claimId} />;
 			default:
-				const abi = require('../../build/contracts/Fin4Verifying').abi;
+				const abi = require('../../build/contracts/' + verifierContractName).abi;
 				let contractMethod = 'submitProof_' + verifierContractName;
 				let inputs = abi.filter(el => el.name === contractMethod)[0].inputs;
 				let fields = inputs.map(input => {
@@ -161,14 +161,13 @@ function ProofSubmission(props, context) {
 				});
 				return (
 					<ContractFormSimple
-						contractName="Fin4Verifying"
+						contractName={verifierContractName}
 						contractMethod={'submitProof_' + verifierContractName}
 						pendingTxStr={'Submit proof ' + verifierContractName}
 						fields={fields}
 						fixValues={{
 							TokenAddrToReceiveVerifierNotice: tokenAddrToReceiveVerifierNotice,
-							ClaimId: claimId + '',
-							VerifierName: verifierContractName
+							ClaimId: claimId + ''
 						}}
 					/>
 				);
