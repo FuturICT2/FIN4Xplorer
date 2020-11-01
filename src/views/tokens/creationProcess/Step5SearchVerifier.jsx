@@ -100,6 +100,17 @@ function StepSearchVerifier(props) {
 		});
 	};
 
+	const resetVerifierProperty = () => {
+		let reset = {
+			name: '',
+			chain: '',
+			verifierType: '',
+			dataType: ''
+		};
+		setVerifierProperty(reset);
+		searchVerifiers(reset);
+	};
+
 	const searchVerifiers = newVerifierProperty => {
 		let searchResults = [];
 		for (let [key, value] of Object.entries(verifierDefinitions)) {
@@ -134,37 +145,9 @@ function StepSearchVerifier(props) {
 
 	// TODO make this a general solution instead of for one field of one proof type
 	const [locVal, setLocVal] = useState('');
+
 	return (
 		<>
-			<TextField
-				key={'drop_' + 1}
-				type="text"
-				value={verifierProperty.name}
-				onChange={e => updateVerifierProperty('name', e.target.value)}
-				label="Name"
-				style={{ width: '100%', marginBottom: 14 }}
-			/>
-			<Dropdown
-				key={'drop_' + 3}
-				onChange={e => updateVerifierProperty('chain', e.value)}
-				options={valuesToOptions(verifierOptions.chain.values)}
-				label="On or Off Chain"
-			/>
-			<Dropdown
-				key={'drop_' + 2}
-				onChange={e => updateVerifierProperty('verifierType', e.value)}
-				options={valuesToOptions(verifierOptions.type.values)}
-				label="Types"
-			/>
-			<Dropdown
-				key={'drop_' + 4}
-				onChange={e => updateVerifierProperty('dataType', e.value)}
-				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
-				label="Claimer Input Data"
-			/>
-			{/*<Button onClick={() => searchVerifiers()} center="true" color="inherit">
-				Search
-			</Button>*/}
 			{verifiersAdded.length > 0 && Object.keys(props.verifierTypes).length > 0 && (
 				<div style={{ fontFamily: 'arial' }}>
 					{verifiersAdded.map((verifierAddress, index) => {
@@ -274,8 +257,47 @@ function StepSearchVerifier(props) {
 					})}
 				</div>
 			)}
+			{verifiersAdded.length === 0 && (
+				<center style={{ fontFamily: 'arial' }}>
+					<i>No verifiers added yet</i>
+				</center>
+			)}
+			<br />
+			<hr />
+			<br />
+			<div style={{ fontFamily: 'arial', color: 'gray' }}>Filter by criteria and add verifier:</div>
+			<TextField
+				key={'drop_' + 1}
+				type="text"
+				value={verifierProperty.name}
+				onChange={e => updateVerifierProperty('name', e.target.value)}
+				label="Name"
+				style={{ width: '100%', marginBottom: 14 }}
+			/>
+			<Dropdown
+				key={'drop_' + 3}
+				onChange={e => updateVerifierProperty('chain', e.value)}
+				options={valuesToOptions(verifierOptions.chain.values)}
+				label="On or Off Chain"
+			/>
+			<Dropdown
+				key={'drop_' + 2}
+				onChange={e => updateVerifierProperty('verifierType', e.value)}
+				options={valuesToOptions(verifierOptions.type.values)}
+				label="Types"
+			/>
+			<Dropdown
+				key={'drop_' + 4}
+				onChange={e => updateVerifierProperty('dataType', e.value)}
+				options={valuesToOptions(verifierOptions.claimerInput.inputType)}
+				label="Claimer Input Data"
+			/>
+			<Button onClick={() => resetVerifierProperty()} center="true" color="inherit">
+				Reset criteria
+			</Button>
+			<br />
 			{
-				<div style={{ fontFamily: 'arial' }}>
+				<div style={{ fontFamily: 'arial', color: 'gray' }}>
 					Verifiers matching the criteria:
 					<br />
 					<br />
@@ -291,6 +313,7 @@ function StepSearchVerifier(props) {
 					{/*<Dropdown onChange={e => addVerifier(e.value)} options={search.searchResults} label="Add token verifier" />*/}
 				</div>
 			}
+			<br />
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
