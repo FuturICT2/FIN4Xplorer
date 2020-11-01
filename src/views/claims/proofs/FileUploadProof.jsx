@@ -14,7 +14,7 @@ function FileUploadProof(props, context) {
 			props.store.getState().fin4Store.defaultAccount,
 			props.contractName,
 			'submitProof_' + props.contractName,
-			[props.tokenAddr, props.claimId, props.contractName, ipfsHash],
+			[props.tokenAddr, props.claimId, ipfsHash],
 			'Submit ' + props.contractName + ' proof',
 			props.callbacks
 		);

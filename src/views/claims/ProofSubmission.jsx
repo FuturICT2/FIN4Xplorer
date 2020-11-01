@@ -204,21 +204,21 @@ function ProofSubmission(props, context) {
 	}
 
 	const endVoting = () => {
-		Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map((verifierTypeAddr, index) => {
+		Object.keys(props.usersClaims[pseudoClaimId].verifierStatuses).map(verifierTypeAddr => {
 			let claimObj = props.usersClaims[pseudoClaimId];
 			let generalVerifierObj = props.verifierTypes[verifierTypeAddr];
-			switch (generalVerifierObj.label) {
+			let contractName = generalVerifierObj.label;
+			switch (contractName) {
 				case 'PictureVoting':
 				case 'VideoVoting':
 				case 'LimitedVoting':
-					// console.log("test");
 					contractCall(
 						context,
 						props,
 						props.store.getState().fin4Store.defaultAccount,
-						'Fin4Verifying',
+						contractName,
 						'endVote',
-						[generalVerifierObj.label, claimObj.claimId],
+						[claimObj.claimId],
 						'End Vote',
 						props.callbacks
 					);
