@@ -559,7 +559,7 @@
 
 			"happy-moment": {
 				"name": "Happy moment",
-				"description": "Submit a picture of a happy moment."
+				"description": "Submit a picture of a happy moment. Submissions will be visible on a public site."
 			},
 			"idea": {
 				"name": "Idea",
@@ -571,7 +571,7 @@
 			},
 			"statement": {
 				"name": "Statement",
-				"description": "Submit a statement."
+				"description": "Submit a statement. Submissions will be visible on a public site."
 			},
 			"vote": {
 				"name": "Vote",
