@@ -32,6 +32,7 @@ import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
 import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
 import CampaignView from '../views/Campaigns/CampaignView';
 import DetailedCampaignView from '../views/Campaigns/DetailedCampaignView';
+import CampaignClaimView from '../views/Campaigns/CampaignClaimView';
 
 const menu = [
 	{
@@ -117,6 +118,11 @@ const menu = [
 	{
 		component: DetailedCampaignView,
 		path: '/campaigns/DetailedCampaignView/:campaignName',
+		showInNavBar: false
+	},
+	{
+		component: CampaignClaimView,
+		path: '/campaign/claim/:campaignName',
 		showInNavBar: false
 	},
 	// ------------------ CLAIMS ------------------

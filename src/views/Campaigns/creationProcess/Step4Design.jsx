@@ -43,7 +43,7 @@ function StepDesign(props) {
 			node: {
 				name: basics.name,
 				campaignStartTime: basics.campaignStartTime,
-				campaignEndTime: basics.campaignStartTime,
+				campaignEndTime: basics.campaignEndTime,
 				allTokens: basics.allTokens,
 				successThreshold: basics.successThreshold,
 				claimPerCampaignContributor: basics.claimPerCampaignContributor

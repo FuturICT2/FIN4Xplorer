@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '../../components/Box';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import SortableTokenList from '../../components/SortableTokenList';
 import ActiveCampaignList from './ActiveCampaignList';
+import { getCampaignsByStatus } from '../../components/utils';
 
 function CampaignOverview(props) {
 	const { t } = useTranslation();
 
+	let sortedCampaigns = getCampaignsByStatus(props.fin4Campaigns);
+	let activeCampaignKeys = sortedCampaigns[0];
+
 	return (
 		<>
 			<Box title={t('campaigns-list.all-campaigns-box-title')}>
-				<ActiveCampaignList campaigns={Object.keys(props.fin4Campaigns).map(addr => props.fin4Campaigns[addr])} />
+				<ActiveCampaignList campaigns={activeCampaignKeys.map(addr => props.fin4Campaigns[addr])} />
 			</Box>
 		</>
 	);
