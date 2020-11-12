@@ -308,6 +308,24 @@ function TokenCreationProcess(props, context) {
 
 		let verifiers = draft.verifiers;
 
+		// verifier types with parameters
+		let verifiersToParameterize = [];
+		for (var name in verifiers) {
+			if (verifiers.hasOwnProperty(name)) {
+				let verifier = verifiers[name];
+				let parameterNames = Object.keys(verifier.parameters);
+				if (parameterNames.length === 0) {
+					continue;
+				}
+				transactionsRequired.current++;
+				let values = parameterNames.map(pName => verifier.parameters[pName]);
+				verifiersToParameterize.push({
+					name: name,
+					values: values
+				});
+			}
+		}
+
 		// SOURCERERS
 		// pairs
 
@@ -386,6 +404,8 @@ function TokenCreationProcess(props, context) {
 			transactionsRequired.current += 1;
 		}
 
+		// POSTCREATIONSTEPS
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(verifiers).map(contractName =>
@@ -399,25 +419,9 @@ function TokenCreationProcess(props, context) {
 			externalUnderlyings
 		];
 
-		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
+		// CONTRACT CALLS
 
-		// verifier types with parameters
-		let verifiersToParameterize = [];
-		for (var name in verifiers) {
-			if (verifiers.hasOwnProperty(name)) {
-				let verifier = verifiers[name];
-				let parameterNames = Object.keys(verifier.parameters);
-				if (parameterNames.length === 0) {
-					continue;
-				}
-				transactionsRequired.current++;
-				let values = parameterNames.map(pName => verifier.parameters[pName]);
-				verifiersToParameterize.push({
-					name: name,
-					values: values
-				});
-			}
-		}
+		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
 		updateTokenCreationStage(t('token-creator.navigation.waiting-for-completion'));
 		contractCall(
