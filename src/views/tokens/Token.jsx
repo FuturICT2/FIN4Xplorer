@@ -117,6 +117,7 @@ function Token(props, context) {
 				},
 				actions: {
 					text: details.actionsText
+					// TODO add fees
 				},
 				minting: {
 					isMintable: details.isMintable,
