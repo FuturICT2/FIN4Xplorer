@@ -19,7 +19,7 @@ function StepActions(props) {
 	const [actions, setActions] = useState(PROPERTY_DEFAULT);
 
 	const getValue = (draft, prop) => {
-		return draft.properties.hasOwnProperty(prop) ? draft.properties[prop] : PROPERTY_DEFAULT[prop];
+		return draft.actions.hasOwnProperty(prop) ? draft.actions[prop] : PROPERTY_DEFAULT[prop];
 	};
 
 	useEffect(() => {
@@ -48,6 +48,10 @@ function StepActions(props) {
 	};
 
 	const updateVal = (key, val) => {
+		if (key === 'feesActive' && val === false) {
+			setActions(PROPERTY_DEFAULT);
+			return;
+		}
 		setActions({
 			...actions,
 			[key]: val
