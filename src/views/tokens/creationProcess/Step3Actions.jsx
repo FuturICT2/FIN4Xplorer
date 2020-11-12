@@ -3,7 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import StepsBottomNav from './StepsBottomNav';
-import { TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField, Radio } from '@material-ui/core';
 
 function StepActions(props) {
 	const { t } = useTranslation();
@@ -46,13 +46,49 @@ function StepActions(props) {
 		<>
 			<TextField
 				multiline
-				rows="4"
+				rows="3"
 				fullWidth
 				variant="outlined"
 				value={actions.text}
 				onChange={e => updateVal('text', e.target.value)}
 			/>
-			<br />
+			<br /><br />
+			{/* TODO outsource strings below to translation files */}
+			<FormControlLabel
+				control={
+					<Checkbox/>
+				}
+				label='Claimers have to pay a fee upfront'
+			/>
+			{true && (
+				<>
+					<TextField
+						type='number'
+						label='fee per claim in ETH'
+					/>
+					<br/><br/>
+					<span style={{ fontFamily: 'arial' }}>Beneficiary:</span>
+					<br/>
+					<FormControlLabel
+						control={<Radio />}
+						label='Token creator (you)'
+					/>
+					<br/>
+					<FormControlLabel
+						control={<Radio />}
+						label={
+							<TextField
+								type='text'
+								label='Specific address'
+								inputProps={{
+									style: { fontSize: 'small' }
+								}}
+							/>
+						}
+					/>
+					<br/><br/>
+				</>
+			)}
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
