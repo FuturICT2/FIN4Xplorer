@@ -404,6 +404,17 @@ function TokenCreationProcess(props, context) {
 			transactionsRequired.current += 1;
 		}
 
+		// ACTION FEES
+
+		let actionFeesObject = null;
+		if (draft.actions.feesActive) {
+			actionFeesObject = {
+				amountPerClaim: 1, // TODO
+				beneficiary: draft.actions.feeBeneficiary === 'token-creator' ? defaultAccount : draft.actions.feeBeneficiary
+			};
+			transactionsRequired.current += 1;
+		}
+
 		// POSTCREATIONSTEPS
 
 		let postCreationStepsArgs = [
@@ -443,7 +454,8 @@ function TokenCreationProcess(props, context) {
 						verifiersToParameterize.length === 0 &&
 						sourcerersToParameterize.length === 0 &&
 						newExternalUnderlyings.names.length === 0 &&
-						sourcererSettingValues.length === 0
+						sourcererSettingValues.length === 0 &&
+						!actionFeesObject
 					) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
@@ -453,6 +465,10 @@ function TokenCreationProcess(props, context) {
 					let callbackOthersDone = () => {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 					};
+
+					if (actionFeesObject) {
+						setActionFees(defaultAccount, newTokenAddress, actionFeesObject, callbackOthersDone);
+					}
 
 					if (sourcererSettingValues.length > 0) {
 						setParamsOnOtherContract(
@@ -520,6 +536,34 @@ function TokenCreationProcess(props, context) {
 	const transactionCounter = useRef(0);
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
+
+	const setActionFees = (defaultAccount, tokenAddr, actionFeesObject, callbackOthersDone) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Claiming',
+			'registerClaimingFee',
+			[tokenAddr, actionFeesObject.amountPerClaim, actionFeesObject.beneficiary],
+			'Registering claiming fee for token',
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						callbackOthersDone();
+					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
+				}
+			}
+		);
+	};
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? Get "[]" from encoded params again maybe? TODO
