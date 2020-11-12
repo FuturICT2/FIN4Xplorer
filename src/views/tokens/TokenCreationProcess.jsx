@@ -306,10 +306,7 @@ function TokenCreationProcess(props, context) {
 
 		// VERIFIERS
 
-		// TODO post-merge simplify?
-		let verifiers = {
-			...draft.verifiers
-		};
+		let verifiers = draft.verifiers;
 
 		// SOURCERERS
 		// pairs
@@ -341,8 +338,7 @@ function TokenCreationProcess(props, context) {
 			});
 		}
 
-		// settings
-		// TODO a more elegant way to do this?
+		// settings - TODO a more elegant way to do this?
 
 		let sourcererSettingValues = [];
 
@@ -370,6 +366,7 @@ function TokenCreationProcess(props, context) {
 			attachments: [],
 			usableForAlls: []
 		};
+
 		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
 			let name = draft.externalUnderlyings[i];
 			let underlyingObj = props.allUnderlyings[name];
