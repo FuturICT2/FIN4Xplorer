@@ -99,45 +99,6 @@ const contractCall = (
 	});
 };
 
-const readOnlyCall = (
-	context,
-	props,
-	defaultAccount,
-	contractName,
-	methodName,
-	params,
-	displayStr = '',
-	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
-	skipDryRun = false,
-	showToast = true
-) => {
-	let contract = context.drizzle.contracts[contractName];
-	let abiArr = contract.abi;
-	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
-	let methodInputs = methodAbi.inputs.map(el => el.type);
-	let eth = context.drizzle.web3.eth;
-	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
-	if (!Array.isArray(params)) {
-		params = [params];
-	}
-	let param = eth.abi.encodeParameters(methodInputs, params);
-	let data = funcSig + param.slice(2);
-	let paramStr = params
-		.map(el => {
-			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
-		})
-		.join(',');
-	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
-	let res;
-	if (Object.keys(params).length === 0)
-		res = contract.methods[methodName]().call({ from: defaultAccount, to: contract.address, data: data });
-	else res = contract.methods[methodName](params).call({ from: defaultAccount, to: contract.address, data: data });
-	let promises = [];
-	promises.push(res);
-	// console.log(promises);
-	return promises;
-};
-
 const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
 	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
 	doCallback(callbacks, 'transactionSent');
@@ -839,7 +800,6 @@ const getPollStatus = (pollID, PLCRVotingContract, defaultAccount) => {
 export {
 	getContractData,
 	addContract,
-	readOnlyCall,
 	addSatelliteContracts,
 	addTCRcontracts,
 	fetchMessage,

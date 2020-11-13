@@ -188,6 +188,7 @@ function ProofSubmission(props, context) {
 	};
 
 	function isEligibleEndVote(name, claimId) {
+		/*	TODO use getContractData() instead of meanwhile removed readOnlyCall()
 		let res = readOnlyCall(
 			context,
 			props,
@@ -200,7 +201,7 @@ function ProofSubmission(props, context) {
 		);
 		Promise.all(res).then(result => {
 			console.log(result[0]);
-		});
+		});*/
 	}
 
 	const endVoting = () => {
