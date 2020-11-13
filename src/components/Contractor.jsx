@@ -35,7 +35,8 @@ const contractCall = (
 	displayStr = '',
 	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
 	skipDryRun = false,
-	showToast = true
+	showToast = true,
+	valueToPayInEth = 0,
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -95,12 +96,19 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		console.log(res);
 		doCallback(callbacks, 'dryRunSucceeded', res);
-		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth);
 	});
 };
 
-const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
-	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth) => {
+	let stackId;
+	if (valueToPayInEth === 0) {
+		stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+	} else {
+		let weiValue = web3.utils.toWei(valueToPayInEth.toString(), 'ether');
+		stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount, value: weiValue });
+	}
+
 	doCallback(callbacks, 'transactionSent');
 
 	props.dispatch({
