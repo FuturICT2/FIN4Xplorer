@@ -431,8 +431,21 @@ const fetchMessages = (props, Fin4MessagingContract) => {
 		});
 };
 
-const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, callback) => {
+const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, Fin4ClaimingContract, callback) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimingFees').then(
+		({ 0: tokenAddresses, 1: amountsPerClaim, 2: beneficiaries }) => {
+			let feesObject = {};
+			for (let i = 0; i < tokenAddresses.length; i++) {
+				feesObject[tokenAddresses[i]] = {};
+				feesObject[tokenAddresses[i]].amountPerClaim = amountsPerClaim[i];
+				feesObject[tokenAddresses[i]].beneficiary = beneficiaries[i];
+			}
+			// TODO
+		}
+	);
+
 	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
 		let promises = [];
 		let tokensObj = {};
@@ -483,15 +496,6 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 			callback();
 		});
 	});
-};
-
-const fetchActionFees = (props, Fin4ClaimingContract) => {
-	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimingFees').then(
-		({ 0: tokenAddresses, 1: amountsPerClaim, 2: beneficiaries }) => {
-			// TODO
-		}
-	);
 };
 
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
@@ -841,7 +845,6 @@ export {
 	contractCall,
 	fetchAndAddAllUnderlyings,
 	fetchTokenDetails,
-	fetchActionFees,
 	downloadClaimHistoryOnToken,
 	downloadClaimHistoryOnTokensInCollection
 };
