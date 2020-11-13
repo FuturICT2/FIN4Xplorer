@@ -442,60 +442,64 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 				feesObject[tokenAddresses[i]].amountPerClaim = amountsPerClaim[i];
 				feesObject[tokenAddresses[i]].beneficiary = beneficiaries[i];
 			}
-			// TODO
+			
+			getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
+				let promises = [];
+				let tokensObj = {};
+				tokens.map(tokenAddr => {
+					tokensObj[tokenAddr] = {};
+					promises.push(
+						getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
+							({
+								0: userIsCreator,
+								1: name,
+								2: symbol,
+								3: description,
+								4: unit,
+								5: totalSupply,
+								6: creationTime,
+								7: hasFixedMintingQuantity
+							}) => {
+								tokensObj[tokenAddr].userIsCreator = userIsCreator;
+								tokensObj[tokenAddr].address = tokenAddr;
+								tokensObj[tokenAddr].name = name;
+								tokensObj[tokenAddr].symbol = symbol;
+								tokensObj[tokenAddr].description = description;
+								tokensObj[tokenAddr].unit = unit;
+								tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
+								tokensObj[tokenAddr].creationTime = creationTime;
+								tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
+								tokensObj[tokenAddr].isOPAT = null;
+								tokensObj[tokenAddr].feeAmountPerClaimInETH = feesObject[tokenAddr] ? feesObject[tokenAddr].amountPerClaim : null;
+								tokensObj[tokenAddr].feeBeneficiary = feesObject[tokenAddr] ? feesObject[tokenAddr].beneficiary : null;
+								// empty underlyings array required?
+							}
+						)
+					);
+					if (Fin4UnderlyingsContract) {
+						// if its null that means UnderlyingsActive is false
+						promises.push(
+							getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
+								underlyingNamesBytes32 => {
+									tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
+								}
+							)
+						);
+					}
+				});
+
+				console.log("tokensObj", tokensObj);
+
+				Promise.all(promises).then(() => {
+					props.dispatch({
+						type: 'ADD_MULTIPLE_FIN4_TOKENS',
+						tokensObj: tokensObj
+					});
+					callback();
+				});
+			});
 		}
 	);
-
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
-		let promises = [];
-		let tokensObj = {};
-		tokens.map(tokenAddr => {
-			tokensObj[tokenAddr] = {};
-			promises.push(
-				getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
-					({
-						0: userIsCreator,
-						1: name,
-						2: symbol,
-						3: description,
-						4: unit,
-						5: totalSupply,
-						6: creationTime,
-						7: hasFixedMintingQuantity
-					}) => {
-						tokensObj[tokenAddr].userIsCreator = userIsCreator;
-						tokensObj[tokenAddr].address = tokenAddr;
-						tokensObj[tokenAddr].name = name;
-						tokensObj[tokenAddr].symbol = symbol;
-						tokensObj[tokenAddr].description = description;
-						tokensObj[tokenAddr].unit = unit;
-						tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
-						tokensObj[tokenAddr].creationTime = creationTime;
-						tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
-						tokensObj[tokenAddr].isOPAT = null;
-						// empty underlyings array required?
-					}
-				)
-			);
-			if (Fin4UnderlyingsContract) {
-				// if its null that means UnderlyingsActive is false
-				promises.push(
-					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
-						underlyingNamesBytes32 => {
-							tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
-						}
-					)
-				);
-			}
-		});
-		Promise.all(promises).then(() => {
-			props.dispatch({
-				type: 'ADD_MULTIPLE_FIN4_TOKENS',
-				tokensObj: tokensObj
-			});
-			callback();
-		});
-	});
 };
 
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
