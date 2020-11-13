@@ -15,7 +15,8 @@ import {
 	fetchUsersGOVbalance,
 	fetchUsersREPbalance,
 	fetchParameterizerParams,
-	fetchAndAddAllUnderlyings
+	fetchAndAddAllUnderlyings,
+	fetchActionFees
 } from './components/Contractor';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
@@ -41,7 +42,9 @@ function LoadInitialData(props, context) {
 		Fin4Underlyings: false,
 		REP: false,
 		GOV: false,
-		tokenCreationDraftsLoaded: false // from cookies to store
+		tokenCreationDraftsLoaded: false, // from cookies to store
+		TokensFetched: false,
+		ActionFeesFetched: false
 	});
 
 	useEffect(() => {
@@ -107,6 +110,7 @@ function LoadInitialData(props, context) {
 			let Fin4TokenManagementContract = context.drizzle.contracts.Fin4TokenManagement;
 			let Fin4UnderlyingsContract = UnderlyingsActive ? context.drizzle.contracts.Fin4Underlyings : null;
 			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, () => {
+				isInit.current.TokensFetched = true;
 				// TODO also do these in fetchAllTokens or in parallel to it? Like Fin4Underlyings was added in via promises
 				if (TCRactive) {
 					fetchOPATs(props, context.drizzle.contracts.Registry);
@@ -132,6 +136,11 @@ function LoadInitialData(props, context) {
 		if (!isInit.current.Fin4Claiming && props.contracts.Fin4Claiming && props.contracts.Fin4Claiming.initialized) {
 			isInit.current.Fin4Claiming = true;
 			fetchCurrentUsersClaims(props, context.drizzle.contracts.Fin4Claiming);
+		}
+
+		if (!isInit.current.ActionFeesFetched && isInit.current.Fin4Claiming && isInit.current.TokensFetched) {
+			isInit.current.ActionFeesFetched = true;
+			fetchActionFees(props, context.drizzle.contracts.Fin4Claiming);
 		}
 
 		if (!isInit.current.Fin4Verifying && props.contracts.Fin4Verifying && props.contracts.Fin4Verifying.initialized) {

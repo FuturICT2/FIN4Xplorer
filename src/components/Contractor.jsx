@@ -485,6 +485,10 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 	});
 };
 
+const fetchActionFees = (props, Fin4ClaimingContract) => {
+	// TODO
+};
+
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMyNonzeroTokenBalances').then(
@@ -832,6 +836,7 @@ export {
 	contractCall,
 	fetchAndAddAllUnderlyings,
 	fetchTokenDetails,
+	fetchActionFees,
 	downloadClaimHistoryOnToken,
 	downloadClaimHistoryOnTokensInCollection
 };
