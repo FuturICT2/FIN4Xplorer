@@ -36,7 +36,7 @@ const contractCall = (
 	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
 	skipDryRun = false,
 	showToast = true,
-	valueToPayInEth = 0,
+	valueToPayInEth = null,
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -57,7 +57,7 @@ const contractCall = (
 	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
 
 	if (skipDryRun) {
-		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth);
 		return;
 	}
 
@@ -102,7 +102,7 @@ const contractCall = (
 
 const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth) => {
 	let stackId;
-	if (valueToPayInEth === 0) {
+	if (valueToPayInEth === 0 || valueToPayInEth === null) {
 		stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
 	} else {
 		let weiValue = web3.utils.toWei(valueToPayInEth.toString(), 'ether');
@@ -487,8 +487,6 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 						);
 					}
 				});
-
-				console.log("tokensObj", tokensObj);
 
 				Promise.all(promises).then(() => {
 					props.dispatch({
