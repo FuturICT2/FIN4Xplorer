@@ -304,7 +304,10 @@ function TokenView(props, context) {
 									tokenViaURL.feeAmountPerClaimInETH && 
 										<>
 											{buildInfoLine('Action fee', tokenViaURL.feeAmountPerClaimInETH + ' ETH')}
-											{buildInfoLine('Action fee beneficiary', tokenViaURL.feeBeneficiary === details.tokenCreator ? 'token creator' : tokenViaURL.feeBeneficiary)}
+											{buildInfoLine('Action fee beneficiary', 
+												tokenViaURL.feeBeneficiary === details.tokenCreator ? 'token creator' :
+												<AddressDisplayWithCopy address={tokenViaURL.feeBeneficiary} fontSize={'x-small'} />
+											)}
 										</>
 								}
 
