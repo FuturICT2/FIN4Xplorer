@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
-import { doCallback, bytes32ToString, txErrorAugmentation } from './utils';
+import { doCallback, bytes32ToString, txErrorAugmentation, WeiToETH } from './utils';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 const BN = require('bignumber.js');
@@ -439,7 +439,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 			let feesObject = {};
 			for (let i = 0; i < tokenAddresses.length; i++) {
 				feesObject[tokenAddresses[i]] = {};
-				feesObject[tokenAddresses[i]].amountPerClaimInETH = web3.utils.fromWei(amountsPerClaimInWei[i], 'ether');
+				feesObject[tokenAddresses[i]].amountPerClaimInETH = WeiToETH(amountsPerClaimInWei[i]);
 				feesObject[tokenAddresses[i]].beneficiary = beneficiaries[i];
 			}
 			

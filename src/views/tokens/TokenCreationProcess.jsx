@@ -24,7 +24,8 @@ import {
 	BNstr,
 	stringToBytes32,
 	UnderlyingsActive,
-	Fin4Colors
+	Fin4Colors,
+	ETHtoWei
 } from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
@@ -409,7 +410,7 @@ function TokenCreationProcess(props, context) {
 		let actionFeesObject = null;
 		if (draft.actions.feesActive) {
 			actionFeesObject = {
-				amountPerClaimInWei: web3.utils.toWei(draft.actions.feeAmountPerClaim.toString(), 'ether'),
+				amountPerClaimInWei: ETHtoWei(draft.actions.feeAmountPerClaimInETH),
 				beneficiary: draft.actions.feeBeneficiary === 'token-creator' ? defaultAccount : draft.actions.feeBeneficiary
 			};
 			transactionsRequired.current += 1;
