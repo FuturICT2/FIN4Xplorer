@@ -8,7 +8,7 @@ import { Checkbox, FormControlLabel, TextField, Radio } from '@material-ui/core'
 const PROPERTY_DEFAULT = {
 	text: '',
 	feesActive: false,
-	feeAmountPerClaim: 0.0025,
+	feeAmountPerClaimInETH: 0.0025,
 	feeBeneficiary: 'token-creator'
 };
 
@@ -30,7 +30,7 @@ function StepActions(props) {
 		setActions({
 			text: getValue(draft, 'text'),
 			feesActive: getValue(draft, 'feesActive'),
-			feeAmountPerClaim: getValue(draft, 'feeAmountPerClaim'),
+			feeAmountPerClaimInETH: getValue(draft, 'feeAmountPerClaimInETH'),
 			feeBeneficiary: getValue(draft, 'feeBeneficiary'),
 		});
 		setDraftId(draft.id);
@@ -86,8 +86,8 @@ function StepActions(props) {
 					<TextField
 						type='number'
 						label='fee per claim in ETH'
-						value={actions.feeAmountPerClaim}
-						onChange={e => updateVal('feeAmountPerClaim', Number(e.target.value))}
+						value={actions.feeAmountPerClaimInETH}
+						onChange={e => updateVal('feeAmountPerClaimInETH', Number(e.target.value))}
 					/>
 					<br/><br/>
 					<span style={{ fontFamily: 'arial' }}>Beneficiary:</span>

@@ -435,11 +435,11 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 
 	getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimingFees').then(
-		({ 0: tokenAddresses, 1: amountsPerClaim, 2: beneficiaries }) => {
+		({ 0: tokenAddresses, 1: amountsPerClaimInWei, 2: beneficiaries }) => {
 			let feesObject = {};
 			for (let i = 0; i < tokenAddresses.length; i++) {
 				feesObject[tokenAddresses[i]] = {};
-				feesObject[tokenAddresses[i]].amountPerClaim = amountsPerClaim[i];
+				feesObject[tokenAddresses[i]].amountPerClaimInETH = web3.utils.fromWei(amountsPerClaimInWei[i], 'ether');
 				feesObject[tokenAddresses[i]].beneficiary = beneficiaries[i];
 			}
 			
@@ -470,7 +470,7 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 								tokensObj[tokenAddr].creationTime = creationTime;
 								tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
 								tokensObj[tokenAddr].isOPAT = null;
-								tokensObj[tokenAddr].feeAmountPerClaimInETH = feesObject[tokenAddr] ? feesObject[tokenAddr].amountPerClaim : null;
+								tokensObj[tokenAddr].feeAmountPerClaimInETH = feesObject[tokenAddr] ? feesObject[tokenAddr].amountPerClaimInETH : null;
 								tokensObj[tokenAddr].feeBeneficiary = feesObject[tokenAddr] ? feesObject[tokenAddr].beneficiary : null;
 								// empty underlyings array required?
 							}

@@ -409,7 +409,7 @@ function TokenCreationProcess(props, context) {
 		let actionFeesObject = null;
 		if (draft.actions.feesActive) {
 			actionFeesObject = {
-				amountPerClaim: 1, // TODO
+				amountPerClaimInWei: web3.utils.toWei(draft.actions.feeAmountPerClaim.toString(), 'ether'),
 				beneficiary: draft.actions.feeBeneficiary === 'token-creator' ? defaultAccount : draft.actions.feeBeneficiary
 			};
 			transactionsRequired.current += 1;
@@ -544,7 +544,7 @@ function TokenCreationProcess(props, context) {
 			defaultAccount,
 			'Fin4Claiming',
 			'registerClaimingFee',
-			[tokenAddr, actionFeesObject.amountPerClaim, actionFeesObject.beneficiary],
+			[tokenAddr, actionFeesObject.amountPerClaimInWei, actionFeesObject.beneficiary],
 			'Registering claiming fee for token',
 			{
 				transactionCompleted: () => {
