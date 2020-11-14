@@ -103,6 +103,12 @@ function Claim(props, context) {
 						onChange={e => updateVal('comment', e.target.value)}
 						style={inputFieldStyle}
 					/>
+					{selectedToken && selectedToken.feeAmountPerClaimInETH && 
+						<center style={{ fontFamily: 'arial', color: 'orange' }}>
+							{/* TODO source from translation files */}
+							Claiming this token costs a fee of {selectedToken.feeAmountPerClaimInETH} ETH
+						</center>
+					}
 					<Button icon={AddIcon} onClick={submitClaim} center="true">
 						{t('claims.submit-button')}
 					</Button>
