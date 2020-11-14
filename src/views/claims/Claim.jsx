@@ -33,10 +33,13 @@ function Claim(props, context) {
 			props,
 			props.store.getState().fin4Store.defaultAccount,
 			'Fin4Claiming',
-			'submitClaim',
-			[values.tokenAddress, values.quantity, values.comment],
-			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
-			{}
+			selectedToken.feeAmountPerClaimInETH ? 'submitClaimAndPayFee' : 'submitClaim',
+			[selectedToken.address, values.quantity, values.comment],
+			'Claim token: ' + selectedToken.symbol,
+			{},
+			true,
+			true,
+			selectedToken.feeAmountPerClaimInETH
 		);
 	};
 
