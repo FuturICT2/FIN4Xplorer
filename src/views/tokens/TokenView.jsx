@@ -300,6 +300,16 @@ function TokenView(props, context) {
 									: buildInfoLine(t('token-view.fixed-minting'), details.fixedAmount)}
 								{buildInfoLine(t('token-creator.step4-minting.fields.unit.label'), tokenViaURL.unit)}
 								{buildInfoLine(t('token-view.claimable-actions'), details.actionsText)}
+								{/* TODO source these from translation files */
+									tokenViaURL.feeAmountPerClaimInETH && 
+										<>
+											{buildInfoLine('Action fee', tokenViaURL.feeAmountPerClaimInETH + ' ETH')}
+											{buildInfoLine('Action fee beneficiary', 
+												tokenViaURL.feeBeneficiary === details.tokenCreator ? 'token creator' :
+												<AddressDisplayWithCopy address={tokenViaURL.feeBeneficiary} fontSize={'x-small'} />
+											)}
+										</>
+								}
 
 								<Divider style={{ margin: '10px 0' }} variant="middle" />
 

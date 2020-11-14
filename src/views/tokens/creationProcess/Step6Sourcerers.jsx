@@ -17,7 +17,6 @@ const PROPERTY_DEFAULT = {
 	allowCollateralUsageForOthers: true
 };
 
-// TODO post-merge make this step 6
 function StepSourcerers(props) {
 	const { t } = useTranslation();
 

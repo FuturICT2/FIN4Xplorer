@@ -24,7 +24,8 @@ import {
 	BNstr,
 	stringToBytes32,
 	UnderlyingsActive,
-	Fin4Colors
+	Fin4Colors,
+	ETHtoWei
 } from '../../components/utils';
 import { findTokenBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
@@ -306,10 +307,25 @@ function TokenCreationProcess(props, context) {
 
 		// VERIFIERS
 
-		// TODO post-merge simplify?
-		let verifiers = {
-			...draft.verifiers
-		};
+		let verifiers = draft.verifiers;
+
+		// verifier types with parameters
+		let verifiersToParameterize = [];
+		for (var name in verifiers) {
+			if (verifiers.hasOwnProperty(name)) {
+				let verifier = verifiers[name];
+				let parameterNames = Object.keys(verifier.parameters);
+				if (parameterNames.length === 0) {
+					continue;
+				}
+				transactionsRequired.current++;
+				let values = parameterNames.map(pName => verifier.parameters[pName]);
+				verifiersToParameterize.push({
+					name: name,
+					values: values
+				});
+			}
+		}
 
 		// SOURCERERS
 		// pairs
@@ -341,8 +357,7 @@ function TokenCreationProcess(props, context) {
 			});
 		}
 
-		// settings
-		// TODO a more elegant way to do this?
+		// settings - TODO a more elegant way to do this?
 
 		let sourcererSettingValues = [];
 
@@ -370,6 +385,7 @@ function TokenCreationProcess(props, context) {
 			attachments: [],
 			usableForAlls: []
 		};
+
 		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
 			let name = draft.externalUnderlyings[i];
 			let underlyingObj = props.allUnderlyings[name];
@@ -389,6 +405,19 @@ function TokenCreationProcess(props, context) {
 			transactionsRequired.current += 1;
 		}
 
+		// ACTION FEES
+
+		let actionFeesObject = null;
+		if (draft.actions.feesActive) {
+			actionFeesObject = {
+				amountPerClaimInWei: ETHtoWei(draft.actions.feeAmountPerClaimInETH),
+				beneficiary: draft.actions.feeBeneficiary === 'token-creator' ? defaultAccount : draft.actions.feeBeneficiary
+			};
+			transactionsRequired.current += 1;
+		}
+
+		// POSTCREATIONSTEPS
+
 		let postCreationStepsArgs = [
 			null, // token address
 			Object.keys(verifiers).map(contractName =>
@@ -402,25 +431,9 @@ function TokenCreationProcess(props, context) {
 			externalUnderlyings
 		];
 
-		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
+		// CONTRACT CALLS
 
-		// verifier types with parameters
-		let verifiersToParameterize = [];
-		for (var name in verifiers) {
-			if (verifiers.hasOwnProperty(name)) {
-				let verifier = verifiers[name];
-				let parameterNames = Object.keys(verifier.parameters);
-				if (parameterNames.length === 0) {
-					continue;
-				}
-				transactionsRequired.current++;
-				let values = parameterNames.map(pName => verifier.parameters[pName]);
-				verifiersToParameterize.push({
-					name: name,
-					values: values
-				});
-			}
-		}
+		let tokenCreatorContract = draft.properties.isCapped ? 'Fin4CappedTokenCreator' : 'Fin4UncappedTokenCreator';
 
 		updateTokenCreationStage(t('token-creator.navigation.waiting-for-completion'));
 		contractCall(
@@ -442,7 +455,8 @@ function TokenCreationProcess(props, context) {
 						verifiersToParameterize.length === 0 &&
 						sourcerersToParameterize.length === 0 &&
 						newExternalUnderlyings.names.length === 0 &&
-						sourcererSettingValues.length === 0
+						sourcererSettingValues.length === 0 &&
+						!actionFeesObject
 					) {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 						return;
@@ -452,6 +466,10 @@ function TokenCreationProcess(props, context) {
 					let callbackOthersDone = () => {
 						tokenParameterization(defaultAccount, tokenCreatorContract, postCreationStepsArgs);
 					};
+
+					if (actionFeesObject) {
+						setActionFees(defaultAccount, newTokenAddress, actionFeesObject, callbackOthersDone);
+					}
 
 					if (sourcererSettingValues.length > 0) {
 						setParamsOnOtherContract(
@@ -519,6 +537,34 @@ function TokenCreationProcess(props, context) {
 	const transactionCounter = useRef(0);
 	const transactionsRequired = useRef(2);
 	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
+
+	const setActionFees = (defaultAccount, tokenAddr, actionFeesObject, callbackOthersDone) => {
+		contractCall(
+			context,
+			props,
+			defaultAccount,
+			'Fin4Claiming',
+			'registerClaimingFee',
+			[tokenAddr, actionFeesObject.amountPerClaimInWei, actionFeesObject.beneficiary],
+			'Registering claiming fee for token',
+			{
+				transactionCompleted: () => {
+					transactionCounter.current++;
+					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
+
+					if (transactionCounter.current == transactionsRequired.current - 1) {
+						callbackOthersDone();
+					}
+				},
+				transactionFailed: reason => {
+					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
+				},
+				dryRunFailed: reason => {
+					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
+				}
+			}
+		);
+	};
 
 	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
 		// hackish, find a better way to handle this conversion? Get "[]" from encoded params again maybe? TODO

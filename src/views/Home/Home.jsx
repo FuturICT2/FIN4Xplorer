@@ -24,7 +24,7 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '../../components/Modal';
-import { contractCall, getContractData, readOnlyCall } from '../../components/Contractor';
+import { contractCall, getContractData } from '../../components/Contractor';
 import { Link } from 'react-router-dom';
 
 let config = null;
@@ -102,29 +102,13 @@ function Home(props, context) {
 		);
 	};
 
-	const isEligible = () => {
-		let res = readOnlyCall(
-			context,
-			props,
-			props.store.getState().fin4Store.defaultAccount,
-			'Fin4Voting',
-			'isEligibleToBeAVoter',
-			[],
-			'I want to be a voter',
-			{},
-			false,
-			false
-		);
-		Promise.all(res).then(result => {
-			// console.log(result[0]);
-			setIsEligibleToBeAVoter(result[0]);
-		});
-	};
-
 	useEffect(() => {
 		if (props.contracts.Fin4Voting && props.contracts.Fin4Voting.initialized && !homeReady.current) {
 			homeReady.current = true;
-			isEligible();
+			let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+			getContractData(context.drizzle.contracts.Fin4Voting, defaultAccount, 'isEligibleToBeAVoter').then(isEligible => {			
+				setIsEligibleToBeAVoter(isEligible);
+			});
 		}
 	});
 

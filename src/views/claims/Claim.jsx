@@ -15,11 +15,10 @@ import { getFormattedSelectOptions } from '../../components/utils';
 function Claim(props, context) {
 	const { t } = useTranslation();
 
-	const [tokenViaURL, setTokenViaURL] = useState(null);
+	const [selectedToken, setSelectedToken] = useState(null);
 	const [unit, setUnit] = useState(t('quantity'));
 
 	const [values, setValues] = useState({
-		tokenAddress: null,
 		quantity: 1,
 		comment: ''
 	});
@@ -34,19 +33,22 @@ function Claim(props, context) {
 			props,
 			props.store.getState().fin4Store.defaultAccount,
 			'Fin4Claiming',
-			'submitClaim',
-			[values.tokenAddress, values.quantity, values.comment],
-			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
-			{}
+			selectedToken.feeAmountPerClaimInETH ? 'submitClaimAndPayFee' : 'submitClaim',
+			[selectedToken.address, values.quantity, values.comment],
+			'Claim token: ' + selectedToken.symbol,
+			{},
+			true,
+			true,
+			selectedToken.feeAmountPerClaimInETH
 		);
 	};
 
 	useEffect(() => {
 		let symbol = props.match.params.tokenSymbol;
-		if (!tokenViaURL && Object.keys(props.fin4Tokens).length > 0 && symbol) {
+		if (!selectedToken && Object.keys(props.fin4Tokens).length > 0 && symbol) {
 			let token = findTokenBySymbol(props, symbol);
 			if (token) {
-				setTokenViaURL(token);
+				setSelectedToken(token);
 				updateSelectedOption(token.address);
 			} else {
 				console.log(symbol + ' was passed as token-symbol via URL but does not match a known token');
@@ -55,9 +57,9 @@ function Claim(props, context) {
 	});
 
 	const updateSelectedOption = tokenAddr => {
-		updateVal('tokenAddress', tokenAddr);
-		let unit = props.fin4Tokens[tokenAddr].unit;
-		setUnit(unit.length > 0 ? unit : t('claims.default-unit'));
+		let token = props.fin4Tokens[tokenAddr];
+		setSelectedToken(token);
+		setUnit(token.unit.length > 0 ? token.unit : t('claims.default-unit'));
 	};
 
 	const updateVal = (key, val) => {
@@ -77,16 +79,16 @@ function Claim(props, context) {
 						options={getFormattedSelectOptions(props.fin4Tokens)}
 						label={t('claims.tokens-dropdown')}
 						defaultValue={
-							tokenViaURL
+							selectedToken
 								? {
-										value: tokenViaURL.address,
-										label: tokenViaURL.name,
-										symbol: tokenViaURL.symbol
+										value: selectedToken.address,
+										label: selectedToken.name,
+										symbol: selectedToken.symbol
 								  }
 								: null
 						}
 					/>
-					{tokenViaURL && !tokenViaURL.hasFixedMintingQuantity && (
+					{selectedToken && !selectedToken.hasFixedMintingQuantity && (
 						<TextField
 							key="quantity-field"
 							type="number"
@@ -104,6 +106,12 @@ function Claim(props, context) {
 						onChange={e => updateVal('comment', e.target.value)}
 						style={inputFieldStyle}
 					/>
+					{selectedToken && selectedToken.feeAmountPerClaimInETH && 
+						<center style={{ fontFamily: 'arial', color: 'orange' }}>
+							{/* TODO source from translation files */}
+							Claiming this token costs a fee of {selectedToken.feeAmountPerClaimInETH} ETH
+						</center>
+					}
 					<Button icon={AddIcon} onClick={submitClaim} center="true">
 						{t('claims.submit-button')}
 					</Button>

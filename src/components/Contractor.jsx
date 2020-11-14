@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { ParameterizerParams } from '../views/CuratedTokens/params';
-import { doCallback, bytes32ToString, txErrorAugmentation } from './utils';
+import { doCallback, bytes32ToString, txErrorAugmentation, WeiToETH } from './utils';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 const BN = require('bignumber.js');
@@ -35,7 +35,8 @@ const contractCall = (
 	displayStr = '',
 	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
 	skipDryRun = false,
-	showToast = true
+	showToast = true,
+	valueToPayInEth = null,
 ) => {
 	let contract = context.drizzle.contracts[contractName];
 	let abiArr = contract.abi;
@@ -56,7 +57,7 @@ const contractCall = (
 	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
 
 	if (skipDryRun) {
-		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth);
 		return;
 	}
 
@@ -95,51 +96,19 @@ const contractCall = (
 		console.log('Dry run succeeded, initiating transaction', res);
 		console.log(res);
 		doCallback(callbacks, 'dryRunSucceeded', res);
-		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks);
+		doCacheSend(props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth);
 	});
 };
 
-const readOnlyCall = (
-	context,
-	props,
-	defaultAccount,
-	contractName,
-	methodName,
-	params,
-	displayStr = '',
-	callbacks = {}, // transactionSent, transactionCompleted, transactionFailed, dryRunSucceeded, dryRunFailed
-	skipDryRun = false,
-	showToast = true
-) => {
-	let contract = context.drizzle.contracts[contractName];
-	let abiArr = contract.abi;
-	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
-	let methodInputs = methodAbi.inputs.map(el => el.type);
-	let eth = context.drizzle.web3.eth;
-	let funcSig = eth.abi.encodeFunctionSignature(methodAbi);
-	if (!Array.isArray(params)) {
-		params = [params];
+const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks, valueToPayInEth) => {
+	let stackId;
+	if (valueToPayInEth === 0 || valueToPayInEth === null) {
+		stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
+	} else {
+		let weiValue = web3.utils.toWei(valueToPayInEth.toString(), 'ether');
+		stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount, value: weiValue });
 	}
-	let param = eth.abi.encodeParameters(methodInputs, params);
-	let data = funcSig + param.slice(2);
-	let paramStr = params
-		.map(el => {
-			return Array.isArray(el) ? '[' + el.toString() + ']' : el.toString();
-		})
-		.join(',');
-	let methodStr = contractName + '.' + methodName + '(' + paramStr + ')';
-	let res;
-	if (Object.keys(params).length === 0)
-		res = contract.methods[methodName]().call({ from: defaultAccount, to: contract.address, data: data });
-	else res = contract.methods[methodName](params).call({ from: defaultAccount, to: contract.address, data: data });
-	let promises = [];
-	promises.push(res);
-	// console.log(promises);
-	return promises;
-};
 
-const doCacheSend = (props, contract, methodName, params, defaultAccount, methodStr, displayStr, callbacks) => {
-	const stackId = contract.methods[methodName].cacheSend(...params, { from: defaultAccount });
 	doCallback(callbacks, 'transactionSent');
 
 	props.dispatch({
@@ -462,58 +431,73 @@ const fetchMessages = (props, Fin4MessagingContract) => {
 		});
 };
 
-const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, callback) => {
+const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContract, Fin4ClaimingContract, callback) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-	getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
-		let promises = [];
-		let tokensObj = {};
-		tokens.map(tokenAddr => {
-			tokensObj[tokenAddr] = {};
-			promises.push(
-				getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
-					({
-						0: userIsCreator,
-						1: name,
-						2: symbol,
-						3: description,
-						4: unit,
-						5: totalSupply,
-						6: creationTime,
-						7: hasFixedMintingQuantity
-					}) => {
-						tokensObj[tokenAddr].userIsCreator = userIsCreator;
-						tokensObj[tokenAddr].address = tokenAddr;
-						tokensObj[tokenAddr].name = name;
-						tokensObj[tokenAddr].symbol = symbol;
-						tokensObj[tokenAddr].description = description;
-						tokensObj[tokenAddr].unit = unit;
-						tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
-						tokensObj[tokenAddr].creationTime = creationTime;
-						tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
-						tokensObj[tokenAddr].isOPAT = null;
-						// empty underlyings array required?
-					}
-				)
-			);
-			if (Fin4UnderlyingsContract) {
-				// if its null that means UnderlyingsActive is false
-				promises.push(
-					getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
-						underlyingNamesBytes32 => {
-							tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
-						}
-					)
-				);
+
+	getContractData(Fin4ClaimingContract, defaultAccount, 'getClaimingFees').then(
+		({ 0: tokenAddresses, 1: amountsPerClaimInWei, 2: beneficiaries }) => {
+			let feesObject = {};
+			for (let i = 0; i < tokenAddresses.length; i++) {
+				feesObject[tokenAddresses[i]] = {};
+				feesObject[tokenAddresses[i]].amountPerClaimInETH = WeiToETH(amountsPerClaimInWei[i]);
+				feesObject[tokenAddresses[i]].beneficiary = beneficiaries[i];
 			}
-		});
-		Promise.all(promises).then(() => {
-			props.dispatch({
-				type: 'ADD_MULTIPLE_FIN4_TOKENS',
-				tokensObj: tokensObj
+			
+			getContractData(Fin4TokenManagementContract, defaultAccount, 'getAllFin4Tokens').then(tokens => {
+				let promises = [];
+				let tokensObj = {};
+				tokens.map(tokenAddr => {
+					tokensObj[tokenAddr] = {};
+					promises.push(
+						getContractData(Fin4TokenManagementContract, defaultAccount, 'getTokenInfo', tokenAddr).then(
+							({
+								0: userIsCreator,
+								1: name,
+								2: symbol,
+								3: description,
+								4: unit,
+								5: totalSupply,
+								6: creationTime,
+								7: hasFixedMintingQuantity
+							}) => {
+								tokensObj[tokenAddr].userIsCreator = userIsCreator;
+								tokensObj[tokenAddr].address = tokenAddr;
+								tokensObj[tokenAddr].name = name;
+								tokensObj[tokenAddr].symbol = symbol;
+								tokensObj[tokenAddr].description = description;
+								tokensObj[tokenAddr].unit = unit;
+								tokensObj[tokenAddr].totalSupply = new BN(totalSupply).toNumber();
+								tokensObj[tokenAddr].creationTime = creationTime;
+								tokensObj[tokenAddr].hasFixedMintingQuantity = hasFixedMintingQuantity;
+								tokensObj[tokenAddr].isOPAT = null;
+								tokensObj[tokenAddr].feeAmountPerClaimInETH = feesObject[tokenAddr] ? feesObject[tokenAddr].amountPerClaimInETH : null;
+								tokensObj[tokenAddr].feeBeneficiary = feesObject[tokenAddr] ? feesObject[tokenAddr].beneficiary : null;
+								// empty underlyings array required?
+							}
+						)
+					);
+					if (Fin4UnderlyingsContract) {
+						// if its null that means UnderlyingsActive is false
+						promises.push(
+							getContractData(Fin4UnderlyingsContract, defaultAccount, 'getUnderlyingsRegisteredOnToken', tokenAddr).then(
+								underlyingNamesBytes32 => {
+									tokensObj[tokenAddr].underlyings = underlyingNamesBytes32.map(b32 => bytes32ToString(b32));
+								}
+							)
+						);
+					}
+				});
+
+				Promise.all(promises).then(() => {
+					props.dispatch({
+						type: 'ADD_MULTIPLE_FIN4_TOKENS',
+						tokensObj: tokensObj
+					});
+					callback();
+				});
 			});
-			callback();
-		});
-	});
+		}
+	);
 };
 
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
@@ -839,7 +823,6 @@ const getPollStatus = (pollID, PLCRVotingContract, defaultAccount) => {
 export {
 	getContractData,
 	addContract,
-	readOnlyCall,
 	addSatelliteContracts,
 	addTCRcontracts,
 	fetchMessage,

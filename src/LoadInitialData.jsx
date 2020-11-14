@@ -101,12 +101,14 @@ function LoadInitialData(props, context) {
 			props.contracts.Fin4TokenManagement &&
 			props.contracts.Fin4TokenManagement.initialized &&
 			(isInit.current.Registry || !TCRactive) &&
-			(isInit.current.Fin4Underlyings || !UnderlyingsActive)
+			(isInit.current.Fin4Underlyings || !UnderlyingsActive) &&
+			isInit.current.Fin4Claiming
 		) {
 			isInit.current.Fin4TokenManagement = true;
 			let Fin4TokenManagementContract = context.drizzle.contracts.Fin4TokenManagement;
 			let Fin4UnderlyingsContract = UnderlyingsActive ? context.drizzle.contracts.Fin4Underlyings : null;
-			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, () => {
+			let Fin4ClaimingContract = context.drizzle.contracts.Fin4Claiming;
+			fetchAllTokens(props, Fin4TokenManagementContract, Fin4UnderlyingsContract, Fin4ClaimingContract, () => {
 				// TODO also do these in fetchAllTokens or in parallel to it? Like Fin4Underlyings was added in via promises
 				if (TCRactive) {
 					fetchOPATs(props, context.drizzle.contracts.Registry);
