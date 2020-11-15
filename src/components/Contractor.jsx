@@ -25,6 +25,8 @@ const ensLookup = (ensStr, callback) => {
 	});
 };
 */
+// TODO rename to something that makes it clear that this method is
+// used for WRITING to contracts, getContractData() is for READING
 const contractCall = (
 	context,
 	props,
