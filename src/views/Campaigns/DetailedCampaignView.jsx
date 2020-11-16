@@ -33,8 +33,13 @@ const DetailedCampaignView = (props, context) => {
 			).then(({ 0: amounts, 1: sum }) => {
 				console.log('array', amounts);
 				console.log('sum', sum);
-				let x = amounts;
-				let y = sum;
+
+				let claims = {};
+				claims = {
+					claimsOnEachToken: amounts,
+					totalClaims: sum
+				};
+				console.log(claims);
 			});
 		}
 	};
@@ -50,13 +55,10 @@ const DetailedCampaignView = (props, context) => {
 	useEffect(() => {
 		// if(!campaignViaURL){
 		const campaignName = props.match.params.campaignName;
-
 		let campaignObject = findCampaignByName(props.fin4Campaigns, campaignName);
 
 		setCampaignViaURL(campaignObject);
-
 		getClaimsFromCampaign();
-
 		// getSuccessFromCampaign();
 		// }
 	});

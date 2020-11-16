@@ -3,7 +3,6 @@ import history from '../../components/history';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { createUseStyles } from 'react-jss';
-import { red } from '@material-ui/core/colors';
 
 const ActiveCampaignList = props => {
 	const classes = useStyles(props);

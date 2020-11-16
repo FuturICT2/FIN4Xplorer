@@ -115,7 +115,8 @@
 			"launch-campaign-button": "Launch Campaign",
 			"info-box-close-button": "CLOSE",
 			"waiting-for-completion": "Waiting for the campaign creation to complete.",
-			"no-token-creation-draft-found": "No campaign creation draft found with ID {{Id}}"
+			"no-campaign-creation-draft-found": "No campaign creation draft found with ID {{Id}}",
+			"campaign-created": "Campaign created succesfully!"
 		}
 	},
 	"tokens-site": {

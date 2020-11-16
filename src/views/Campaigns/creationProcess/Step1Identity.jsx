@@ -59,14 +59,12 @@ function StepIdentity(props) {
 	const updateStartTime = value => {
 		if (value != null) {
 			updateVal('campaignStartTime', value.getTime());
-			console.log(value.getTime());
 		}
 	};
 
 	const updateEndTime = value => {
 		if (value != null) {
 			updateVal('campaignEndTime', value.getTime());
-			console.log(value.getTime());
 		}
 	};
 
@@ -81,11 +79,11 @@ function StepIdentity(props) {
 				style={inputFieldStyle}
 			/>
 			<div style={{ marginTop: '18px' }} />
-			<div style={inputFieldStyle}>Start Date and Time</div>
-			<DateTimePicker label={t('campaign-creator.step1-identity.fields.start-date.label')} onChange={updateStartTime} />
+			<div style={inputFieldStyle}>{t('campaign-creator.step1-identity.fields.start-date.label')}</div>
+			<DateTimePicker onChange={updateStartTime} />
 			<div style={{ marginTop: '18px' }} />
-			<div style={inputFieldStyle}>End Date and Time</div>
-			<DateTimePicker label={t('campaign-creator.step1-identity.fields.end-date.label')} onChange={updateEndTime} />
+			<div style={inputFieldStyle}>{t('campaign-creator.step1-identity.fields.end-date.label')}</div>
+			<DateTimePicker onChange={updateEndTime} />
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
