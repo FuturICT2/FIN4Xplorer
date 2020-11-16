@@ -30,7 +30,6 @@ import TransactionLog from '../views/TransactionLog';
 import DepositCollateral from '../views/underlying/DepositCollateral';
 import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
 import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
-import CampaignView from '../views/Campaigns/CampaignView';
 import DetailedCampaignView from '../views/Campaigns/DetailedCampaignView';
 import CampaignClaimView from '../views/Campaigns/CampaignClaimView';
 
@@ -108,11 +107,6 @@ const menu = [
 	{
 		component: CampaignCreationProcess,
 		path: '/campaigns/create/:draftId/:stepId',
-		showInNavBar: false
-	},
-	{
-		component: CampaignView,
-		path: '/campaigns/view/',
 		showInNavBar: false
 	},
 	{

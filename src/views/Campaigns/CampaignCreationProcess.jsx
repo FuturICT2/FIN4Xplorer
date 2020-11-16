@@ -16,13 +16,7 @@ import StepToken from './creationProcess/Step3Tokens';
 import StepDesign from './creationProcess/Step4Design';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import {
-	findVerifierTypeAddressByContractName,
-	BNstr,
-	stringToBytes32,
-	UnderlyingsActive,
-	Fin4Colors
-} from '../../components/utils';
+import { Fin4Colors } from '../../components/utils';
 import { findCampaignBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -49,8 +43,6 @@ const useStyles = makeStyles(theme => ({
 function CampaignCreationProcess(props, context) {
 	const { t } = useTranslation();
 	const classes = useStyles();
-
-	// TEXT CONTENT START
 
 	const getSteps = () => {
 		// ['Identity', 'Actions', 'Token(s)', 'Token features']
@@ -102,7 +94,7 @@ function CampaignCreationProcess(props, context) {
 		return <>{items}</>;
 	};
 
-	const getStepInfoBoxContent = (stepIndex, verifierTypes) => {
+	const getStepInfoBoxContent = stepIndex => {
 		switch (stepIndex) {
 			case 0:
 				return buildInfoContent('step1-identity', ['name', 'start-date', 'end-date']);
@@ -167,33 +159,16 @@ function CampaignCreationProcess(props, context) {
 	const [showInfoBox, setShowInfoBox] = useState(false);
 
 	const validateDraft = draft => {
-		// TODO do a proper validation with warning-signs in the respective steps
-
 		if (!draft.basics.name || draft.basics.name.trim().length === 0) {
-			// check for letters only too?
 			return t('token-creator.validation.name-empty');
 		}
-
-		// if (!draft.basics.symbol || draft.basics.symbol.length < 3 || draft.basics.symbol.length > 5) {
-		// 	return t('token-creator.validation.symbol-length-wrong');
-		// }
-
-		// do a call to check on the contract here instead?
-		// if (findCampaignBySymbol(props, draft.basics.symbol) !== null) {
-		// 	return t('token-creator.validation.symbol-duplicate');
-		// }
 
 		if (draft.interactiveVerifiers.Location) {
 			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
 			if (latLonStr.split('/').length !== 2) {
-				// also check for other possibly wrong cases?
 				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
 			}
 		}
-
-		// TODO validate addresses in arrays: AllowOnlyThese, BlockThese, ApprovalByUsersOrGroups
-		// and block if arrays are empty
-
 		return '';
 	};
 
@@ -221,45 +196,10 @@ function CampaignCreationProcess(props, context) {
 			draft.actions.text,
 			draft.basics.campaignStartTime,
 			draft.basics.campaignEndTime,
-			draft.basics.allTokens, //.map(val => BNstr(val)),
+			draft.basics.allTokens,
 			draft.basics.successThreshold,
 			draft.basics.claimPerCampaignContributor
-			// [draft.properties.isBurnable, draft.properties.isTransferable, draft.minting.isMintable],
-			// [
-			// 	draft.properties.decimals, // TODO restrict to max 18. Default 18 too? #ConceptualDecision
-			// 	BNstr(draft.properties.initialSupply),
-			// 	BNstr(draft.properties.cap),
-			// 	draft.basics.campaignEnd,
-			// 	draft.basics.successPercentage
-			// ],
-			// draft.properties.initialSupplyOwner === 'campaign-creator' ? defaultAccount : draft.properties.initialSupplyOwner
 		];
-
-		// MINTER ROLES
-
-		let minterRoles = [];
-		/*
-		if (draft.minting.additionalMinterRoles.length > 0) {
-			minterRoles = draft.minting.additionalMinterRoles.split(',').map(addr => addr.trim());
-		}
-		if (draft.minting.Fin4ClaimingHasMinterRole) {
-			minterRoles.push(context.drizzle.contracts.Fin4Claiming.address);
-		}
-		if (draft.minting.MintingSourcererHasMinterRole) {
-			minterRoles.push(context.drizzle.contracts.MintingSourcerer.address);
-			// TODO
-		}
-		*/
-
-		// VERIFIERS
-
-		let verifiers = {
-			...draft.noninteractiveVerifiers,
-			...draft.interactiveVerifiers
-		};
-
-		// SOURCERERS
-		// pairs
 
 		let sourcerersToParameterize = [];
 
@@ -268,8 +208,6 @@ function CampaignCreationProcess(props, context) {
 		for (let i = 0; i < draft.sourcererPairs.length; i++) {
 			let pair = draft.sourcererPairs[i];
 			let underlyingsObj = props.allUnderlyings[pair.sourcererName];
-
-			// use the split-string again to ensure the right oder of values
 			let values = underlyingsObj.paramsEncoded.split(',').map(paramStr => {
 				let pName = paramStr.split(':')[1];
 				let val = pair.parameters[pName];
@@ -279,7 +217,6 @@ function CampaignCreationProcess(props, context) {
 				return val;
 			});
 			if (pair.sourcererName === 'BurnSourcerer') {
-				// hacking it in here to be able to use the same setParameters() method in all sourcerers
 				values.splice(1, 0, zeroAddress);
 			}
 			sourcerersToParameterize.push({
@@ -288,91 +225,7 @@ function CampaignCreationProcess(props, context) {
 			});
 		}
 
-		// settings
-		// TODO a more elegant way to do this?
-
-		let sourcererSettingValues = [];
-		/*
-		let allowAdditionAfterCreation = draft.sourcererSettings.allowAdditionAfterCreation;
-		let allowCollateralUsageForOthers = draft.sourcererSettings.allowCollateralUsageForOthers;
-
-		if (!allowAdditionAfterCreation && allowCollateralUsageForOthers) {
-			// default, leave array empty
-		} else {
-			// if not default, we are making the call to the contract and then need both booleans
-			sourcererSettingValues.push(allowAdditionAfterCreation);
-			sourcererSettingValues.push(allowCollateralUsageForOthers);
-		}
-
-		if (sourcererSettingValues.length > 0) {
-			transactionsRequired.current += 1;
-		}
-*/
-
-		// EXTERNAL UNDERLYINGS
-
-		let externalUnderlyings = [];
-		let newExternalUnderlyings = {
-			names: [],
-			contractAddresses: [],
-			attachments: [],
-			usableForAlls: []
-		};
-
-		/*
-		for (let i = 0; i < draft.externalUnderlyings.length; i++) {
-			let name = draft.externalUnderlyings[i];
-			let underlyingObj = props.allUnderlyings[name];
-			let nameBytes32 = stringToBytes32(underlyingObj.name);
-			externalUnderlyings.push(nameBytes32);
-			if (underlyingObj.hasOwnProperty('usableForAll')) {
-				newExternalUnderlyings.names.push(nameBytes32);
-				newExternalUnderlyings.contractAddresses.push(
-					underlyingObj.contractAddress ? underlyingObj.contractAddress : zeroAddress
-				);
-				newExternalUnderlyings.attachments.push(stringToBytes32(underlyingObj.attachment));
-				newExternalUnderlyings.usableForAlls.push(underlyingObj.usableForAll);
-			}
-		}
-
-		if (newExternalUnderlyings.names.length > 0) {
-			transactionsRequired.current += 1;
-		}
-
-		let postCreationStepsArgs = [
-			null, // campaign address
-			Object.keys(verifiers).map(contractName =>
-				findVerifierTypeAddressByContractName(props.verifierTypes, contractName)
-			),
-			minterRoles,
-			draft.basics.description,
-			draft.actions.text,
-			draft.minting.fixedAmount,
-			draft.minting.unit,
-			externalUnderlyings
-		];
-		*/
-
 		let campaignCreatorContract = 'CampaignCreator';
-
-		// verifier types with parameters
-		let verifiersToParameterize = [];
-		/*
-		for (var name in verifiers) {
-			if (verifiers.hasOwnProperty(name)) {
-				let verifier = verifiers[name];
-				let parameterNames = Object.keys(verifier.parameters);
-				if (parameterNames.length === 0) {
-					continue;
-				}
-				transactionsRequired.current++;
-				let values = parameterNames.map(pName => verifier.parameters[pName]);
-				verifiersToParameterize.push({
-					name: name,
-					values: values
-				});
-			}
-		}*/
 
 		updateTokenCreationStage(t('campaign-creator.navigation.waiting-for-completion'));
 		contractCall(
@@ -382,74 +235,18 @@ function CampaignCreationProcess(props, context) {
 			campaignCreatorContract,
 			'createNewCampaign',
 			campaignCreationArgs,
-			'Create new campaign: ', // + draft.basics.symbol.toUpperCase(),
+			'Create new campaign: ',
 			{
 				transactionCompleted: receipt => {
 					transactionCounter.current++;
-					/*
-					let newTokenAddress = receipt.events.NewFin4TokenAddress.returnValues.tokenAddress;
-					postCreationStepsArgs[0] = newTokenAddress;
-
-					if (
-						verifiersToParameterize.length === 0 &&
-						sourcerersToParameterize.length === 0 &&
-						newExternalUnderlyings.names.length === 0 &&
-						sourcererSettingValues.length === 0
-					) {
-						tokenParameterization(defaultAccount, campaignCreatorContract, postCreationStepsArgs);
-						return;
-					}
-
-					// verifiers and underlyings done
-					let callbackOthersDone = () => {
-						tokenParameterization(defaultAccount, campaignCreatorContract, postCreationStepsArgs);
-					};
-
-					if (sourcererSettingValues.length > 0) {
-						setParamsOnOtherContract(
-							'sourcerer',
-							defaultAccount,
-							'Fin4Underlyings',
-							newTokenAddress,
-							sourcererSettingValues,
-							callbackOthersDone
-						);
-					}*/
 
 					updateTokenCreationStage(t('completed'));
-					/*
-					verifiersToParameterize.map(verifier => {
-						setParamsOnOtherContract(
-							'verifier',
-							defaultAccount,
-							verifier.name,
-							newTokenAddress,
-							verifier.values,
-							callbackOthersDone
-						);
-					});
-
-					sourcerersToParameterize.map(sourcerer => {
-						setParamsOnOtherContract(
-							'sourcerer',
-							defaultAccount,
-							sourcerer.name,
-							newTokenAddress,
-							sourcerer.values,
-							callbackOthersDone
-						);
-					});
-
-					if (newExternalUnderlyings.names.length > 0) {
-						addNewExternalUnderlyingsOnContract(defaultAccount, newExternalUnderlyings, callbackOthersDone);
-					}
-					*/
 				},
 				transactionFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
+					setCampaignCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
+					setCampaignCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
 				}
 			}
 		);
@@ -457,9 +254,9 @@ function CampaignCreationProcess(props, context) {
 
 	const updateTokenCreationStage = text => {
 		if (transactionCounter.current == transactionsRequired.current) {
-			setTokenCreationStage('completed');
+			setCampaignCreationStage('completed');
 		} else {
-			setTokenCreationStage(
+			setCampaignCreationStage(
 				<span>
 					{text}
 					<br />
@@ -471,101 +268,7 @@ function CampaignCreationProcess(props, context) {
 
 	const transactionCounter = useRef(0);
 	const transactionsRequired = useRef(1);
-	const [tokenCreationStage, setTokenCreationStage] = useState('unstarted');
-
-	const setParamsOnOtherContract = (type, defaultAccount, contractName, tokenAddr, values, callbackOthersDone) => {
-		// hackish, find a better way to handle this conversion? Get "[]" from encoded params again maybe? TODO
-		if (
-			type === 'verifier' &&
-			(contractName === 'AllowOnlyThese' ||
-				contractName === 'BlockThese' ||
-				contractName === 'ApprovalByUsersOrGroups' ||
-				contractName === 'PictureGivenApprovers')
-		) {
-			let userList = values[0] ? values[0].split(',').map(str => str.trim()) : [];
-			let groupsList = values[1] ? values[1].split(',').map(Number) : [];
-			values = [userList, groupsList];
-		}
-		contractCall(
-			context,
-			props,
-			defaultAccount,
-			contractName,
-			'setParameters',
-			[tokenAddr, ...values],
-			'Set parameter on ' + type + ': ' + contractName,
-			{
-				transactionCompleted: () => {
-					transactionCounter.current++;
-					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
-
-					if (transactionCounter.current == transactionsRequired.current - 1) {
-						callbackOthersDone();
-					}
-				},
-				transactionFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
-				},
-				dryRunFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
-				}
-			}
-		);
-	};
-
-	const addNewExternalUnderlyingsOnContract = (defaultAccount, valueArrays, callbackOthersDone) => {
-		contractCall(
-			context,
-			props,
-			defaultAccount,
-			'Fin4Underlyings',
-			'addUnderlyings',
-			[valueArrays.names, valueArrays.contractAddresses, valueArrays.attachments, valueArrays.usableForAlls],
-			'Adding new external underlying sources of value',
-			{
-				transactionCompleted: () => {
-					transactionCounter.current++;
-					updateTokenCreationStage(t('token-creator.navigation.waiting-for-other-contracts'));
-
-					if (transactionCounter.current == transactionsRequired.current - 1) {
-						callbackOthersDone();
-					}
-				},
-				transactionFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
-				},
-				dryRunFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
-				}
-			}
-		);
-	};
-
-	const tokenParameterization = (defaultAccount, campaignCreatorContract, postCreationStepsArgs) => {
-		updateTokenCreationStage(t('token-creator.navigation.waiting-for-new-token'));
-
-		contractCall(
-			context,
-			props,
-			defaultAccount,
-			campaignCreatorContract,
-			'postCreationSteps',
-			postCreationStepsArgs,
-			'Set parameters on new token',
-			{
-				transactionCompleted: () => {
-					transactionCounter.current++;
-					updateTokenCreationStage('');
-				},
-				transactionFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
-				},
-				dryRunFailed: reason => {
-					setTokenCreationStage(t('token-creator.navigation.dry-run-failed') + ': ' + reason);
-				}
-			}
-		);
-	};
+	const [campaignCreationStage, setCampaignCreationStage] = useState('unstarted');
 
 	const [keepAsDraft, setKeepAsDraft] = useState(false);
 
@@ -602,25 +305,15 @@ function CampaignCreationProcess(props, context) {
 							</center>
 						</div>
 						<div style={{ padding: '10px 20px 30px 20px' }}>
-							{/* Or create back/next buttons here and pass them down? */}
 							{activeStep === 0 && buildStepComponent(StepIdentity)}
 							{activeStep === 1 && buildStepComponent(StepActions)}
 							{activeStep === 2 && buildStepComponent(StepToken)}
 							{activeStep === 3 && buildStepComponent(StepDesign)}
-							{activeStep === getSteps().length && tokenCreationStage === 'unstarted' && (
+							{activeStep === getSteps().length && campaignCreationStage === 'unstarted' && (
 								<center>
 									<Typography className={classes.instructions}>
 										{t('token-creator.navigation.all-steps-completed')}
 									</Typography>
-									{/*countProofsWithParams() > 0 && (
-										<small style={{ color: 'gray', fontFamily: 'arial' }}>
-											You added {countProofsWithParams()} proofs with parameters. Each requires a separate transaction.
-											Plus one for the creation of the token. You will have to confirm all consecutive transactions to
-											complete the token creation. The first transaction has to complete before continuing - all
-											following ones can be confirmed without waiting for their completion. Your token will be in a
-											disabled state until all parameterization transactions are completed.
-										</small>
-									)*/}
 									<FormControlLabel
 										control={
 											<Checkbox size="small" checked={keepAsDraft} onChange={() => setKeepAsDraft(!keepAsDraft)} />
@@ -638,21 +331,23 @@ function CampaignCreationProcess(props, context) {
 								</center>
 							)}
 							{activeStep === getSteps().length &&
-								tokenCreationStage !== 'unstarted' &&
-								tokenCreationStage !== 'completed' &&
-								!tokenCreationStage.toString().includes('failed') && (
+								campaignCreationStage !== 'unstarted' &&
+								campaignCreationStage !== 'completed' &&
+								!campaignCreationStage.toString().includes('failed') && (
 									<center>
 										<CircularProgress />
 										<br />
 										<br />
 										<span style={{ fontFamily: 'arial', color: 'gray', width: '200px', display: 'inline-block' }}>
-											{tokenCreationStage}
+											{campaignCreationStage}
 										</span>
 									</center>
 								)}
-							{activeStep === getSteps().length && tokenCreationStage === 'completed' && (
+							{activeStep === getSteps().length && campaignCreationStage === 'completed' && (
 								<center>
-									<Typography className={classes.instructions}>Campaign successfully created!</Typography>
+									<Typography className={classes.instructions}>
+										{t('campaign-creator.navigation.campaign-created')}
+									</Typography>
 									<br />
 									<IconButton
 										style={{ color: 'green', transform: 'scale(2.4)' }}
@@ -661,11 +356,13 @@ function CampaignCreationProcess(props, context) {
 									</IconButton>
 								</center>
 							)}
-							{activeStep === getSteps().length && tokenCreationStage.toString().includes('failed') && (
+							{activeStep === getSteps().length && campaignCreationStage.toString().includes('failed') && (
 								<center>
-									<Typography className={classes.instructions}>{tokenCreationStage}</Typography>
+									<Typography className={classes.instructions}>{campaignCreationStage}</Typography>
 									<br />
-									<IconButton style={{ color: 'red', transform: 'scale(2.4)' }} onClick={() => history.push('/tokens')}>
+									<IconButton
+										style={{ color: 'red', transform: 'scale(2.4)' }}
+										onClick={() => history.push('/campaigns')}>
 										<CancelIcon />
 									</IconButton>
 								</center>
@@ -688,7 +385,7 @@ function CampaignCreationProcess(props, context) {
 				</Container>
 			) : (
 				<center style={{ fontFamily: 'arial' }}>
-					{t('campaign-creator.navigation.no-token-creation-draft-found', { Id: props.match.params.draftId })}
+					{t('campaign-creator.navigation.no-campaign-creation-draft-found', { Id: props.match.params.draftId })}
 				</center>
 			)}
 		</>

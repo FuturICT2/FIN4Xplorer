@@ -129,13 +129,6 @@ const DetailedCampaignView = (props, context) => {
 						<Alert severity="warning">This campaign has already ended!</Alert>
 					)}
 				</Box>
-				{/* {campaignViaURL.campaignEndTime > currentDateAndTime ? (
-					<Button variant="contained">
-						<Link to={'/campaign/claim/' + campaignViaURL.name}>Make a claim</Link>
-					</Button>
-				) : (
-					<Alert severity="warning">This campaign has already ended!</Alert>
-				)} */}
 			</Container>
 		);
 	}
