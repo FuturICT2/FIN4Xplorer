@@ -102,13 +102,13 @@ const DetailedCampaignView = (props, context) => {
 									{claimsTotal >= campaignViaURL.successThreshold ? (
 										<TableCell align="right">
 											<Alert variant="outlined" severity="success">
-												Campaign succesful
+												Campaign successful
 											</Alert>
 										</TableCell>
 									) : (
 										<TableCell align="right">
 											<Alert variant="outlined" severity="error">
-												Campaign unsuccesful
+												Campaign unsuccessful
 											</Alert>
 										</TableCell>
 									)}
@@ -119,13 +119,13 @@ const DetailedCampaignView = (props, context) => {
 									{claimsTotal >= campaignViaURL.successThreshold ? (
 										<TableCell align="right">
 											<Alert variant="outlined" severity="success">
-												Campaign succesful
+												Campaign successful
 											</Alert>
 										</TableCell>
 									) : (
 										<TableCell align="right">
 											<Alert variant="outlined" severity="success">
-												Campaign unsuccesful
+												Campaign unsuccessful
 											</Alert>
 										</TableCell>
 									)}
