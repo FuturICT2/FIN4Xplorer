@@ -93,6 +93,7 @@ function StepToken(props) {
 							<ListItem key={token}>
 								<Checkbox edge="start" onChange={updateSelectedTokenList} name={token} />
 								{String(props.fin4Tokens[token].name)}
+								&nbsp;
 								<Currency symbol={String(props.fin4Tokens[token].symbol)} />
 							</ListItem>
 						);

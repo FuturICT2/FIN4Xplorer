@@ -29,6 +29,7 @@ const DetailedCampaignView = (props, context) => {
 				'getCampaignTokensClaimed',
 				campaignViaURL.address
 			).then(({ 0: amounts, 1: sum }) => {
+				// TO-DO: Check for same token in 2 different campaigns
 				setClaimsPerToken(amounts);
 				setClaimsTotal(sum);
 			});
@@ -117,11 +118,15 @@ const DetailedCampaignView = (props, context) => {
 									<TableCell>Result of campaign:</TableCell>
 									{claimsTotal >= campaignViaURL.successThreshold ? (
 										<TableCell align="right">
-											<Alert severity="success">Campaign succesful</Alert>
+											<Alert variant="outlined" severity="success">
+												Campaign succesful
+											</Alert>
 										</TableCell>
 									) : (
 										<TableCell align="right">
-											<Alert severity="success">Campaign unsuccesful</Alert>
+											<Alert variant="outlined" severity="success">
+												Campaign unsuccesful
+											</Alert>
 										</TableCell>
 									)}
 								</TableRow>

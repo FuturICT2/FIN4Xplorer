@@ -9,7 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Dropdown from '../../components/Dropdown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTranslation } from 'react-i18next';
-import { findTokenBySymbol, contractCall } from '../../components/Contractor.jsx';
+import { contractCall } from '../../components/Contractor.jsx';
 import PropTypes from 'prop-types';
 import { getFormattedSelectOptions, getTokensByCampaign } from '../../components/utils';
 
@@ -19,12 +19,15 @@ const CampaignClaimView = (props, context) => {
 	const [campaignViaURL, setCampaignViaURL] = useState(null);
 	const [unit, setUnit] = useState(t('quantity'));
 	const [selectedToken, setSelectedToken] = useState(null);
+	// const [claimsByUser, setClaimsByUser] = useState(0);
 
 	const [values, setValues] = useState({
 		tokenAddress: null,
 		quantity: 1,
 		comment: ''
 	});
+
+	// TO-DO: Check maximum number of claims each user can make
 
 	const submitClaim = () => {
 		if (values.tokenAddress === null) {
@@ -47,6 +50,7 @@ const CampaignClaimView = (props, context) => {
 				dryRunSucceeded: res => {
 					console.log('succeeded');
 					console.log(res);
+					// setClaimsByUser(() => claimsByUser+1)
 				}
 			}
 		);

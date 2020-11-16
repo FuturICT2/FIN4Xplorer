@@ -17,7 +17,7 @@ import StepDesign from './creationProcess/Step4Design';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Fin4Colors } from '../../components/utils';
-import { findCampaignBySymbol, contractCall, zeroAddress } from '../../components/Contractor';
+import { contractCall, zeroAddress } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
