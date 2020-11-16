@@ -45,37 +45,78 @@
 	},
 	"campaigns": {
 		"create-new-campaign": "Erstellen Sie eine neue Kampagne",
-		"all-campaigns-box-title": "alle Kampagnen",
-		"start-campaign-creation": "Assistent zur Kampagnen-Erstellung starten",
+		"all-campaigns-box-title": "Alle Kampagnen",
+		"start-campaign-creation": "Starten Sie den Assistenten zum Erstellen von Kampagnen",
 		"campaign-creator": {
-			"box-title": "Kreirung von Kampagnen"
+			"box-title": "Kampagnenerstellung"
 		}
 	},
 	"campaigns-list": {
-		"all-campaigns-box-title": "Alle Kampagnen"
+		"all-campaigns-box-title": "Alle aktiven Kampagnen",
+		"all-prev-campaigns": "Frühere Kampagnen"
 	},
 	"campaign-creator": {
+		"box-title": "Kampagnenerstellung",
 		"step1-identity": {
 			"title": "Kampagnenidentität",
 			"fields": {
 				"name": {
 					"label": "Name",
-					"info": "Give the new token, you want to create, a descriptive/telling name."
+					"info": "Geben Sie Ihrer Kampagne einen aussagekräftigen Namen."
 				},
-				"symbol": {
-					"label": "Symbol",
-					"info": "Choose a short symbol of 3-5 letters (numbers are allowed, too) for your new token. Please note, that the system rejects symbols that are already in use."
+				"start-date": {
+					"label": "Campaign starts on",
+					"info": "Geben Sie das Datum und die Uhrzeit ein, zu der Ihre Kampagne beginnen soll."
 				},
-				"short-description": {
-					"label": "Short description",
-					"info": "Describe the purpose/idea of your new token in a short version."
-				},
-				"long-description": {
-					"label": "Long description",
-					"info": "Describe the purpose/idea of your new token in a longer version."
+				"end-date": {
+					"label": "Campaign ends on",
+					"info": "Geben Sie das Datum und die Uhrzeit ein, zu der Ihre Kampagne enden soll."
 				}
 			},
-			"info": "The basic infos about this tokens identity."
+			"info": "Die grundlegenden Informationen zur Identität dieser Kampagne."
+		},
+		"step2-actions": {
+			"title": "Aktionsrichtlinie",
+			"info": "Für welche nachhaltigen Aktionen sollten Benutzer Token erhalten können, die Teil der Kampagne sind?"
+		},
+		"step3-tokens": {
+			"title": "Wählen Sie Token aus.",
+			"fields": {
+				"create-token": {
+					"label": "Erstellen Sie einen neuen Token",
+					"info": "Verwenden Sie diese Option, um ein neues Token zu erstellen, wenn Sie mit einem bereits vorhandenen Token nicht zufrieden sind."
+				},
+				"select-tokens": {
+					"label": "Wählen Sie aus der Token-Liste",
+					"info": "Auswahl aller Token, die Teil der Kampagne sein werden."
+				}
+			},
+			"info": "Wählen Sie alle Token aus, die Teil Ihrer Kampagne sein sollen. Entscheiden Sie sorgfältig und wenn Sie mit einem bereits vorhandenen Token nicht zufrieden sind, können Sie auch neue Token erstellen."
+		},
+		"step4-design": {
+			"title": "Token Design",
+			"fields": {
+				"success-threshold": {
+					"label": "Erfolgsschwelle",
+					"info": "Fügen Sie die Gesamtzahl der Token in der Kampagne hinzu."
+				},
+				"claim-per-user": {
+					"label": "Anzahl der Ansprüche pro Mitwirkendem",
+					"info": "Geben Sie die N Anzahl der Ansprüche ein, die ein Benutzer geltend machen darf."
+				}
+			},
+			"info": "Um den Erfolg oder Misserfolg einer Kampagne zu beurteilen, geben Sie bitte die Erfolgsschwelle an, d. H. Die N Anzahl der Token, die beansprucht werden sollen, während die Kampagne aktiv ist. Sie können auch angeben, wie viele Ansprüche ein Mitwirkender geltend machen darf."
+		},
+		"navigation": {
+			"back-button": "Zurück",
+			"next-button": "Nächster",
+			"finish-button": "Fertig",
+			"restart-button": "Neustart",
+			"launch-campaign-button": "Kampagne starten",
+			"info-box-close-button": "SCHLIESSEN",
+			"waiting-for-completion": "Warten auf den Abschluss der Kampagnenerstellung.",
+			"no-campaign-creation-draft-found": "Es wurde kein Entwurf zur Kampagnenerstellung mit der ID {{Id}} gefunden.",
+			"campaign-created": "Kampagne erfolgreich erstellt!"
 		}
 	},
 	"tokens-site": {

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { Link } from 'react-router-dom';
 import Box from '../../components/Box';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Table from '@material-ui/core/Table';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -56,8 +54,6 @@ const DetailedCampaignView = (props, context) => {
 		return (
 			<Container>
 				<Box title="Campaign Details" width="100%">
-					<div>{claimsTotal}</div>
-					<div>{claimsPerToken}</div>
 					<Table aria-label="simple table">
 						<TableHead>
 							<TableRow>
