@@ -56,7 +56,6 @@ const CampaignClaimView = (props, context) => {
 		let campaignName = props.match.params.campaignName;
 		if (Object.keys(props.fin4Tokens).length > 0 && campaignName) {
 			let campaign = findCampaignByName(props.fin4Campaigns, campaignName);
-			console.log(campaign);
 			if (campaign) {
 				setCampaignViaURL(campaign);
 			} else {
@@ -123,6 +122,10 @@ const CampaignClaimView = (props, context) => {
 const inputFieldStyle = {
 	width: '100%',
 	marginBottom: '15px'
+};
+
+CampaignClaimView.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 const mapStateToProps = state => {

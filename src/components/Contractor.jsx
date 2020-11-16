@@ -545,21 +545,21 @@ const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	);
 };
 
-// const getUserCampaignBalances = () => {
-// 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-// 	getContractData(CampaignManagementContract, defaultAccount, 'getCampaignBalances').then(
-// 		({ 0: nonzeroBalanceTokens, 1: balancesBN }) => {
-// 			if (nonzeroBalanceTokens.length === 0) {
-// 				return;
-// 			}
-// 			props.dispatch({
-// 				type: 'UPDATE_MULTIPLE_BALANCES',
-// 				tokenAddresses: nonzeroBalanceTokens,
-// 				balances: balancesBN.map(balanceBN => new BN(balanceBN).toNumber())
-// 			});
-// 		}
-// 	);
-// };
+const getUserCampaignBalances = (props, CampaignManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(CampaignManagementContract, defaultAccount, 'getCampaignBalances').then(
+		({ 0: nonzeroBalanceTokens, 1: balancesBN }) => {
+			if (nonzeroBalanceTokens.length === 0) {
+				return;
+			}
+			props.dispatch({
+				type: 'UPDATE_MULTIPLE_BALANCES',
+				tokenAddresses: nonzeroBalanceTokens,
+				balances: balancesBN.map(balanceBN => new BN(balanceBN).toNumber())
+			});
+		}
+	);
+};
 
 const fetchAndAddAllUnderlyings = (props, Fin4UnderlyingsContract, drizzle) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
@@ -882,7 +882,7 @@ export {
 	fetchAllTokens,
 	fetchAllCampaigns,
 	fetchUsersNonzeroTokenBalances,
-	// getUserCampaignBalances,
+	getUserCampaignBalances,
 	fetchCurrentUsersClaims,
 	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,

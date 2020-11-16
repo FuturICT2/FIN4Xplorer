@@ -16,8 +16,6 @@ const ActiveCampaignList = props => {
 		}
 	});
 
-	console.log(props.campaigns);
-
 	return (
 		<div>
 			<list>

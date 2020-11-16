@@ -81,31 +81,11 @@ function StepIdentity(props) {
 				style={inputFieldStyle}
 			/>
 			<div style={{ marginTop: '18px' }} />
-			{/* <TextField
-				id="datetime-local"
-				label={t('campaign-creator.step1-identity.fields.start-date.label')}
-				type="datetime-local"
-				defaultValue="2020-12-31T10:30"
-				InputLabelProps={{
-					shrink: true
-				}}
-				onChange={updateStartTime}
-				style={inputFieldStyle}
-			/>
-			<TextField
-				id="datetime-local"
-				label={t('campaign-creator.step1-identity.fields.end-date.label')}
-				type="datetime-local"
-				defaultValue="2020-12-31T10:30"
-				InputLabelProps={{
-					shrink: true
-				}}
-				onChange={updateEndTime}
-				style={inputFieldStyle}
-			/> */}
+			<div style={inputFieldStyle}>Start Date and Time</div>
 			<DateTimePicker label={t('campaign-creator.step1-identity.fields.start-date.label')} onChange={updateStartTime} />
+			<div style={{ marginTop: '18px' }} />
+			<div style={inputFieldStyle}>End Date and Time</div>
 			<DateTimePicker label={t('campaign-creator.step1-identity.fields.end-date.label')} onChange={updateEndTime} />
-
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);

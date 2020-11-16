@@ -15,6 +15,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
+import Currency from '../../../components/Currency';
 
 function StepToken(props) {
 	const { t } = useTranslation();
@@ -78,7 +79,7 @@ function StepToken(props) {
 
 	return (
 		<>
-			<Button startIcon={<AddIcon />} variant="contained">
+			<Button startIcon={<AddIcon />} variant="contained" onClick={() => window.open('/tokens', '_blank')}>
 				{t('campaign-creator.step3-tokens.fields.create-token.label')}
 			</Button>
 			<div style={{ marginTop: '18px' }} />
@@ -92,7 +93,7 @@ function StepToken(props) {
 							<ListItem key={token}>
 								<Checkbox edge="start" onChange={updateSelectedTokenList} name={token} />
 								{String(props.fin4Tokens[token].name)}
-								{String(props.fin4Tokens[token].symbol)}
+								<Currency symbol={String(props.fin4Tokens[token].symbol)} />
 							</ListItem>
 						);
 					})}

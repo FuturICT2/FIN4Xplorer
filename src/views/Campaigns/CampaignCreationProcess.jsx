@@ -198,7 +198,6 @@ function CampaignCreationProcess(props, context) {
 	};
 
 	const createCampaign = () => {
-		console.log(props.campaignCreationDrafts[draftId].basics);
 		let draft = props.campaignCreationDrafts[draftId];
 
 		let validationResult = validateDraft(draft);
@@ -569,10 +568,6 @@ function CampaignCreationProcess(props, context) {
 	};
 
 	const [keepAsDraft, setKeepAsDraft] = useState(false);
-
-	console.log(activeStep);
-	console.log(getSteps().length);
-	console.log(tokenCreationStage);
 
 	return (
 		<>

@@ -12,21 +12,54 @@ import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Currency from '../../components/Currency';
 import { findCampaignByName } from '../../components/utils';
+import { contractCall, getContractData } from '../../components/Contractor.jsx';
+import PropTypes from 'prop-types';
 
 import { Container, ListItemText, Button } from '@material-ui/core';
 
-const DetailedCampaignView = (props, classes) => {
+const DetailedCampaignView = (props, context) => {
 	const [campaignViaURL, setCampaignViaURL] = useState(null);
+	const [claimsPerToken, setClaimsPerToken] = useState(null);
+	const [claimsTotal, setClaimsTotal] = useState(null);
+
+	const getClaimsFromCampaign = () => {
+		if (campaignViaURL) {
+			let contract = context.drizzle.contracts['CampaignManagement'];
+			getContractData(
+				contract,
+				props.store.getState().fin4Store.defaultAccount,
+				'getCampaignTokensClaimed',
+				campaignViaURL.address
+			).then(({ 0: amounts, 1: sum }) => {
+				console.log('array', amounts);
+				console.log('sum', sum);
+				let x = amounts;
+				let y = sum;
+			});
+		}
+	};
+
+	// const getSuccessFromCampaign = () => {
+	// 	if(campaignViaURL) {
+	// 		let contract = context.drizzle.contracts['CampaignManagement'];
+	//         getContractData(contract, props.store.getState().fin4Store.defaultAccount, 'getCampaignSuccess', campaignViaURL.address).
+	// 			then(({0: answer}) => {console.log('yes or no', answer)});
+	// 	}
+	// }
 
 	useEffect(() => {
+		// if(!campaignViaURL){
 		const campaignName = props.match.params.campaignName;
 
 		let campaignObject = findCampaignByName(props.fin4Campaigns, campaignName);
 
 		setCampaignViaURL(campaignObject);
-	});
 
-	console.log(props.fin4Tokens);
+		getClaimsFromCampaign();
+
+		// getSuccessFromCampaign();
+		// }
+	});
 
 	if (campaignViaURL == null || Object.keys(props.fin4Tokens).length === 0) {
 		return <CircularProgress />;
@@ -39,7 +72,7 @@ const DetailedCampaignView = (props, classes) => {
 		return (
 			<Container>
 				<Box title="Campaign Details" width="100%">
-					<Table className={classes.table} aria-label="simple table">
+					<Table aria-label="simple table">
 						<TableHead>
 							<TableRow>
 								<TableCell>Name:</TableCell>
@@ -47,7 +80,7 @@ const DetailedCampaignView = (props, classes) => {
 							</TableRow>
 							<TableRow>
 								<TableCell>Address:</TableCell>
-								<TableCell align="right">{campaignViaURL.adress}</TableCell>
+								<TableCell align="right">{campaignViaURL.address}</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Action Policy:</TableCell>
@@ -86,17 +119,28 @@ const DetailedCampaignView = (props, classes) => {
 							</TableRow>
 						</TableHead>
 					</Table>
+					{campaignViaURL.campaignEndTime > currentDateAndTime ? (
+						<Button variant="contained">
+							<Link to={'/campaign/claim/' + campaignViaURL.name}>Make a claim</Link>
+						</Button>
+					) : (
+						<Alert severity="warning">This campaign has already ended!</Alert>
+					)}
 				</Box>
-				{campaignViaURL.campaignEndTime > currentDateAndTime ? (
+				{/* {campaignViaURL.campaignEndTime > currentDateAndTime ? (
 					<Button variant="contained">
 						<Link to={'/campaign/claim/' + campaignViaURL.name}>Make a claim</Link>
 					</Button>
 				) : (
 					<Alert severity="warning">This campaign has already ended!</Alert>
-				)}
+				)} */}
 			</Container>
 		);
 	}
+};
+
+DetailedCampaignView.contextTypes = {
+	drizzle: PropTypes.object
 };
 
 const mapStateToProps = state => {
