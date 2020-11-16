@@ -19,7 +19,7 @@ import { Container, ListItemText, Button } from '@material-ui/core';
 
 const DetailedCampaignView = (props, context) => {
 	const [campaignViaURL, setCampaignViaURL] = useState(null);
-	const [claimsPerToken, setClaimsPerToken] = useState(null);
+	const [claimsPerToken, setClaimsPerToken] = useState([]);
 	const [claimsTotal, setClaimsTotal] = useState(null);
 
 	const getClaimsFromCampaign = () => {
@@ -31,36 +31,18 @@ const DetailedCampaignView = (props, context) => {
 				'getCampaignTokensClaimed',
 				campaignViaURL.address
 			).then(({ 0: amounts, 1: sum }) => {
-				console.log('array', amounts);
-				console.log('sum', sum);
-
-				let claims = {};
-				claims = {
-					claimsOnEachToken: amounts,
-					totalClaims: sum
-				};
-				console.log(claims);
+				setClaimsPerToken(amounts);
+				setClaimsTotal(sum);
 			});
 		}
 	};
 
-	// const getSuccessFromCampaign = () => {
-	// 	if(campaignViaURL) {
-	// 		let contract = context.drizzle.contracts['CampaignManagement'];
-	//         getContractData(contract, props.store.getState().fin4Store.defaultAccount, 'getCampaignSuccess', campaignViaURL.address).
-	// 			then(({0: answer}) => {console.log('yes or no', answer)});
-	// 	}
-	// }
-
 	useEffect(() => {
-		// if(!campaignViaURL){
 		const campaignName = props.match.params.campaignName;
 		let campaignObject = findCampaignByName(props.fin4Campaigns, campaignName);
-
 		setCampaignViaURL(campaignObject);
+
 		getClaimsFromCampaign();
-		// getSuccessFromCampaign();
-		// }
 	});
 
 	if (campaignViaURL == null || Object.keys(props.fin4Tokens).length === 0) {
@@ -74,6 +56,8 @@ const DetailedCampaignView = (props, context) => {
 		return (
 			<Container>
 				<Box title="Campaign Details" width="100%">
+					<div>{claimsTotal}</div>
+					<div>{claimsPerToken}</div>
 					<Table aria-label="simple table">
 						<TableHead>
 							<TableRow>
@@ -99,13 +83,13 @@ const DetailedCampaignView = (props, context) => {
 							<TableRow>
 								<TableCell>Token(s) included:</TableCell>
 								<TableCell align="right">
-									{campaignViaURL.allTokens.map(token => {
+									{campaignViaURL.allTokens.map((token, index) => {
 										return (
 											<>
-												<ListItemText>{props.fin4Tokens[token].name}</ListItemText>
 												<ListItemText>
-													<Currency symbol={props.fin4Tokens[token].symbol} />
+													{props.fin4Tokens[token].name} <Currency symbol={props.fin4Tokens[token].symbol} />
 												</ListItemText>
+												<ListItemText>Tokens Claimed: {claimsPerToken[index]}</ListItemText>
 											</>
 										);
 									})}
@@ -115,6 +99,37 @@ const DetailedCampaignView = (props, context) => {
 								<TableCell>Success Threshold:</TableCell>
 								<TableCell align="right">{campaignViaURL.successThreshold}</TableCell>
 							</TableRow>
+							{campaignViaURL.campaignEndTime > currentDateAndTime ? (
+								<TableRow>
+									<TableCell>Is campaign sucessful yet?:</TableCell>
+									{claimsTotal >= campaignViaURL.successThreshold ? (
+										<TableCell align="right">
+											<Alert variant="outlined" severity="success">
+												Campaign succesful
+											</Alert>
+										</TableCell>
+									) : (
+										<TableCell align="right">
+											<Alert variant="outlined" severity="error">
+												Campaign unsuccesful
+											</Alert>
+										</TableCell>
+									)}
+								</TableRow>
+							) : (
+								<TableRow>
+									<TableCell>Result of campaign:</TableCell>
+									{claimsTotal >= campaignViaURL.successThreshold ? (
+										<TableCell align="right">
+											<Alert severity="success">Campaign succesful</Alert>
+										</TableCell>
+									) : (
+										<TableCell align="right">
+											<Alert severity="success">Campaign unsuccesful</Alert>
+										</TableCell>
+									)}
+								</TableRow>
+							)}
 							<TableRow>
 								<TableCell>Maximum claim each contributor can make:</TableCell>
 								<TableCell align="right">{campaignViaURL.claimPerCampaignContributor}</TableCell>
