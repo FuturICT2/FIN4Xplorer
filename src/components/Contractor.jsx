@@ -41,6 +41,7 @@ const contractCall = (
 	valueToPayInEth = null,
 ) => {
 	let contract = context.drizzle.contracts[contractName];
+	console.log(context.drizzle.contracts);
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
 	let methodInputs = methodAbi.inputs.map(el => el.type);
@@ -150,6 +151,18 @@ const findTokenBySymbol = (props, symb) => {
 		let token = props.fin4Tokens[keys[i]];
 		if (token.symbol === symbol) {
 			return token;
+		}
+	}
+	return null;
+};
+
+const findCampaignBySymbol = (props, symb) => {
+	let symbol = symb.toUpperCase();
+	let keys = Object.keys(props.fin4Campaigns);
+	for (let i = 0; i < keys.length; i++) {
+		let campaign = props.fin4Campaigns[keys[i]];
+		if (campaign.symbol === symbol) {
+			return campaign;
 		}
 	}
 	return null;
@@ -350,7 +363,9 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			7: Fin4GroupsAddress,
 			8: Fin4SystemParametersAddress,
 			9: Fin4UnderlyingsAddress,
-			10: Fin4VotingAddress
+			10: Fin4VotingAddress,
+			11: CampaignCreatorAddress,
+			12: CampaignManagementAddress
 		}) => {
 			// TODO the events can be removed from here since ethers.js in ContractEventHandler is doing that now?
 			addContract(props, drizzle, 'Fin4UncappedTokenCreator', Fin4UncappedTokenCreatorAddress, []);
@@ -372,6 +387,8 @@ const addSatelliteContracts = (props, Fin4MainContract, drizzle) => {
 			addContract(props, drizzle, 'Fin4SystemParameters', Fin4SystemParametersAddress, []);
 			addContract(props, drizzle, 'Fin4Underlyings', Fin4UnderlyingsAddress, []);
 			addContract(props, drizzle, 'Fin4Voting', Fin4VotingAddress, []);
+			addContract(props, drizzle, 'CampaignCreator', CampaignCreatorAddress, []);
+			addContract(props, drizzle, 'CampaignManagement', CampaignManagementAddress, []);
 		}
 	);
 };
@@ -502,9 +519,67 @@ const fetchAllTokens = (props, Fin4TokenManagementContract, Fin4UnderlyingsContr
 	);
 };
 
+const fetchAllCampaigns = (props, CampaignManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(CampaignManagementContract, defaultAccount, 'getAllCampaigns').then(campaigns => {
+		let promises = [];
+		let campaignsObj = {};
+		campaigns.map(campaignAddr => {
+			campaignsObj[campaignAddr] = {};
+			promises.push(
+				getContractData(CampaignManagementContract, defaultAccount, 'getCampaignInfo', campaignAddr).then(
+					({
+						0: name,
+						1: userIsCreator,
+						2: text,
+						3: campaignStartTime,
+						4: campaignEndTime,
+						5: allTokens,
+						6: successThreshold,
+						7: claimPerCampaignContributor
+					}) => {
+						campaignsObj[campaignAddr].name = name;
+						campaignsObj[campaignAddr].address = campaignAddr;
+						campaignsObj[campaignAddr].userIsCreator = userIsCreator;
+						campaignsObj[campaignAddr].text = text;
+						campaignsObj[campaignAddr].campaignStartTime = campaignStartTime;
+						campaignsObj[campaignAddr].campaignEndTime = campaignEndTime;
+						campaignsObj[campaignAddr].allTokens = allTokens;
+						campaignsObj[campaignAddr].successThreshold = successThreshold;
+						campaignsObj[campaignAddr].claimPerCampaignContributor = claimPerCampaignContributor;
+						// tokensObj[tokenAddr].isOPAT = null;
+					}
+				)
+			);
+		});
+		Promise.all(promises).then(() => {
+			props.dispatch({
+				type: 'ADD_MULTIPLE_CAMPAIGNS',
+				campaignsObj: campaignsObj
+			});
+		});
+	});
+};
+
 const fetchUsersNonzeroTokenBalances = (props, Fin4TokenManagementContract) => {
 	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
 	getContractData(Fin4TokenManagementContract, defaultAccount, 'getMyNonzeroTokenBalances').then(
+		({ 0: nonzeroBalanceTokens, 1: balancesBN }) => {
+			if (nonzeroBalanceTokens.length === 0) {
+				return;
+			}
+			props.dispatch({
+				type: 'UPDATE_MULTIPLE_BALANCES',
+				tokenAddresses: nonzeroBalanceTokens,
+				balances: balancesBN.map(balanceBN => new BN(balanceBN).toNumber())
+			});
+		}
+	);
+};
+
+const getUserCampaignBalances = (props, CampaignManagementContract) => {
+	let defaultAccount = props.store.getState().fin4Store.defaultAccount;
+	getContractData(CampaignManagementContract, defaultAccount, 'getCampaignBalances').then(
 		({ 0: nonzeroBalanceTokens, 1: balancesBN }) => {
 			if (nonzeroBalanceTokens.length === 0) {
 				return;
@@ -830,11 +905,14 @@ export {
 	fetchMessage,
 	fetchMessages,
 	fetchAllTokens,
+	fetchAllCampaigns,
 	fetchUsersNonzeroTokenBalances,
+	getUserCampaignBalances,
 	fetchCurrentUsersClaims,
 	fetchAndAddAllVerifierTypes,
 	fetchAllSubmissions,
 	findTokenBySymbol,
+	findCampaignBySymbol,
 	isValidPublicAddress,
 	getFin4TokensFormattedForSelectOptions,
 	fetchCollectionsInfo,

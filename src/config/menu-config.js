@@ -1,7 +1,10 @@
 import ListIcon from '@material-ui/icons/List';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import HomeIcon from '@material-ui/icons/Home';
+import GroupIcon from '@material-ui/icons/Group';
 import Home from '../views/Home/Home';
+import Campaign from '../views/Campaigns/Campaign';
+import CampaignCreationProcess from '../views/Campaigns/CampaignCreationProcess';
 import Claim from '../views/claims/Claim';
 import TokenView from '../views/tokens/TokenView';
 import Token from '../views/tokens/Token';
@@ -27,6 +30,8 @@ import TransactionLog from '../views/TransactionLog';
 import DepositCollateral from '../views/underlying/DepositCollateral';
 import ConvertToCollateral from '../views/underlying/ConvertToCollateral';
 import AddNewSourcererPair from '../views/underlying/AddNewSourcererPair';
+import DetailedCampaignView from '../views/Campaigns/DetailedCampaignView';
+import CampaignClaimView from '../views/Campaigns/CampaignClaimView';
 
 const menu = [
 	{
@@ -79,6 +84,39 @@ const menu = [
 	{
 		component: TokenVoteSubmissions,
 		path: '/token/submissions/:tokenSymbol/vote',
+		showInNavBar: false
+	},
+	// ------------------CAMPAIGN -----------------
+	{
+		component: Campaign,
+		path: '/campaigns',
+		label: 'Campaigns',
+		icon: GroupIcon,
+		showInNavBar: true // SHOW IN NAVBAR
+	},
+	{
+		component: CampaignCreationProcess,
+		path: '/campaigns/create',
+		showInNavBar: false
+	},
+	{
+		component: CampaignCreationProcess,
+		path: '/campaigns/create/:draftId',
+		showInNavBar: false
+	},
+	{
+		component: CampaignCreationProcess,
+		path: '/campaigns/create/:draftId/:stepId',
+		showInNavBar: false
+	},
+	{
+		component: DetailedCampaignView,
+		path: '/campaigns/DetailedCampaignView/:campaignName',
+		showInNavBar: false
+	},
+	{
+		component: CampaignClaimView,
+		path: '/campaign/claim/:campaignName',
 		showInNavBar: false
 	},
 	// ------------------ CLAIMS ------------------

@@ -5,6 +5,7 @@ import {
 	addTCRcontracts,
 	fetchMessages,
 	fetchAllTokens,
+	fetchAllCampaigns,
 	fetchUsersNonzeroTokenBalances,
 	fetchCurrentUsersClaims,
 	fetchAndAddAllVerifierTypes,
@@ -31,6 +32,7 @@ function LoadInitialData(props, context) {
 		subscribedToContractEvents: false,
 		Fin4Main: false,
 		Fin4TokenManagement: false,
+		CampaignManagement: false,
 		Fin4Messaging: false,
 		Fin4Claiming: false,
 		Fin4Collections: false,
@@ -115,6 +117,16 @@ function LoadInitialData(props, context) {
 				}
 				fetchUsersNonzeroTokenBalances(props, Fin4TokenManagementContract);
 			});
+		}
+
+		if (
+			!isInit.current.CampaignManagement &&
+			props.contracts.CampaignManagement &&
+			props.contracts.CampaignManagement.initialized
+		) {
+			isInit.current.CampaignManagement = true;
+			let CampaignManagementContract = context.drizzle.contracts.CampaignManagement;
+			fetchAllCampaigns(props, CampaignManagementContract);
 		}
 
 		if (!isInit.current.Fin4Messaging && props.contracts.Fin4Messaging && props.contracts.Fin4Messaging.initialized) {
