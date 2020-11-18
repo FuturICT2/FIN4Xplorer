@@ -2,26 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
-import TokenOverview from '../tokens/TokenOverview';
 import CampaignOverview from './CampaignOverview';
 import PreviousCampaigns from './PreviousCampaigns';
 import Box from '../../components/Box';
 import {
 	buildIconLabelCallback,
-	getFormattedSelectOptions,
 	getRandomTokenCreationDraftID,
 	getRandomCampaignCreationDraftID
 } from '../../components/utils';
 import AddIcon from '@material-ui/icons/AddBox';
-import ImportIcon from '@material-ui/icons/ImportExport';
-import CopyIcon from '@material-ui/icons/FileCopy';
 import moment from 'moment';
-import Dropdown from '../../components/Dropdown';
-import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import history from '../../components/history';
-import Currency from '../../components/Currency';
 import { addContract, fetchTokenDetails } from '../../components/Contractor';
 import PropTypes from 'prop-types';
 const fileDownload = require('js-file-download');
