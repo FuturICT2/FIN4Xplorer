@@ -26,6 +26,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '../../components/Modal';
 import { contractCall, getContractData } from '../../components/Contractor';
 import { Link } from 'react-router-dom';
+import GroupIcon from '@material-ui/icons/Group';
 
 let config = null;
 try {
@@ -195,8 +196,8 @@ function Home(props, context) {
 				{buildIconLabelLink('/about', <InfoIcon />, t('home.settings.about-button'))}
 				{buildIconLabelLink('/settings', <SettingsIcon />, t('home.settings.settings-button'))}
 				{buildIconLabelLink('/users/groups', <UsersIcon />, t('home.settings.user-groups-button'))}
-				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'))}{' '}
-				{/*true, false*/}
+				{buildIconLabelLink('/collections', <CollectionsIcon />, t('home.settings.collections-button'))}
+				{buildIconLabelLink('/campaigns', <GroupIcon />, 'Campaigns')}
 				{isEligibleToBeAVoter ? (
 					<Link to={'#'} style={style}>
 						<div

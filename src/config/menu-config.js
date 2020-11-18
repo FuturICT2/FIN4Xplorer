@@ -1,7 +1,6 @@
 import ListIcon from '@material-ui/icons/List';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import HomeIcon from '@material-ui/icons/Home';
-import GroupIcon from '@material-ui/icons/Group';
 import Home from '../views/Home/Home';
 import Campaign from '../views/Campaigns/Campaign';
 import CampaignCreationProcess from '../views/Campaigns/CampaignCreationProcess';
@@ -90,9 +89,7 @@ const menu = [
 	{
 		component: Campaign,
 		path: '/campaigns',
-		label: 'Campaigns',
-		icon: GroupIcon,
-		showInNavBar: true // SHOW IN NAVBAR
+		showInNavBar: false
 	},
 	{
 		component: CampaignCreationProcess,
