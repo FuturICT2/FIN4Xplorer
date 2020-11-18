@@ -84,6 +84,10 @@ const getRandomTokenCreationDraftID = () => {
 	return getRandomStringOfLength(5);
 };
 
+const getRandomCampaignCreationDraftID = () => {
+	return getRandomStringOfLength(5);
+};
+
 const getRandomStringOfLength = len => {
 	return nanoid(len);
 };
@@ -233,12 +237,54 @@ const txErrorAugmentation = reason => {
 	return reason;
 };
 
+const findCampaignByName = (campaigns, name) => {
+	let campaignObject = null;
+
+	const keys = Object.keys(campaigns);
+
+	for (let i = 0; i < keys.length; i++) {
+		if (campaigns[keys[i]].name == name) {
+			campaignObject = campaigns[keys[i]];
+			break;
+		}
+	}
+	return campaignObject;
+};
+
+const getTokensByCampaign = (tokens, campaign) => {
+	const campaignTokens = campaign.allTokens;
+
+	let result = {};
+
+	for (let i = 0; i < campaignTokens.length; i++) {
+		let thisToken = campaignTokens[i];
+		result[thisToken] = tokens[thisToken];
+	}
+	return result;
+};
+
+const getCampaignsByStatus = campaigns => {
+	const currentDate = new Date();
+	const currentDateAndTime = currentDate.getTime();
+
+	let keys = Object.keys(campaigns);
+	let activeCampaignList = [];
+	let previousCampaignList = [];
+
+	for (let i = 0; i < keys.length; i++) {
+		if (campaigns[keys[i]].campaignEndTime > currentDateAndTime) activeCampaignList.push(keys[i]);
+		else previousCampaignList.push(keys[i]);
+	}
+	return [activeCampaignList, previousCampaignList];
+};
+
 export {
 	buildIconLabelLink,
 	buildIconLabelCallback,
 	getFormattedSelectOptions,
 	getRandomStringOfLength,
 	getRandomTokenCreationDraftID,
+	getRandomCampaignCreationDraftID,
 	findVerifierTypeAddressByContractName,
 	TCRactive,
 	UnderlyingsActive,
@@ -262,5 +308,8 @@ export {
 	sizeOfBase64,
 	txErrorAugmentation,
 	ETHtoWei,
-	WeiToETH
+	WeiToETH,
+	findCampaignByName,
+	getTokensByCampaign,
+	getCampaignsByStatus
 };

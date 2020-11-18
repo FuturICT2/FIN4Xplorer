@@ -43,6 +43,82 @@
 			"parameters-button": "Parameters"
 		}
 	},
+	"campaigns": {
+		"create-new-campaign": "Create a new campaign",
+		"all-campaigns-box-title": "All campaigns",
+		"start-campaign-creation": "Start campaign creation wizard",
+		"campaign-creator": {
+			"box-title": "Campaign creation"
+		}
+	},
+	"campaigns-list": {
+		"all-campaigns-box-title": "All active campaigns",
+		"all-prev-campaigns": "Previous campaigns"
+	},
+	"campaign-creator": {
+		"box-title": "Campaign Creation",
+		"step1-identity": {
+			"title": "Campaign Identity",
+			"fields": {
+				"name": {
+					"label": "Name",
+					"info": "Give your campaign a descriptive/telling name."
+				},
+				"start-date": {
+					"label": "Campaign starts on",
+					"info": "Enter the date and time when your campaign is supposed to start."
+				},
+				"end-date": {
+					"label": "Campaign ends on",
+					"info": "Enter the date and time when your campaign is supposed to end."
+				}
+			},
+			"info": "The basic infos about this campaign's identity."
+		},
+		"step2-actions": {
+			"title": "Action Policy",
+			"info": "For what sustainable actions should users be able to obtain token(s) which are part of campaign?"
+		},
+		"step3-tokens": {
+			"title": "Select Token(s)",
+			"fields": {
+				"create-token": {
+					"label": "Create new token",
+					"info": "Use this option to create a new token if you are not satisfied with any pre-existing token."
+				},
+				"select-tokens": {
+					"label": "Select from token list",
+					"info": "To select all the tokens that will be part of the campaign."
+				}
+			},
+			"info": "Select all the token(s) that should be the part of your campaign. Decide carefully and if you are not satisfied with any pre-existing token, then you can also create new tokens."
+		},
+		"step4-design": {
+			"title": "Token Design",
+			"fields": {
+				"success-threshold": {
+					"label": "Success Threshold",
+					"info": "Add the total number of tokens in the campaign."
+				},
+				"claim-per-user": {
+					"label": "Number of claims per contributor",
+					"info": "Enter the N number of claims a user is allowed to make."
+				}
+			},
+			"info": "To assess the success or failur of a campaign, please provide the success threshold i.e. the N number of tokens that should be claimed while the campaign is active. You can also specify how many claims a contributor is allowed to make."
+		},
+		"navigation": {
+			"back-button": "Back",
+			"next-button": "Next",
+			"finish-button": "Finish",
+			"restart-button": "Restart",
+			"launch-campaign-button": "Launch Campaign",
+			"info-box-close-button": "CLOSE",
+			"waiting-for-completion": "Waiting for the campaign creation to complete.",
+			"no-campaign-creation-draft-found": "No campaign creation draft found with ID {{Id}}",
+			"campaign-created": "Campaign created succesfully!"
+		}
+	},
 	"tokens-site": {
 		"create-new-token": "Create a new token",
 		"start-token-creation": "Start token creation wizard",
@@ -279,7 +355,7 @@
 					"default-value": "quantity"
 				}
 			},
-			"info": "Minting is the default way users earn balances on positive action tokens by submitting and prooving claims."
+			"info": "Minting is the default way users earn balances on positive action tokens by submitting and proving claims."
 		},
 		"step5-verifiers": {
 			"title": "Verifiers",
