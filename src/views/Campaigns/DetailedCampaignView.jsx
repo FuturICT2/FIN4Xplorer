@@ -70,7 +70,7 @@ const DetailedCampaignView = (props, context) => {
 							</TableRow>
 							<TableRow>
 								<TableCell>Action Policy:</TableCell>
-								<TableCell>{campaignViaURL.text}</TableCell>
+								<TableCell align="right">{campaignViaURL.text}</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Campaign starts from:</TableCell>
