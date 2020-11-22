@@ -82,12 +82,12 @@ const DetailedCampaignView = (props, context) => {
 								<TableCell align="right">
 									{campaignViaURL.allTokens.map((token, index) => {
 										return (
-											<>
+											<span key={'token-included-' + index}>
 												<ListItemText>
 													{props.fin4Tokens[token].name} <Currency symbol={props.fin4Tokens[token].symbol} />
 												</ListItemText>
 												<ListItemText>Tokens Claimed: {claimsPerToken[index]}</ListItemText>
-											</>
+											</span>
 										);
 									})}
 								</TableCell>
