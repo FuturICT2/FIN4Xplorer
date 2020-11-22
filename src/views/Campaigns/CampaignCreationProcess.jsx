@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { useTranslation } from 'react-i18next';
 import Container from '../../components/Container';
@@ -17,7 +17,7 @@ import StepDesign from './creationProcess/Step4Design';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Fin4Colors } from '../../components/utils';
-import { contractCall, zeroAddress } from '../../components/Contractor';
+import { contractCall } from '../../components/Contractor';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
@@ -160,13 +160,6 @@ function CampaignCreationProcess(props, context) {
 		if (!draft.basics.name || draft.basics.name.trim().length === 0) {
 			return t('token-creator.validation.name-empty');
 		}
-
-		if (draft.interactiveVerifiers.Location) {
-			let latLonStr = draft.interactiveVerifiers.Location.parameters['latitude / longitude'];
-			if (latLonStr.split('/').length !== 2) {
-				return "The 'latitude / longitude' field of the location verifier must use '/' as separator";
-			}
-		}
 		return '';
 	};
 
@@ -177,13 +170,6 @@ function CampaignCreationProcess(props, context) {
 		if (validationResult) {
 			alert(validationResult);
 			return;
-		}
-
-		if (!keepAsDraft) {
-			props.dispatch({
-				type: 'DELETE_CAMPAIGN_CREATION_DRAFT',
-				draftId: draftId
-			});
 		}
 
 		let defaultAccount = props.store.getState().fin4Store.defaultAccount;
@@ -199,46 +185,21 @@ function CampaignCreationProcess(props, context) {
 			draft.design.claimPerCampaignContributor
 		];
 
-		let sourcerersToParameterize = [];
+		setCampaignCreationStage(t('campaign-creator.navigation.waiting-for-completion'));
 
-		transactionsRequired.current += draft.sourcererPairs.length;
+		console.log("campaignCreationArgs", campaignCreationArgs);
 
-		for (let i = 0; i < draft.sourcererPairs.length; i++) {
-			let pair = draft.sourcererPairs[i];
-			let underlyingsObj = props.allUnderlyings[pair.sourcererName];
-			let values = underlyingsObj.paramsEncoded.split(',').map(paramStr => {
-				let pName = paramStr.split(':')[1];
-				let val = pair.parameters[pName];
-				if (pName === 'beneficiary' && !val) {
-					return zeroAddress;
-				}
-				return val;
-			});
-			if (pair.sourcererName === 'BurnSourcerer') {
-				values.splice(1, 0, zeroAddress);
-			}
-			sourcerersToParameterize.push({
-				name: pair.sourcererName,
-				values: values
-			});
-		}
-
-		let campaignCreatorContract = 'CampaignCreator';
-
-		updateTokenCreationStage(t('campaign-creator.navigation.waiting-for-completion'));
 		contractCall(
 			context,
 			props,
 			defaultAccount,
-			campaignCreatorContract,
+			'CampaignCreator',
 			'createNewCampaign',
 			campaignCreationArgs,
-			'Create new campaign: ',
+			'Create new campaign: ' + draft.basics.name,
 			{
 				transactionCompleted: receipt => {
-					transactionCounter.current++;
-
-					updateTokenCreationStage(t('completed'));
+					setCampaignCreationStage(t('completed'));
 				},
 				transactionFailed: reason => {
 					setCampaignCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
@@ -250,25 +211,7 @@ function CampaignCreationProcess(props, context) {
 		);
 	};
 
-	const updateTokenCreationStage = text => {
-		if (transactionCounter.current == transactionsRequired.current) {
-			setCampaignCreationStage('completed');
-		} else {
-			setCampaignCreationStage(
-				<span>
-					{text}
-					<br />
-					Step: {transactionCounter.current + 1} / {transactionsRequired.current}
-				</span>
-			);
-		}
-	};
-
-	const transactionCounter = useRef(0);
-	const transactionsRequired = useRef(1);
 	const [campaignCreationStage, setCampaignCreationStage] = useState('unstarted');
-
-	const [keepAsDraft, setKeepAsDraft] = useState(false);
 
 	return (
 		<>
@@ -370,7 +313,7 @@ function CampaignCreationProcess(props, context) {
 									</small>
 								</center>
 								<br />
-								{getStepInfoBoxContent(activeStep, props.verifierTypes)}
+								{getStepInfoBoxContent(activeStep)}
 							</div>
 						</Box>
 					)}
@@ -399,11 +342,7 @@ CampaignCreationProcess.contextTypes = {
 const mapStateToProps = state => {
 	return {
 		campaignCreationDrafts: state.fin4Store.campaignCreationDrafts,
-		verifierTypes: state.fin4Store.verifierTypes,
-		fin4Tokens: state.fin4Store.fin4Tokens,
-		fin4Campaigns: state.fin4Store.fin4Campaigns,
-		defaultAccount: state.fin4Store.defaultAccount,
-		allUnderlyings: state.fin4Store.allUnderlyings
+		defaultAccount: state.fin4Store.defaultAccount
 	};
 };
 

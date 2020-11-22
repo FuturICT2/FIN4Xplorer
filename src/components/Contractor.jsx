@@ -41,7 +41,6 @@ const contractCall = (
 	valueToPayInEth = null,
 ) => {
 	let contract = context.drizzle.contracts[contractName];
-	console.log(context.drizzle.contracts);
 	let abiArr = contract.abi;
 	let methodAbi = abiArr.filter(el => el.name === methodName)[0];
 	let methodInputs = methodAbi.inputs.map(el => el.type);
