@@ -34,7 +34,6 @@ function StepIdentity(props) {
 	});
 
 	const submit = () => {
-		console.log(basics.campaignStartTime);
 		props.dispatch({
 			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
