@@ -23,8 +23,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { IconButton } from '@material-ui/core';
 import history from '../../components/history';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { toBN } from 'web3-utils';
 
 const useStyles = makeStyles(theme => ({
 	root: {
