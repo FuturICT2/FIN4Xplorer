@@ -10,8 +10,9 @@ import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Currency from '../../components/Currency';
 import { findCampaignByName } from '../../components/utils';
-import { contractCall, getContractData } from '../../components/Contractor.jsx';
+import { getContractData } from '../../components/Contractor.jsx';
 import PropTypes from 'prop-types';
+import AddressDisplayWithCopy from '../../components/AddressDisplayWithCopy';
 
 import { Container, ListItemText, Button } from '@material-ui/core';
 
@@ -59,11 +60,13 @@ const DetailedCampaignView = (props, context) => {
 						<TableHead>
 							<TableRow>
 								<TableCell>Name:</TableCell>
-								<TableCell align="right">{campaignViaURL.name}</TableCell>
+								<TableCell align="right"><b>{campaignViaURL.name}</b></TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Address:</TableCell>
-								<TableCell align="right">{campaignViaURL.address}</TableCell>
+								<TableCell align="right">
+									<AddressDisplayWithCopy address={campaignViaURL.address} />
+								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Action Policy:</TableCell>
