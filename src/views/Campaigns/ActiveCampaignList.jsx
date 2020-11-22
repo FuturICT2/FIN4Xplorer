@@ -17,21 +17,19 @@ const ActiveCampaignList = props => {
 
 	return (
 		<div>
-			<list>
-				{props.campaigns.map(campaign => {
-					return (
-						<List>
-							<ListItem
-								key={campaign.address}
-								onClick={() => history.push('/campaigns/DetailedCampaignView/' + campaign.name)}
-								style={{ maxHeight: '100%', overflow: 'auto' }}
-								className={classes.listItem}>
-								{campaign.name}
-							</ListItem>
-						</List>
-					);
-				})}
-			</list>
+			{props.campaigns.map(campaign => {
+				return (
+					<List>
+						<ListItem
+							key={campaign.address}
+							onClick={() => history.push('/campaigns/DetailedCampaignView/' + campaign.name)}
+							style={{ maxHeight: '100%', overflow: 'auto' }}
+							className={classes.listItem}>
+							{campaign.name}
+						</ListItem>
+					</List>
+				);
+			})}
 		</div>
 	);
 };
