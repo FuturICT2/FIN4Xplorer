@@ -94,7 +94,7 @@
 			"info": "Wählen Sie alle Token aus, die Teil Ihrer Kampagne sein sollen. Entscheiden Sie sorgfältig und wenn Sie mit einem bereits vorhandenen Token nicht zufrieden sind, können Sie auch neue Token erstellen."
 		},
 		"step4-design": {
-			"title": "Token Design",
+			"title": "Campaign Design",
 			"fields": {
 				"success-threshold": {
 					"label": "Erfolgsschwelle",

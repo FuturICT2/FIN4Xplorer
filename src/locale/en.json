@@ -94,7 +94,7 @@
 			"info": "Select all the token(s) that should be the part of your campaign. Decide carefully and if you are not satisfied with any pre-existing token, then you can also create new tokens."
 		},
 		"step4-design": {
-			"title": "Token Design",
+			"title": "Campaign Design",
 			"fields": {
 				"success-threshold": {
 					"label": "Success Threshold",
