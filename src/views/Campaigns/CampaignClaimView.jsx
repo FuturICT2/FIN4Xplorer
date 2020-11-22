@@ -7,7 +7,6 @@ import Button from '../../components/Button';
 import { TextField } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import Dropdown from '../../components/Dropdown';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTranslation } from 'react-i18next';
 import { contractCall } from '../../components/Contractor.jsx';
 import PropTypes from 'prop-types';
@@ -73,7 +72,7 @@ const CampaignClaimView = (props, context) => {
 	};
 
 	if (campaignViaURL == null) {
-		return <CircularProgress />;
+		return <center><div style={{ fontFamily: 'arial' }}>Campaign not found</div></center>;
 	} else {
 		return (
 			<Container>
