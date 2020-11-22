@@ -19,7 +19,6 @@ const CampaignClaimView = (props, context) => {
 	const [campaignViaURL, setCampaignViaURL] = useState(null);
 	const [unit, setUnit] = useState(t('quantity'));
 	const [selectedToken, setSelectedToken] = useState(null);
-	// const [claimsByUser, setClaimsByUser] = useState(0);
 
 	const [values, setValues] = useState({
 		tokenAddress: null,
@@ -34,6 +33,7 @@ const CampaignClaimView = (props, context) => {
 			alert('Token must be selected');
 			return;
 		}
+		// TODO this doesn't support claims with an upfront fee yet, compare Claim.jsx
 		contractCall(
 			context,
 			props,
@@ -42,17 +42,7 @@ const CampaignClaimView = (props, context) => {
 			'submitClaim',
 			[values.tokenAddress, values.quantity, values.comment],
 			'Claim token: ' + props.fin4Tokens[values.tokenAddress].symbol,
-			{
-				dryRunFailed: reason => {
-					console.log('failed');
-					console.log(reason);
-				},
-				dryRunSucceeded: res => {
-					console.log('succeeded');
-					console.log(res);
-					// setClaimsByUser(() => claimsByUser+1)
-				}
-			}
+			{}
 		);
 	};
 
@@ -63,7 +53,7 @@ const CampaignClaimView = (props, context) => {
 			if (campaign) {
 				setCampaignViaURL(campaign);
 			} else {
-				console.log('Token or campaign not found!');
+				console.log('Campaign not found');
 			}
 		}
 	});

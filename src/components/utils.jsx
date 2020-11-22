@@ -266,14 +266,15 @@ const getTokensByCampaign = (tokens, campaign) => {
 const getCampaignsByStatus = campaigns => {
 	const currentDate = new Date();
 	const currentDateAndTime = currentDate.getTime();
-
 	let keys = Object.keys(campaigns);
 	let activeCampaignList = [];
 	let previousCampaignList = [];
-
 	for (let i = 0; i < keys.length; i++) {
-		if (campaigns[keys[i]].campaignEndTime > currentDateAndTime) activeCampaignList.push(keys[i]);
-		else previousCampaignList.push(keys[i]);
+		if (campaigns[keys[i]].campaignEndTime > currentDateAndTime) {
+			activeCampaignList.push(keys[i]);
+		} else {
+			previousCampaignList.push(keys[i]);
+		}
 	}
 	return [activeCampaignList, previousCampaignList];
 };

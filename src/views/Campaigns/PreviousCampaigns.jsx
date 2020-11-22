@@ -22,8 +22,7 @@ function PreviousCampaigns(props) {
 
 const mapStateToProps = state => {
 	return {
-		fin4Campaigns: state.fin4Store.fin4Campaigns,
-		fin4Tokens: state.fin4Store.fin4Tokens
+		fin4Campaigns: state.fin4Store.fin4Campaigns
 	};
 };
 
