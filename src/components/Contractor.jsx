@@ -546,7 +546,6 @@ const fetchAllCampaigns = (props, CampaignManagementContract) => {
 						campaignsObj[campaignAddr].allTokens = allTokens;
 						campaignsObj[campaignAddr].successThreshold = successThreshold;
 						campaignsObj[campaignAddr].claimPerCampaignContributor = claimPerCampaignContributor;
-						// tokensObj[tokenAddr].isOPAT = null;
 					}
 				)
 			);

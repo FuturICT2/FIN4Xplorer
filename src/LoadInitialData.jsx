@@ -125,8 +125,7 @@ function LoadInitialData(props, context) {
 			props.contracts.CampaignManagement.initialized
 		) {
 			isInit.current.CampaignManagement = true;
-			let CampaignManagementContract = context.drizzle.contracts.CampaignManagement;
-			fetchAllCampaigns(props, CampaignManagementContract);
+			fetchAllCampaigns(props, context.drizzle.contracts.CampaignManagement);
 		}
 
 		if (!isInit.current.Fin4Messaging && props.contracts.Fin4Messaging && props.contracts.Fin4Messaging.initialized) {
