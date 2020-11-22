@@ -130,7 +130,7 @@ function CampaignCreationProcess(props, context) {
 	const [activeStep, setActiveStep] = useState(0);
 
 	const modifyURL = (_draftId, step) => {
-		window.history.pushState('', '', '/campaigns/create/' + _draftId + '/' + step);
+		window.history.pushState('', '', '/campaign/create/' + _draftId + '/' + step);
 	};
 
 	const handleNext = () => {

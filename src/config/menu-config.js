@@ -93,22 +93,22 @@ const menu = [
 	},
 	{
 		component: CampaignCreationProcess,
-		path: '/campaigns/create',
+		path: '/campaign/create',
 		showInNavBar: false
 	},
 	{
 		component: CampaignCreationProcess,
-		path: '/campaigns/create/:draftId',
+		path: '/campaign/create/:draftId',
 		showInNavBar: false
 	},
 	{
 		component: CampaignCreationProcess,
-		path: '/campaigns/create/:draftId/:stepId',
+		path: '/campaign/create/:draftId/:stepId',
 		showInNavBar: false
 	},
 	{
 		component: DetailedCampaignView,
-		path: '/campaigns/DetailedCampaignView/:campaignName',
+		path: '/campaign/view/:campaignName',
 		showInNavBar: false
 	},
 	{

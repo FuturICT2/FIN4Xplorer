@@ -36,7 +36,7 @@ function Campaign(props) {
 			},
 			addToCookies: true
 		});
-		history.push('/campaigns/create/' + newDraftId);
+		history.push('/campaign/create/' + newDraftId);
 	};
 
 	return (

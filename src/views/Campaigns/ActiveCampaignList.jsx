@@ -22,7 +22,7 @@ const ActiveCampaignList = props => {
 					<List>
 						<ListItem
 							key={campaign.address}
-							onClick={() => history.push('/campaigns/DetailedCampaignView/' + campaign.name)}
+							onClick={() => history.push('/campaign/view/' + campaign.name)}
 							style={{ maxHeight: '100%', overflow: 'auto' }}
 							className={classes.listItem}>
 							{campaign.name}
