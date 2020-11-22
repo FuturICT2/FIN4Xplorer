@@ -202,6 +202,7 @@ function CampaignCreationProcess(props, context) {
 					setCampaignCreationStage(t('completed'));
 				},
 				transactionFailed: reason => {
+					// TODO translation file entries for campaign instead of token
 					setCampaignCreationStage(t('token-creator.navigation.transaction-failed') + ': ' + reason);
 				},
 				dryRunFailed: reason => {

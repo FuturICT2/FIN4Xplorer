@@ -101,7 +101,7 @@ const DetailedCampaignView = (props, context) => {
 							</TableRow>
 							{campaignViaURL.campaignEndTime > currentDateAndTime ? (
 								<TableRow>
-									<TableCell>Is campaign sucessful yet?:</TableCell>
+									<TableCell>Is the campaign sucessful yet:</TableCell>
 									{claimsTotal >= campaignViaURL.successThreshold ? (
 										<TableCell align="right">
 											<Alert variant="outlined" severity="success">
@@ -141,9 +141,12 @@ const DetailedCampaignView = (props, context) => {
 						</TableHead>
 					</Table>
 					{campaignViaURL.campaignEndTime > currentDateAndTime ? (
-						<Button variant="contained">
-							<Link to={'/campaign/claim/' + campaignViaURL.name}>Make a claim</Link>
-						</Button>
+						<>
+							<br/>
+							<Button variant="contained">
+								<Link to={'/campaign/claim/' + campaignViaURL.name}>Make a claim</Link>
+							</Button>
+						</>
 					) : (
 						<Alert severity="warning">This campaign has already ended!</Alert>
 					)}
