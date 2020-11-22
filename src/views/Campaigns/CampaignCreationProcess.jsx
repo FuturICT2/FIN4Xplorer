@@ -194,9 +194,9 @@ function CampaignCreationProcess(props, context) {
 			draft.actions.text,
 			draft.basics.campaignStartTime,
 			draft.basics.campaignEndTime,
-			draft.basics.allTokens,
-			draft.basics.successThreshold,
-			draft.basics.claimPerCampaignContributor
+			draft.tokens.allTokens,
+			draft.design.successThreshold,
+			draft.design.claimPerCampaignContributor
 		];
 
 		let sourcerersToParameterize = [];
