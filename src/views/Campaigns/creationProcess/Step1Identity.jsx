@@ -13,9 +13,8 @@ function StepIdentity(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	// had to split it into three state variables instead of one basics = {...}
-	// because the DateTimePicker apparently expects in onChange direct access to the state-variable setter
-	// as seen in the 1st example here: https://material-ui-pickers.dev/demo/datetime-picker
+	// split it into three state variables instead of one basics = {...} because I didn't get it to work otherwise
+	// compare 1st example here: https://material-ui-pickers.dev/demo/datetime-picker
 	const [name, setName] = useState('');
 	const [campaignStartTime, setCampaignStartTime] = useState(Date.now()); // now
 	const [campaignEndTime, setCampaignEndTime] = useState(Date.now() + (1000 * 60 * 60 * 24 * 7)); // 7 days from now 
@@ -66,7 +65,7 @@ function StepIdentity(props) {
 					label={t('campaign-creator.step1-identity.fields.start-date.label')}
 					format={dateFormat}
 					value={campaignStartTime}
-					onChange={setCampaignStartTime}
+					onChange={moment => setCampaignStartTime(moment.unix() * 1000)}
 					style={inputFieldStyle}
 				/>
 			</MuiPickersUtilsProvider>
@@ -79,7 +78,7 @@ function StepIdentity(props) {
 					label={t('campaign-creator.step1-identity.fields.end-date.label')}
 					format={dateFormat}
 					value={campaignEndTime}
-					onChange={setCampaignEndTime}
+					onChange={moment => setCampaignEndTime(moment.unix() * 1000)}
 					style={inputFieldStyle}
 				/>
 			</MuiPickersUtilsProvider>
