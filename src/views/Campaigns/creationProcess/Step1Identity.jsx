@@ -4,32 +4,30 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { TextField } from '@material-ui/core';
 import StepsBottomNav from './StepsBottomNav';
-import DateTimePicker from 'react-datetime-picker';
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/moment';
+
+const dateFormat = 'YYYY-MM-DD HH:mm';
 
 function StepIdentity(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [basics, setBasics] = useState({
-		name: '',
-		campaignStartTime: 0,
-		campaignEndTime: 0
-	});
-
-	const getValue = (draft, prop) => {
-		return draft.basics.hasOwnProperty(prop) ? draft.basics[prop] : '';
-	};
+	// had to split it into three state variables instead of one basics = {...}
+	// because the DateTimePicker apparently expects in onChange direct access to the state-variable setter
+	// as seen in the 1st example here: https://material-ui-pickers.dev/demo/datetime-picker
+	const [name, setName] = useState('');
+	const [campaignStartTime, setCampaignStartTime] = useState(Date.now()); // now
+	const [campaignEndTime, setCampaignEndTime] = useState(Date.now() + (1000 * 60 * 60 * 24 * 7)); // 7 days from now 
 
 	useEffect(() => {
 		if (draftId || !props.draft) {
 			return;
 		}
 		let draft = props.draft;
-		setBasics({
-			name: getValue(draft, 'name'),
-			campaignStartTime: getValue(draft, 'campaignStartTime'),
-			campaignEndTime: getValue(draft, 'campaignEndTime')
-		});
+		setName(draft.basics.hasOwnProperty('name') ? draft.basics['name'] : name);
+		setCampaignStartTime(draft.basics.hasOwnProperty('campaignStartTime') ? draft.basics['campaignStartTime'] : campaignStartTime);
+		setCampaignEndTime(draft.basics.hasOwnProperty('campaignEndTime') ? draft.basics['campaignEndTime'] : campaignEndTime);
 		setDraftId(draft.id);
 	});
 
@@ -40,31 +38,12 @@ function StepIdentity(props) {
 			lastModified: moment().valueOf(),
 			nodeName: 'basics',
 			node: {
-				name: basics.name,
-				campaignStartTime: basics.campaignStartTime,
-				campaignEndTime: basics.campaignEndTime
+				name: name,
+				campaignStartTime: campaignStartTime,
+				campaignEndTime: campaignEndTime
 			}
 		});
 		props.handleNext();
-	};
-
-	const updateVal = (key, val) => {
-		setBasics({
-			...basics,
-			[key]: val
-		});
-	};
-
-	const updateStartTime = value => {
-		if (value != null) {
-			updateVal('campaignStartTime', value.getTime());
-		}
-	};
-
-	const updateEndTime = value => {
-		if (value != null) {
-			updateVal('campaignEndTime', value.getTime());
-		}
 	};
 
 	return (
@@ -73,16 +52,37 @@ function StepIdentity(props) {
 				key="name-field"
 				type="text"
 				label={t('campaign-creator.step1-identity.fields.name.label')}
-				value={basics.name}
-				onChange={e => updateVal('name', e.target.value)}
+				value={name}
+				onChange={e => setName(e.target.value)}
 				style={inputFieldStyle}
 			/>
 			<div style={{ marginTop: '18px' }} />
-			<div style={inputFieldStyle}>{t('campaign-creator.step1-identity.fields.start-date.label')}</div>
-			<DateTimePicker onChange={updateStartTime} />
+				<MuiPickersUtilsProvider key='start-date-wrapper' utils={DateFnsUtils}>
+				<DateTimePicker
+					ampm={false}
+					// disableFuture
+					showTodayButton
+					key='start-date'
+					label={t('campaign-creator.step1-identity.fields.start-date.label')}
+					format={dateFormat}
+					value={campaignStartTime}
+					onChange={setCampaignStartTime}
+					style={inputFieldStyle}
+				/>
+			</MuiPickersUtilsProvider>
 			<div style={{ marginTop: '18px' }} />
-			<div style={inputFieldStyle}>{t('campaign-creator.step1-identity.fields.end-date.label')}</div>
-			<DateTimePicker onChange={updateEndTime} />
+			<MuiPickersUtilsProvider key='end-date-wrapper' utils={DateFnsUtils}>
+				<DateTimePicker
+					ampm={false}
+					showTodayButton
+					key='end-date'
+					label={t('campaign-creator.step1-identity.fields.end-date.label')}
+					format={dateFormat}
+					value={campaignEndTime}
+					onChange={setCampaignEndTime}
+					style={inputFieldStyle}
+				/>
+			</MuiPickersUtilsProvider>
 			<StepsBottomNav nav={props.nav} handleNext={submit} />
 		</>
 	);
