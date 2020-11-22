@@ -9,27 +9,19 @@ function StepDesign(props) {
 	const { t } = useTranslation();
 
 	const [draftId, setDraftId] = useState(null);
-	const [basics, setBasics] = useState({
+	const [design, setDesign] = useState({
 		successThreshold: 0,
 		claimPerCampaignContributor: 0
 	});
-
-	const getValue = (draft, prop) => {
-		return draft.basics.hasOwnProperty(prop) ? draft.basics[prop] : '';
-	};
 
 	useEffect(() => {
 		if (draftId || !props.draft) {
 			return;
 		}
 		let draft = props.draft;
-		setBasics({
-			name: getValue(draft, 'name'),
-			campaignStartTime: getValue(draft, 'campaignStartTime'),
-			campaignEndTime: getValue(draft, 'campaignEndTime'),
-			allTokens: getValue(draft, 'allTokens'),
-			successThreshold: getValue(draft, 'successThreshold'),
-			claimPerCampaignContributor: getValue(draft, 'claimPerCampaignContributor')
+		setDesign({
+			successThreshold: draft.design.hasOwnProperty('successThreshold') ? draft.design['successThreshold'] : 0,
+			claimPerCampaignContributor: draft.design.hasOwnProperty('claimPerCampaignContributor') ? draft.design['claimPerCampaignContributor'] : 0,
 		});
 		setDraftId(draft.id);
 	});
@@ -39,22 +31,18 @@ function StepDesign(props) {
 			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'basics',
+			nodeName: 'design',
 			node: {
-				name: basics.name,
-				campaignStartTime: basics.campaignStartTime,
-				campaignEndTime: basics.campaignEndTime,
-				allTokens: basics.allTokens,
-				successThreshold: basics.successThreshold,
-				claimPerCampaignContributor: basics.claimPerCampaignContributor
+				successThreshold: design.successThreshold,
+				claimPerCampaignContributor: design.claimPerCampaignContributor
 			}
 		});
 		props.handleNext();
 	};
 
 	const updateVal = (key, val) => {
-		setBasics({
-			...basics,
+		setDesign({
+			...design,
 			[key]: val
 		});
 	};
@@ -65,7 +53,7 @@ function StepDesign(props) {
 				key="name-field"
 				type="number"
 				label={t('campaign-creator.step4-design.fields.success-threshold.label')}
-				value={basics.successThreshold}
+				value={design.successThreshold}
 				onChange={e => updateVal('successThreshold', e.target.value)}
 				style={inputFieldStyle}
 				InputProps={{ inputProps: { min: 0 } }}
@@ -74,7 +62,7 @@ function StepDesign(props) {
 			<TextField
 				label={t('campaign-creator.step4-design.fields.claim-per-user.label')}
 				type="number"
-				value={basics.claimPerCampaignContributor}
+				value={design.claimPerCampaignContributor}
 				onChange={e => updateVal('claimPerCampaignContributor', e.target.value)}
 				style={inputFieldStyle}
 				InputProps={{ inputProps: { min: 1 } }}

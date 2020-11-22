@@ -16,24 +16,17 @@ function StepToken(props) {
 
 	const [draftId, setDraftId] = useState(null);
 	const [showTokenList, setShowTokenList] = useState(false);
-	const [basics, setBasics] = useState({
+	const [tokens, setTokens] = useState({
 		allTokens: []
 	});
-
-	const getValue = (draft, prop) => {
-		return draft.basics.hasOwnProperty(prop) ? draft.basics[prop] : '';
-	};
 
 	useEffect(() => {
 		if (draftId || !props.draft) {
 			return;
 		}
 		let draft = props.draft;
-		setBasics({
-			allTokens: [],
-			name: getValue(draft, 'name'),
-			campaignStartTime: getValue(draft, 'campaignStartTime'),
-			campaignEndTime: getValue(draft, 'campaignEndTime')
+		setTokens({
+			allTokens: draft.tokens.hasOwnProperty('allTokens') ? draft.tokens['allTokens'] : []
 		});
 		setDraftId(draft.id);
 	});
@@ -43,12 +36,9 @@ function StepToken(props) {
 			type: 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS',
 			draftId: draftId,
 			lastModified: moment().valueOf(),
-			nodeName: 'basics',
+			nodeName: 'tokens',
 			node: {
-				name: basics.name,
-				campaignStartTime: basics.campaignStartTime,
-				campaignEndTime: basics.campaignEndTime,
-				allTokens: basics.allTokens
+				allTokens: tokens.allTokens
 			}
 		});
 		props.handleNext();
@@ -57,18 +47,14 @@ function StepToken(props) {
 	// Select token(s) that will be part of campaign
 
 	const updateSelectedTokenList = event => {
-		console.log(event.target.checked);
-		console.log(event.target.name);
-
 		if (event.target.checked) {
-			basics.allTokens.push(event.target.name);
+			tokens.allTokens.push(event.target.name);
 		} else {
-			const i = basics.allTokens.indexOf(event.target.name);
+			let i = tokens.allTokens.indexOf(event.target.name);
 			if (i >= 0) {
-				basics.allTokens.splice(i, 1);
+				tokens.allTokens.splice(i, 1);
 			}
 		}
-		console.log(basics.allTokens);
 	};
 
 	return (

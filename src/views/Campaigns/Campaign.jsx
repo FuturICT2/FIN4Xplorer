@@ -26,15 +26,10 @@ function Campaign(props) {
 				created: nowTimestamp,
 				lastModified: nowTimestamp,
 				basics: {},
-				properties: {},
 				actions: {},
-				minting: {},
-				noninteractiveVerifiers: {},
-				interactiveVerifiers: {},
-				sourcererPairs: [],
-				externalUnderlyings: []
-			},
-			addToCookies: true
+				tokens: [],
+				design: {}
+			}
 		});
 		history.push('/campaign/create/' + newDraftId);
 	};
