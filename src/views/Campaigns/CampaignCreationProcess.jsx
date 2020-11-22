@@ -314,12 +314,6 @@ function CampaignCreationProcess(props, context) {
 									<Typography className={classes.instructions}>
 										{t('token-creator.navigation.all-steps-completed')}
 									</Typography>
-									<FormControlLabel
-										control={
-											<Checkbox size="small" checked={keepAsDraft} onChange={() => setKeepAsDraft(!keepAsDraft)} />
-										}
-										label={<small style={{ color: 'gray' }}>{t('campaign-creator.navigation.keep-as-draft')}</small>}
-									/>
 									<div style={{ paddingTop: '20px' }}>
 										<Button onClick={handleReset} className={classes.backButton}>
 											{t('campaign-creator.navigation.restart-button')}
