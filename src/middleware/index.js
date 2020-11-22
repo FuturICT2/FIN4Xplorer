@@ -111,9 +111,7 @@ function fin4StoreReducer(state = initialState, action) {
 					};
 				}
 			}
-			return update(state, {
-				fin4TokensInitiallyFetched: { $set: true }
-			});
+			return state;
 		case 'ADD_CLAIM':
 			return {
 				...state,
@@ -316,9 +314,6 @@ function fin4StoreReducer(state = initialState, action) {
 				}
 			};
 		case 'ADD_CAMPAIGN_CREATION_DRAFT':
-			if (action.addToCookies) {
-				Cookies.set('CampaignCreationDraft_' + action.draft.id, JSON.stringify(action.draft));
-			}
 			return {
 				...state,
 				campaignCreationDrafts: {
@@ -339,19 +334,6 @@ function fin4StoreReducer(state = initialState, action) {
 				...state,
 				tokenCreationDrafts: newTokenCreationDrafts
 			};
-		case 'DELETE_CAMPAIGN_CREATION_DRAFT':
-			Cookies.remove('CampaignCreationDraft_' + action.draftId);
-			// via https://flaviocopes.com/how-to-remove-object-property-javascript/
-			const newCampaignCreationDrafts = Object.keys(state.campaignCreationDrafts).reduce((object, key) => {
-				if (key !== action.draftId) {
-					object[key] = state.campaignCreationDrafts[key];
-				}
-				return object;
-			}, {});
-			return {
-				...state,
-				campaignCreationDrafts: newCampaignCreationDrafts
-			};
 		case 'UPDATE_TOKEN_CREATION_DRAFT_FIELDS':
 			let draftId = action.draftId;
 			state = update(state, {
@@ -364,19 +346,15 @@ function fin4StoreReducer(state = initialState, action) {
 			});
 			Cookies.set('TokenCreationDraft_' + draftId, JSON.stringify(state.tokenCreationDrafts[draftId]));
 			return state;
-
 		case 'UPDATE_CAMPAIGN_CREATION_DRAFT_FIELDS':
-			let draftId_ = action.draftId;
-			state = update(state, {
+			return update(state, {
 				campaignCreationDrafts: {
-					[draftId_]: {
+					[action.draftId]: {
 						lastModified: { $set: action.lastModified },
 						[action.nodeName]: { $set: action.node }
 					}
 				}
 			});
-			Cookies.set('CampaignCreationDraft_' + draftId_, JSON.stringify(state.campaignCreationDrafts[draftId_]));
-			return state;
 		case 'ADD_SUBMISSION':
 			return {
 				...state,
