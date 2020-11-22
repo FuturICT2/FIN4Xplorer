@@ -45,7 +45,7 @@ const DetailedCampaignView = (props, context) => {
 	});
 
 	if (campaignViaURL == null || Object.keys(props.fin4Tokens).length === 0) {
-		return <CircularProgress />;
+		return <center><CircularProgress /></center>;
 	} else {
 		const startDate = new Date(parseInt(campaignViaURL.campaignStartTime, 10)).toLocaleString();
 		const endDate = new Date(parseInt(campaignViaURL.campaignEndTime, 10)).toLocaleString();
