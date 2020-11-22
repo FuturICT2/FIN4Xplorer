@@ -16,18 +16,18 @@ function StepToken(props) {
 
 	const [draftId, setDraftId] = useState(null);
 	const [showTokenList, setShowTokenList] = useState(false);
-	const [tokens, setTokens] = useState({
-		allTokens: []
-	});
+	const [tokens, setTokens] = useState([]);
 
 	useEffect(() => {
 		if (draftId || !props.draft) {
 			return;
 		}
 		let draft = props.draft;
-		setTokens({
-			allTokens: draft.tokens.hasOwnProperty('allTokens') ? draft.tokens['allTokens'] : []
-		});
+		let tokensFromDraft = draft.tokens.hasOwnProperty('allTokens') ? draft.tokens['allTokens'] : [];
+		setTokens(tokensFromDraft);
+		if (tokensFromDraft.length > 0) {
+			setShowTokenList(true);
+		}
 		setDraftId(draft.id);
 	});
 
@@ -38,7 +38,7 @@ function StepToken(props) {
 			lastModified: moment().valueOf(),
 			nodeName: 'tokens',
 			node: {
-				allTokens: tokens.allTokens
+				allTokens: tokens
 			}
 		});
 		props.handleNext();
@@ -48,12 +48,9 @@ function StepToken(props) {
 
 	const updateSelectedTokenList = event => {
 		if (event.target.checked) {
-			tokens.allTokens.push(event.target.name);
+			setTokens(tokens.concat(event.target.name));
 		} else {
-			let i = tokens.allTokens.indexOf(event.target.name);
-			if (i >= 0) {
-				tokens.allTokens.splice(i, 1);
-			}
+			setTokens(tokens.filter(addr => addr !== event.target.name));
 		}
 	};
 
@@ -68,13 +65,20 @@ function StepToken(props) {
 			</Button>
 			{showTokenList && (
 				<List>
-					{Object.keys(props.fin4Tokens).map(token => {
+					{Object.keys(props.fin4Tokens).map(tokenAddr => {
 						return (
-							<ListItem key={token}>
-								<Checkbox edge="start" onChange={updateSelectedTokenList} name={token} />
-								{String(props.fin4Tokens[token].name)}
-								&nbsp;
-								<Currency symbol={String(props.fin4Tokens[token].symbol)} />
+							<ListItem key={tokenAddr}>
+								<Checkbox 
+									edge="start" 
+									onChange={updateSelectedTokenList} 
+									name={tokenAddr}
+									checked={tokens.includes(tokenAddr)}
+								/>
+								<div style={{ fontFamily: 'arial'}}>
+									{props.fin4Tokens[tokenAddr].name}
+									&nbsp;
+									<Currency symbol={props.fin4Tokens[tokenAddr].symbol} />
+								</div>
 							</ListItem>
 						);
 					})}
