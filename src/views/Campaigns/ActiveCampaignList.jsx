@@ -17,9 +17,9 @@ const ActiveCampaignList = props => {
 
 	return (
 		<div>
-			{props.campaigns.map(campaign => {
-				return (
-					<List>
+			<List>
+				{props.campaigns.map(campaign => {
+					return (
 						<ListItem
 							key={campaign.address}
 							onClick={() => history.push('/campaign/view/' + campaign.name)}
@@ -27,9 +27,9 @@ const ActiveCampaignList = props => {
 							className={classes.listItem}>
 							{campaign.name}
 						</ListItem>
-					</List>
-				);
-			})}
+					)
+				})}
+			</List>
 		</div>
 	);
 };
