@@ -85,7 +85,7 @@ function fin4StoreReducer(state = initialState, action) {
 			// it would only not work if a new-token event comes in BEFORE this
 			// here gets called, then the new token would be overwritten
 			// ... playing it safe and adding it one by one instead
-			for (var tokenAddress in action.tokensObj) {
+			for (let tokenAddress in action.tokensObj) {
 				if (action.tokensObj.hasOwnProperty(tokenAddress)) {
 					state = {
 						...state,
@@ -100,7 +100,7 @@ function fin4StoreReducer(state = initialState, action) {
 				fin4TokensInitiallyFetched: { $set: true }
 			});
 		case 'ADD_MULTIPLE_CAMPAIGNS':
-			for (var campaignAddr in action.campaignsObj) {
+			for (let campaignAddr in action.campaignsObj) {
 				if (action.campaignsObj.hasOwnProperty(campaignAddr)) {
 					state = {
 						...state,
