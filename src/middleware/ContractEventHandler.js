@@ -87,6 +87,9 @@ const contractEventHandlers = {
 		}
 		let quantity = new BN(claim.quantity).toNumber();
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
+		if (!token) {
+			return;
+		}
 		let verifierStatusesObj = {};
 		for (let i = 0; i < claim.requiredVerifierTypes.length; i++) {
 			verifierStatusesObj[claim.requiredVerifierTypes[i]] = {
@@ -137,6 +140,9 @@ const contractEventHandlers = {
 			balance: Number(claim.newBalance)
 		});
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
+		if (!token) {
+			return;
+		}
 		return (
 			<Trans
 				i18nKey="notification.claim-approved"
@@ -157,12 +163,18 @@ const contractEventHandlers = {
 			id: id
 		});
 		let token = store.getState().fin4Store.fin4Tokens[claim.tokenAddr];
+		if (!token) {
+			return;
+		}
 		return <Trans i18nKey="notification.claim-rejected" values={{ name: token.name }} />;
 	},
 	UpdatedTotalSupply: values => {
 		let tokenAddr = values.tokenAddr;
 		let totalSupply = new BN(values.totalSupply).toNumber();
 		let token = store.getState().fin4Store.fin4Tokens[tokenAddr];
+		if (!token) {
+			return;
+		}
 		if (token.totalSupply === totalSupply) {
 			// block duplicate events, not sure if this can happen, but just to be sure
 			return;
