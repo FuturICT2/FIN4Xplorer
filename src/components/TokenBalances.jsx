@@ -84,6 +84,9 @@ function TokenBalances(props, context) {
 						})}
 					{getTokenAddressesSortedByBalance().map((tokenAddr, index) => {
 						let token = props.fin4Tokens[tokenAddr];
+						if (!token) {
+							return;
+						}
 						return (
 							<TableRow
 								key={'balance_' + index}
