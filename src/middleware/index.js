@@ -4,7 +4,7 @@ import drizzleOptions from '../config/drizzle-config';
 import { toast } from 'react-toastify';
 import update from 'react-addons-update';
 import Cookies from 'js-cookie';
-import { doCallback, txErrorAugmentation } from '../components/utils';
+import { doCallback, txErrorAugmentation, WeiToETH } from '../components/utils';
 const BN = require('bignumber.js');
 
 const contractEventNotifier = store => next => action => {
@@ -63,7 +63,7 @@ function fin4StoreReducer(state = initialState, action) {
 			return {
 				...state,
 				defaultAccount: action.account,
-				usersEthBalance: window.web3 ? window.web3.toDecimal(window.web3.fromWei(action.accountBalance, 'ether')) : 0
+				usersEthBalance: WeiToETH(action.accountBalance)
 			};
 		case 'DRIZZLE_INITIALIZED':
 			return {
