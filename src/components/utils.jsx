@@ -15,6 +15,10 @@ const Fin4Colors = {
 	darkGrey: '#3d363f'
 };
 
+const WeiToETH = wei => {
+	return web3.utils.fromWei(wei, 'ether');
+};
+
 const BNstr = numb => {
 	return web3.utils.toBN(numb).toString();
 };
@@ -251,5 +255,6 @@ export {
 	getImageDimensions,
 	fileToBase64,
 	sizeOfBase64,
-	txErrorAugmentation
+	txErrorAugmentation,
+	WeiToETH
 };
