@@ -107,7 +107,7 @@ function Home(props, context) {
 		if (props.contracts.Fin4Voting && props.contracts.Fin4Voting.initialized && !homeReady.current) {
 			homeReady.current = true;
 			let defaultAccount = props.store.getState().fin4Store.defaultAccount;
-			getContractData(context.drizzle.contracts.Fin4Voting, defaultAccount, 'isEligibleToBeAVoter').then(isEligible => {			
+			getContractData(context.drizzle.contracts.Fin4Voting, defaultAccount, 'isEligibleToBeAVoter').then(isEligible => {
 				setIsEligibleToBeAVoter(isEligible);
 			});
 		}
@@ -234,10 +234,6 @@ function Home(props, context) {
 					</Button>
 				</Container>
 			</Modal>
-			<Box title="Inbox" width="250px">
-				{buildIconLabelLink('/messages', <EmailIcon />, 'Your messages')}
-				{buildIconLabelLink('/user/message', <MessageIcon />, 'Message user', true, false)}
-			</Box>
 			<Box title={t('home.inbox.box-title')} width="250px">
 				{buildIconLabelLink('/messages', <EmailIcon />, t('home.inbox.your-messages-button'))}
 				{buildIconLabelLink('/user/message', <MessageIcon />, t('home.inbox.message-user-button'))}
